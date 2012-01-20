@@ -1,87 +1,35 @@
 require "pp"
+require "info"
 
-class Task
-  attr_reader :id, :proc, :period, :period, :offset, :reqList
-  def initialize(id, proc, period, priority, offset, reqarray)
-    @id = id
-    @proc = proc
-    @period = period.to_i
-    @priority = priority.to_i
-    @offset = offset.to_i
-    @reqList = reqarray
-  end
+def taskset1
+  res1 = Res.new(1, "long")
+  res2 = Res.new(2, "long")
+  res3 = Res.new(3, "long")
+
+  req1 = Req.new(1, res3, 1)
+  req2 = Req.new(2, res1, 2)
+  req3 = Req.new(3, res2, 2)
+  tas1 = Task.new(1, 1, 12, 1, 0, [req1])
+  $taskList << tas1
+  tas2 = Task.new(2, 1, 12, 2, 0, [req2])
+  $taskList << tas2
+  tas3 = Task.new(3, 1, 12, 3, 0, [req3])
+  $taskList << tas3
+end
+
+def taskset2
+  res1 = Res.new(1, "long")
   
-  def resCount
-    @reqList.size
-  end
+  req1 = Req.new(1, res1, 1)
+  req2 = Req.new(2, res1, 2)
+  req3 = Req.new(3, res1, 2)
   
-  def longResArray
-    longResArray = []
-    @reqList.each{|req|
-      if req.res.kind == "long" then
-        longResArray << req.res
-      end
-    }
-    longResArray
-  end
+  tas1 = Task.new(1, 1, 10, 1, 0, [req1])
+  tas2 = Task.new(2, 1, 10, 2, 0, [req2])
+  tas3 = Task.new(3, 2, 10, 3, 0, [req3])
+  $taskList = [tas1, tas2, tas3]
+  pp BB(tas1)
+  pp BB(tas2)
 end
 
-class Res
-  def initialize(id, kind)
-    @id = id
-    @kind = kind
-  end
-end
-
-class Req
-  attr_reader :id, :res, :time
-  def initialize(id, res, time)
-    @id = id
-    @res = res
-    @time = time
-  end
-end
-
-class ReqTuple
-  attr_reader :req, :k
-  def initialize(req, k)
-    @req = req
-    @k = k
-  end
-  
-end
-
-def wclx(task, job)
-  tuples = []
-  k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
-  1.upto(k){|n|
-    task.reqList.each{|req|
-      tuples << ReqTuple.new(req, n)
-    }
-  }
-  tuples.sort!{|a, b|
-    (-1) * (a.req.time <=> b.req.time)
-  }
-  tuples
-end
-
-def narr(job)
-  job.longResArray.size
-end
-    
-def bbt(task, job)
-  
-end
-  
-res1 = Res.new(1, "long")
-res2 = Res.new(2, "long")
-
-req1 = Req.new(1, res1, 2)
-req2 = Req.new(2, res1, 1)
-req3 = Req.new(3, res2, 4)
-reqarray = [req1, req2]
-tas1 = Task.new(1, 1, 10, 1, 0, reqarray)
-reqarray = [req1, req3]
-tas2 = Task.new(1, 1, 15, 2, 0, reqarray)
-
-pp wclx(tas2, tas1)
+taskset2
