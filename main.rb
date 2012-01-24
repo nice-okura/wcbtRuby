@@ -32,4 +32,23 @@ def taskset2
   pp BB(tas2)
 end
 
-taskset2
+def taskset3
+  res1 = Res.new(1, "long")
+  
+  res0 = Res.new(0, "") # dummy Resource
+  req0 = Req.new(0, 0, 0) # dummy Require
+  
+  req1 = Req.new(1, res1, 1)
+  req2 = Req.new(2, res1, 2)
+  req3 = Req.new(3, res1, 2)
+  
+  tas1 = Task.new(1, 1, 10, 1, 0, [req1])
+  tas2 = Task.new(2, 1, 10, 2, 0, [req2])
+  tas3 = Task.new(3, 2, 10, 3, 0, [req3])
+  tas4 = Task.new(4, 1, 20, 4, 0, [])
+  $taskList = [tas1, tas2, tas3, tas4]
+  
+  pp abr(tas1) 
+end
+
+taskset3
