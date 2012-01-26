@@ -146,6 +146,9 @@ def partition(proc)
 end
 
 def ndbp(job, proc)
+  if job.proc == proc then
+    return 0
+  end
   count = 0
   partition(proc).each{|task|
     count += ndbt(task, job)
@@ -180,7 +183,48 @@ def ndbtg(task, job, group)
   }
  [a, b].min
 end
+
+def procList
+  proc = []
+  $taskList.each{|task|
+    proc << task.proc
+  }
+  proc.uniq!
+end
   
+
+def rbl(job)
+  time = 0
+  procList.each{|proc|
+    if job.proc != proc then
+      time += rblp(job, proc)
+    end
+  }
+end
+
+def rblp(job, proc)
+  count = 0
+  partition(proc).each{|task|
+    count += rblt(task, job)
+  }
+  count
+end
+
+def rblt(task, job)
+  time = 0
+  if task == nil || job == nil then
+    return 0
+  elsif task.proc  == job.proc then 
+    return 0
+  end
+  tuples = wclx(task, job)
+  min = [ndbp(job, task.proc), tuples.size].min
+  0.upto(min-1){|num|
+    time += tuples[num].req.time
+  }
+  time
+end
+
 def BB(job)
   if job.longResArray.size == 0 then
     return 0

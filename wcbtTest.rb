@@ -103,8 +103,37 @@ class Test_wcbt < Test::Unit::TestCase
     task3 = Task.new(3, 1, 10, 3, 0, [@reqLong1_1, @reqLong5_3])
     task4 = Task.new(4, 2, 10, 4, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
     task5 = Task.new(5, 2, 10, 5, 0, [@reqLong1_1, @reqLong5_3])
-    $taskList = [task1, task2, task3, task4, task5]
+    task6 = Task.new(5, 3, 15, 6, 0, [@reqLong5_3])
+    $taskList = [task1, task2, task3, task4, task5, task6]
     assert(ndbp(task1, 2) == 3)
-    assert(ndbp(task1, 1) == 5)
+    assert(ndbp(task1, 1) == 0)
+    assert(ndbp(task1, 3) == 0)
+  end
+  
+  def test_rblt
+    task1 = Task.new(1, 1, 10, 1, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
+    task2 = Task.new(2, 1, 10, 2, 0, [@reqLong1_1, @reqLong1_1, @reqLong5_3])
+    task3 = Task.new(3, 1, 10, 3, 0, [@reqLong1_1, @reqLong5_3])
+    task4 = Task.new(4, 2, 10, 4, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
+    task5 = Task.new(5, 2, 10, 5, 0, [@reqLong1_1, @reqLong5_3])
+    task6 = Task.new(5, 3, 15, 6, 0, [@reqLong5_3])
+    $taskList = [task1, task2, task3, task4, task5, task6]
+    assert(rblt(task2, task1) == 0)
+    assert(rblt(task4, task1) == 3)
+    assert(rblt(task5, task1) == 7)
+    assert(rblt(task6, task1) == 0)
+  end
+  
+  def test_rblp
+    task1 = Task.new(1, 1, 10, 1, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
+    task2 = Task.new(2, 1, 10, 2, 0, [@reqLong1_1, @reqLong1_1, @reqLong5_3])
+    task3 = Task.new(3, 1, 10, 3, 0, [@reqLong1_1, @reqLong5_3])
+    task4 = Task.new(4, 2, 10, 4, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
+    task5 = Task.new(5, 2, 10, 5, 0, [@reqLong1_1, @reqLong5_3])
+    task6 = Task.new(5, 3, 15, 6, 0, [@reqLong5_3])
+    $taskList = [task1, task2, task3, task4, task5, task6]
+    
+    assert(rblp(task1, 2) == 10)
+    assert(rblp(task1, 3) == 0)
   end
 end
