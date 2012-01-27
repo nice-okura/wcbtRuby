@@ -8,13 +8,21 @@ class Test_wcbt < Test::Unit::TestCase
     @res3 = Res.new(3, "long", 3)
     
     @res0 = Res.new(0, "", 0) # dummy Resource
-    @req0 = Req.new(0, 0, 0) # dummy Require
+    @req0 = Req.new(0, 0, 0, []) # dummy Require
     
-    @reqLong1_1 = Req.new(1, @res1, 1)
-    @reqLong2_2 = Req.new(2, @res1, 2)
-    @reqLong3_2 = Req.new(3, @res1, 2)
-    @reqShort4_2 = Req.new(4, @res2, 2) 
-    @reqLong5_3 = Req.new(5, @res3, 3)
+    # アクセス時間1のリソース要求がアクセス時間1以上のリソース要求をネストすることができない！
+    
+    # non-nestedRequire
+    @reqLong1_1 = Req.new(1, @res1, 1, [])
+    @reqLong2_2 = Req.new(2, @res1, 2, [])
+    @reqLong3_2 = Req.new(3, @res1, 2, [])
+    @reqShort4_2 = Req.new(4, @res2, 2, []) 
+    @reqLong5_3 = Req.new(5, @res3, 3, [])
+    @reqLong7_1 = Req.new(7, @res1, 1, [])
+    
+    # nestedRequire
+    @reqLong6_1 = Req.new(6, @res1, 2, [@reqLong7_1])
+    @reqLong8_1 = Req.new(8, @res1, 2, [])
     
     @tas1 = Task.new(1, 1, 10, 1, 0, [@reqLong1_1])
     @tas2 = Task.new(2, 1, 10, 2, 0, [@reqLong2_2])
@@ -24,10 +32,62 @@ class Test_wcbt < Test::Unit::TestCase
     @tas6_S1 = Task.new(6, 1, 10, 6, 0, [@reqShort4_2])
     @tas7_L1 = Task.new(7, 1, 10, 7, 0, [@reqLong2_2])
     
-
     $taskList = [@tas1, @tas2, @tas4, @tas5_L1, @tas6_S1, @tas7_L1]
   end 
   
+  
+  def test_reqList
+    task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
+    task2 = Task.new(2, 1, 6, 2, 0, [@reqLong2_2])
+    task3 = Task.new(3, 2, 3, 3, 0, [@reqLong7_1])
+    $taskList = [task1, task2, task3]
+    
+    assert(task1.reqList.size == 2)
+    assert(task2.reqList.size == 1)
+    assert(task3.reqList.size == 1)
+  end
+  
+  def test_checkOutermost
+    task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
+    task2 = Task.new(2, 1, 6, 2, 0, [@reqLong2_2])
+    task3 = Task.new(3, 2, 3, 3, 0, [@reqLong7_1])
+    $taskList = [task1, task2, task3]
+    
+    task1.checkOutermost
+    assert(task1.reqList[0].outermost == true)
+    assert(task1.reqList[1].outermost == false)
+    assert(task2.reqList[0].outermost == true)
+    assert(task3.reqList[0].outermost == false)
+  end
+  
+  def test_longResArrayNested
+    task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
+    task2 = Task.new(2, 1, 6, 2, 0, [@reqLong2_2])
+    task3 = Task.new(3, 2, 3, 3, 0, [@reqLong7_1])
+    $taskList = [task1, task2, task3]
+    
+    assert(task1.longResArray == 2)
+  end
+  
+  def test_BB_longSameGroup
+    task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
+    task2 = Task.new(2, 1, 6, 2, 0, [@reqLong2_2])
+    task3 = Task.new(3, 2, 3, 3, 0, [@reqLong7_1])
+    $taskList = [task1, task2, task3]
+    
+    assert(BB(task1) == 3)
+  end
+
+  def test_bbt_longSameGroup
+    task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
+    task2 = Task.new(2, 1, 6, 2, 0, [@reqLong2_2])
+    task3 = Task.new(3, 2, 3, 3, 0, [@reqLong7_1])
+    $taskList = [task1, task2, task3]
+    
+    assert(bbt(task2, task1) == 3)
+  end
+
+=begin
   def test_longResArray
     task1 = Task.new(1, 1, 10, 1, 0, [@reqLong1_1, @reqLong1_1])
     task2 = Task.new(2, 1, 10, 2, 0, [@reqLong1_1, @reqLong1_1])
@@ -136,4 +196,15 @@ class Test_wcbt < Test::Unit::TestCase
     assert(rblp(task1, 2) == 10)
     assert(rblp(task1, 3) == 0)
   end
+  
+  def test_wcsxg
+    task1 = Task.new(1, 1, 10, 1, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
+    task2 = Task.new(2, 1, 10, 2, 0, [@reqLong1_1, @reqLong1_1, @reqLong5_3])
+    task3 = Task.new(3, 1, 10, 3, 0, [@reqLong1_1, @reqLong5_3])
+    task4 = Task.new(4, 2, 10, 4, 0, [@reqLong1_1, @reqLong1_1, @reqShort4_2])    
+    task5 = Task.new(5, 2, 10, 5, 0, [@reqLong1_1, @reqLong5_3])
+    task6 = Task.new(5, 3, 15, 6, 0, [@reqLong5_3])
+    $taskList = [task1, task2, task3, task4, task5, task6]
+  end
+=end
 end
