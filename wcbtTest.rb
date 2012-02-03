@@ -62,9 +62,9 @@ class Test_wcbt < Test::Unit::TestCase
     task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
     task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
         
-    assert(WCLR(task1).size == 1)
-    assert(WCLR(task2).size == 2)
-    assert(WCLR(task3).size == 1)
+    assert(WCLR(task1).size == 2)
+    assert(WCLR(task2).size == 3)
+    assert(WCLR(task3).size == 2)
     
     assert(WCLR(task4).size == 1)
     assert(WCLR(task5).size == 1)
@@ -79,30 +79,59 @@ class Test_wcbt < Test::Unit::TestCase
     assert(WCSR(task2).size == 0)
     assert(WCSR(task3).size == 0)
     
-    assert(WCSR(task4).size == 0)
-    assert(WCSR(task5).size == 1)
-    assert(WCSR(task6).size == 0)
+    assert(WCSR(task4).size == 1)
+    assert(WCSR(task5).size == 2)
+    assert(WCSR(task6).size == 1)
     
-    assert(WCSR(task7).size == 1)
-    assert(WCSR(task8).size == 2)
-    assert(WCSR(task9).size == 1)
+    assert(WCSR(task7).size == 2)
+    assert(WCSR(task8).size == 3)
+    assert(WCSR(task9).size == 2)
   end
 
-  
-  def test_LongLong
+  def test_wclxwcls
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 3, 3, 0, [@req12_LongLong2])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+
     $taskList = [task1, task2, task3]
     
     assert(wclx(task2, task1).size == 6)
+    assert(wclx(task3, task1).size == 4)
     assert(wcsx(task2, task1).size == 0)
+    assert(wcsx(task3, task1).size == 0)
+
+    assert(wclx(task5, task4).size == 2)
+    assert(wclx(task6, task4).size == 2)
+    assert(wcsx(task5, task4).size == 4)
+    assert(wcsx(task6, task4).size == 2)
+
+    assert(wclx(task8, task7).size == 0)
+    assert(wclx(task9, task7).size == 0)
+    assert(wcsx(task8, task7).size == 6)
+    assert(wcsx(task9, task7).size == 4)
+
   end
     
   def test_reqList
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 3, 3, 0, [@req12_LongLong2])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
     
     $taskList = [task1, task2, task3]
     
@@ -114,25 +143,62 @@ class Test_wcbt < Test::Unit::TestCase
   def test_checkOutermost
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 3, 3, 0, [@req12_LongLong2])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
     $taskList = [task1, task2, task3]
     
     assert(task1.reqList[0].outermost == true)
-    assert(task1.reqList[1].outermost == false)
+    assert(task1.reqList[1].outermost == true)
     assert(task2.reqList[0].outermost == true)
-    assert(task2.reqList[1].outermost == false)
+    assert(task2.reqList[1].outermost == true)
     assert(task2.reqList[2].outermost == true)
     assert(task3.reqList[0].outermost == true)
-    assert(task3.reqList[1].outermost == false)    
+    assert(task3.reqList[1].outermost == true)    
   end
   
-  def test_longResArrayNested
+  def test_longshortResArray
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 2, 0, [@req2_Long2])
-    task3 = Task.new(3, 2, 3, 3, 0, [@req7_Long2])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    
     $taskList = [task1, task2, task3]
     
     assert(task1.longResArray.size == 2)
+    assert(task2.longResArray.size == 3)
+    assert(task3.longResArray.size == 2)
+    assert(task1.shortResArray.size == 0)
+    assert(task2.shortResArray.size == 0)
+    assert(task3.shortResArray.size == 0)
+
+    assert(task4.longResArray.size == 1)
+    assert(task5.longResArray.size == 1)
+    assert(task6.longResArray.size == 1)
+    assert(task4.shortResArray.size == 1)
+    assert(task5.shortResArray.size == 2)
+    assert(task6.shortResArray.size == 1)
+
+    assert(task7.longResArray.size == 0)
+    assert(task8.longResArray.size == 0)
+    assert(task9.longResArray.size == 0)
+    assert(task7.shortResArray.size == 2)
+    assert(task8.shortResArray.size == 3)
+    assert(task9.shortResArray.size == 2)
+
   end
 
 =begin

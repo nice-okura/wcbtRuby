@@ -42,7 +42,9 @@ class Task
   def checkOutermost
     reqList.each{|req|
       req.reqs.each{|req2|
-        req2.outermost = false
+        if req2.res.group == req.res.group then
+          req2.outermost = false
+        end
       }
     }
   end
@@ -50,7 +52,7 @@ class Task
   def longResArray
     longResArray = []
     @reqList.each{|req|
-      if req.res.kind == "long" then
+      if req.res.kind == "long" && req.outermost == true then
         longResArray << req.res
       end
     }
@@ -60,13 +62,15 @@ class Task
   def shortResArray
     shortResArray = []
     @reqList.each{|req|
-      if req.res.kind == "short" then
+      if req.res.kind == "short" && req.outermost == true then
         shortResArray << req.res
+=begin
         req.reqs.each{|req2|
           if req2.res.group != req.res.group then
             shortResArray << req2.res
           end
         }
+=end
       end
     }
     shortResArray
@@ -141,7 +145,7 @@ def wclx(task, job)
   end
   k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
   1.upto(k){|n|
-    task.reqList.each{|req|
+    WCLR(task).each{|req|
       if req.res.kind == "long" then
         tuples << ReqTuple.new(req, n)
       end
@@ -160,7 +164,7 @@ def wcsx(task, job)
   end
   k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
   1.upto(k){|n|
-    task.reqList.each{|req|
+    WCSR(task).each{|req|
       if req.res.kind == "short" then
         tuples << ReqTuple.new(req, n)
       end
