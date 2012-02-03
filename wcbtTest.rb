@@ -107,20 +107,20 @@ class Test_wcbt < Test::Unit::TestCase
 
     $taskList = [task1, task2, task3]
     
-    assert(wclx(task2, task1).size == 6)
-    assert(wclx(task3, task1).size == 4)
+    assert(wclx(task2, task1).size == 4)
+    assert(wclx(task3, task1).size == 2)
     assert(wcsx(task2, task1).size == 0)
     assert(wcsx(task3, task1).size == 0)
 
     assert(wclx(task5, task4).size == 2)
     assert(wclx(task6, task4).size == 2)
-    assert(wcsx(task5, task4).size == 4)
-    assert(wcsx(task6, task4).size == 2)
+    assert(wcsx(task5, task4).size == 2)
+    assert(wcsx(task6, task4).size == 0)
 
     assert(wclx(task8, task7).size == 0)
     assert(wclx(task9, task7).size == 0)
-    assert(wcsx(task8, task7).size == 6)
-    assert(wcsx(task9, task7).size == 4)
+    assert(wcsx(task8, task7).size == 4)
+    assert(wcsx(task9, task7).size == 2)
 
   end
     
