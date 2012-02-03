@@ -8,33 +8,11 @@ class Task
     @period = period.to_i
     @priority = priority.to_i
     @offset = offset.to_i
-    @reqList = []
-    # 要求の配列を作成
-    # ネストの場合は複数の要求の配列となる
-    reqarray.each{|req|
-      @reqList << req 
-      if req.reqs != nil then
-        req.reqs.each{|req2|
-          # 同じリソースのネストは不可能
-          # req1.res == req2.res はダメ
-          if req2.res == req.res then 
-            puts "req" + req.reqId.to_s + "とreq" + req2.reqId.to_s + ":\n"
-            puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
-            exit # 強制終了
-          end
-          # グループが異なるときに別要求としてreqListに追加
-          # 同じグループならグループロックを1回取得するだけで良いから
-          # 同グループなら別要求としては扱わない．
-          if req2.res.group != req.res.group then
-              @reqList << req2
-          end
-        }
-      end
-    }
+    @reqList = reqarray
     checkOutermost
   end
   
-  def resCount
+  def getResCount
     @reqList.size
   end
   
@@ -49,7 +27,34 @@ class Task
     }
   end
   
-  def longResArray
+  # 全てのグループロック要求の配列を取得
+  # @reqListはネストしているものは含まれていない
+  def getAllReq
+    allReq = []
+    reqList.each{|req|
+      allReq << req 
+      if req.reqs != nil then
+        req.reqs.each{|req2|
+          # 同じリソースのネストは不可能
+          # req1.res == req2.res はダメ
+          if req2.res == req.res then 
+            puts "req" + req.reqId.to_s + "とreq" + req2.reqId.to_s + ":\n"
+            puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
+            exit # 強制終了
+          end
+          # グループが異なるときに別要求としてreqListに追加
+          # 同じグループならグループロックを1回取得するだけで良いから
+          # 同グループなら別要求としては扱わない．
+          if req2.res.group != req.res.group then
+            allReq << req2
+          end
+        }
+      end
+    }
+    allReq
+  end
+  
+  def getLongResArray
     longResArray = []
     @reqList.each{|req|
       if req.res.kind == "long" && req.outermost == true then
@@ -59,7 +64,7 @@ class Task
     longResArray
   end
   
-  def shortResArray
+  def getShortResArray
     shortResArray = []
     @reqList.each{|req|
       if req.res.kind == "short" && req.outermost == true then
@@ -67,7 +72,7 @@ class Task
 =begin
         req.reqs.each{|req2|
           if req2.res.group != req.res.group then
-            shortResArray << req2.res
+            getShortResArray << req2.res
           end
         }
 =end
@@ -177,7 +182,7 @@ def wcsx(task, job)
 end
 
 def narr(job)
-  job.longResArray.size
+  job.getLongResArray.size
 end
 
 def partition(proc)
@@ -250,7 +255,7 @@ end
 def ndbt(task, job)
   count = 0
   g = []
-  job.longResArray.each{|res|
+  job.getLongResArray.each{|res|
     g << res.group
   }
   g.uniq!
@@ -262,12 +267,12 @@ end
 
 def ndbtg(task, job, group)
   a = b = 0
-  job.longResArray.each{|res|
+  job.getLongResArray.each{|res|
     if res.group == group then 
       a += 1
     end
   }
-  task.longResArray.each{|res|
+  task.getLongResArray.each{|res|
     if res.group == group then
       b += 1
     end
@@ -374,7 +379,7 @@ end
 def sbgp(job, group, proc)
   time = 0
   b = 0
-  job.shortResArray.each{|req|
+  job.getShortResArray.each{|req|
     if req.res.group == group then
       b += req.time
     end
@@ -390,7 +395,7 @@ end
 ##############################
 
 def BB(job)
-  if job.longResArray.size == 0 then
+  if job.getLongResArray.size == 0 then
     return 0
   end
   time = 0
