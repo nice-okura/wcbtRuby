@@ -13,6 +13,13 @@ class Task
       @reqList << req
       if req.reqs != nil then
         req.reqs.each{|req2|
+          # ・同じリソースのネストは不可能
+          #   req1.res != req2.res はダメ
+          if req2.res == req.res then 
+            puts "req" + req.reqId.to_s + "とreq" + req2.reqId.to_s + ":\n"
+            puts "同じリソース(res" + req.res.resId.to_s + ")はネストできません．"
+            exit
+          end
           if req2.res.group != req.res.group then
               @reqList << req2
           end

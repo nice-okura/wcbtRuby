@@ -19,7 +19,7 @@ class Test_wcbt < Test::Unit::TestCase
     @reqLong3_2 = Req.new(3, @res1, 2, [])
     @reqShort4_2 = Req.new(4, @res2, 2, []) 
     @reqLong5_3 = Req.new(5, @res3, 3, [])
-    @reqLong7_1 = Req.new(7, @res1, 1, [])
+    @reqLong7_1 = Req.new(7, @res3, 1, [])
     
     # nestedRequire
     # ネストのルール
