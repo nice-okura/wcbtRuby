@@ -19,7 +19,7 @@ class Task
           # req1.res == req2.res はダメ
           if req2.res == req.res then 
             puts "req" + req.reqId.to_s + "とreq" + req2.reqId.to_s + ":\n"
-            puts "同じリソース(res" + req.res.resId.to_s + ")はネストできません．"
+            puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
             exit # 強制終了
           end
           # グループが異なるときに別要求としてreqListに追加
@@ -56,6 +56,7 @@ class Task
     }
     longResArray
   end
+  
   def shortResArray
     shortResArray = []
     @reqList.each{|req|
@@ -72,12 +73,12 @@ class Task
   end
 end
 
-class Res
-  attr_accessor :resId, :kind, :group
-  def initialize(id, kind, group)
-    @resId = id
-    @kind = kind
+# リソースではなくて，リソースグループのクラス
+class Group
+  attr_accessor :group, :kind
+  def initialize(group, kind)
     @group = group
+    @kind = kind
   end
 end
 
@@ -100,10 +101,6 @@ class Req
       exit
     end
     
-    # 同じリソースをネストはできない
-    reqs.each{|req|
-      
-    }
   end
 end
 
@@ -117,6 +114,25 @@ class ReqTuple
 end
 
 ##############################
+def WCLR(task)
+  reqs = []
+  task.reqList.each{|req|
+    if req.outermost == true && req.res.kind = "long" then
+      reqs << req
+    end
+  }
+  reqs
+end
+
+def WCSR(task)
+  reqs = []
+  task.reqarray.each{|req|
+    if req.outermost == true && req.res.kind = "short" then
+      reqs << req
+    end
+  }
+  reqs
+end
 
 def wclx(task, job)
   tuples = []
