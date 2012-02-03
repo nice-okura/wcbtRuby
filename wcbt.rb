@@ -9,17 +9,22 @@ class Task
     @priority = priority.to_i
     @offset = offset.to_i
     @reqList = []
+    # 要求の配列を作成
+    # ネストの場合は複数の要求の配列となる
     reqarray.each{|req|
-      @reqList << req
+      @reqList << req 
       if req.reqs != nil then
         req.reqs.each{|req2|
-          # ・同じリソースのネストは不可能
-          #   req1.res != req2.res はダメ
+          # 同じリソースのネストは不可能
+          # req1.res == req2.res はダメ
           if req2.res == req.res then 
             puts "req" + req.reqId.to_s + "とreq" + req2.reqId.to_s + ":\n"
             puts "同じリソース(res" + req.res.resId.to_s + ")はネストできません．"
-            exit
+            exit # 強制終了
           end
+          # グループが異なるときに別要求としてreqListに追加
+          # 同じグループならグループロックを1回取得するだけで良いから
+          # 同グループなら別要求としては扱わない．
           if req2.res.group != req.res.group then
               @reqList << req2
           end

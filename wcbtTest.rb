@@ -73,9 +73,9 @@ class Test_wcbt < Test::Unit::TestCase
     task3 = Task.new(3, 2, 3, 3, 0, [@reqLong7_1])
     $taskList = [task1, task2, task3]
     
-    assert(task1.longResArray == 2)
+    assert(task1.longResArray.size == 2)
   end
-  
+
   def test_BB_longSameGroup
     task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
     task2 = Task.new(2, 1, 6, 2, 0, [@reqLong2_2])
