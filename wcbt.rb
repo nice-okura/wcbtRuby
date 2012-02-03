@@ -16,7 +16,7 @@ class Task
     @reqList.size
   end
   
-  # outermostな要求を探索して設定
+  # outermostでない要求を探索して設定
   def checkOutermost
     reqList.each{|req|
       req.reqs.each{|req2|
@@ -56,7 +56,7 @@ class Task
   
   def getLongResArray
     longResArray = []
-    @reqList.each{|req|
+    getAllReq.each{|req|
       if req.res.kind == "long" && req.outermost == true then
         longResArray << req.res
       end
@@ -66,7 +66,7 @@ class Task
   
   def getShortResArray
     shortResArray = []
-    @reqList.each{|req|
+    getAllReq.each{|req|
       if req.res.kind == "short" && req.outermost == true then
         shortResArray << req.res
 =begin

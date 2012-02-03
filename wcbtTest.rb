@@ -204,6 +204,30 @@ class Test_wcbt < Test::Unit::TestCase
     assert(task9.getShortResArray.size == 2)
 
   end
+  
+  def test_getAllReq
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    
+    assert(task1.getAllReq.size == 2)
+    assert(task2.getAllReq.size == 3)
+    assert(task3.getAllReq.size == 2)
+    assert(task4.getAllReq.size == 2)
+    assert(task5.getAllReq.size == 3)
+    assert(task6.getAllReq.size == 2)
+    assert(task7.getAllReq.size == 2)
+    assert(task8.getAllReq.size == 3)
+    assert(task9.getAllReq.size == 2)
+  end
 
 =begin
   def test_BB_longSameGroup
