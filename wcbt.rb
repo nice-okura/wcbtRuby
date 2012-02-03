@@ -201,6 +201,9 @@ end
 ##############################
 
 def bbt(task, job)
+  if task == job then
+    return 0
+  end
   len = 0
   tuples = wclx(task, job)
 #  pp tuples
