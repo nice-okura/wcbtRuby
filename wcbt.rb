@@ -117,7 +117,7 @@ end
 def WCLR(task)
   reqs = []
   task.reqList.each{|req|
-    if req.outermost == true && req.res.kind = "long" then
+    if req.outermost == true && req.res.kind == "long" then
       reqs << req
     end
   }
@@ -126,8 +126,8 @@ end
 
 def WCSR(task)
   reqs = []
-  task.reqarray.each{|req|
-    if req.outermost == true && req.res.kind = "short" then
+  task.reqList.each{|req|
+    if req.outermost == true && req.res.kind == "short" then
       reqs << req
     end
   }

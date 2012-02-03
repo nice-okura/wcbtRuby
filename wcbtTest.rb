@@ -16,18 +16,23 @@ class Test_wcbt < Test::Unit::TestCase
     
     # Require
     # Req.new(reqId, res, time, reqs)
-    # non-nestedRequire
+
+    # non-nested outermost
     @req1_Long1 = Req.new(1, @grp1, 1, [])
     @req2_Long2 = Req.new(2, @grp1, 2, [])
     @req3_Long2 = Req.new(3, @grp1, 2, [])
     @req4_Short1 = Req.new(4, @grp2, 1, []) 
     @req5_Long3 = Req.new(5, @grp3, 3, [])
+    
+    # nested non-outermost
     @req7_Long2 = Req.new(7, @grp3, 2, [])
     @req9_Short2 = Req.new(9, @grp2, 2, [])
-    @req11_Short2 = Req.new(11, @grp2, 2, [])
+    @req11_Short2 = Req.new(11, @grp4, 2, [])
     @req13_Long1 = Req.new(13, @grp1, 1, [])
+    @req15_Short1 = Req.new(15, @grp2, 1, []) 
+    @req17_Short1 = Req.new(17, @grp4, 1, []) 
     
-    # nestedRequire
+    # nested outermost
     # ネストのルール
     # ・long→long，long→short，short→shortは可能
     # ・req1→req2の場合
@@ -38,32 +43,51 @@ class Test_wcbt < Test::Unit::TestCase
     @req8_LongShort4 = Req.new(8, @grp1, 4, [@req9_Short2])
     @req10_ShortShort4 = Req.new(10, @grp2, 4, [@req11_Short2])
     @req12_LongLong2 = Req.new(12, @grp3, 2, [@req13_Long1])
+    @req14_LongShort2 = Req.new(14, @grp1, 2, [@req15_Short1])
+    @req16_ShortShort2 = Req.new(16, @grp2, 2, [@req17_Short1])
     
-    
-    @tas1 = Task.new(1, 1, 10, 1, 0, [@req1_Long1])
-    @tas2 = Task.new(2, 1, 10, 2, 0, [@req2_Long2])
-    @tas3 = Task.new(3, 2, 10, 3, 0, [@req3_Long2])
-    @tas4 = Task.new(4, 1, 20, 4, 0, [])
-    @tas5_L1 = Task.new(5, 1, 10, 5, 0, [@req1_Long1])
-    @tas6_S1 = Task.new(6, 1, 10, 6, 0, [@req4_Short1])
-    @tas7_L1 = Task.new(7, 1, 10, 7, 0, [@req2_Long2])
-    
-    $taskList = [@tas1, @tas2, @tas4, @tas5_L1, @tas6_S1, @tas7_L1]
   end 
   
   
-  def test_WCLR
+  def test_WCLRWCLR
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 3, 3, 0, [@req12_LongLong2])
-    $taskList = [task1, task2, task3]
-
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+        
     assert(WCLR(task1).size == 1)
-    #pp task2.reqList
-    #pp WCLR(task2)
     assert(WCLR(task2).size == 2)
     assert(WCLR(task3).size == 1)
+    
+    assert(WCLR(task4).size == 1)
+    assert(WCLR(task5).size == 1)
+    assert(WCLR(task6).size == 1)
+
+    assert(WCLR(task7).size == 0)
+    assert(WCLR(task8).size == 0)
+    assert(WCLR(task9).size == 0)
+    
+    
+    assert(WCSR(task1).size == 0)
+    assert(WCSR(task2).size == 0)
+    assert(WCSR(task3).size == 0)
+    
+    assert(WCSR(task4).size == 0)
+    assert(WCSR(task5).size == 1)
+    assert(WCSR(task6).size == 0)
+    
+    assert(WCSR(task7).size == 1)
+    assert(WCSR(task8).size == 2)
+    assert(WCSR(task9).size == 1)
   end
+
   
   def test_LongLong
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
