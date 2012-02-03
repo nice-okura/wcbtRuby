@@ -19,6 +19,7 @@ class Task
         }
       end
     }
+    checkOutermost
   end
   
   def resCount
@@ -77,6 +78,7 @@ class Req
     @reqs = reqs
     @outermost = true
     
+    # outermostのアクセス時間timeが最大でないといけない
     nesttime = 0
     reqs.each{|req|
       nesttime += req.time
@@ -85,6 +87,11 @@ class Req
       print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermostリソースのアクセスを超えています．\n"
       exit
     end
+    
+    # 同じリソースをネストはできない
+    reqs.each{|req|
+      
+    }
   end
 end
 
@@ -96,6 +103,8 @@ class ReqTuple
   end
   
 end
+
+##############################
 
 def wclx(task, job)
   tuples = []
@@ -139,6 +148,26 @@ def narr(job)
   job.longResArray.size
 end
 
+def partition(proc)
+  procTaskList = []
+  $taskList.each{|task|
+    if task.proc == proc then
+      procTaskList << task
+    end
+  }
+  procTaskList
+end
+
+def procList
+  proc = []
+  $taskList.each{|task|
+    proc << task.proc
+  }
+  proc.uniq!
+end
+
+##############################
+
 def bbt(task, job)
   len = 0
   tuples = wclx(task, job)
@@ -171,15 +200,6 @@ def abr(job)
   tuples
 end
 
-def partition(proc)
-  procTaskList = []
-  $taskList.each{|task|
-    if task.proc == proc then
-      procTaskList << task
-    end
-  }
-  procTaskList
-end
 
 def ndbp(job, proc)
   if job.proc == proc then
@@ -219,15 +239,6 @@ def ndbtg(task, job, group)
   }
  [a, b].min
 end
-
-def procList
-  proc = []
-  $taskList.each{|task|
-    proc << task.proc
-  }
-  proc.uniq!
-end
-  
 
 def rbl(job)
   time = 0
@@ -340,6 +351,8 @@ def sbgp(job, group, proc)
   }
   time
 end
+
+##############################
 
 def BB(job)
   if job.longResArray.size == 0 then

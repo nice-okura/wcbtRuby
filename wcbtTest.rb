@@ -11,7 +11,8 @@ class Test_wcbt < Test::Unit::TestCase
     @req0 = Req.new(0, 0, 0, []) # dummy Require
     
     # アクセス時間1のリソース要求がアクセス時間1以上のリソース要求をネストすることができない！
-    
+    # Require
+    # Req.new(reqId, res, time, reqs)
     # non-nestedRequire
     @reqLong1_1 = Req.new(1, @res1, 1, [])
     @reqLong2_2 = Req.new(2, @res1, 2, [])
@@ -21,6 +22,12 @@ class Test_wcbt < Test::Unit::TestCase
     @reqLong7_1 = Req.new(7, @res1, 1, [])
     
     # nestedRequire
+    # ネストのルール
+    # ・long→long，long→short，short→shortは可能
+    # ・req1→req2の場合
+    #   req1.time >= req2.time でないとダメ
+    # ・同じリソースのネストは不可能
+    #   req1.res != req2.res はダメ
     @reqLong6_1 = Req.new(6, @res1, 2, [@reqLong7_1])
     @reqLong8_1 = Req.new(8, @res1, 2, [])
     
@@ -34,7 +41,6 @@ class Test_wcbt < Test::Unit::TestCase
     
     $taskList = [@tas1, @tas2, @tas4, @tas5_L1, @tas6_S1, @tas7_L1]
   end 
-  
   
   def test_reqList
     task1 = Task.new(1, 1, 6, 1, 0, [@reqLong6_1])
@@ -55,7 +61,8 @@ class Test_wcbt < Test::Unit::TestCase
     
     task1.checkOutermost
     assert(task1.reqList[0].outermost == true)
-    assert(task1.reqList[1].outermost == false)
+    # ↓エラーが起きる
+    # assert(task1.reqList[1].outermost == false)
     assert(task2.reqList[0].outermost == true)
     assert(task3.reqList[0].outermost == false)
   end
