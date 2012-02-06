@@ -496,15 +496,48 @@ class Test_wcbt < Test::Unit::TestCase
     
     assert(rbl(task7) == 0)
   end
-=begin  
+
   def test_wcsxg
-    task1 = Task.new(1, 1, 10, 1, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task2 = Task.new(2, 1, 10, 2, 0, [@req1_Long1, @req1_Long1, @req5_Long3])
-    task3 = Task.new(3, 1, 10, 3, 0, [@req1_Long1, @req5_Long3])
-    task4 = Task.new(4, 2, 10, 4, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task5 = Task.new(5, 2, 10, 5, 0, [@req1_Long1, @req5_Long3])
-    task6 = Task.new(5, 3, 15, 6, 0, [@req5_Long3])
-    $taskList = [task1, task2, task3, task4, task5, task6]
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    $taskList = [task1, task2, task3]
+    
+    assert(wcsp(task1, 2).size == 0)
+    
+    $taskList = [task4, task5, task6]
+    
+    assert(wcsp(task4, 2).size == 0)
+    
+    $taskList = [task7, task8, task9]
+    
+    assert(wcsp(task7, 2).size == 2)
   end
-=end
+  
+  def test_rbsp
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    $taskList = [task1, task2, task3]
+    
+    assert(rbsp(task1, 2) == 0)
+    assert(rbsp(task4, 2) == 0)
+    assert(rbsp(task7, 2) == 2)
+  end
 end

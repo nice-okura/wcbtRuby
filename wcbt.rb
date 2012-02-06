@@ -320,7 +320,7 @@ end
 def wcsp(job, proc)
   tuples = []
   partition(proc).each{|task|
-    tuples << wcsx(task, job)
+    tuples += wcsx(task, job)
   }
   tuples
 end
