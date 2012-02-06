@@ -330,17 +330,23 @@ class Test_wcbt < Test::Unit::TestCase
     assert(AB(task8)== 0)
     assert(AB(task9)== 0)
   end
-=begin    
-  def test_ndbp
-    $taskList = [@tas1, @tas2, @tas3]
-    assert(ndbp(@tas1, 2) == 1)
-    assert(ndbp(@tas1, 1) == 2)
-  end
-  
+    
   def test_partition
-    $taskList = [@tas1, @tas2, @tas4, @tas5_L1, @tas6_S1, @tas7_L1]
-    assert(partition(1).size == 6)
-    assert(partition(2).size == 0)
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    $taskList = [task1, task2, task3]
+    
+    assert(partition(1).size == 2)
+    assert(partition(2).size == 1)
   end
   
   def test_ndbtg
@@ -384,6 +390,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert(ndbp(task1, 1) == 0)
     assert(ndbp(task1, 3) == 0)
   end
+=begin
   
   def test_rblt
     task1 = Task.new(1, 1, 10, 1, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
