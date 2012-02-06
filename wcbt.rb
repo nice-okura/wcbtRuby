@@ -290,6 +290,7 @@ def rbl(job)
       time += rblp(job, proc)
     end
   }
+  time 
 end
 
 def rblp(job, proc)
