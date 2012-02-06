@@ -276,13 +276,33 @@ class Test_wcbt < Test::Unit::TestCase
     assert(BB(task8) == 0)
     assert(BB(task9) == 0)
   end
-=begin  
+
   def test_abr
-    #assert(abr(@tas1) == [wclx(@tas2, @tas1)])
-    assert(abr(@tas5_L1).size == 2)
-    assert(abr(@tas5_L1)[0].req.time == 2)
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    $taskList = [task1, task2, task3]
+    assert(abr(task1).size == 0)
+    assert(abr(task2).size == 0)
+    assert(abr(task3).size == 0)
+    $taskList = [task4, task5, task6]
+    assert(abr(task4).size == 2)
+    assert(abr(task5).size == 0)
+    assert(abr(task6).size == 0)
+    $taskList = [task7, task8, task9]
+    assert(abr(task7).size == 4)
+    assert(abr(task8).size == 0)
+    assert(abr(task9).size == 0)
   end
-  
+=begin  
   def test_wclx
     assert(wclx(nil, nil) == [])
     assert(wclx(@tas2, @tas1) != [])

@@ -229,14 +229,15 @@ def abr(job)
   end
   tuples = []
   $taskList.each{|task|
-    p task
     if task.proc == job.proc && task.priority > job.priority then
+      #pp task
       tuple = wcsx(task, job)
       if tuple != [] then
         tuples += tuple
       end
     end
   }
+  #  pp tuples
   tuples
 end
 
