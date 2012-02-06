@@ -28,7 +28,7 @@ class Test_wcbt < Test::Unit::TestCase
     @req7_Long2 = Req.new(7, @grp3, 2, [])
     @req9_Short2 = Req.new(9, @grp2, 2, [])
     @req11_Short2 = Req.new(11, @grp4, 2, [])
-    @req13_Long1 = Req.new(13, @grp1, 1, [])
+    @req13_Long1 = Req.new(13, @grp3, 1, [])
     @req15_Short1 = Req.new(15, @grp2, 1, []) 
     @req17_Short1 = Req.new(17, @grp4, 1, []) 
     
@@ -42,7 +42,7 @@ class Test_wcbt < Test::Unit::TestCase
     @req6_LongLong4 = Req.new(6, @grp1, 4, [@req7_Long2])
     @req8_LongShort4 = Req.new(8, @grp1, 4, [@req9_Short2])
     @req10_ShortShort4 = Req.new(10, @grp2, 4, [@req11_Short2])
-    @req12_LongLong2 = Req.new(12, @grp3, 2, [@req13_Long1])
+    @req12_LongLong2 = Req.new(12, @grp1, 2, [@req13_Long1])
     @req14_LongShort2 = Req.new(14, @grp1, 2, [@req15_Short1])
     @req16_ShortShort2 = Req.new(16, @grp2, 2, [@req17_Short1])
     
@@ -348,47 +348,85 @@ class Test_wcbt < Test::Unit::TestCase
     assert(partition(1).size == 2)
     assert(partition(2).size == 1)
   end
-  
+
   def test_ndbtg
-    #$taskList = [@tas1, @tas2, @tas4, @tas5_L1, @tas6_S1, @tas7_L1]
-    task1 = Task.new(1, 1, 10, 1, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task2 = Task.new(2, 1, 10, 2, 0, [@req1_Long1, @req1_Long1, @req5_Long3])
-    task3 = Task.new(3, 1, 10, 3, 0, [@req1_Long1, @req5_Long3])
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
     $taskList = [task1, task2, task3]
-    assert(ndbtg(task2, task1, 1) == 2)
+    assert(ndbtg(task2, task1, 1) == 1)
     assert(ndbtg(task2, task1, 2) == 0)
     assert(ndbtg(task2, task1, 3) == 0)
-    assert(ndbtg(task2, task3, 1) == 1)
-    assert(ndbtg(task2, task3, 3) == 1)
+    assert(ndbtg(task2, task1, 4) == 0)
+    
     assert(ndbtg(task3, task1, 1) == 1)
-    assert(ndbtg(task3, task1, 3) == 0)    
+    assert(ndbtg(task3, task1, 2) == 0)
+    assert(ndbtg(task3, task1, 3) == 0)
+    assert(ndbtg(task3, task1, 4) == 0)
+    
+    assert(ndbtg(task6, task4, 1) == 1)
+    assert(ndbtg(task6, task4, 2) == 0)
+    assert(ndbtg(task6, task4, 3) == 0)
+    assert(ndbtg(task6, task4, 4) == 0)
+
+    assert(ndbtg(task9, task7, 1) == 0)
+    assert(ndbtg(task9, task7, 2) == 0)
+    assert(ndbtg(task9, task7, 3) == 0)
+    assert(ndbtg(task9, task7, 4) == 0)
   end
+    
   
   def test_ndbt
-    task1 = Task.new(1, 1, 10, 1, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task2 = Task.new(2, 1, 10, 2, 0, [@req1_Long1, @req1_Long1, @req5_Long3])
-    task3 = Task.new(3, 1, 10, 3, 0, [@req1_Long1, @req5_Long3])
-    task4 = Task.new(4, 2, 10, 4, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task5 = Task.new(5, 2, 10, 5, 0, [@req1_Long1, @req5_Long3])
-    $taskList = [task1, task2, task3, task4, task5]
-    assert(ndbt(task2, task1) == 2)
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    
+    $taskList = [task1, task2, task3]
+    assert(ndbt(task2, task1) == 1)
     assert(ndbt(task3, task1) == 1)
-    assert(ndbt(task2, task3) == 2)
-    assert(ndbt(task4, task1) == 2)
-    assert(ndbt(task5, task1) == 1)
+    assert(ndbt(task6, task4) == 1)
+    assert(ndbt(task9, task7) == 0)
   end 
   
   def test_ndbp
-    task1 = Task.new(1, 1, 10, 1, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task2 = Task.new(2, 1, 10, 2, 0, [@req1_Long1, @req1_Long1, @req5_Long3])
-    task3 = Task.new(3, 1, 10, 3, 0, [@req1_Long1, @req5_Long3])
-    task4 = Task.new(4, 2, 10, 4, 0, [@req1_Long1, @req1_Long1, @req4_Short1])    
-    task5 = Task.new(5, 2, 10, 5, 0, [@req1_Long1, @req5_Long3])
-    task6 = Task.new(5, 3, 15, 6, 0, [@req5_Long3])
-    $taskList = [task1, task2, task3, task4, task5, task6]
-    assert(ndbp(task1, 2) == 3)
-    assert(ndbp(task1, 1) == 0)
-    assert(ndbp(task1, 3) == 0)
+    task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
+    
+    task4 = Task.new(4, 1, 6, 1, 0, [@req8_LongShort4])
+    task5 = Task.new(5, 1, 6, 2, 0, [@req8_LongShort4, @req4_Short1])
+    task6 = Task.new(6, 2, 6, 3, 0, [@req14_LongShort2])
+    
+    task7 = Task.new(7, 1, 6, 1, 0, [@req10_ShortShort4])
+    task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
+    task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
+    $taskList = [task1, task2, task3]
+    
+    assert(ndbp(task1, 2) == 1)
+
+    $taskList = [task4, task5, task6]
+
+    assert(ndbp(task4, 2) == 1)
+    
+    $taskList = [task7, task8, task9]
+
+    assert(ndbp(task7, 2) == 0)
   end
 =begin
   

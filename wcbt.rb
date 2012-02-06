@@ -268,13 +268,15 @@ end
 
 def ndbtg(task, job, group)
   a = b = 0
+  #  pp job.getLongResArray.size
   job.getLongResArray.each{|res|
     if res.group == group then 
       a += 1
     end
   }
-  task.getLongResArray.each{|res|
-    if res.group == group then
+  #pp WCLR(task).size
+  WCLR(task).each{|req|
+    if req.res.group == group then
       b += 1
     end
   }
