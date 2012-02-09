@@ -362,6 +362,7 @@ class Test_wcbt < Test::Unit::TestCase
     task8 = Task.new(8, 1, 6, 2, 0, [@req10_ShortShort4, @req4_Short1])
     task9 = Task.new(9, 2, 6, 3, 0, [@req16_ShortShort2])
     $taskList = [task1, task2, task3]
+
     assert(ndbtg(task2, task1, 1) == 1)
     assert(ndbtg(task2, task1, 2) == 0)
     assert(ndbtg(task2, task1, 3) == 0)
@@ -497,7 +498,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert(rbl(task7) == 0)
   end
 
-  def test_wcsxg
+  def test_wcsp
     task1 = Task.new(1, 1, 6, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 2, 0, [@req6_LongLong4, @req1_Long1])
     task3 = Task.new(3, 2, 6, 3, 0, [@req12_LongLong2])
@@ -567,7 +568,7 @@ class Test_wcbt < Test::Unit::TestCase
     req6 = Req.new(6, short3, 1, [])
     req5 = Req.new(5, short1, 3, [req6])
     
-    task1 = Task.new(1, 1, 20, 1, 0, [req1])
+    task1 = Task.new(1, 1, 20, 1, 0, [req3])
     task2 = Task.new(2, 2, 15, 2, 0, [req1])
     task3 = Task.new(3, 2, 15, 3, 0, [req1_2, req3, req4])
     $taskList = [task1, task2, task3]
@@ -578,7 +579,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert(wcsxg(task3, task1, 4).size == 3)
   end
   
-  def test_wcsxg
+  def test_wcspg
     long1 = Group.new(1, "long")
     long2 = Group.new(2, "long")
     short1 = Group.new(3, "short")
@@ -596,7 +597,7 @@ class Test_wcbt < Test::Unit::TestCase
     req6 = Req.new(6, short3, 1, [])
     req5 = Req.new(5, short1, 3, [req6])
     
-    task1 = Task.new(1, 1, 20, 1, 0, [req1])
+    task1 = Task.new(1, 1, 20, 1, 0, [req3])
     task2 = Task.new(2, 2, 15, 2, 0, [req1])
     task3 = Task.new(3, 2, 15, 3, 0, [req1_2, req3, req4])
     $taskList = [task1, task2, task3]
@@ -605,5 +606,58 @@ class Test_wcbt < Test::Unit::TestCase
     assert(wcspg(task1, 2, 4).size == 3)
   end
   
+  def test_sbgp
+    long1 = Group.new(1, "long")
+    long2 = Group.new(2, "long")
+    short1 = Group.new(3, "short")
+    short2 = Group.new(4, "short")
+    short3 = Group.new(5, "short")
+    
+    # Req.new(reqId, res, time, reqs)
+    req2 = Req.new(2, long2, 2, [])
+    req1 = Req.new(1, long1, 4, [req2])
+    req1_2 = Req.new(7, long1, 2, [])
+    
+    req4 = Req.new(4, short2, 2, [])
+    req3 = Req.new(3, short1, 5, [req4])
+    
+    req6 = Req.new(6, short3, 1, [])
+    req5 = Req.new(5, short1, 3, [req6])
+    
+    task1 = Task.new(1, 1, 20, 1, 0, [req3])
+    task2 = Task.new(2, 2, 15, 2, 0, [req1])
+    task3 = Task.new(3, 2, 15, 3, 0, [req1_2, req3, req4])
+    $taskList = [task1, task2, task3]
+    
+    assert(sbgp(task1, 3, 2) == 5)
+    assert(sbgp(task1, 4, 2) == 2) 
+  end
+  
+  def test_sbgSB
+    long1 = Group.new(1, "long")
+    long2 = Group.new(2, "long")
+    short1 = Group.new(3, "short")
+    short2 = Group.new(4, "short")
+    short3 = Group.new(5, "short")
+    
+    # Req.new(reqId, res, time, reqs)
+    req2 = Req.new(2, long2, 2, [])
+    req1 = Req.new(1, long1, 4, [req2])
+    req1_2 = Req.new(7, long1, 2, [])
+    
+    req4 = Req.new(4, short2, 2, [])
+    req3 = Req.new(3, short1, 5, [req4])
+    
+    req6 = Req.new(6, short3, 1, [])
+    req5 = Req.new(5, short1, 3, [req6])
+    
+    task1 = Task.new(1, 1, 20, 1, 0, [req3])
+    task2 = Task.new(2, 2, 15, 2, 0, [req1])
+    task3 = Task.new(3, 2, 15, 3, 0, [req1_2, req3, req4])
+    $taskList = [task1, task2, task3]
+    
+    assert(sbg(task1, 3) == 5)
+    assert(SB(task1) == 7)
+  end
   
 end

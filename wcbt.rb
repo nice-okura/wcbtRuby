@@ -143,6 +143,26 @@ def WCSR(task)
   reqs
 end
 
+def LR(job)
+  lr = []
+  job.getAllReq.each{|req|
+    if req.res.kind == "long" && req.outermost == true then
+      lr << req
+    end
+  }
+  lr
+end
+
+def SR(job)
+  sr = []
+  job.getAllReq.each{|req|
+    if req.res.kind == "short" && req.outermost == true then
+      sr << req
+    end
+  }
+  sr
+end
+
 def wclx(task, job)
   tuples = []
   if task == nil || job == nil then 
@@ -256,8 +276,8 @@ end
 def ndbt(task, job)
   count = 0
   g = []
-  job.getLongResArray.each{|res|
-    g << res.group
+  LR(job).each{|req|
+    g << req.res.group
   }
   g.uniq!
   g.each{|group|
@@ -269,8 +289,8 @@ end
 def ndbtg(task, job, group)
   a = b = 0
   #  pp job.getLongResArray.size
-  job.getLongResArray.each{|res|
-    if res.group == group then 
+  LR(job).each{|req|
+    if req.res.group == group then 
       a += 1
     end
   }
@@ -378,15 +398,20 @@ end
 
 def sbg(job, group)
   time = 0
-  #  procList.each{|proc|
+  procList.each{|proc|
+    if job.proc != proc then
+      time += sbgp(job, group, proc)
+    end
+  }
+  time
 end 
 
 def sbgp(job, group, proc)
   time = 0
   b = 0
-  job.getShortResArray.each{|req|
+  SR(job).each{|req|
     if req.res.group == group then
-      b += req.time
+      b += 1
     end
   }
   tuples = wcspg(job, proc, group)
@@ -432,3 +457,15 @@ def LB(job)
   return rbl(job) + rbs(job)
 end
 
+def SB(job)
+  g = []
+  time = 0
+  SR(job).each{|req|
+    g << req.res.group
+  }
+  g.uniq!
+  g.each{|group|
+    time += sbg(job, group)
+  }
+  time
+end
