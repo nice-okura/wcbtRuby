@@ -340,7 +340,7 @@ def rbsp(job, proc)
   if job == nil then
     return 0
   end
-  tuples = wcsx(job, proc)
+  tuples = wcsp(job, proc)
   min = [ndbp(job, proc), wcsp(job, proc).size].min
   0.upto(min-1){|num|
     time += tuples[num].req.time
@@ -422,5 +422,12 @@ def AB(job)
     time += tuples[num].req.time
   }
   time
+end
+
+def LB(job)
+  if job == nil then
+    return 0
+  end
+  return rbl(job) + rbs(job)
 end
 
