@@ -348,6 +348,7 @@ def rbsp(job, proc)
   time
 end
 
+
 def wcsxg(task, job, group)
   tuples = []
   if task == nil || job == nil then 
@@ -368,7 +369,7 @@ def wcsxg(task, job, group)
 end
 
 def wcspg(job, proc, group)
-  time = 0
+  time = []
   partition(proc).each{|task|
     time += wcsxg(task, job, group)
   }
