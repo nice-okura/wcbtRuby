@@ -532,6 +532,7 @@ class Test_wcbt < Test::Unit::TestCase
     # Req.new(reqId, res, time, reqs)
       req2 = Req.new(2, long2, 2, [])
     req1 = Req.new(1, long1, 4, [req2])
+    req1_2 = Req.new(7, long1, 2, [])
     
       req4 = Req.new(4, short2, 2, [])
     req3 = Req.new(3, short1, 5, [req4])
@@ -541,11 +542,11 @@ class Test_wcbt < Test::Unit::TestCase
     
     task1 = Task.new(1, 1, 20, 1, 0, [req1])
     task2 = Task.new(2, 2, 15, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 3, 0, [req3])
+    task3 = Task.new(3, 2, 15, 3, 0, [req1_2, req3])
     $taskList = [task1, task2, task3]
     
-    assert(rbs(task1)==5)
-    assert(LB(task1)==9)
+    assert(rbl(task1)==12)
+    assert(rbs(task1)==10)
   end
   
   
