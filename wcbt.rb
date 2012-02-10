@@ -1,15 +1,17 @@
 $taskList = []
 
 class Task
-  attr_accessor :taskId, :proc, :period, :priority, :offset, :reqList
-  def initialize(id, proc, period, priority, offset, reqarray)
+  attr_accessor :taskId, :proc, :period, :extime, :priority, :offset, :reqList
+  def initialize(id, proc, period, extime, priority, offset, reqarray)
     @taskId = id
     @proc = proc
     @period = period.to_i
+    @extime = extime
     @priority = priority.to_i
     @offset = offset.to_i
     @reqList = reqarray
     checkOutermost
+    checkOverExTime
   end
   
   def getResCount
@@ -25,6 +27,18 @@ class Task
         end
       }
     }
+  end
+  
+  def checkOverExTime
+    time = 0
+    reqList.each{|req|
+      time += req.time
+    }
+    
+    if @extime < time then
+      puts "タスク" + @taskId.to_s + "のリソース要求時間が実行時間を超えています．"
+      exit
+    end
   end
   
   # 全てのグループロック要求の配列を取得
@@ -422,6 +436,10 @@ def sbgp(job, group, proc)
   time
 end
 
+
+def lbt(task)
+  LB(task)
+end
 ##############################
 
 def BB(job)
@@ -468,4 +486,18 @@ def SB(job)
     time += sbg(job, group)
   }
   time
+end
+
+def DB(task)
+  time = 0
+  $taskList.each{|tas|
+    if tas.proc == task.proc && tas.priority < task.priority then
+      time += [tas.extime, lbt(tas)].min
+    end
+  }
+  time 
+end
+
+def B(job)
+  return BB(job) + AB(job) + LB(job) + SB(job) + DB(job)
 end
