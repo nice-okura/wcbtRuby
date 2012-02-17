@@ -96,6 +96,16 @@ class Task
   end
 end
 
+# リソース
+# Resource(group)
+class Resource
+  attr_accessor :resId, :group
+  def initialize(resId, group)
+    @resId = resId
+    @group = group
+  end
+end
+
 # リソースではなくて，リソースグループのクラス
 class Group
   attr_accessor :group, :kind
@@ -106,10 +116,10 @@ class Group
 end
 
 class Req
-  attr_accessor :reqId, :res, :time, :reqs, :outermost
-  def initialize(id, res, time, reqs)
+  attr_accessor :reqId, :group, :time, :reqs, :outermost
+  def initialize(id, group, time, reqs)
     @reqId = id
-    @res = res
+    @group = group
     @time = time
     @reqs = reqs
     @outermost = true
