@@ -20,9 +20,12 @@ class Task
   
   # outermostでない要求を探索して設定
   def checkOutermost
+    #pp reqList
     reqList.each{|req|
+      #pp req
       req.reqs.each{|req2|
-        if req2.res.group == req.res.group then
+        #pp req2
+        if req2.group.group == req.group.group then
           req2.outermost = false
         end
       }

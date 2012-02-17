@@ -7,7 +7,7 @@ require "singleton"
 #  taskId: タスク生成順にインクリメント
 #  proc: 完全ランダム
 #  period: extime以下でランダム
-#  extime: reqListの総時間
+#  extime: reqListの総時間以上で乱数
 #  priority: 完全ランダム
 #  offset: period以下でランダム
 #  reqList: createReqListで生成
@@ -22,9 +22,12 @@ require "singleton"
 #  time: (ある限度までで)ランダムに選択->20~50
 #  reqs: groupとは異なるグループのリソースを選択
 
-$groupArray = []
-$taskArray = []
-$reqArray = []
+PROC_NUM = 4
+REQ_EXE_MAX = 30
+REQ_EXE_MIN = 10
+TASK_EXE_MAX = 100
+PRIORITY_MAX = 8
+
 
 class List
   # @cdrは「値」
@@ -68,22 +71,54 @@ class List
 end
 
 class TaskManager
-
+  include Singleton
+  
+  def initialize
+    @@taskId = 0
+    @@taskArray = []
+  end
+  
+  def createTask
+    @@taskId += 1
+    proc = rand(PROC_NUM) + 1
+    priority = rand(PRIORITY_MAX) + 1
+    reqList = [RequireManager.getRandomReq]
+    reqTime = 0
+    #pp reqList
+    reqList.each{|req|
+      reqTime += req.time
+    }
+    extime = reqTime + rand(TASK_EXE_MAX - reqTime)
+    period = rand(extime)
+    offset = rand(period)
+    #pp reqList
+    #p extime
+    Task.new(@@taskId, proc, period, extime, priority, offset, reqList)
+  end
+  
+  def createTaskArray(i)
+    tarray = []
+    i.times{
+      tarray << createTask
+    }
+    @@taskArray = tarray
+  end
 end
 
 class GroupManager
   include Singleton
 
   def initialize
-    @groupId = 0
-    @kind = "long"
+    @@groupId = 0
+    @@kind = "long"
+    @@groupArray = []
   end
 
   # グループを生成する
   def createGroup
-    @groupId += 1
-    group = Group.new(@groupId, @kind)
-    @kind = @kind == "long" ? "short" : "long"
+    @@groupId += 1
+    group = Group.new(@@groupId, @@kind)
+    @@kind = @kind == "long" ? "short" : "long"
     
     group
   end
@@ -94,59 +129,71 @@ class GroupManager
     i.times{
       garray << createGroup
     }
-    $groupArray = garray
+    @@groupArray = garray
   end
   
   def getCount
-    @groupId
+    @@groupId
   end
   
   # グループをランダムに返す
   def self.getRandomGroup
-    if $groupArray.size == 0 then
+    if @@groupArray.size == 0 then
       puts "グループが生成されていません．"
       exit
     end
-    $groupArray[rand($groupArray.size)]
+    @@groupArray[rand(@@groupArray.size)]
   end
 end
 
 class RequireManager
   include Singleton
 
+  
   def initialize
-    @id = 0
+    @@id = 0
+    @@reqArray = []
   end
   
   def createRequire
-    @id += 1
+    @@id += 1
     group = GroupManager.getRandomGroup
-    pp group
-    time = 20 + rand(30)
+    #pp group
+    time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
-    r = Req.new(0, 0, 0, [])
-    if rand(2) == 1 then
-      while r == group
-        r = GroupManager.getRandomGroup
+    r = RequireManager.getRandomReq
+    if r != [] then
+      if r.group != group && time > r.time
+        req << r
       end
-      req << r
     end
-    Req.new(@id, group, time, req)
+    Req.new(@@id, group, time, req)
   end
   
   def createRequireArray(i)
     reqArray = []
     i.times{
-      reqArray << createRequire
+      @@reqArray << createRequire
     }
-    $reqArray = reqArray
   end
   
+  def getReqArray
+    @@reqArray
+  end
   
+  def self.getRandomReq
+    if @@reqArray.size <= 1 then
+      # puts "要求が生成されていません．"
+      []
+    else
+      @@reqArray[rand(@@reqArray.size)]
+    end
+  end
 end
 
-gc = GroupManager.instance
-gc.createGroupArray(5)
-rc = RequireManager.instance
-rc.createRequireArray(5)
-pp $reqArray
+gm = GroupManager.instance
+rm = RequireManager.instance
+tm = TaskManager.instance
+gm.createGroupArray(5)
+rm.createRequireArray(5)
+pp tm.createTaskArray(5)
