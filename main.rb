@@ -5,8 +5,8 @@ gm = GroupManager.instance
 rm = RequireManager.instance
 tm = TaskManager.instance
 
-gm.createGroupArray(5)
-rm.createRequireArray(5)
+gm.createGroupArray(10)
+rm.createRequireArray(10)
 $taskList = tm.createTaskArray(5)
 
 #pp $taskList

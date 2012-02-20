@@ -2,6 +2,7 @@ require "wcbt"
 require "test/unit"
 require "pp"
 require "taskCUI"
+
 class Test_wcbt < Test::Unit::TestCase
   def setup
     
@@ -743,13 +744,13 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_beginTime
-    task1 = Task.new(1, 1, 6, 10, 1, 2, [@req6_LongLong4, @req1_Long1, @req4_Short1])
+    task1 = Task.new(1, 1, 6, 20, 1, 2, [@req6_LongLong4, @req1_Long1, @req6_LongLong4.clone, @req12_LongLong2.clone, @req4_Short1.clone])
     task2 = Task.new(2, 1, 6, 10, 2, 2, [@req6_LongLong4, @req1_Long1])
     task3 = Task.new(3, 2, 6, 10, 3, 2, [@req12_LongLong2])
     
     task1.setBeginTime
-    pp task2
-    tc = TaskCUI.new(task2)
+    pp task1
+    tc = TaskCUI.new(task1)
     tc.showTaskChar
   end
   

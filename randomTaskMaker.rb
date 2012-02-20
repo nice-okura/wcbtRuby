@@ -95,9 +95,9 @@ class TaskManager
     reqList.each{|req|
       reqTime += req.time
     }
-    extime = reqTime + rand(TASK_EXE_MAX - reqTime)
+    extime = 120 #reqTime + rand(TASK_EXE_MAX - reqTime)
     period = extime + rand(extime)
-    offset = rand(10)
+    offset = 0 #rand(10)
     
     task = Task.new(@@taskId, proc, period, extime, priority, offset, reqList)
     task.setBeginTime

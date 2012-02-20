@@ -1,10 +1,6 @@
 require "pp"
 require "wcbt"
 
-OFFSET_CHAR = " "
-LONG_CHAR = "L"
-SHORT_CHAR = "S"
-CALC_CHAR = "-"
 
 class TaskSet 
   attr_accessor :taskList
@@ -21,7 +17,11 @@ class TaskSet
   end
 end
 
-# offset : "_"
+OFFSET_CHAR = " "
+LONG_CHAR = "L"
+SHORT_CHAR = "S"
+CALC_CHAR = "-"
+# offset : " "
 # long要求 : "L"
 # short要求 : "S"
 # ただの計算 : "-"
@@ -29,41 +29,52 @@ class TaskCUI
   def initialize(task)
     @task = task
   end
-  
+
+  # タスク表示
   def showTaskChar
     print getTaskName + getTaskChar + "\n"
   end
   
+  # タスク名表示
   def getTaskName
     "タスク" + @task.taskId.to_s + ":"
   end
   
   def getTaskChar
     str = ""
-    curTime = 0
+    curTime = 0 # 現在時刻ポインタ設定
     
+    # オフセット出力
     str += getTaskOffsetChar
-    str += "|"
-    curTime += @task.offset
     
+    # タスク開始
+    str += "|"
+    curTime += @task.offset # 現在時刻を進める 
+    
+    # リソース要求
     @task.reqList.each{|req|
-      calcTime = 0
-      calcTime = req.begintime - curTime
+      calcTime = 0  # リソース要求以外の時間
+      calcTime = req.begintime - curTime  # 現在時刻から次のリソース要求の時間までが計算時間
+      # 計算時間の分だけCALC_CHARを表示
       calcTime.to_i.times{
         str += CALC_CHAR
       }
-      curTime += calcTime
-      str += getReqtimeChar(req)
+      curTime += calcTime # 現在時刻を進める
+      str += getReqtimeChar(req)  # リソース要求の分だけLONG or SHORTCHAR を表示
       curTime += req.time
     }
-    #    p curTime
-    (@task.extime - curTime).to_i.times{
+    
+    # 最後に計算時間が余っていれば表示
+    (@task.extime + @task.offset - curTime).to_i.times{
       str += CALC_CHAR
     }
     str += "|"
+    # タスク終了
+    
     str
   end
   
+  # オフセット表示
   def getTaskOffsetChar
     str = ""
     @task.offset.times{
@@ -72,6 +83,7 @@ class TaskCUI
     str
   end
   
+  # リソース要求 文字表示
   def getReqtimeChar(req)
     str = ""
     req.time.times{
