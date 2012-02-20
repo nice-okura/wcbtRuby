@@ -1,6 +1,7 @@
 require "wcbt"
 require "pp"
 require "singleton"
+require "config"
 
 # ランダム生成方針
 # Task(taskId, proc, period, extime, priority, offset, reqList)
@@ -21,13 +22,6 @@ require "singleton"
 #  group: ランダムに選択
 #  time: (ある限度までで)ランダムに選択->20~50
 #  reqs: groupとは異なるグループのリソースを選択
-
-PROC_NUM = 2
-REQ_EXE_MAX = 30
-REQ_EXE_MIN = 10
-TASK_EXE_MAX = 100
-PRIORITY_MAX = 8
-
 
 class List
   # @cdrは「値」

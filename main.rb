@@ -7,7 +7,7 @@ tm = TaskManager.instance
 
 gm.createGroupArray(10)
 rm.createRequireArray(10)
-$taskList = tm.createTaskArray(5)
+$taskList = tm.createTaskArray(10)
 
 #pp $taskList
 $taskList.each{|task|
@@ -20,10 +20,6 @@ $taskList.each{|task|
   puts "B:" + B(task).to_s
 }
 
-pp $taskList
-
+#pp $taskList
 taskset = TaskSet.new($taskList)
-taskset.taskList.each{|task|
-  tCUI = TaskCUI.new(task)
-  tCUI.showTaskChar
-}
+taskset.showTaskSet

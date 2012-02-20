@@ -1,11 +1,26 @@
 require "pp"
 require "wcbt"
 
-
 class TaskSet 
   attr_accessor :taskList
+
   def initialize(taskList)
     @taskList = taskList
+    @taskSetProc = []    
+    # プロセッサ順にソート
+    @taskList.sort!{|a, b|
+      a.proc <=> b.proc
+    }
+    
+    # タスクを分類
+    distributeTaskProc
+    
+    # 優先度順にソート
+    @taskSetProc.each{|tasks|
+      tasks.sort!{|a, b|
+        a.priority <=> b.priority
+      }
+    }
   end
   
   def procList
@@ -14,6 +29,37 @@ class TaskSet
       proc << task.proc
     }
     proc.uniq!
+    return proc.sort!
+  end
+  
+  # @taskSetProcにプロセッサでタスクを分類
+  def distributeTaskProc
+    procNum = 1
+    taskArray = []
+    #pp @taskSetProc
+    @taskList.each{|task|
+      if task.proc != procNum then
+        procNum = task.proc
+        @taskSetProc.push(taskArray)
+        taskArray = []
+      end
+      taskArray << task
+    }
+    @taskSetProc.push(taskArray)
+    #p @taskList.size
+  end
+  
+  def showTaskSet
+    procNum = 1
+    @taskSetProc.each{|tasks|
+      puts "[プロセッサ" + procNum.to_s + "]"
+      #      p tasks.size
+      tasks.each{|task|
+        tc = TaskCUI.new(task)
+        tc.showTaskChar
+      }
+      procNum += 1
+    }
   end
 end
 
