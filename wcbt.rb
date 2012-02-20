@@ -22,7 +22,7 @@ class Task
   def checkOutermost
     reqList.each{|req|
       req.reqs.each{|req2|
-        if req2.group.group == req.group.group then
+        if req2.res.group == req.res.group then
           req2.outermost = false
         end
       }
@@ -94,6 +94,36 @@ class Task
     }
     shortResArray
   end
+  
+  def setBeginTime
+    reqTime = 0
+    reqList.each{|req|
+      reqTime += req.time
+    }
+    # リソース要求A,B,Cがあるとして，要求時間が 10, 20, 30 とし，タスクの実行時間は 80 とする
+    # リソース要求A, B, Cの間(この場合は4箇所)に余った 80-60 = 20 を適当に割り振る
+    nonReqTime = extime - reqTime
+    # 初めはA, B, Cの開始時間を0(offset), 10, 30 として，適当に残りの時間を割り振る
+    firstBeginTime = offset
+    reqList.each{|req|
+      req.begintime = firstBeginTime
+      firstBeginTime = req.time
+    }
+    # A, B, Cの間にnonReqTimeを割り振る -> A, B, Cの開始時間を適当に遅らせる
+    reqList.each{|req|
+      plusTime = rand(nonReqTime)
+      req.begintime += plusTime
+      nonReqTime -= plusTime
+      
+      # ネストしている場合は，今のところreq.begintimeと同じ
+      nestBeginTime = req.begintime
+      req.reqs.each{|nestreq|
+        nestreq.begintime = nestBeginTime
+        nestBeginTime += nestreq.time
+      }
+     }
+    # おわり
+  end
 end
 
 # リソース
@@ -116,10 +146,10 @@ class Group
 end
 
 class Req
-  attr_accessor :reqId, :group, :time, :begintime, :reqs, :outermost
-  def initialize(id, group, time, reqs)
+  attr_accessor :reqId, :res, :time, :begintime, :reqs, :outermost
+  def initialize(id, res, time, reqs)
     @reqId = id
-    @group = group
+    @res = res
     @time = time
     @begintime = 0
     @reqs = reqs
@@ -193,7 +223,12 @@ def wclx(task, job)
   if task == nil || job == nil then 
     return []
   end
-  k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+  begin
+    k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+  rescue
+    puts "タスク" + task.taskId.to_s + "の周期:" + task.period.to_f.to_s
+    exit
+  end
   1.upto(k){|n|
     WCLR(task).each{|req|
       if req.res.kind == "long" then
@@ -245,7 +280,9 @@ def procList
   $taskList.each{|task|
     proc << task.proc
   }
-  proc.uniq!
+  proc = proc.sort
+  proc = proc.uniq
+  proc
 end
 
 ##############################
@@ -256,13 +293,8 @@ def bbt(task, job)
   end
   len = 0
   tuples = wclx(task, job)
-#  pp tuples
-#  p tuples.size
-#  p narr(job) + 1
   min = [tuples.size, narr(job) + 1].min
-  #p min
   0.upto(min-1){|num|
-    #pp tuples[num].req
     len += tuples[num].req.time
   }
   len
@@ -330,6 +362,7 @@ end
 
 def rbl(job)
   time = 0
+  # p procList
   procList.each{|proc|
     if job.proc != proc then
       time += rblp(job, proc)
@@ -399,7 +432,12 @@ def wcsxg(task, job, group)
   if task == nil || job == nil then 
     return []
   end
-  k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+  begin
+    k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+    rescue
+    puts "タスク" + task.taskId.to_s + "の周期:" + task.period.to_f.to_s
+    exit
+  end
   1.upto(k){|n|
     task.reqList.each{|req|
       if req.res.kind == "short" && req.res.group == group then
@@ -423,6 +461,7 @@ end
 
 def sbg(job, group)
   time = 0
+  # p procList
   procList.each{|proc|
     if job.proc != proc then
       time += sbgp(job, group, proc)

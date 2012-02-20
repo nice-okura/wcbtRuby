@@ -303,6 +303,16 @@ class Test_wcbt < Test::Unit::TestCase
     assert(abr(task9).size == 0)
   end
 
+  
+  def test_procList
+    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
+    $taskList = [task1, task2, task3]
+    
+    assert(procList = [1,2])
+  end
+    
   def test_AB
     task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
@@ -730,6 +740,16 @@ class Test_wcbt < Test::Unit::TestCase
     $taskList = [task1, task2, task3]
     
     p B(task1)
+  end
+  
+  def test_beginTime
+    task1 = Task.new(1, 1, 6, 10, 1, 2, [@req6_LongLong4])
+    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
+    
+    pp task1
+    task1.setBeginTime
+    pp task1
   end
   
 end

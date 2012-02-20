@@ -22,7 +22,7 @@ require "singleton"
 #  time: (ある限度までで)ランダムに選択->20~50
 #  reqs: groupとは異なるグループのリソースを選択
 
-PROC_NUM = 4
+PROC_NUM = 2
 REQ_EXE_MAX = 30
 REQ_EXE_MIN = 10
 TASK_EXE_MAX = 100
@@ -82,18 +82,27 @@ class TaskManager
     @@taskId += 1
     proc = rand(PROC_NUM) + 1
     priority = rand(PRIORITY_MAX) + 1
+    # リソース要求
     reqList = [RequireManager.getRandomReq]
+    if rand(2) == 1 then
+      reqList += [RequireManager.getRandomReq]
+      reqList += [RequireManager.getRandomReq]
+    end
+    reqList.uniq!
+    
     reqTime = 0
     #pp reqList
     reqList.each{|req|
       reqTime += req.time
     }
     extime = reqTime + rand(TASK_EXE_MAX - reqTime)
-    period = rand(extime)
-    offset = rand(period)
+    period = extime + rand(extime)
+    offset = rand(10)
     #pp reqList
     #p extime
-    Task.new(@@taskId, proc, period, extime, priority, offset, reqList)
+    task = Task.new(@@taskId, proc, period, extime, priority, offset, reqList)
+    task.setBeginTime
+    return task
   end
   
   def createTaskArray(i)
@@ -118,7 +127,7 @@ class GroupManager
   def createGroup
     @@groupId += 1
     group = Group.new(@@groupId, @@kind)
-    @@kind = @kind == "long" ? "short" : "long"
+    @@kind = @@kind == "long" ? "short" : "long"
     
     group
   end
@@ -163,7 +172,7 @@ class RequireManager
     req = []
     r = RequireManager.getRandomReq
     if r != [] then
-      if r.group != group && time > r.time
+      if r.res != group && time > r.time
         req << r
       end
     end
@@ -196,6 +205,7 @@ end
 # gm = GroupManager.instance
 # rm = RequireManager.instance
 # tm = TaskManager.instance
+puts "ランダムタスク"
 # 
 # グループをランダムに5個作成
 # gm.createGroupArray(5)
