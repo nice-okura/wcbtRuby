@@ -49,15 +49,15 @@ class TaskCUI
     @task.reqList.each{|req|
       calcTime = 0
       calcTime = req.begintime - curTime
-      calcTime.times{
+      calcTime.to_i.times{
         str += CALC_CHAR
       }
       curTime += calcTime
       str += getReqtimeChar(req)
       curTime += req.time
     }
-    p curTime
-    (@task.extime - curTime).times{
+    #    p curTime
+    (@task.extime - curTime).to_i.times{
       str += CALC_CHAR
     }
     str += "|"

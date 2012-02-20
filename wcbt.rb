@@ -103,11 +103,11 @@ class Task
     # リソース要求A,B,Cがあるとして，要求時間が 10, 20, 30 とし，タスクの実行時間は 80 とする
     # リソース要求A, B, Cの間(この場合は4箇所)に余った 80-60 = 20 を適当に割り振る
     nonReqTime = extime - reqTime
-    puts "nonReqTime:" + nonReqTime.to_s
+    # puts "nonReqTime:" + nonReqTime.to_s
     # 初めはA, B, Cの開始時間を0(offset), 10, 30 として，適当に残りの時間を割り振る
     firstBeginTime = offset
     reqList.each{|req|
-      puts "firstBeginTime:" + firstBeginTime.to_s 
+      # puts "firstBeginTime:" + firstBeginTime.to_s 
       req.begintime = firstBeginTime
       firstBeginTime += req.time
     }
@@ -115,7 +115,7 @@ class Task
     plusTime = 0
     reqList.each{|req|
       plusTime += rand(nonReqTime)
-      puts "plusTime:" + plusTime.to_s
+      # puts "plusTime:" + plusTime.to_s
       req.begintime += plusTime
       nonReqTime -= plusTime
       
