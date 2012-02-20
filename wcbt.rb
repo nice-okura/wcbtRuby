@@ -20,11 +20,8 @@ class Task
   
   # outermostでない要求を探索して設定
   def checkOutermost
-    #pp reqList
     reqList.each{|req|
-      #pp req
       req.reqs.each{|req2|
-        #pp req2
         if req2.group.group == req.group.group then
           req2.outermost = false
         end
@@ -119,11 +116,12 @@ class Group
 end
 
 class Req
-  attr_accessor :reqId, :group, :time, :reqs, :outermost
+  attr_accessor :reqId, :group, :time, :begintime, :reqs, :outermost
   def initialize(id, group, time, reqs)
     @reqId = id
     @group = group
     @time = time
+    @begintime = 0
     @reqs = reqs
     @outermost = true
     

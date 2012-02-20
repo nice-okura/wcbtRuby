@@ -191,9 +191,17 @@ class RequireManager
   end
 end
 
-gm = GroupManager.instance
-rm = RequireManager.instance
-tm = TaskManager.instance
-gm.createGroupArray(5)
-rm.createRequireArray(5)
-pp tm.createTaskArray(5)
+# 使用方法 
+# グループ，要求，タスクのマネージャーインスタンスを作成
+# gm = GroupManager.instance
+# rm = RequireManager.instance
+# tm = TaskManager.instance
+# 
+# グループをランダムに5個作成
+# gm.createGroupArray(5)
+#
+# それらのグループから要求から5つの要求を作成
+# rm.createRequireArray(5)
+#
+# それらの要求から5つのタスクを作成
+# pp tm.createTaskArray(5)
