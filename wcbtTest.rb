@@ -1,6 +1,7 @@
 require "wcbt"
 require "test/unit"
 require "pp"
+require "taskCUI"
 class Test_wcbt < Test::Unit::TestCase
   def setup
     
@@ -302,7 +303,6 @@ class Test_wcbt < Test::Unit::TestCase
     assert(abr(task8).size == 0)
     assert(abr(task9).size == 0)
   end
-
   
   def test_procList
     task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
@@ -743,13 +743,14 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_beginTime
-    task1 = Task.new(1, 1, 6, 10, 1, 2, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
+    task1 = Task.new(1, 1, 6, 10, 1, 2, [@req6_LongLong4, @req1_Long1, @req4_Short1])
+    task2 = Task.new(2, 1, 6, 10, 2, 2, [@req6_LongLong4, @req1_Long1])
+    task3 = Task.new(3, 2, 6, 10, 3, 2, [@req12_LongLong2])
     
-    pp task1
     task1.setBeginTime
-    pp task1
+    pp task2
+    tc = TaskCUI.new(task2)
+    tc.showTaskChar
   end
   
 end

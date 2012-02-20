@@ -57,6 +57,7 @@ class Test_taskCUI < Test::Unit::TestCase
     tc = TaskCUI.new(task2)
     tc.showTaskChar
     pp task2
+  
   end
 end
   

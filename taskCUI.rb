@@ -56,6 +56,7 @@ class TaskCUI
       str += getReqtimeChar(req)
       curTime += req.time
     }
+    p curTime
     (@task.extime - curTime).times{
       str += CALC_CHAR
     }

@@ -98,8 +98,7 @@ class TaskManager
     extime = reqTime + rand(TASK_EXE_MAX - reqTime)
     period = extime + rand(extime)
     offset = rand(10)
-    #pp reqList
-    #p extime
+    
     task = Task.new(@@taskId, proc, period, extime, priority, offset, reqList)
     task.setBeginTime
     return task
@@ -195,7 +194,7 @@ class RequireManager
       # puts "要求が生成されていません．"
       []
     else
-      @@reqArray[rand(@@reqArray.size)]
+      @@reqArray[rand(@@reqArray.size)].clone
     end
   end
 end

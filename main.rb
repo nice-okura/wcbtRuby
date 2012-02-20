@@ -7,7 +7,7 @@ tm = TaskManager.instance
 
 gm.createGroupArray(20)
 rm.createRequireArray(30)
-$taskList = tm.createTaskArray(100)
+$taskList = tm.createTaskArray(20)
 
 #pp $taskList
 $taskList.each{|task|
