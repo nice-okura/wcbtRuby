@@ -141,6 +141,7 @@ class TaskCUI
   def getReqtimeChar(req)
     str = ""
     str += "["  # リソース要求区切り
+    str += "G" + req.res.group.to_s + ":"
     req.time.times{
         req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
     }
