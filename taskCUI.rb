@@ -102,9 +102,11 @@ class TaskCUI
       calcTime = 0  # リソース要求以外の時間
       calcTime = req.begintime - curTime  # 現在時刻から次のリソース要求の時間までが計算時間
       # 計算時間の分だけCALC_CHARを表示
+      
       calcTime.to_i.times{
         str += CALC_CHAR
       }
+
       curTime += calcTime # 現在時刻を進める
       str += getReqtimeChar(req)  # リソース要求の分だけLONG or SHORTCHAR を表示
       curTime += req.time
@@ -132,9 +134,11 @@ class TaskCUI
   # リソース要求 文字表示
   def getReqtimeChar(req)
     str = ""
+    str += "["  # リソース要求区切り
     req.time.times{
         req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
     }
+    str += "]"  # リソース要求区切り
     str
   end
 end
