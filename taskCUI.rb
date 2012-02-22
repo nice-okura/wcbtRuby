@@ -1,5 +1,11 @@
 require "pp"
 require "wcbt"
+require "rubygems"
+require "term/ansicolor"
+
+class String
+  include Term::ANSIColor
+end
 
 class TaskSet 
   attr_accessor :taskList
@@ -64,8 +70,8 @@ class TaskSet
 end
 
 OFFSET_CHAR = " "
-LONG_CHAR = "L"
-SHORT_CHAR = "S"
+LONG_CHAR = "L".red
+SHORT_CHAR = "S".blue
 CALC_CHAR = "-"
 # offset : " "
 # long要求 : "L"
