@@ -114,7 +114,9 @@ class TaskCUI
       }
 
       curTime += calcTime # 現在時刻を進める
+      str += "["  # リソース要求区切り
       str += getReqtimeChar(req)  # リソース要求の分だけLONG or SHORTCHAR を表示
+      str += "]"  # リソース要求区切り
       curTime += req.time
     }
     
@@ -140,12 +142,62 @@ class TaskCUI
   # リソース要求 文字表示
   def getReqtimeChar(req)
     str = ""
-    str += "["  # リソース要求区切り
+    curTime = req.begintime
     str += "G" + req.res.group.to_s + ":"
-    req.time.times{
+    
+    reqtime = req.time
+    req.reqs.each{|subreq|
+      rt = subreq.begintime - curTime
+      rt.times{
         req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
+      }
+      reqtime -= rt
+      str += "("
+      str += getReqtimeChar(subreq)
+      str += ")"
+      reqtime -= subreq.time
     }
-    str += "]"  # リソース要求区切り
+    reqtime.times{
+      req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
+    }
+      
+    
+    
+    
+=begin
+    subreqArray = req.reqs
+    
+    reqtime = req.time
+    if subreqArray.size > 0 then
+      # ネストしている場合
+      i = 0
+      while i < subreqArray.size 
+        # i番目のネスト
+        if curTime == subreqArray[i].begintime then
+          p i
+          str += "("
+          str += getReqtimeChar(subreqArray[i])
+          str += ")"
+          curTime += subreqArray[i].time
+          reqtime -= subreqArray[i].time
+          i += 1
+        else
+          p "2"
+          req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
+          curTime += 1
+          reqtime -= 1
+        end
+      end
+      reqtime.times{
+        req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR
+      }
+    else
+      # ネストしていない場合
+      reqtime.times{
+        req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR
+      }
+    end
+=end
     str
   end
 end

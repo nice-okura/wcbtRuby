@@ -77,11 +77,13 @@ class TaskManager
     proc = rand(PROC_NUM) + 1
     priority = rand(PRIORITY_MAX) + 1
     # リソース要求
-    reqList = [RequireManager.getRandomReq]
-    if rand(2) == 1 then
-      reqList += [RequireManager.getRandomReq]
-      reqList += [RequireManager.getRandomReq]
-    end
+    # 最大REQ_NUM回リソースを取得
+    reqList = []
+    REQ_NUM.times{
+      if rand(2) == 1 then
+        reqList += [RequireManager.getRandomReq]
+      end
+    }
     reqList.uniq!
     
     reqTime = 0
@@ -89,7 +91,7 @@ class TaskManager
     reqList.each{|req|
       reqTime += req.time
     }
-    extime = 120 #reqTime + rand(TASK_EXE_MAX - reqTime)
+    extime = 80 #reqTime + rand(TASK_EXE_MAX - reqTime)
     period = extime + rand(extime)
     offset = 0 #rand(10)
     
@@ -151,32 +153,26 @@ end
 class RequireManager
   include Singleton
 
-  
   def initialize
     @@id = 0
     @@reqArray = []
   end
   
+  private
   def createRequire
     @@id += 1
     group = GroupManager.getRandomGroup
     #pp group
     time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
-    r = RequireManager.getRandomReq
-    if r != [] then
+    r = RequireManager.getRandomReq.clone
+    if r != [] && r.reqs.size == 0 then
+      # ※2段ネストまで対応
       if r.res != group && time > r.time
         req << r
       end
     end
     Req.new(@@id, group, time, req)
-  end
-  
-  def createRequireArray(i)
-    reqArray = []
-    i.times{
-      @@reqArray << createRequire
-    }
   end
   
   def getReqArray
@@ -188,8 +184,16 @@ class RequireManager
       # puts "要求が生成されていません．"
       []
     else
-      @@reqArray[rand(@@reqArray.size)].clone
+      @@reqArray[rand(@@reqArray.size)]
     end
+  end
+  
+  public
+  def createRequireArray(i)
+    reqArray = []
+    i.times{
+      @@reqArray << createRequire
+    }
   end
 end
 

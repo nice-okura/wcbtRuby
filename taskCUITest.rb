@@ -39,8 +39,8 @@ class Test_taskCUI < Test::Unit::TestCase
     #   req1.time >= req2.time でないとダメ
     # ・同じリソースのネストは不可能
     #   req1.res != req2.res はダメ
-    @req6_LongLong4 = Req.new(6, @grp1, 4, [@req7_Long2])
-    @req8_LongShort4 = Req.new(8, @grp1, 4, [@req9_Short2])
+    @req6_LongLong4 = Req.new(6, @grp1, 7, [@req7_Long2])
+    @req8_LongShort4 = Req.new(8, @grp1, 14, [@req9_Short2])
     @req10_ShortShort4 = Req.new(10, @grp2, 4, [@req11_Short2])
     @req12_LongLong2 = Req.new(12, @grp1, 2, [@req13_Long1])
     @req14_LongShort2 = Req.new(14, @grp1, 2, [@req15_Short1])
@@ -49,11 +49,12 @@ class Test_taskCUI < Test::Unit::TestCase
 
   def test_1
     task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req8_LongShort4])
+    task2 = Task.new(2, 1, 6, 30, 2, 0, [@req6_LongLong4, @req8_LongShort4])
     task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
     
     taskList = [task1, task2, task3]
     
+    task2.setBeginTime
     tc = TaskCUI.new(task2)
     tc.showTaskChar
     pp task2

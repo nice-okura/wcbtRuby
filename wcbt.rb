@@ -122,6 +122,7 @@ class Task
       nonReqTime -= plusTime
       
       # ネストしている場合は，今のところreq.begintimeと同じ
+      # ※2段ネストのみ対応
       nestBeginTime = req.begintime
       req.reqs.each{|nestreq|
         nestreq.begintime = nestBeginTime
