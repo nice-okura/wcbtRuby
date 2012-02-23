@@ -72,6 +72,7 @@ class TaskManager
     @@taskArray = []
   end
   
+  private
   def createTask
     @@taskId += 1
     proc = rand(PROC_NUM) + 1
@@ -84,7 +85,7 @@ class TaskManager
         reqList += [RequireManager.getRandomReq]
       end
     }
-    reqList.uniq!
+    #reqList.uniq!
     
     reqTime = 0
     #pp reqList
@@ -100,6 +101,7 @@ class TaskManager
     return task
   end
   
+  public
   def createTaskArray(i)
     tarray = []
     i.times{
@@ -165,7 +167,7 @@ class RequireManager
     #pp group
     time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
-    r = RequireManager.getRandomReq.clone
+    r = RequireManager.getRandomReq
     if r != [] && r.reqs.size == 0 then
       # ※2段ネストまで対応
       if r.res != group && time > r.time
@@ -184,7 +186,8 @@ class RequireManager
       # puts "要求が生成されていません．"
       []
     else
-      @@reqArray[rand(@@reqArray.size)]
+      req = @@reqArray[rand(@@reqArray.size)]
+      return req.clone
     end
   end
   

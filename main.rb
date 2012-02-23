@@ -5,11 +5,11 @@ gm = GroupManager.instance
 rm = RequireManager.instance
 tm = TaskManager.instance
 
-gm.createGroupArray(20)
-rm.createRequireArray(20)
-$taskList = tm.createTaskArray(5)
+gm.createGroupArray(5)
+rm.createRequireArray(5)
+$taskList = tm.createTaskArray(8)
 
-#pp $taskList
+pp $taskList
 $taskList.each{|task|
   puts "タスク" + task.taskId.to_s
   puts "BB:" + BB(task).to_s
@@ -20,6 +20,6 @@ $taskList.each{|task|
   puts "B:" + B(task).to_s
 }
 
-pp $taskList
+#pp $taskList
 taskset = TaskSet.new($taskList)
 taskset.showTaskSet
