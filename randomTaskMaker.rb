@@ -165,13 +165,14 @@ class RequireManager
     @@id += 1
     group = GroupManager.getRandomGroup
     #pp group
-    time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
+    time = (rand(2)+1)*10 #REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
     r = RequireManager.getRandomReq
     if r != [] && r.reqs.size == 0 then
       # ※2段ネストまで対応
       if r.res != group && time > r.time
-        req << r
+        # p r.object_id
+        req << r.clone
       end
     end
     Req.new(@@id, group, time, req)

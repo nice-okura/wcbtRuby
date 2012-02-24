@@ -105,22 +105,22 @@ class Task
     nonReqTime = extime - reqTime
     #puts "nonReqTime:" + nonReqTime.to_s
     # 初めはA, B, Cの開始時間を0(offset), 10, 30 として，適当に残りの時間を割り振る
-    pp @taskId
+    #pp @taskId
     firstBeginTime = offset
     reqList.each{|req|
-      puts "firstBeginTime:" + firstBeginTime.to_s 
+      #puts "firstBeginTime:" + firstBeginTime.to_s 
       req.begintime = firstBeginTime
       firstBeginTime += req.time
     }
     # A, B, Cの間にnonReqTimeを割り振る -> A, B, Cの開始時間を適当に遅らせる
     plusTime = 0
     reqList.each{|req|
-      puts "nonReqTime:" + nonReqTime.to_s
+      #puts "nonReqTime:" + nonReqTime.to_s
       random = rand(nonReqTime)
       plusTime += nonReqTime <= 0 ? 0 : random  # rand関数の引数が0だと0以下の浮動小数点数が返る
-      puts "plusTime:" + plusTime.to_s
+      #puts "plusTime:" + plusTime.to_s
       req.begintime += plusTime
-      puts "Req" + req.reqId.to_s + " beginTime:" + plusTime.to_s
+      #puts "Req" + req.reqId.to_s + " beginTime:" + plusTime.to_s
       nonReqTime -= random
       
       # ネストしている場合は，今のところreq.begintimeと同じ
@@ -171,15 +171,19 @@ class Req
     }
     if @time < nesttime then
       print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermostリソースのアクセスを超えています．\n"
-      exit
+      exit  
     end
-=begin
+
+    # Object.clone オーバーライド
     def clone
-      pp "clone"
-      newreq = Req.new(@reqId, @res, @time, @reqs)
-      return newreq
+      #      pp "clone"
+      newreqs = []
+      @reqs.each{|r|
+        newreqs << r.clone
+      }
+      Req.new(@reqId, @res, @time, newreqs)
     end
-=end
+
   end
 end
 
