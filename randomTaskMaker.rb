@@ -74,9 +74,6 @@ class TaskManager
   
   private
   def createTask
-    @@taskId += 1
-    proc = rand(PROC_NUM) + 1
-    priority = rand(PRIORITY_MAX) + 1
     # リソース要求
     # 最大REQ_NUM回リソースを取得
     reqList = []
@@ -92,9 +89,18 @@ class TaskManager
     reqList.each{|req|
       reqTime += req.time
     }
-    extime = 80 #reqTime + rand(TASK_EXE_MAX - reqTime)
-    period = extime + rand(extime)
-    offset = 0 #rand(10)
+    #################
+    # タスクステータス #
+    #################
+    
+    @@taskId += 1
+    proc = rand(PROC_NUM) + 1
+    priority = rand(PRIORITY_MAX) + 1
+    extime = reqTime + rand(TASK_EXE_MAX - reqTime)
+    period = extime/(rand % (1/TASK_NUM.to_f)) # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
+    offset = rand(10)
+
+    #################
     
     task = Task.new(@@taskId, proc, period, extime, priority, offset, reqList)
     task.setBeginTime
@@ -124,6 +130,7 @@ class GroupManager
   def createGroup
     @@groupId += 1
     group = Group.new(@@groupId, @@kind)
+    #@@kind = "short"
     @@kind = @@kind == "long" ? "short" : "long"
     
     group
@@ -165,10 +172,10 @@ class RequireManager
     @@id += 1
     group = GroupManager.getRandomGroup
     #pp group
-    time = (rand(2)+1)*10 #REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
+    time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
     r = RequireManager.getRandomReq
-    if r != [] && r.reqs.size == 0 then
+    if r != [] && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long")then
       # ※2段ネストまで対応
       if r.res != group && time > r.time
         # p r.object_id

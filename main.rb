@@ -5,9 +5,9 @@ gm = GroupManager.instance
 rm = RequireManager.instance
 tm = TaskManager.instance
 
-gm.createGroupArray(5)
+gm.createGroupArray(3)
 rm.createRequireArray(15)
-$taskList = tm.createTaskArray(10)
+$taskList = tm.createTaskArray(TASK_NUM)
 
 #pp $taskList
 $taskList.each{|task|
@@ -23,7 +23,7 @@ $taskList.each{|task|
 #pp $taskList
 taskset = TaskSet.new($taskList)
 taskset.showTaskSet
-
+#pp $taskList
 =begin
 grp1 = Group.new(1, "long")
 grp2 = Group.new(2, "short")

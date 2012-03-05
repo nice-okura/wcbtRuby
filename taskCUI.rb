@@ -7,6 +7,16 @@ class String
   include Term::ANSIColor
 end
 
+OFFSET_CHAR = " "
+LONG_CHAR = "L".red
+SHORT_CHAR = "S".blue
+CALC_CHAR = "-"
+# offset : " "
+# long要求 : "L"
+# short要求 : "S"
+# ただの計算 : "-"
+
+
 class TaskSet 
   attr_accessor :taskList
 
@@ -69,14 +79,6 @@ class TaskSet
   end
 end
 
-OFFSET_CHAR = " "
-LONG_CHAR = "L".red
-SHORT_CHAR = "S".blue
-CALC_CHAR = "-"
-# offset : " "
-# long要求 : "L"
-# short要求 : "S"
-# ただの計算 : "-"
 class TaskCUI
   def initialize(task)
     @task = task
@@ -89,7 +91,7 @@ class TaskCUI
   
   # タスク名表示
   def getTaskName
-    "タスク" + @task.taskId.to_s + ":"
+    "タスク" + @task.taskId.to_s + "(" + "%1.3f"%(@task.extime.to_f/@task.period.to_f) + ")" + ":"
   end
   
   def getTaskChar
