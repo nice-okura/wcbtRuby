@@ -23,47 +23,6 @@ require "config"
 #  time: (ある限度までで)ランダムに選択->20~50
 #  reqs: groupとは異なるグループのリソースを選択
 
-class List
-  # @cdrは「値」
-  # @carは「次の要素へのラベル」
-  def initialize(i)
-    @cdr = nil
-    @car = nil
-    @index = i
-  end
-  attr_accessor :cdr, :car, :index
-
-  def addTail(x)
-    a = self
-    a = a.car until a.car.nil?
-    a.car = List.new(a.size)
-    a.car.cdr = x
-  end
-
-  def getAt(index)
-    a = self
-  end
-
-  def size
-    a = self
-    i = 0
-    i += 1 while a = a.car
-    return i
-  end
-
-  def each
-    a = self.car
-    self.size.times do
-      yield a.cdr
-      a = a.car
-    end
-  end
-
-  def getRandom
-    rand(self.size)
-  end    
-end
-
 class TaskManager
   include Singleton
   
@@ -72,6 +31,9 @@ class TaskManager
     @@taskArray = []
   end
   
+  #
+  # タスク生成
+  #
   private
   def createTask
     # リソース要求
@@ -107,6 +69,9 @@ class TaskManager
     return task
   end
   
+  #
+  # タスクの配列生成
+  #
   public
   def createTaskArray(i)
     tarray = []
@@ -114,6 +79,20 @@ class TaskManager
       tarray << createTask
     }
     @@taskArray = tarray
+    return @@taskArray
+  end
+  
+  #
+  # タスクの保存(JSON)
+  #
+  public
+  def save_task_data
+    fp = File.open(TASK_FILE_NAME, "w")
+    
+    @@taskArray.each{|task|
+      fp.puts JSON.pretty_generate(task.outalldata)
+    }
+    fp.close
   end
 end
 

@@ -1,5 +1,6 @@
 require "randomTaskMaker"
 require "taskCUI"
+require "json"
 
 gm = GroupManager.instance
 rm = RequireManager.instance
@@ -23,6 +24,9 @@ $taskList.each{|task|
 #pp $taskList
 taskset = TaskSet.new($taskList)
 taskset.showTaskSet
+
+tm.save_task_data
+#puts JSON.pretty_generate([$taskList[0].outalldata])
 #pp $taskList
 =begin
 grp1 = Group.new(1, "long")

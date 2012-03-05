@@ -18,7 +18,9 @@ class Task
     @reqList.size
   end
   
+  #
   # outermostでない要求を探索して設定
+  #
   def checkOutermost
     reqList.each{|req|
       req.reqs.each{|req2|
@@ -29,6 +31,10 @@ class Task
     }
   end
   
+  #
+  # リソース要求時間が
+  # タスクの実行時間を超えていないかチェック
+  #
   def checkOverExTime
     time = 0
     reqList.each{|req|
@@ -41,8 +47,22 @@ class Task
     end
   end
   
+  #
+  # タスクのデータを返す
+  # JSON外部出力用
+  # 
+  def outalldata
+    reqlist = []
+    @reqList.each{|req|
+      reqlist << req.reqId
+    }
+    return [@taskId, @proc, @period, @extime, @priority, @offset, reqlist]
+  end
+  
+  #
   # 全てのグループロック要求の配列を取得
   # @reqListはネストしているものは含まれていない
+  #
   def getAllReq
     allReq = []
     reqList.each{|req|
@@ -68,6 +88,10 @@ class Task
     allReq
   end
   
+  #
+  # longリソースの配列を返す
+  # outermostなもののみ
+  #
   def getLongResArray
     longResArray = []
     getAllReq.each{|req|
@@ -77,7 +101,11 @@ class Task
     }
     longResArray
   end
-  
+
+  #
+  # shortリソースの配列を返す
+  # outermostなもののみ
+  #
   def getShortResArray
     shortResArray = []
     getAllReq.each{|req|
@@ -152,6 +180,14 @@ class Group
     @group = group
     @kind = kind
   end
+  
+  #
+  # グループのデータを返す
+  # JSON外部出力用
+  # 
+  def outalldata
+    return [@group, @kind]
+  end
 end
 
 class Req
@@ -174,7 +210,9 @@ class Req
       exit  
     end
 
+    #
     # Object.clone オーバーライド
+    #
     def clone
       #      pp "clone"
       newreqs = []
@@ -184,6 +222,17 @@ class Req
       Req.new(@reqId, @res, @time, newreqs)
     end
 
+    #
+    # リソース要求のデータを返す
+    # JSON外部出力用
+    # 
+    def outalldata
+      reqss = []
+      @reqs.each{|r|
+        reqss << r.reqId
+      }
+      return {"reqId"=>@reqId, "group"=>@res.group, @time, @begintime, reqss, outermost}.to_json
+    end
   end
 end
 
@@ -570,3 +619,5 @@ end
 def B(job)
   return BB(job) + AB(job) + LB(job) + SB(job) + DB(job)
 end
+
+#############################
