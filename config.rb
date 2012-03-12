@@ -5,6 +5,6 @@ TASK_EXE_MAX = 13
 PRIORITY_MAX = 8
 REQ_NUM = 2
 TASK_NUM = 5
-TASK_FILE_NAME = "./task.json"
+TASK_FILE_NAME = "./tasktest.json"
 REQ_FILE_NAME = "./req.json"
 GRP_FILE_NAME = "./grp.json"

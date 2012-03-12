@@ -1,5 +1,3 @@
-$taskList = []
-
 class Task
   attr_accessor :taskId, :proc, :period, :extime, :priority, :offset, :reqList
   def initialize(id, proc, period, extime, priority, offset, reqarray)
@@ -137,19 +135,26 @@ class Task
     reqList.each{|req|
       reqTime += req.time
     }
+    #
     # リソース要求A,B,Cがあるとして，要求時間が 10, 20, 30 とし，タスクの実行時間は 80 とする
     # リソース要求A, B, Cの間(この場合は4箇所)に余った 80-60 = 20 を適当に割り振る
+    #
     nonReqTime = extime - reqTime
     #puts "nonReqTime:" + nonReqTime.to_s
+    
+    #
     # 初めはA, B, Cの開始時間を0(offset), 10, 30 として，適当に残りの時間を割り振る
-    #pp @taskId
+    #
     firstBeginTime = offset
     reqList.each{|req|
       #puts "firstBeginTime:" + firstBeginTime.to_s 
       req.begintime = firstBeginTime
       firstBeginTime += req.time
     }
+    
+    #
     # A, B, Cの間にnonReqTimeを割り振る -> A, B, Cの開始時間を適当に遅らせる
+    #
     plusTime = 0
     reqList.each{|req|
       #puts "nonReqTime:" + nonReqTime.to_s
@@ -160,8 +165,10 @@ class Task
       #puts "Req" + req.reqId.to_s + " beginTime:" + plusTime.to_s
       nonReqTime -= random
       
+      #
       # ネストしている場合は，今のところreq.begintimeと同じ
       # ※2段ネストのみ対応
+      #
       nestBeginTime = req.begintime
       req.reqs.each{|nestreq|
         nestreq.begintime = nestBeginTime
