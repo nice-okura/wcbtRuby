@@ -111,8 +111,9 @@ class Task
 
   #
   # shortリソースの配列を返す
-  # outermostなもののみ
+  # outermost なもののみ
   #
+
   def getShortResArray
     shortResArray = []
     getAllReq.each{|req|
@@ -219,54 +220,54 @@ end
 #
 class Req
   attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost
-  def initialize(id, res, time, reqs)
+  def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
     @res = res
     @time = time
-    @begintime = 0
-    @reqs = reqs
-    @outermost = true
+    @begintime = begintime
+    @reqs = reqs  #リソースID
+    @outermost = outermost
     
-    # outermostのアクセス時間timeが最大でないといけない
+    # outermost のアクセス時間timeが最大でないといけない
     nesttime = 0
     reqs.each{|req|
       nesttime += req.time
     }
     if @time < nesttime then
-      print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermostリソースのアクセスを超えています．\n"
-      exit  
+      print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
+      exit
     end
-
-    #
-    # Object.clone オーバーライド
-    #
-    def clone
-      #      pp "clone"
-      newreqs = []
-      @reqs.each{|r|
-        newreqs << r.clone
-      }
-      Req.new(@req_id, @res, @time, newreqs)
-    end
-
-    #
-    # リソース要求のデータを返す
-    # JSON外部出力用
-    # 
-    def out_alldata
-      reqss = []
-      @reqs.each{|r|
-        reqss << r.req_id
-      }
-      return {
-        "req_id"=>@req_id, 
-        "group"=>@res.group, 
-        "time"=>@time, 
-        "begintime"=>@begintime, 
-        "req_id_list"=>reqss, 
-        "outermost"=>outermost
-      }
-    end
+  end
+    
+  #
+  # Object.clone オーバーライド
+  #
+  def clone
+    newreqs = []
+    @reqs.each{|r|
+      newreqs << r.clone
+    }
+    Req.new(@req_id, @res, @time, newreqs)
+  end
+  
+  #
+  # リソース要求のデータを返す
+  # JSON外部出力用
+  # 
+  def out_alldata
+    reqss = []
+    @reqs.each{|r|
+      reqss << r.req_id
+    }
+    p @begintime
+    return {
+      "req_id"=>@req_id, 
+      "group"=>@res.group, 
+      "time"=>@time, 
+      "req_id_list"=>reqss, 
+      "begintime"=>@begintime, 
+      "outermost"=>outermost
+    }
   end
 end
 

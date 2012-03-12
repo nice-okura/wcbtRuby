@@ -1,0 +1,154 @@
+{
+  "reqs": [
+    {
+      "group": 3,
+      "begintime": 0,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 1
+    },
+    {
+      "group": 1,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 2
+    },
+    {
+      "group": 1,
+      "begintime": 0,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 3
+    },
+    {
+      "group": 1,
+      "begintime": 0,
+      "time": 3,
+      "req_id_list": [
+        1
+      ],
+      "outermost": true,
+      "req_id": 4
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 5
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "time": 3,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 6
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 7
+    },
+    {
+      "group": 3,
+      "begintime": 0,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 8
+    },
+    {
+      "group": 1,
+      "begintime": 0,
+      "time": 3,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 9
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 10
+    },
+    {
+      "group": 1,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 11
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "time": 3,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 12
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 13
+    },
+    {
+      "group": 3,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 14
+    },
+    {
+      "group": 3,
+      "begintime": 0,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 15
+    }
+  ]
+}
