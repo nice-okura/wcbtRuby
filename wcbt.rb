@@ -49,19 +49,19 @@ class Task
   # タスクのデータを返す
   # JSON外部出力用
   # 
-  def outalldata
+  def out_alldata
     reqlist = []
     @reqList.each{|req|
       reqlist << req.reqId
     }
     return {
-      "taskId"=>@taskId, 
+      "task_id"=>@taskId, 
       "proc"=>@proc, 
       "period"=>@period, 
       "extime"=>@extime, 
       "priority"=>@priority,
       "offset"=>@offset,
-      "reqIdList"=>reqlist
+      "req_id_list"=>reqlist
     }
     #return [@taskId, @proc, @period, @extime, @priority, @offset, reqlist]
   end
@@ -192,7 +192,7 @@ class Resource
 end
 
 #
-# リソースではなくて，リソースグループのクラス
+# リソースグループのクラス
 #
 class Group
   attr_accessor :group, :kind
@@ -214,6 +214,9 @@ class Group
 
 end
 
+#
+# リソース要求クラス
+#
 class Req
   attr_accessor :reqId, :res, :time, :begintime, :reqs, :outermost
   def initialize(id, res, time, reqs)
@@ -250,12 +253,19 @@ class Req
     # リソース要求のデータを返す
     # JSON外部出力用
     # 
-    def outalldata
+    def out_alldata
       reqss = []
       @reqs.each{|r|
         reqss << r.reqId
       }
-      return {"reqId"=>@reqId, "group"=>@res.group, "time"=>@time, "begintime"=>@begintime, "reqIds"=>reqss, "outermost"=>outermost}
+      return {
+        "req_id"=>@reqId, 
+        "group"=>@res.group, 
+        "time"=>@time, 
+        "begintime"=>@begintime, 
+        "req_id_list"=>reqss, 
+        "outermost"=>outermost
+      }
     end
   end
 end
