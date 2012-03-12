@@ -179,8 +179,10 @@ class Task
   end
 end
 
+#
 # リソース
 # Resource(group)
+#
 class Resource
   attr_accessor :resId, :group
   def initialize(resId, group)
@@ -189,7 +191,9 @@ class Resource
   end
 end
 
+#
 # リソースではなくて，リソースグループのクラス
+#
 class Group
   attr_accessor :group, :kind
   def initialize(group, kind)
@@ -201,9 +205,13 @@ class Group
   # グループのデータを返す
   # JSON外部出力用
   # 
-  def outalldata
-    return [@group, @kind]
+  def out_alldata
+    return {
+      "group"=>@group, 
+      "kind"=>@kind
+    }
   end
+
 end
 
 class Req
@@ -247,7 +255,6 @@ class Req
       @reqs.each{|r|
         reqss << r.reqId
       }
-      p "RESOURCE"
       return {"reqId"=>@reqId, "group"=>@res.group, "time"=>@time, "begintime"=>@begintime, "reqIds"=>reqss, "outermost"=>outermost}
     end
   end
