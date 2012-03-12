@@ -1,16 +1,27 @@
 #! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
-# タスク生成用クラス　TaskManager
+#= タスク生成クラス群　TaskManager, RequireManager, GroupManager
 #
-# Author
+#Author:: Takahiro FUJITANI (ERTL, Nagoya Univ.)
+#Version:: 0.5.0
+#License::
+#
+#== Usage:
+#
+#=== 
 
-require "wcbt"
+# 標準ライブラリ
 require "pp"
+
+# 独自ライブラリ
+require "wcbt"
 require "singleton"
 require "config"
 
-# ランダム生成方針
+include FATAL_ERROR
+
+#==ランダム生成方針
 # Task(taskId, proc, period, extime, priority, offset, reqList)
 #  taskId: タスク生成順にインクリメント
 #  proc: 完全ランダム
@@ -19,17 +30,14 @@ require "config"
 #  priority: 完全ランダム
 #  offset: period以下でランダム
 #  reqList: createReqListで生成
-
 # Group(group, kind)
 #  group: 生成順にインクリメント
 #  kind: 交互
-
 # Require(reqId, group, time, reqs)
 #  reqId: 生成順にインクリメント
 #  group: ランダムに選択
 #  time: (ある限度までで)ランダムに選択->20~50
 #  reqs: groupとは異なるグループのリソースを選択
-
 class TaskManager
   include Singleton
   
