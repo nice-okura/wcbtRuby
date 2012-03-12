@@ -56,7 +56,16 @@ class Task
     @reqList.each{|req|
       reqlist << req.reqId
     }
-    return [@taskId, @proc, @period, @extime, @priority, @offset, reqlist]
+    return {
+      "taskId"=>@taskId, 
+      "proc"=>@proc, 
+      "period"=>@period, 
+      "extime"=>@extime, 
+      "priority"=>@priority,
+      "offset"=>@offset,
+      "reqIdList"=>reqlist
+    }
+    #return [@taskId, @proc, @period, @extime, @priority, @offset, reqlist]
   end
   
   #
@@ -231,7 +240,8 @@ class Req
       @reqs.each{|r|
         reqss << r.reqId
       }
-      return {"reqId"=>@reqId, "group"=>@res.group, @time, @begintime, reqss, outermost}.to_json
+      p "RESOURCE"
+      return {"reqId"=>@reqId, "group"=>@res.group, "time"=>@time, "begintime"=>@begintime, "reqIds"=>reqss, "outermost"=>outermost}
     end
   end
 end

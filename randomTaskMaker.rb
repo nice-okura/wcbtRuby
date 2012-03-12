@@ -1,3 +1,10 @@
+#! /usr/bin/ruby
+# -*- coding: utf-8 -*-
+#
+# タスク生成用クラス　TaskManager
+#
+# Author
+
 require "wcbt"
 require "pp"
 require "singleton"
@@ -87,13 +94,23 @@ class TaskManager
   #
   public
   def save_task_data
-    fp = File.open(TASK_FILE_NAME, "w")
-    
-    @@taskArray.each{|task|
-      fp.puts JSON.pretty_generate(task.outalldata)
-    }
-    fp.close
+    begin
+      File.open(TASK_FILE_NAME, "w"){|fp|
+        @@taskArray.each{|task|
+          fp.puts JSON.pretty_generate(task.outalldata)
+        }
+      }
+    rescue
+      raise_fatal_exception(sprintf("resource file output error: %s could not be created.\n",$TASK_FILE_NAME))
+    end
   end
+  
+  #
+  # タスクの読み込み(JSON)
+  #
+  public
+  def load_task_data
+    
 end
 
 class GroupManager
