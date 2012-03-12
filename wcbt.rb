@@ -52,7 +52,7 @@ class Task
   def out_alldata
     reqlist = []
     @reqList.each{|req|
-      reqlist << req.reqId
+      reqlist << req.req_id
     }
     return {
       "task_id"=>@taskId, 
@@ -79,7 +79,7 @@ class Task
           # 同じリソースのネストは不可能
           # req1.res == req2.res はダメ
           if req2.res == req.res then 
-            puts "req" + req.reqId.to_s + "とreq" + req2.reqId.to_s + ":\n"
+            puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
             puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
             exit # 強制終了
           end
@@ -162,7 +162,7 @@ class Task
       plusTime += nonReqTime <= 0 ? 0 : random  # rand関数の引数が0だと0以下の浮動小数点数が返る
       #puts "plusTime:" + plusTime.to_s
       req.begintime += plusTime
-      #puts "Req" + req.reqId.to_s + " beginTime:" + plusTime.to_s
+      #puts "Req" + req.req_id.to_s + " beginTime:" + plusTime.to_s
       nonReqTime -= random
       
       #
@@ -218,9 +218,9 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_accessor :reqId, :res, :time, :begintime, :reqs, :outermost
+  attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost
   def initialize(id, res, time, reqs)
-    @reqId = id
+    @req_id = id
     @res = res
     @time = time
     @begintime = 0
@@ -246,7 +246,7 @@ class Req
       @reqs.each{|r|
         newreqs << r.clone
       }
-      Req.new(@reqId, @res, @time, newreqs)
+      Req.new(@req_id, @res, @time, newreqs)
     end
 
     #
@@ -256,10 +256,10 @@ class Req
     def out_alldata
       reqss = []
       @reqs.each{|r|
-        reqss << r.reqId
+        reqss << r.req_id
       }
       return {
-        "req_id"=>@reqId, 
+        "req_id"=>@req_id, 
         "group"=>@res.group, 
         "time"=>@time, 
         "begintime"=>@begintime, 

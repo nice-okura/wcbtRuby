@@ -18,56 +18,56 @@ CALC_CHAR = "-"
 
 
 class TaskSet 
-  attr_accessor :taskList
+  attr_accessor :task_list
 
-  def initialize(taskList)
-    @taskList = taskList
-    @taskSetProc = []    
+  def initialize(task_list)
+    @task_list = task_list
+    @taskset_proc = []    
     # プロセッサ順にソート
-    @taskList.sort!{|a, b|
+    @task_list.sort!{|a, b|
       a.proc <=> b.proc
     }
     
     # タスクを分類
-    distributeTaskProc
+    distribute_task_proc
     
     # 優先度順にソート
-    @taskSetProc.each{|tasks|
+    @taskset_proc.each{|tasks|
       tasks.sort!{|a, b|
         a.priority <=> b.priority
       }
     }
   end
   
-  def procList
+  def proc_list
     proc = []
-    @taskList.each{|task|
+    @task_list.each{|task|
       proc << task.proc
     }
     proc.uniq!
     return proc.sort!
   end
   
-  # @taskSetProcにプロセッサでタスクを分類
-  def distributeTaskProc
+  # @taskset_procにプロセッサでタスクを分類
+  def distribute_task_proc
     procNum = 1
-    taskArray = []
-    #pp @taskSetProc
-    @taskList.each{|task|
+    task_array = []
+    #pp @taskset_proc
+    @task_list.each{|task|
       if task.proc != procNum then
         procNum = task.proc
-        @taskSetProc.push(taskArray)
-        taskArray = []
+        @taskset_proc.push(task_array)
+        task_array = []
       end
-      taskArray << task
+      task_array << task
     }
-    @taskSetProc.push(taskArray)
-    #p @taskList.size
+    @taskset_proc.push(task_array)
+    #p @task_list.size
   end
   
-  def showTaskSet
+  def show_taskset
     procNum = 1
-    @taskSetProc.each{|tasks|
+    @taskset_proc.each{|tasks|
       puts "[プロセッサ" + procNum.to_s + "]"
       #      p tasks.size
       tasks.each{|task|
