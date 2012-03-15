@@ -53,8 +53,8 @@ class Task
     }
     
     if @extime < time then
-      puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
-      exit
+      #puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
+      #exit
     end
   end
   
@@ -92,9 +92,9 @@ class Task
           # 同じリソースのネストは不可能
           # req1.res == req2.res はダメ
           if req2.res == req.res then 
-            puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
-            puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
-            exit # 強制終了
+            #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
+            #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
+            #exit # 強制終了
           end
           # グループが異なるときに別要求としてreq_listに追加
           # 同じグループならグループロックを1回取得するだけで良いから
@@ -246,8 +246,8 @@ class Req
       nesttime += req.time
     }
     if @time < nesttime then
-      print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
-      exit
+      # print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
+      #exit
     end
   end
   
