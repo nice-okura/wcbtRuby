@@ -18,7 +18,8 @@ require "json"      # JSON
 require "optparse"  # コマンドライン引数
 
 # 独自ライブラリ
-require "wcbt"      # 最大ブロック時間計算ライブラリ
+require "wcbt"      # 最大ブロック時間計算モジュール
+require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 require "taskCUI"   # タスク表示ライブラリ
@@ -56,7 +57,9 @@ $task_list = [] # タスクの配列
 #
 opt = OptionParser.new
 
+#
 # 外部のタスク，リソース要求，グループファイルを読み込む場合
+#
 opt.on('-l') { |v|
   $external_input = true
 }
@@ -177,13 +180,13 @@ class TaskManager
   # タスクの読み込み(JSON)
   #
   private
-  def load_task_data
+  def load_json_task_data(filename=TASK_FILE_NAME)
     json = ""
-    file_type = File::extname(TASK_FILE_NAME)
+    file_type = File::extname(filename)
     case file_type
     when ".json"
       begin
-        File.open(File.expand_path(TASK_FILE_NAME), "r") do |file|
+        File.open(File.expand_path(filename), "r") do |file|
           while line = file.gets
             json += line
           end
@@ -193,30 +196,38 @@ class TaskManager
       end
 
       tasks = (JSON.parser.new(json)).parse()
-      
-      #
-      # タスク毎の処理
-      # @@task_arrayに読み込んだタスクを追加
-      #
-      tasks["tasks"].each{|tsk|
-        p "req_id_list:" + tsk["req_id_list"].to_s
-        reqarray = RequireManager.get_reqlist_from_req_id(tsk["req_id_list"])
-        
-        t = Task.new(
-                     tsk["task_id"], 
-                     tsk["proc"], 
-                     tsk["period"], 
-                     tsk["extime"], 
-                     tsk["priority"], 
-                     tsk["offset"], 
-                     reqarray
-                     )
-        @@task_array << t
-      }
+      return tasks
     end
   end
+  
+  #
+  # JSONファイルから読み取って作成した(load_task_json_data)ハッシュから
+  # タスククラスを作成
+  #
+  private
+  def load_task_data(filename=TASK_FILE_NAME)
+    tasks = load_json_task_data(filename)      # ハッシュの作成
+    #
+    # タスク毎の処理
+    # @@task_arrayに読み込んだタスクを追加
+    #
+    tasks["tasks"].each{|tsk|
+      p "req_id_list:" + tsk["req_id_list"].to_s
+      reqarray = RequireManager.get_reqlist_from_req_id(tsk["req_id_list"])
+      
+      t = Task.new(
+                   tsk["task_id"], 
+                   tsk["proc"], 
+                   tsk["period"], 
+                   tsk["extime"], 
+                   tsk["priority"], 
+                   tsk["offset"], 
+                   reqarray
+                   )
+      @@task_array << t
+    }
+  end
 end
-
 
 #
 # グループマネージャークラスの定義
@@ -274,12 +285,16 @@ class GroupManager
     return @@group_id
   end
   
-
+  public
+  def get_group_array
+    return @@group_array
+  end
+  
   #
   # グループの保存(JSON)
   #
-  public
-  def save_group_data    
+  private
+  def save_group_data(filename=GRP_FILE_NAME)
     grps_json = {
       "grps" => []
     }
@@ -300,19 +315,19 @@ class GroupManager
   # グループの読み込み(JSON)
   #
   private
-  def load_group_data
+  def load_group_data(filename=GRP_FILE_NAME)
     json = ""
-    file_type = File::extname(GRP_FILE_NAME)
+    file_type = File::extname(filename)
     case file_type
     when ".json"
       begin
-        File.open(File.expand_path(GRP_FILE_NAME), "r") { |file|
+        File.open(File.expand_path(filename), "r") { |file|
           while line = file.gets
             json += line
           end
         }
         rescue
-        puts "application file read error: #{GRP_FILE_NAME} is not exist.\n"
+        puts "application file read error: #{filename} is not exist.\n"
       end
       
       grps = (JSON.parser.new(json)).parse()
@@ -322,12 +337,13 @@ class GroupManager
       # @@grpArrayに読み込んだタスクを追加
       #
       grps["grps"].each{|grp|
-        g = Group.new(
-                      grp["group"], 
-                      grp["kind"]
-                      )
-        
-        @@group_array << g
+        if grp["group"] > 0 && (grp["kind"]=="long"||grp["kind"]=="short")
+          g = Group.new(
+                        grp["group"], 
+                        grp["kind"]
+                        )
+          @@group_array << g
+        end
       }
     end
   end
@@ -356,7 +372,6 @@ class GroupManager
   end
 end
 
-
 #
 # リソース要求マネージャーの定義
 #
@@ -366,6 +381,7 @@ class RequireManager
   def initialize
     @@id = 0
     @@require_array = []
+    
     #
     # 外部ファイルから読み込む場合
     #
@@ -392,10 +408,17 @@ class RequireManager
     Req.new(@@id, group, time, req)
   end
   
+  #
+  # クラス変数：require_arrayを返す
+  #
+  public
   def get_require_array
     return @@require_array
   end
   
+  #
+  #
+  #
   def RequireManager.get_random_req
     if @@require_array.size <= 1 then
       # puts "要求が生成されていません．"
@@ -489,7 +512,11 @@ class RequireManager
       # @@req_arrayに読み込んだタスクを追加
       #
       reqs["reqs"].each{|req|
-        #p "REQUIRE:" + @@require_array.to_s
+        #
+        # req作成時に「自分より前に作成されていたリソースをネストとする」ため，
+        # reqsのidがreqより先のidであることはない
+        # 
+        b = req["begintime"]
         g = GroupManager.get_group_from_group_id(req["group"])
         rs = RequireManager.get_reqlist_from_req_id(req["req_id_list"])
         r = Req.new(
@@ -500,7 +527,9 @@ class RequireManager
                     req["begintime"],
                     req["outermost"]
                     )
-        
+        unless b == r.begintime
+          puts "ERROR:begintime"
+        end
         @@require_array << r
       }
     end
@@ -526,6 +555,7 @@ puts "ランダムタスク"
 # それらの要求から5つのタスクを作成
 # pp tm.create_task_array(5)
 
+=begin
 gm = GroupManager.instance
 rm = RequireManager.instance
 tm = TaskManager.instance
@@ -541,3 +571,4 @@ taskset.show_taskset
 tm.save_task_data
 gm.save_group_data
 rm.save_require_data
+=end

@@ -2,17 +2,17 @@
   "reqs": [
     {
       "group": 3,
-      "begintime": 0,
+      "begintime": 1,
       "time": 2,
       "req_id_list": [
-
+        
       ],
       "outermost": true,
       "req_id": 1
     },
     {
       "group": 1,
-      "begintime": 0,
+      "begintime": 2,
       "time": 4,
       "req_id_list": [
 
@@ -22,7 +22,7 @@
     },
     {
       "group": 1,
-      "begintime": 0,
+      "begintime": 3,
       "time": 2,
       "req_id_list": [
 
@@ -32,7 +32,7 @@
     },
     {
       "group": 1,
-      "begintime": 0,
+      "begintime": 10,
       "time": 3,
       "req_id_list": [
         1

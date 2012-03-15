@@ -237,7 +237,7 @@ class Req
     @res = res
     @time = time
     @begintime = begintime
-    @reqs = reqs  #リソースID
+    @reqs = reqs
     @outermost = outermost
     
     # outermost のアクセス時間timeが最大でないといけない
