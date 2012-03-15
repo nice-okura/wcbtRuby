@@ -1,6 +1,4 @@
-tasks_json = {
-  "tasks" => []
-}#! /usr/bin/ruby
+#! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
 #= タスク生成本体　TaskManager, RequireManager, GroupManager

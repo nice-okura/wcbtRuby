@@ -1,11 +1,12 @@
+require "task"
 require "wcbt"
 require "test/unit"
 require "pp"
 require "taskCUI"
 
 class Test_wcbt < Test::Unit::TestCase
+  include WCBT
   def setup
-    
     #
     # Groupクラス定義
     # Group.new(group, kind)
@@ -57,6 +58,11 @@ class Test_wcbt < Test::Unit::TestCase
     @req12_LongLong2 = Req.new(12, @grp1, 2, [@req13_Long1])
     @req14_LongShort2 = Req.new(14, @grp1, 2, [@req15_Short1])
     @req16_ShortShort2 = Req.new(16, @grp2, 2, [@req17_Short1])
+    
+    #
+    # 最大ブロック時間計算クラス
+    #
+    # wcbt = WCBT.new
     
   end 
   
