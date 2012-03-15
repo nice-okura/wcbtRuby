@@ -6,8 +6,10 @@ require "taskCUI"
 class Test_wcbt < Test::Unit::TestCase
   def setup
     
-    # Groupクラス
+    #
+    # Groupクラス定義
     # Group.new(group, kind)
+    #
     @grp1 = Group.new(1, "long")
     @grp2 = Group.new(2, "short")
     @grp3 = Group.new(3, "long")
@@ -16,17 +18,23 @@ class Test_wcbt < Test::Unit::TestCase
     @grp0 = Group.new(0, "long") # dummy Resource
     @req0 = Req.new(0, 0, 0, []) # dummy Require
     
-    # Require
+    #
+    # Requireクラス定義
     # Req.new(reqId, res, time, reqs)
+    #
 
+    #
     # non-nested outermost
+    #
     @req1_Long1 = Req.new(1, @grp1, 1, [])
     @req2_Long2 = Req.new(2, @grp1, 2, [])
     @req3_Long2 = Req.new(3, @grp1, 2, [])
     @req4_Short1 = Req.new(4, @grp2, 1, []) 
     @req5_Long3 = Req.new(5, @grp3, 3, [])
     
+    #
     # nested non-outermost
+    #
     @req7_Long2 = Req.new(7, @grp3, 2, [])
     @req9_Short2 = Req.new(9, @grp2, 2, [])
     @req11_Short2 = Req.new(11, @grp4, 2, [])
@@ -34,6 +42,7 @@ class Test_wcbt < Test::Unit::TestCase
     @req15_Short1 = Req.new(15, @grp2, 1, []) 
     @req17_Short1 = Req.new(17, @grp4, 1, []) 
     
+    #
     # nested outermost
     # ネストのルール
     # ・long→long，long→short，short→shortは可能
@@ -41,6 +50,7 @@ class Test_wcbt < Test::Unit::TestCase
     #   req1.time >= req2.time でないとダメ
     # ・同じリソースのネストは不可能
     #   req1.res != req2.res はダメ
+    #
     @req6_LongLong4 = Req.new(6, @grp1, 4, [@req7_Long2])
     @req8_LongShort4 = Req.new(8, @grp1, 4, [@req9_Short2])
     @req10_ShortShort4 = Req.new(10, @grp2, 4, [@req11_Short2])

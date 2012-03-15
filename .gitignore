@@ -2,3 +2,4 @@ task*.txt
 TLV*
 __MACOSX/*
 schesim*
+doc/*

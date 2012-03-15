@@ -271,6 +271,9 @@ class Req
   end
 end
 
+#
+# タプルクラス
+#
 class ReqTuple
   attr_reader :req, :k
   def initialize(req, k)
@@ -555,11 +558,14 @@ def wcsxg(task, job, group)
 end
 
 def wcspg(job, proc, group)
-  time = []
+  tuples = []
   partition(proc).each{|task|
-    time += wcsxg(task, job, group)
+    tuples += wcsxg(task, job, group)
   }
-  time
+  tuples.sort!{|a, b|
+    (-1) * (a.req.time <=> b.req.time)
+  }
+  return tuples
 end
 
 def sbg(job, group)
