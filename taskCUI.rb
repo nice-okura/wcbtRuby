@@ -7,14 +7,10 @@ class String
   include Term::ANSIColor
 end
 
-OFFSET_CHAR = " "
-LONG_CHAR = "L".red
-SHORT_CHAR = "S".blue
-CALC_CHAR = "-"
-# offset : " "
-# long要求 : "L"
-# short要求 : "S"
-# ただの計算 : "-"
+OFFSET_CHAR = " "       # offset : " "
+LONG_CHAR = "L".red     # long要求 : "L"
+SHORT_CHAR = "S".blue   # short要求 : "S"
+CALC_CHAR = "-"         # ただの計算 : "-"
 
 
 class TaskSet 
@@ -22,16 +18,23 @@ class TaskSet
 
   def initialize(task_list)
     @task_list = task_list
-    @taskset_proc = []    
+    @taskset_proc = []
+    
+    #
     # プロセッサ順にソート
+    #
     @task_list.sort!{|a, b|
       a.proc <=> b.proc
     }
     
+    #
     # タスクを分類
+    #
     distribute_task_proc
     
+    #
     # 優先度順にソート
+    #
     @taskset_proc.each{|tasks|
       tasks.sort!{|a, b|
         a.priority <=> b.priority
@@ -39,6 +42,9 @@ class TaskSet
     }
   end
   
+  #
+  # システム全体のプロセッサのリスト
+  #
   def proc_list
     proc = []
     @task_list.each{|task|
@@ -50,12 +56,12 @@ class TaskSet
   
   # @taskset_procにプロセッサでタスクを分類
   def distribute_task_proc
-    procNum = 1
+    proc_num = 1
     task_array = []
     #pp @taskset_proc
     @task_list.each{|task|
-      if task.proc != procNum then
-        procNum = task.proc
+      if task.proc != proc_num then
+        proc_num = task.proc
         @taskset_proc.push(task_array)
         task_array = []
       end
@@ -66,15 +72,15 @@ class TaskSet
   end
   
   def show_taskset
-    procNum = 1
+    proc_num = 1
     @taskset_proc.each{|tasks|
-      puts "[プロセッサ" + procNum.to_s + "]"
+      puts "[プロセッサ" + proc_num.to_s + "]"
       #      p tasks.size
       tasks.each{|task|
         tc = TaskCUI.new(task)
-        tc.showTaskChar
+        tc.show_task_char
       }
-      procNum += 1
+      proc_num += 1
     }
   end
 end
@@ -85,39 +91,39 @@ class TaskCUI
   end
 
   # タスク表示
-  def showTaskChar
-    print getTaskName + getTaskChar + "\n"
+  def show_task_char
+    return print get_task_name + get_task_char + "\n"
   end
   
   # タスク名表示
-  def getTaskName
-    "タスク" + @task.taskId.to_s + "(" + "%1.3f"%(@task.extime.to_f/@task.period.to_f) + ")" + ":"
+  def get_task_name
+    return "タスク" + @task.task_id.to_s + "(" + "%1.3f"%(@task.extime.to_f/@task.period.to_f) + ")" + ":"
   end
   
-  def getTaskChar
+  def get_task_char
     str = ""
     curTime = 0 # 現在時刻ポインタ設定
     
     # オフセット出力
-    str += getTaskOffsetChar
+    str += get_task_offset_char
     
     # タスク開始
     str += "|"
     curTime += @task.offset # 現在時刻を進める 
     
     # リソース要求
-    @task.reqList.each{|req|
-      calcTime = 0  # リソース要求以外の時間
-      calcTime = req.begintime - curTime  # 現在時刻から次のリソース要求の時間までが計算時間
+    @task.req_list.each{|req|
+      calc_time = 0  # リソース要求以外の時間
+      calc_time = req.begintime - curTime  # 現在時刻から次のリソース要求の時間までが計算時間
       # 計算時間の分だけCALC_CHARを表示
       
-      calcTime.to_i.times{
+      calc_time.to_i.times{
         str += CALC_CHAR
       }
 
-      curTime += calcTime # 現在時刻を進める
+      curTime += calc_time # 現在時刻を進める
       str += "["  # リソース要求区切り
-      str += getReqtimeChar(req)  # リソース要求の分だけLONG or SHORTCHAR を表示
+      str += get_require_time_char(req)  # リソース要求の分だけLONG or SHORTCHAR を表示
       str += "]"  # リソース要求区切り
       curTime += req.time
     }
@@ -129,20 +135,20 @@ class TaskCUI
     str += "|"
     # タスク終了
     
-    str
+    return str
   end
   
   # オフセット表示
-  def getTaskOffsetChar
+  def get_task_offset_char
     str = ""
     @task.offset.times{
       str += OFFSET_CHAR
     }
-    str
+    return str
   end
   
   # リソース要求 文字表示
-  def getReqtimeChar(req)
+  def get_require_time_char(req)
     str = ""
     curTime = req.begintime
     str += "G" + req.res.group.to_s + ":"
@@ -155,7 +161,7 @@ class TaskCUI
       }
       reqtime -= rt
       str += "("
-      str += getReqtimeChar(subreq)
+      str += get_require_time_char(subreq)
       str += ")"
       reqtime -= subreq.time
     }
@@ -178,7 +184,7 @@ class TaskCUI
         if curTime == subreqArray[i].begintime then
           p i
           str += "("
-          str += getReqtimeChar(subreqArray[i])
+          str += get_require_time_char(subreqArray[i])
           str += ")"
           curTime += subreqArray[i].time
           reqtime -= subreqArray[i].time
@@ -200,6 +206,6 @@ class TaskCUI
       }
     end
 =end
-    str
+    return str
   end
 end
