@@ -45,14 +45,26 @@ class Test_taskMaker < Test::Unit::TestCase
     @gm = GroupManager.instance
     @rm = RequireManager.instance
     @tm = TaskManager.instance
+    
+    @gm.create_group_array(20)
+    @rm.create_require_array(60)
+    @tm.create_task_array(100)
+    
+    @gm.save_group_data
+    @rm.save_require_data
+    @tm.save_task_data
+    
+    taskset = TaskSet.new(@tm.get_task_array)
+    taskset.show_taskset
+    
   end
 
   def test_load_group_data
-    assert_same(3, @gm.get_group_array.size)
+    #assert_same(3, @gm.get_group_array.size)
   end
     
   def test_load_require_data
-    assert_same(15, @rm.get_require_array.size)
+    #assert_same(15, @rm.get_require_array.size)
     @rm.get_require_array.each{|rq|
       assert_instance_of(Group, rq.res)
       rq.reqs.each{|r|
@@ -62,7 +74,7 @@ class Test_taskMaker < Test::Unit::TestCase
   end
   
   def test_load_task_data
-    assert_same(5, @tm.get_task_array.size)
+    #assert_same(5, @tm.get_task_array.size)
     @tm.get_task_array.each{|t|
       t.req_list.each{|r|
         assert_instance_of(Req, r)

@@ -271,7 +271,7 @@ class Req
     @reqs.each{|r|
       reqss << r.req_id
     }
-    p @begintime
+    #p @begintime
     return {
       "req_id"=>@req_id, 
       "group"=>@res.group, 

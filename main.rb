@@ -1,15 +1,38 @@
+require "taskMaker"
 require "taskCUI"
 require "json"
+require "optparse"  # コマンドライン引数
+#
+# コマンドライン引数の処理
+#
+opt = OptionParser.new
 
-gm = GroupManager.instance
-rm = RequireManager.instance
-tm = TaskManager.instance
+#
+# 外部のタスク，リソース要求，グループファイルを読み込む場合
+#
+opt.on('-l') { |v|
+  $external_input = true
+}
 
-gm.createGroupArray(3)
-rm.createRequireArray(15)
-$taskList = tm.createTaskArray(TASK_NUM)
+opt.parse!(ARGV)
 
-#pp $taskList
+
+@gm = GroupManager.instance
+@rm = RequireManager.instance
+@tm = TaskManager.instance
+
+@gm.create_group_array(20)
+@rm.create_require_array(60)
+@tm.create_task_array(100)
+
+@gm.save_group_data
+@rm.save_require_data
+@tm.save_task_data
+
+taskset = TaskSet.new(@tm.get_task_array)
+taskset.show_taskset
+
+=begin
 $taskList.each{|task|
   puts "タスク" + task.taskId.to_s
   puts "BB:" + BB(task).to_s
@@ -19,19 +42,4 @@ $taskList.each{|task|
   puts "DB:" + DB(task).to_s
   puts "B:" + B(task).to_s
 }
-
-#pp $taskList
-taskset = TaskSet.new($taskList)
-taskset.showTaskSet
-
-tm.save_task_data
-#puts JSON.pretty_generate([$taskList[0].outalldata])
-#pp $taskList
-=begin
-grp1 = Group.new(1, "long")
-grp2 = Group.new(2, "short")
-req2 = Req.new(2, grp2, 10, [])
-req1 = Req.new(1, grp1, 20, [req2])
-pp req1
-pp req1.clone
 =end

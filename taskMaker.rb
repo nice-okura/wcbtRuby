@@ -15,14 +15,13 @@
 require "pp"
 require "rubygems"  
 require "json"      # JSON
-require "optparse"  # コマンドライン引数
 
 # 独自ライブラリ
 require "wcbt"      # 最大ブロック時間計算モジュール
 require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
-require "taskCUI"   # タスク表示ライブラリ
+#require "taskCUI"   # タスク表示ライブラリ
 
 
 #==ランダム生成方針
@@ -50,21 +49,6 @@ $external_input = false # 外部入力ファイルの設定
 #$output_require_file = REQ_FILE_NAME  # リソース要求の出力先ファイル名
 
 $task_list = [] # タスクの配列
-
-
-#
-# コマンドライン引数の処理
-#
-opt = OptionParser.new
-
-#
-# 外部のタスク，リソース要求，グループファイルを読み込む場合
-#
-opt.on('-l') { |v|
-  $external_input = true
-}
-
-opt.parse!(ARGV)
 
 #
 # タスクマネージャークラスの定義
@@ -127,7 +111,7 @@ class TaskManager
     #################
     
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
-    task.setBeginTime
+    task.set_begin_time
     return task
   end
   
@@ -155,7 +139,7 @@ class TaskManager
   #
   public
   def save_task_data
-    puts "write"
+    #puts "write"
     
     tasks_json = {
       "tasks" => []
@@ -172,7 +156,7 @@ class TaskManager
       #puts e.class
       #puts e.message
       puts e.backtrace
-      puts("resource file output error: #{TASK_FILE_NAME} could not be created.\n")
+      puts("resource file output error: #{filename} could not be created.\n")
     end
   end
   
@@ -192,7 +176,7 @@ class TaskManager
           end
         end
       rescue
-        puts "application file read error: #{TASK_FILE_NAME} is not exist.\n"
+        puts "application file read error: #{filename} is not exist.\n"
       end
 
       tasks = (JSON.parser.new(json)).parse()
@@ -212,7 +196,7 @@ class TaskManager
     # @@task_arrayに読み込んだタスクを追加
     #
     tasks["tasks"].each{|tsk|
-      p "req_id_list:" + tsk["req_id_list"].to_s
+      #p "req_id_list:#{tsk["req_id_list"]}"
       reqarray = RequireManager.get_reqlist_from_req_id(tsk["req_id_list"])
       
       t = Task.new(
@@ -226,6 +210,18 @@ class TaskManager
                    )
       @@task_array << t
     }
+  end
+  
+  #
+  # 全タスクで使われているリソース要求の配列を返す
+  #
+  public
+  def TaskManager.get_all_require
+    req_array = []
+    @@task_array.each{|tsk|
+      req_array += tsk.req_list
+    }
+    return req_array
   end
 end
 
@@ -293,7 +289,7 @@ class GroupManager
   #
   # グループの保存(JSON)
   #
-  private
+  public
   def save_group_data(filename=GRP_FILE_NAME)
     grps_json = {
       "grps" => []
@@ -307,7 +303,7 @@ class GroupManager
       }
       rescue => e
       puts e.backtrace
-      puts("resource file output error: #{GRP_FILE_NAME} could not be created.\n")
+      puts("resource file output error: #{filename} could not be created.\n")
     end
   end
 
@@ -473,7 +469,7 @@ class RequireManager
     reqs_json = {
       "reqs" => []
     }
-    @@require_array.each{|req|
+    TaskManager.get_all_require.each{|req|
       reqs_json["reqs"] << req.out_alldata
     }
     begin
@@ -482,7 +478,7 @@ class RequireManager
       }
       rescue => e
       puts e.backtrace
-      puts("resource file output error: #{REQ_FILE_NAME} could not be created.\n")
+      puts("resource file output error: #{filename} could not be created.\n")
     end
   end
   
@@ -502,7 +498,7 @@ class RequireManager
           end
         }
         rescue
-        puts "application file read error: #{REQ_FILE_NAME} is not exist.\n"
+        puts "application file read error: #{filename} is not exist.\n"
       end
       
       reqs = (JSON.parser.new(json)).parse()
