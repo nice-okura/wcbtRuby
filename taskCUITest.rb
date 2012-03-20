@@ -1,4 +1,5 @@
 require "taskCUI"
+require "task"
 require "test/unit"
 require "pp"
 
@@ -54,9 +55,9 @@ class Test_taskCUI < Test::Unit::TestCase
     
     taskList = [task1, task2, task3]
     
-    task2.setBeginTime
+    #task2.set_begin_time
     tc = TaskCUI.new(task2)
-    tc.showTaskChar
+    tc.show_task_char
     pp task2
   
   end

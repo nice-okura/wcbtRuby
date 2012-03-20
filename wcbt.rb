@@ -11,6 +11,12 @@
 # 最大ブロック時間計算用モジュール
 #
 module WCBT
+  def print_debug(str)
+    if $DEBUG == true
+      puts("\t" + str)
+    end
+  end
+  
   def WCLR(task)
     reqs = []
     task.req_list.each{|req|
@@ -72,7 +78,7 @@ module WCBT
     tuples.sort!{|a, b|
       (-1) * (a.req.time <=> b.req.time)
     }
-    tuples
+    return tuples
   end
   
   def wcsx(task, job)
@@ -105,7 +111,7 @@ module WCBT
         procTaskList << task
       end
     }
-    procTaskList
+    return procTaskList
   end
   
   def procList
@@ -115,7 +121,7 @@ module WCBT
     }
     proc = proc.sort
     proc = proc.uniq
-    proc
+    return proc
   end
   
   ##############################
@@ -126,11 +132,18 @@ module WCBT
     end
     len = 0
     tuples = wclx(task, job)
+    str = ""
+    tuples.each{|t|
+      str += t.prints
+    }
     min = [tuples.size, narr(job) + 1].min
     0.upto(min-1){|num|
       len += tuples[num].req.time
     }
-    len
+    print_debug("bbt(#{task.task_id}, #{job.task_id}) = #{len}")
+    print_debug("bbt_min = min(#{tuples.size}, #{narr(job)+1})")
+    print_debug("bbt_tuples = #{str}")
+    return len
   end
   
   def abr(job)
@@ -138,6 +151,7 @@ module WCBT
       return []
     end
     tuples = []
+    str = ""
     $taskList.each{|task|
       if task.proc == job.proc && task.priority > job.priority then
         #pp task
@@ -147,8 +161,11 @@ module WCBT
         end
       end
     }
-    #  pp tuples
-    tuples
+    tuples.each{|t|
+      str += t.prints
+    }
+    print_debug("abr(#{job.task_id}) = #{str}")
+    return tuples
   end
   
   
@@ -201,7 +218,8 @@ module WCBT
         time += rblp(job, proc)
       end
     }
-    time 
+    print_debug("rbl(#{job.task_id}) = #{time}")
+    return time 
   end
   
   def rblp(job, proc)
@@ -209,7 +227,8 @@ module WCBT
     partition(proc).each{|task|
       count += rblt(task, job)
     }
-    count
+    print_debug("rblp(#{job.task_id}, #{proc}) = #{count}")
+    return count
   end
   
   def rblt(task, job)
@@ -224,7 +243,8 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    time
+    print_debug("rblt(#{task.task_id}, #{job.task_id}) = #{time}")
+    return time
   end
   
   
@@ -303,7 +323,8 @@ module WCBT
         time += sbgp(job, group, proc)
       end
     }
-    time
+    print_debug("rblp(#{job.task_id}, #{group}) = #{time}")
+    return time
   end 
   
   def sbgp(job, group, proc)
@@ -319,6 +340,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
+    print_debug("rblp(#{job.task_id}, #{group}, #{proc}) = #{time}")
     time
   end
   
@@ -342,7 +364,9 @@ module WCBT
   end
   
   def AB(job)
-    if job == nil then
+    if job == nil
+      return 0
+    elsif job.get_short_resource_array.size == 0
       return 0
     end
     time = 0
@@ -351,7 +375,8 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    time
+    print_debug("ABmin = min(#{tuples.size}, #{narr(job)+1})")
+    return time
   end
   
   def LB(job)
@@ -362,6 +387,11 @@ module WCBT
   end
   
   def SB(job)
+    if job == nil then
+      return 0
+    elsif job.get_short_resource_array.size == 0
+      return 0
+    end
     g = []
     time = 0
     SR(job).each{|req|

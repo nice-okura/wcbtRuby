@@ -23,6 +23,7 @@ class Task
     @req_list = reqarray
     check_outermost
     check_over_extime
+    set_begin_time
   end
   
   def get_resource_count
@@ -143,6 +144,7 @@ class Task
     return short_resource_array
   end
   
+  private
   def set_begin_time
     req_time = 0
     req_list.each{|req|
@@ -291,5 +293,10 @@ class ReqTuple
   def initialize(req, k)
     @req = req
     @k = k
-  end  
+  end
+  
+  public
+  def prints
+    return "<#{@req.req_id}(#{@req.time}), #{@k}>"
+  end
 end
