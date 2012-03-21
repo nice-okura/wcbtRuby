@@ -1,3 +1,11 @@
+#! /usr/bin/ruby
+# -*- coding: utf-8 -*-
+#
+#= 120321ミーティング用
+#タスクの最悪実行時間を4パターンのタスクセットで比較
+#
+#
+
 require "wcbt"
 require "task"
 require "taskCUI"
@@ -13,7 +21,13 @@ def get_extime_high_priority(proc, priority)
 end
 
 include WCBT
-$DEBUG = false
+$DEBUG = true
+
+
+#############################
+#
+#############################
+
 
 #
 # Groupクラス定義
@@ -46,6 +60,97 @@ task4 = Task.new(4, 2, 50, 5, 4, 0, [@req4_1])
 
 $taskList = [task1, task2, task3, task4]
 tasks1 = $taskList
+
+$taskList = tasks1
+tasks1.each{|task|
+  print "タスク" + task.task_id.to_s
+  bb = BB(task)
+  ab = AB(task)
+  sb = SB(task)
+  lb = LB(task)
+  db = DB(task)
+  
+  b = bb + ab + sb + lb + db
+  print "\tBB:" + bb.to_s
+  print "\tAB:" + ab.to_s
+  print "\tSB:" + sb.to_s
+  print "\tLB:" + lb.to_s
+  print "\tDB:" + db.to_s
+  print "\tB:" + b.to_s
+  print "\n"
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} * 2= #{task.extime + b + get_extime_high_priority(task.proc, task.priority)*2}"
+}
+taskset = TaskSet.new(tasks1)
+taskset.show_taskset
+
+#############################
+#
+#############################
+
+@grp1.kind = "short"
+@grp2.kind = "long"
+
+$taskList = tasks1
+tasks1.each{|task|
+  print "タスク" + task.task_id.to_s
+  bb = BB(task)
+  ab = AB(task)
+  sb = SB(task)
+  lb = LB(task)
+  db = DB(task)
+  
+  b = bb + ab + sb + lb + db
+  print "\tBB:" + bb.to_s
+  print "\tAB:" + ab.to_s
+  print "\tSB:" + sb.to_s
+  print "\tLB:" + lb.to_s
+  print "\tDB:" + db.to_s
+  print "\tB:" + b.to_s
+  print "\n"
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} * 2= #{task.extime + b + get_extime_high_priority(task.proc, task.priority)*2}"
+}
+taskset = TaskSet.new(tasks1)
+taskset.show_taskset
+
+
+
+#############################
+#
+#############################
+
+@grp1.kind = "long"
+@grp2.kind = "short"
+
+$taskList = tasks1
+tasks1.each{|task|
+  print "タスク" + task.task_id.to_s
+  bb = BB(task)
+  ab = AB(task)
+  sb = SB(task)
+  lb = LB(task)
+  db = DB(task)
+  
+  b = bb + ab + sb + lb + db
+  print "\tBB:" + bb.to_s
+  print "\tAB:" + ab.to_s
+  print "\tSB:" + sb.to_s
+  print "\tLB:" + lb.to_s
+  print "\tDB:" + db.to_s
+  print "\tB:" + b.to_s
+  print "\n"
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} * 2= #{task.extime + b + get_extime_high_priority(task.proc, task.priority)*2}"
+}
+taskset = TaskSet.new(tasks1)
+taskset.show_taskset
+
+
+#############################
+#
+#############################
+
+
+
+
 
 #
 # Groupクラス定義
@@ -83,32 +188,6 @@ $taskList = [task5, task6, task7, task8]
 
 task = $taskList[2]
 tasks2 = $taskList
-b = task.extime + B($taskList[2]) + get_extime_high_priority(task.proc, task.priority)
-
-
-
-$DEBUG = true
-$taskList = tasks1
-tasks1.each{|task|
-  print "タスク" + task.task_id.to_s
-  bb = BB(task)
-  ab = AB(task)
-  sb = SB(task)
-  lb = LB(task)
-  db = DB(task)
-  
-  b = bb + ab + sb + lb + db
-  print "\tBB:" + bb.to_s
-  print "\tAB:" + ab.to_s
-  print "\tSB:" + sb.to_s
-  print "\tLB:" + lb.to_s
-  print "\tDB:" + db.to_s
-  print "\tB:" + b.to_s
-  print "\n"
-  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + b + get_extime_high_priority(task.proc, task.priority)}"
-}
-taskset = TaskSet.new(tasks1)
-taskset.show_taskset
 
 $taskList = tasks2
 tasks2.each{|task|
@@ -127,7 +206,7 @@ tasks2.each{|task|
   print "\tDB:" + db.to_s
   print "\tB:" + b.to_s
   print "\n"
-  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + b + get_extime_high_priority(task.proc, task.priority)}"
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} * 2= #{task.extime + b + get_extime_high_priority(task.proc, task.priority)*2}"
 }
 taskset = TaskSet.new(tasks2)
 taskset.show_taskset

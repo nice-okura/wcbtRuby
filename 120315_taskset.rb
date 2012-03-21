@@ -13,7 +13,7 @@ def get_extime_high_priority(proc, priority)
 end
 
 include WCBT
-$DEBUG = false
+$DEBUG = true
 
 0.upto(1000){
   #

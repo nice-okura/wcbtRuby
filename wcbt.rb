@@ -227,23 +227,29 @@ module WCBT
     partition(proc).each{|task|
       count += rblt(task, job)
     }
-    print_debug("rblp(#{job.task_id}, #{proc}) = #{count}")
+    print_debug("  rblp(#{job.task_id}, #{proc}) = #{count}")
     return count
   end
   
   def rblt(task, job)
     time = 0
+    str = ""
     if task == nil || job == nil then
       return 0
       elsif task.proc  == job.proc then 
       return 0
     end
     tuples = wclx(task, job)
+    tuples.each{|t|
+      str += t.prints
+    }
     min = [ndbp(job, task.proc), tuples.size].min
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("rblt(#{task.task_id}, #{job.task_id}) = #{time}")
+    print_debug("      tuples = #{str}")
+    print_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    print_debug("    rblt(#{task.task_id}, #{job.task_id}) = #{time}")
     return time
   end
   
@@ -271,6 +277,7 @@ module WCBT
     if job == nil then
       return 0
     end
+    str = ""
     tuples = wcsp(job, proc)
     min = [ndbp(job, proc), wcsp(job, proc).size].min
     0.upto(min-1){|num|
@@ -340,7 +347,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("rblp(#{job.task_id}, #{group}, #{proc}) = #{time}")
+    print_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
     time
   end
   
