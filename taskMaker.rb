@@ -111,7 +111,7 @@ class TaskManager
     #################
     
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
-    task.set_begin_time
+    
     return task
   end
   
@@ -149,6 +149,7 @@ class TaskManager
     }
     #pp tasks_json
     begin
+      puts "SAVE"
       File.open(TASK_FILE_NAME, "w"){|fp|
         fp.write JSON.pretty_generate(tasks_json)
       }

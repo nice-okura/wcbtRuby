@@ -1,178 +1,8 @@
 {
   "reqs": [
     {
-      "group": 1,
-      "begintime": 6,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 43
-    },
-    {
-      "group": 20,
-      "begintime": 3,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 36
-    },
-    {
-      "group": 7,
-      "begintime": 1,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 1
-    },
-    {
-      "group": 18,
-      "begintime": 8,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 23
-    },
-    {
-      "group": 18,
-      "begintime": 10,
-      "time": 4,
-      "req_id_list": [
-        2
-      ],
-      "outermost": true,
-      "req_id": 26
-    },
-    {
-      "group": 3,
-      "begintime": 7,
-      "time": 4,
-      "req_id_list": [
-        11
-      ],
-      "outermost": true,
-      "req_id": 13
-    },
-    {
-      "group": 11,
-      "begintime": 6,
-      "time": 3,
-      "req_id_list": [
-        23
-      ],
-      "outermost": true,
-      "req_id": 58
-    },
-    {
-      "group": 11,
-      "begintime": 9,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 22
-    },
-    {
       "group": 2,
-      "begintime": 1,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 16
-    },
-    {
-      "group": 15,
-      "begintime": 5,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 41
-    },
-    {
-      "group": 15,
-      "begintime": 9,
-      "time": 4,
-      "req_id_list": [
-        3
-      ],
-      "outermost": true,
-      "req_id": 6
-    },
-    {
-      "group": 1,
-      "begintime": 13,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 43
-    },
-    {
-      "group": 12,
-      "begintime": 0,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 3
-    },
-    {
-      "group": 20,
-      "begintime": 2,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 36
-    },
-    {
-      "group": 18,
-      "begintime": 3,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 23
-    },
-    {
-      "group": 7,
-      "begintime": 5,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 46
-    },
-    {
-      "group": 6,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 59
-    },
-    {
-      "group": 17,
-      "begintime": 4,
+      "begintime": 10,
       "time": 4,
       "req_id_list": [
 
@@ -181,259 +11,9 @@
       "req_id": 9
     },
     {
-      "group": 18,
-      "begintime": 8,
-      "time": 4,
-      "req_id_list": [
-        2
-      ],
-      "outermost": true,
-      "req_id": 26
-    },
-    {
-      "group": 11,
-      "begintime": 8,
-      "time": 3,
-      "req_id_list": [
-        23
-      ],
-      "outermost": true,
-      "req_id": 58
-    },
-    {
-      "group": 12,
-      "begintime": 4,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 3
-    },
-    {
-      "group": 11,
-      "begintime": 6,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 52
-    },
-    {
-      "group": 10,
-      "begintime": 13,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 29
-    },
-    {
-      "group": 5,
-      "begintime": 6,
-      "time": 3,
-      "req_id_list": [
-        43
-      ],
-      "outermost": true,
-      "req_id": 47
-    },
-    {
-      "group": 16,
-      "begintime": 9,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 60
-    },
-    {
-      "group": 20,
-      "begintime": 4,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 32
-    },
-    {
       "group": 1,
-      "begintime": 6,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 43
-    },
-    {
-      "group": 7,
-      "begintime": 1,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 25
-    },
-    {
-      "group": 13,
-      "begintime": 3,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 14
-    },
-    {
-      "group": 1,
-      "begintime": 3,
-      "time": 3,
-      "req_id_list": [
-        35
-      ],
-      "outermost": true,
-      "req_id": 53
-    },
-    {
-      "group": 1,
-      "begintime": 0,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 43
-    },
-    {
-      "group": 20,
-      "begintime": 6,
-      "time": 3,
-      "req_id_list": [
-        3
-      ],
-      "outermost": true,
-      "req_id": 4
-    },
-    {
-      "group": 14,
-      "begintime": 13,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 20
-    },
-    {
-      "group": 14,
       "begintime": 8,
-      "time": 4,
-      "req_id_list": [
-        3
-      ],
-      "outermost": true,
-      "req_id": 21
-    },
-    {
-      "group": 20,
-      "begintime": 12,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 55
-    },
-    {
-      "group": 11,
-      "begintime": 10,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 22
-    },
-    {
-      "group": 14,
-      "begintime": 14,
       "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 20
-    },
-    {
-      "group": 5,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 5
-    },
-    {
-      "group": 6,
-      "begintime": 12,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 8
-    },
-    {
-      "group": 10,
-      "begintime": 7,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 35
-    },
-    {
-      "group": 17,
-      "begintime": 10,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 7
-    },
-    {
-      "group": 7,
-      "begintime": 13,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 46
-    },
-    {
-      "group": 13,
-      "begintime": 10,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 14
-    },
-    {
-      "group": 7,
-      "begintime": 12,
-      "time": 3,
       "req_id_list": [
 
       ],
@@ -441,514 +21,94 @@
       "req_id": 1
     },
     {
-      "group": 15,
-      "begintime": 0,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 41
-    },
-    {
-      "group": 5,
-      "begintime": 2,
+      "group": 2,
+      "begintime": 10,
       "time": 4,
       "req_id_list": [
-        27
-      ],
-      "outermost": true,
-      "req_id": 28
-    },
-    {
-      "group": 1,
-      "begintime": 10,
-      "time": 2,
-      "req_id_list": [
 
       ],
       "outermost": true,
-      "req_id": 43
-    },
-    {
-      "group": 17,
-      "begintime": 6,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 18
-    },
-    {
-      "group": 17,
-      "begintime": 7,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 54
-    },
-    {
-      "group": 15,
-      "begintime": 3,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 11
-    },
-    {
-      "group": 1,
-      "begintime": 5,
-      "time": 3,
-      "req_id_list": [
-        35
-      ],
-      "outermost": true,
-      "req_id": 53
-    },
-    {
-      "group": 17,
-      "begintime": 6,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 54
-    },
-    {
-      "group": 17,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 18
-    },
-    {
-      "group": 11,
-      "begintime": 5,
-      "time": 3,
-      "req_id_list": [
-        23
-      ],
-      "outermost": true,
-      "req_id": 58
-    },
-    {
-      "group": 20,
-      "begintime": 16,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 36
-    },
-    {
-      "group": 12,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 42
-    },
-    {
-      "group": 15,
-      "begintime": 6,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 41
-    },
-    {
-      "group": 3,
-      "begintime": 9,
-      "time": 4,
-      "req_id_list": [
-        11
-      ],
-      "outermost": true,
-      "req_id": 13
-    },
-    {
-      "group": 16,
-      "begintime": 10,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 12
+      "req_id": 9
     },
     {
       "group": 2,
-      "begintime": 7,
+      "begintime": 6,
       "time": 4,
       "req_id_list": [
 
       ],
       "outermost": true,
-      "req_id": 16
-    },
-    {
-      "group": 14,
-      "begintime": 3,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 44
+      "req_id": 9
     },
     {
       "group": 5,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 5
-    },
-    {
-      "group": 16,
-      "begintime": 0,
+      "begintime": 10,
       "time": 3,
       "req_id_list": [
-        3
-      ],
-      "outermost": true,
-      "req_id": 15
-    },
-    {
-      "group": 4,
-      "begintime": 3,
-      "time": 4,
-      "req_id_list": [
-        29
-      ],
-      "outermost": true,
-      "req_id": 34
-    },
-    {
-      "group": 2,
-      "begintime": 13,
-      "time": 2,
-      "req_id_list": [
 
       ],
       "outermost": true,
-      "req_id": 17
-    },
-    {
-      "group": 8,
-      "begintime": 8,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 50
-    },
-    {
-      "group": 10,
-      "begintime": 2,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 35
-    },
-    {
-      "group": 13,
-      "begintime": 4,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 51
+      "req_id": 7
     },
     {
       "group": 1,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 56
-    },
-    {
-      "group": 10,
-      "begintime": 10,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 48
-    },
-    {
-      "group": 20,
       "begintime": 11,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 32
-    },
-    {
-      "group": 10,
-      "begintime": 9,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 35
-    },
-    {
-      "group": 18,
-      "begintime": 12,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 23
-    },
-    {
-      "group": 7,
-      "begintime": 6,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 46
-    },
-    {
-      "group": 12,
-      "begintime": 1,
       "time": 3,
       "req_id_list": [
 
-      ],
-      "outermost": true,
-      "req_id": 57
-    },
-    {
-      "group": 14,
-      "begintime": 4,
-      "time": 4,
-      "req_id_list": [
-        3
-      ],
-      "outermost": true,
-      "req_id": 21
-    },
-    {
-      "group": 16,
-      "begintime": 8,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 27
-    },
-    {
-      "group": 4,
-      "begintime": 15,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 33
-    },
-    {
-      "group": 20,
-      "begintime": 17,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 55
-    },
-    {
-      "group": 7,
-      "begintime": 6,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 25
-    },
-    {
-      "group": 5,
-      "begintime": 8,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 5
-    },
-    {
-      "group": 7,
-      "begintime": 12,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 46
-    },
-    {
-      "group": 20,
-      "begintime": 3,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 55
-    },
-    {
-      "group": 10,
-      "begintime": 5,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 48
-    },
-    {
-      "group": 11,
-      "begintime": 10,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 52
-    },
-    {
-      "group": 11,
-      "begintime": 6,
-      "time": 4,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 22
-    },
-    {
-      "group": 16,
-      "begintime": 6,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 12
-    },
-    {
-      "group": 1,
-      "begintime": 8,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 56
-    },
-    {
-      "group": 16,
-      "begintime": 3,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 60
-    },
-    {
-      "group": 1,
-      "begintime": 4,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 43
-    },
-    {
-      "group": 15,
-      "begintime": 7,
-      "time": 2,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 41
-    },
-    {
-      "group": 8,
-      "begintime": 6,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 2
-    },
-    {
-      "group": 1,
-      "begintime": 4,
-      "time": 3,
-      "req_id_list": [
-
-      ],
-      "outermost": true,
-      "req_id": 24
-    },
-    {
-      "group": 15,
-      "begintime": 8,
-      "time": 4,
-      "req_id_list": [
-        3
       ],
       "outermost": true,
       "req_id": 6
     },
     {
-      "group": 18,
-      "begintime": 5,
-      "time": 2,
+      "group": 5,
+      "begintime": 7,
+      "time": 3,
       "req_id_list": [
 
       ],
       "outermost": true,
-      "req_id": 23
+      "req_id": 7
+    },
+    {
+      "group": 1,
+      "begintime": 10,
+      "time": 3,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 4
+    },
+    {
+      "group": 1,
+      "begintime": 9,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 8
+    },
+    {
+      "group": 1,
+      "begintime": 14,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 8
+    },
+    {
+      "group": 4,
+      "begintime": 0,
+      "time": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 2
     }
   ]
 }

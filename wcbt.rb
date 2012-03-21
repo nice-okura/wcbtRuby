@@ -10,6 +10,13 @@
 #
 # 最大ブロック時間計算用モジュール
 #
+require "rubygems"
+require "term/ansicolor"
+
+class String
+  include Term::ANSIColor
+end
+
 module WCBT
   def print_debug(str)
     if $DEBUG == true
@@ -124,6 +131,24 @@ module WCBT
     return proc
   end
   
+  #
+  # 同一プロセッサ内で最低優先度を持つタスクのリストを返す
+  #
+  private
+  def lowest_priority_task(proc)
+    pri = 0 # 最高優先度
+    tsk = []
+    $taskList.each{|t|
+      if t.proc == proc
+        if pri < t.priority
+          pri = t.priority
+          tsk << t
+        end
+      end
+    }
+    return tsk
+  end
+  
   ##############################
   
   def bbt(task, job)
@@ -140,9 +165,9 @@ module WCBT
     0.upto(min-1){|num|
       len += tuples[num].req.time
     }
-    print_debug("bbt(#{task.task_id}, #{job.task_id}) = #{len}")
+    print_debug("  bbt_tuples = #{str}")
     print_debug("bbt_min = min(#{tuples.size}, #{narr(job)+1})")
-    print_debug("bbt_tuples = #{str}")
+    print_debug("bbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{len}")
     return len
   end
   
@@ -154,7 +179,6 @@ module WCBT
     str = ""
     $taskList.each{|task|
       if task.proc == job.proc && task.priority > job.priority then
-        #pp task
         tuple = wcsx(task, job)
         if tuple != [] then
           tuples += tuple
@@ -164,7 +188,7 @@ module WCBT
     tuples.each{|t|
       str += t.prints
     }
-    print_debug("abr(#{job.task_id}) = #{str}")
+    print_debug("abr(#{job.task_id.to_s.red}) = #{str}")
     return tuples
   end
   
@@ -177,7 +201,7 @@ module WCBT
     partition(proc).each{|task|
       count += ndbt(task, job)
     }
-    count
+    return count
   end
   
   def ndbt(task, job)
@@ -190,7 +214,7 @@ module WCBT
     g.each{|group|
       count += ndbtg(task, job, group)
     }
-    count
+    return count
   end
   
   def ndbtg(task, job, group)
@@ -207,7 +231,8 @@ module WCBT
         b += 1
       end
     }
-    [a, b].min
+    print_debug("ndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta})")
+    return [a, b].min
   end
   
   def rbl(job)
@@ -218,7 +243,7 @@ module WCBT
         time += rblp(job, proc)
       end
     }
-    print_debug("rbl(#{job.task_id}) = #{time}")
+    print_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
     return time 
   end
   
@@ -227,7 +252,7 @@ module WCBT
     partition(proc).each{|task|
       count += rblt(task, job)
     }
-    print_debug("  rblp(#{job.task_id}, #{proc}) = #{count}")
+    print_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -249,7 +274,7 @@ module WCBT
     }
     print_debug("      tuples = #{str}")
     print_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
-    print_debug("    rblt(#{task.task_id}, #{job.task_id}) = #{time}")
+    print_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -269,7 +294,8 @@ module WCBT
         time += rbsp(job, proc)
       end
     }
-    time
+    print_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
+    return time
   end
   
   def rbsp(job, proc)
@@ -283,7 +309,8 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    time
+    print_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
+    return time
   end
   
   
@@ -330,7 +357,7 @@ module WCBT
         time += sbgp(job, group, proc)
       end
     }
-    print_debug("rblp(#{job.task_id}, #{group}) = #{time}")
+    print_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
     return time
   end 
   
@@ -367,7 +394,7 @@ module WCBT
         time += bbt(tas, job)
       end
     }
-    time
+    return time
   end
   
   def AB(job)
@@ -375,7 +402,11 @@ module WCBT
       return 0
     elsif job.get_short_resource_array.size == 0
       return 0
+    elsif lowest_priority_task(job.proc)[0].priority == job.priority
+      print_debug("最低優先度")
+      return 0
     end
+      
     time = 0
     tuples = abr(job)
     min = [tuples.size, narr(job) + 1].min
@@ -388,6 +419,8 @@ module WCBT
   
   def LB(job)
     if job == nil then
+      return 0
+    elsif job.get_long_resource_array.size == 0
       return 0
     end
     return rbl(job) + rbs(job)

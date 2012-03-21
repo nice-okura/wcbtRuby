@@ -764,7 +764,6 @@ class Test_wcbt < Test::Unit::TestCase
     task2 = Task.new(2, 1, 6, 10, 2, 2, [@req6_LongLong4, @req1_Long1])
     task3 = Task.new(3, 2, 6, 10, 3, 2, [@req12_LongLong2])
     
-    task1.set_begin_time
     pp task1
     tc = TaskCUI.new(task1)
     tc.show_task_char

@@ -19,66 +19,6 @@
     {
       "kind": "long",
       "group": 5
-    },
-    {
-      "kind": "short",
-      "group": 6
-    },
-    {
-      "kind": "long",
-      "group": 7
-    },
-    {
-      "kind": "short",
-      "group": 8
-    },
-    {
-      "kind": "long",
-      "group": 9
-    },
-    {
-      "kind": "short",
-      "group": 10
-    },
-    {
-      "kind": "long",
-      "group": 11
-    },
-    {
-      "kind": "short",
-      "group": 12
-    },
-    {
-      "kind": "long",
-      "group": 13
-    },
-    {
-      "kind": "short",
-      "group": 14
-    },
-    {
-      "kind": "long",
-      "group": 15
-    },
-    {
-      "kind": "short",
-      "group": 16
-    },
-    {
-      "kind": "long",
-      "group": 17
-    },
-    {
-      "kind": "short",
-      "group": 18
-    },
-    {
-      "kind": "long",
-      "group": 19
-    },
-    {
-      "kind": "short",
-      "group": 20
     }
   ]
 }

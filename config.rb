@@ -1,10 +1,10 @@
 PROC_NUM = 2
-REQ_EXE_MAX = 5
+REQ_EXE_MAX = 6
 REQ_EXE_MIN = 2
-TASK_EXE_MAX = 13
+TASK_EXE_MAX = 20
 PRIORITY_MAX = 8
 REQ_NUM = 2
 TASK_NUM = 5
-TASK_FILE_NAME = "./tasktest.json"
+TASK_FILE_NAME = "./task.json"
 REQ_FILE_NAME = "./req.json"
 GRP_FILE_NAME = "./grp.json"
