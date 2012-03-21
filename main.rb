@@ -21,9 +21,9 @@ opt.parse!(ARGV)
 @rm = RequireManager.instance
 @tm = TaskManager.instance
 
-@gm.create_group_array(20)
-@rm.create_require_array(60)
-@tm.create_task_array(100)
+@gm.create_group_array(10)
+@rm.create_require_array(30)
+@tm.create_task_array(30)
 
 @gm.save_group_data
 @rm.save_require_data

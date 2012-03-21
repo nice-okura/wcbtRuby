@@ -16,7 +16,8 @@ require "pp"
 require "rubygems"  
 
 # 独自ライブラリ
-require "taskMaker" 
+require "taskMaker"
+require "taskCUI"
 require "test/unit" # テスト
 
 #==ランダム生成方針
@@ -38,47 +39,36 @@ require "test/unit" # テスト
 #  group:       ランダムに選択
 #  time:        (ある限度までで)ランダムに選択->20~50
 #  reqs:        groupとは異なるグループのリソースを選択
-$external_input = true
+# $external_input = true
 
+$DEBUG = true
 class Test_taskMaker < Test::Unit::TestCase
   def setup
-    @gm = GroupManager.instance
-    @rm = RequireManager.instance
-    @tm = TaskManager.instance
-    
-    @gm.create_group_array(20)
-    @rm.create_require_array(60)
-    @tm.create_task_array(100)
-    
-    @gm.save_group_data
-    @rm.save_require_data
-    @tm.save_task_data
-    
-    taskset = TaskSet.new(@tm.get_task_array)
-    taskset.show_taskset
-    
+    @@m = AllManager.new
   end
 
-  def test_load_group_data
-    #assert_same(3, @gm.get_group_array.size)
+  def test_initialize
+    assert_not_nil(@@m)
+    assert_not_nil(@@m.tm)
+    assert_not_nil(@@m.rm)
+    assert_not_nil(@@m.gm)
+  
+    @@m.create_tasks
+    assert_same(TASK_COUNT, @@m.tm.get_task_array.size)
+    assert_same(REQ_COUNT, @@m.rm.get_require_array.size)
+    assert_same(GRP_COUNT, @@m.gm.get_group_array.size)
+    
+    @@m.all_data_clear
+    assert_same(0, @@m.tm.get_task_array.size)
+    assert_same(0, @@m.rm.get_require_array.size)
+    assert_same(0, @@m.gm.get_group_array.size)
+    
+    @@m.load_tasks
+    assert_same(100, @@m.tm.get_task_array.size)
+    assert_same(100, @@m.rm.get_require_array.size)
+    assert_same(100, @@m.gm.get_group_array.size)
+    
+    
   end
     
-  def test_load_require_data
-    #assert_same(15, @rm.get_require_array.size)
-    @rm.get_require_array.each{|rq|
-      assert_instance_of(Group, rq.res)
-      rq.reqs.each{|r|
-        assert_instance_of(Req, r)
-      }
-    }
-  end
-  
-  def test_load_task_data
-    #assert_same(5, @tm.get_task_array.size)
-    @tm.get_task_array.each{|t|
-      t.req_list.each{|r|
-        assert_instance_of(Req, r)
-      }
-    }
-  end
 end

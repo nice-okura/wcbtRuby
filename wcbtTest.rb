@@ -1,8 +1,8 @@
 require "task"
-require "wcbt"
 require "test/unit"
 require "pp"
 require "taskCUI"
+require "taskMaker"
 
 class Test_wcbt < Test::Unit::TestCase
   include WCBT
@@ -342,20 +342,22 @@ class Test_wcbt < Test::Unit::TestCase
     task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
     task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
     task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
+    p "test_AB"
     $taskList = [task1, task2, task3]
-    assert(AB(task1)== 0)
-    assert(AB(task2)== 0)
-    assert(AB(task3)== 0)
+    assert_same(0, AB(task1))
+    assert_same(0, AB(task2))
+    assert_same(0, AB(task3))
 
     $taskList = [task4, task5, task6]
-    assert(AB(task4)== 2)
-    assert(AB(task5)== 0)
-    assert(AB(task6)== 0)
+    assert_same(0, AB(task4))
+    assert_same(0, AB(task5))
+    assert_same(0, AB(task6))
     
     $taskList = [task7, task8, task9]
-    assert(AB(task7)== 4)
-    assert(AB(task8)== 0)
-    assert(AB(task9)== 0)
+    assert_same(4, AB(task7))
+    assert_same(0, AB(task8))
+    assert_same(0, AB(task9))
+    p "end_test_AB"
   end
     
   def test_partition
@@ -764,9 +766,15 @@ class Test_wcbt < Test::Unit::TestCase
     task2 = Task.new(2, 1, 6, 10, 2, 2, [@req6_LongLong4, @req1_Long1])
     task3 = Task.new(3, 2, 6, 10, 3, 2, [@req12_LongLong2])
     
-    pp task1
+    #pp task1
     tc = TaskCUI.new(task1)
-    tc.show_task_char
+    #tc.show_task_char
   end
   
+  def test_lowest_priority_task(proc)
+    gm = GroupManager.instance
+    rm = RequireManager.instance
+    tm = TaskManager.instance
+    
+  end
 end

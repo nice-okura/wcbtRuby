@@ -17,7 +17,7 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-require "wcbt"      # 最大ブロック時間計算モジュール
+#require "wcbt"      # 最大ブロック時間計算モジュール
 require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
@@ -51,6 +51,72 @@ $external_input = false # 外部入力ファイルの設定
 $task_list = [] # タスクの配列
 
 #
+# タスク，リソース要求，グループのマネージャー管理
+# Singleton
+#
+class AllManager
+  attr_reader :tm, :rm, :gm
+  #  @@m = nil
+
+=begin
+  #
+  # インスタンス
+  #
+  def self.instance(tname="", rname="", gname="", tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT)
+    return @@m if @@m
+    @@m=new(tname, rname, gname, tcount, rcount, gcount)
+  end
+=end
+  
+  #
+  # 初期化
+  #
+  def initialize
+    puts "initialize"
+    @tm = TaskManager.instance
+    @rm = RequireManager.instance
+    @gm = GroupManager.instance
+  end
+  
+  
+  #
+  # 各要素の読み込み
+  #
+  def load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
+    @gm.load_group_data(gname)
+    @rm.load_require_data(rname)
+    @tm.load_task_data(tname)
+  end
+ 
+  #
+  # 各要素の書き込み
+  #
+  def save_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
+    @gm.save_group_data(gname)
+    @rm.save_require_data(rname)
+    @tm.save_task_data(tname)
+  end
+  
+  #
+  # タスク生成
+  #
+  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT)
+    @gm.create_group_array(gcount)
+    @rm.create_require_array(rcount)
+    @tm.create_task_array(tcount)
+  end
+  
+  #
+  # 全データ初期化
+  #
+  def all_data_clear
+    @gm.data_clear
+    @rm.data_clear
+    @tm.data_clear
+  end
+end
+
+#
 # タスクマネージャークラスの定義
 #
 class TaskManager
@@ -59,13 +125,15 @@ class TaskManager
   def initialize
     @@task_id = 0
     @@task_array = []
-    
+
+=begin
     #
     # 外部ファイルから読み込む場合
     #
     if $external_input == true
       load_task_data
     end
+=end
   end
 
   #
@@ -124,14 +192,11 @@ class TaskManager
     # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
     # そうでなければそのまま
     #
-    if @@task_array == []
-      puts "non_external_file"
-      tarray = []
-      i.times{
-        tarray << create_task
-      }
-      @@task_array = tarray
-    end
+    tarray = []
+    i.times{
+      tarray << create_task
+    }
+    @@task_array = tarray
   end
   
   #
@@ -139,8 +204,7 @@ class TaskManager
   #
   public
   def save_task_data
-    #puts "write"
-    
+    print_debug("save_task:#{filename}")
     tasks_json = {
       "tasks" => []
     }
@@ -189,8 +253,9 @@ class TaskManager
   # JSONファイルから読み取って作成した(load_task_json_data)ハッシュから
   # タスククラスを作成
   #
-  private
+  public
   def load_task_data(filename=TASK_FILE_NAME)
+    print_debug("load_task:#{filename}")
     tasks = load_json_task_data(filename)      # ハッシュの作成
     #
     # タスク毎の処理
@@ -224,6 +289,14 @@ class TaskManager
     }
     return req_array
   end
+  
+  #
+  # 内部データのクリア
+  #
+  public
+  def data_clear
+    @@task_array = []
+  end
 end
 
 #
@@ -231,20 +304,22 @@ end
 #
 class GroupManager
   include Singleton
-
+  
   def initialize
     @@group_id = 0
     @@kind = "long"
     @@group_array = []
-    
+
+=begin
     #
     # 外部ファイルから読み込む場合
     #
     if $external_input == true
       load_group_data
     end
+=end
   end
-
+    
   #
   # グループを生成する
   #
@@ -290,8 +365,9 @@ class GroupManager
   #
   # グループの保存(JSON)
   #
-  public
+  private
   def save_group_data(filename=GRP_FILE_NAME)
+    print_debug("save_group:#{filename}")
     grps_json = {
       "grps" => []
     }
@@ -311,8 +387,9 @@ class GroupManager
   #
   # グループの読み込み(JSON)
   #
-  private
+  public
   def load_group_data(filename=GRP_FILE_NAME)
+    print_debug("load_group:#{filename}")
     json = ""
     file_type = File::extname(filename)
     case file_type
@@ -367,6 +444,14 @@ class GroupManager
     end
     return @@group_array[rand(@@group_array.size)]
   end
+  
+  #
+  # 内部データのクリア
+  #
+  public
+  def data_clear
+    @@group_array = []
+  end
 end
 
 #
@@ -374,19 +459,21 @@ end
 #
 class RequireManager
   include Singleton
-
+  
   def initialize
     @@id = 0
     @@require_array = []
     
+=begin
     #
     # 外部ファイルから読み込む場合
     #
     if $external_input == true
       load_require_data
     end
-  end
-  
+=end
+  end 
+ 
   private
   def create_require
     @@id += 1
@@ -465,8 +552,9 @@ class RequireManager
   #
   # リソース要求の保存(JSON)
   #
-  public
-  def save_require_data    
+  private
+  def save_require_data(filename)
+    print_debug("save_require:#{filename}")
     reqs_json = {
       "reqs" => []
     }
@@ -486,14 +574,15 @@ class RequireManager
   #
   # リソース要求の読み込み(JSON)
   #
-  private
-  def load_require_data
+  public
+  def load_require_data(filename=REQ_FILE_NAME)
+    print_debug("load_require:#{filename}")
     json = ""
-    file_type = File::extname(REQ_FILE_NAME)
+    file_type = File::extname(filename)
     case file_type
       when ".json"
       begin
-        File.open(File.expand_path(REQ_FILE_NAME), "r") { |file|
+        File.open(File.expand_path(filename), "r") { |file|
           while line = file.gets
             json += line
           end
@@ -531,8 +620,19 @@ class RequireManager
       }
     end
   end
+  
+  #
+  # 内部データのクリア
+  #
+  public
+  def data_clear
+    @@require_array = []
+  end
 end
 
+def print_debug(str)
+  puts str if $DEBUG
+end
 #
 # main関数
 #
