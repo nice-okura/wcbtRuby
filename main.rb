@@ -25,9 +25,9 @@ opt.parse!(ARGV)
 @rm.create_require_array(30)
 @tm.create_task_array(30)
 
-@gm.save_group_data
-@rm.save_require_data
-@tm.save_task_data
+@gm.save_group_data("sample_group.json")
+@rm.save_require_data("sample_require.json")
+@tm.save_task_data("sample_task.json")
 
 taskset = TaskSet.new(@tm.get_task_array)
 taskset.show_taskset

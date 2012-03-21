@@ -41,7 +41,7 @@ require "test/unit" # テスト
 #  reqs:        groupとは異なるグループのリソースを選択
 # $external_input = true
 
-$DEBUG = true
+$DEBUG = false
 class Test_taskMaker < Test::Unit::TestCase
   def setup
     @@m = AllManager.new
@@ -52,23 +52,43 @@ class Test_taskMaker < Test::Unit::TestCase
     assert_not_nil(@@m.tm)
     assert_not_nil(@@m.rm)
     assert_not_nil(@@m.gm)
+  end
   
+  def test_create_tasks
     @@m.create_tasks
     assert_same(TASK_COUNT, @@m.tm.get_task_array.size)
     assert_same(REQ_COUNT, @@m.rm.get_require_array.size)
     assert_same(GRP_COUNT, @@m.gm.get_group_array.size)
+
+    @@m.create_tasks(100, 1000, 500)
+    assert_same(100, @@m.tm.get_task_array.size)
+    assert_same(1000, @@m.rm.get_require_array.size)
+    assert_same(500, @@m.gm.get_group_array.size)
+  end
+    
+  def test_all_data_clear
+    @@m.all_data_clear
+    assert_equal([], @@m.tm.get_task_array)
+    assert_equal([], @@m.rm.get_require_array)
+    assert_equal([], @@m.gm.get_group_array)
+  end
+  
+  def test_load
+    @@m.load_tasks("sample_task.json", "sample_require.json", "sample_group.json")
+    assert_same(30, @@m.tm.get_task_array.size)
+    assert_same(30, @@m.rm.get_require_array.size)
+    assert_same(10, @@m.gm.get_group_array.size)
     
     @@m.all_data_clear
+    # JSONじゃないファイルを入力
+    @@m.load_tasks("sample_task.jso", "sample_require.jso", "sample_group.jso")
     assert_same(0, @@m.tm.get_task_array.size)
     assert_same(0, @@m.rm.get_require_array.size)
     assert_same(0, @@m.gm.get_group_array.size)
-    
-    @@m.load_tasks
-    assert_same(100, @@m.tm.get_task_array.size)
-    assert_same(100, @@m.rm.get_require_array.size)
-    assert_same(100, @@m.gm.get_group_array.size)
-    
-    
+  end
+  
+  def test_save 
+    assert(@@m.save_tasks("sample_test_task.json", "sample_test_require.json", "sample_test_group.json"))
   end
     
 end

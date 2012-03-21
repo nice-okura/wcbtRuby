@@ -72,7 +72,7 @@ class AllManager
   # 初期化
   #
   def initialize
-    puts "initialize"
+    #puts "AllManager_initialize"
     @tm = TaskManager.instance
     @rm = RequireManager.instance
     @gm = GroupManager.instance
@@ -81,17 +81,19 @@ class AllManager
   
   #
   # 各要素の読み込み
+  # load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
   #
   def load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
-    @gm.load_group_data(gname)
-    @rm.load_require_data(rname)
-    @tm.load_task_data(tname)
+    puts "Groupデータ読み取り失敗：#{gname}" unless @gm.load_group_data(gname)
+    puts "Requireデータ読み取り失敗：#{rname}" unless @rm.load_require_data(rname)
+    puts "Taskデータ読み取り失敗：#{tname}" unless @tm.load_task_data(tname)
   end
  
   #
   # 各要素の書き込み
+  # ファイル名は必須
   #
-  def save_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
+  def save_tasks(tname, rname, gname)
     @gm.save_group_data(gname)
     @rm.save_require_data(rname)
     @tm.save_task_data(tname)
@@ -203,7 +205,7 @@ class TaskManager
   # タスクの保存(JSON)
   #
   public
-  def save_task_data
+  def save_task_data(filename)
     print_debug("save_task:#{filename}")
     tasks_json = {
       "tasks" => []
@@ -214,7 +216,7 @@ class TaskManager
     #pp tasks_json
     begin
       puts "SAVE"
-      File.open(TASK_FILE_NAME, "w"){|fp|
+      File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(tasks_json)
       }
     rescue => e
@@ -242,10 +244,15 @@ class TaskManager
         end
       rescue
         puts "application file read error: #{filename} is not exist.\n"
+        return []
       end
 
+      data_clear
       tasks = (JSON.parser.new(json)).parse()
       return tasks
+    else
+      puts "application file read error: #{filename} is not JSON file.\n"
+      return []
     end
   end
   
@@ -257,6 +264,7 @@ class TaskManager
   def load_task_data(filename=TASK_FILE_NAME)
     print_debug("load_task:#{filename}")
     tasks = load_json_task_data(filename)      # ハッシュの作成
+    return false if tasks == []
     #
     # タスク毎の処理
     # @@task_arrayに読み込んだタスクを追加
@@ -338,18 +346,12 @@ class GroupManager
   #
   public
   def create_group_array(i)
-    #
-    # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
-    # そうでなければそのまま
-    #
+    data_clear
     garray = []
-    if @@group_array == []
-      garrau = []
-      i.times{
-        garray << create_group
-      }
-      @@group_array = garray
-    end
+    i.times{
+      garray << create_group
+    }
+    @@group_array = garray
   end
   
   private
@@ -365,8 +367,8 @@ class GroupManager
   #
   # グループの保存(JSON)
   #
-  private
-  def save_group_data(filename=GRP_FILE_NAME)
+  public
+  def save_group_data(filename)
     print_debug("save_group:#{filename}")
     grps_json = {
       "grps" => []
@@ -375,13 +377,15 @@ class GroupManager
       grps_json["grps"] << grp.out_alldata
     }
     begin
-      File.open(GRP_FILE_NAME, "w"){|fp|
+      File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(grps_json)
       }
-      rescue => e
+    rescue => e
       puts e.backtrace
       puts("resource file output error: #{filename} could not be created.\n")
+      return false
     end
+    return true
   end
 
   #
@@ -400,10 +404,12 @@ class GroupManager
             json += line
           end
         }
-        rescue
+      rescue
         puts "application file read error: #{filename} is not exist.\n"
+        return false
       end
       
+      data_clear  # 元のデータを削除し，新しいデータを格納
       grps = (JSON.parser.new(json)).parse()
       
       #
@@ -419,7 +425,14 @@ class GroupManager
           @@group_array << g
         end
       }
+    else
+      # 
+      # JSONファイルでない場合
+      #
+      puts "application file read error: #{filename} is not JSON file.\n"
+      return false
     end
+    return true
   end
   
   #
@@ -537,22 +550,16 @@ class RequireManager
   #
   public
   def create_require_array(i)
-    #
-    # 外部ファイルから読み込まれていなかったら要求ランダム生成
-    # そうでなければそのまま
-    #
-    if @@require_array.size == 0
-      reqArray = []
-      i.times{
-        @@require_array << create_require
-      }
-    end
+    data_clear
+    i.times{
+      @@require_array << create_require
+    }
   end
   
   #
   # リソース要求の保存(JSON)
   #
-  private
+  public
   def save_require_data(filename)
     print_debug("save_require:#{filename}")
     reqs_json = {
@@ -562,7 +569,7 @@ class RequireManager
       reqs_json["reqs"] << req.out_alldata
     }
     begin
-      File.open(REQ_FILE_NAME, "w"){|fp|
+      File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(reqs_json)
       }
       rescue => e
@@ -587,10 +594,11 @@ class RequireManager
             json += line
           end
         }
-        rescue
+      rescue
         puts "application file read error: #{filename} is not exist.\n"
       end
       
+      data_clear
       reqs = (JSON.parser.new(json)).parse()
       
       #
@@ -618,7 +626,11 @@ class RequireManager
         end
         @@require_array << r
       }
+    else
+      puts "application file read error: #{filename} is not JSON file.\n"
+      return false
     end
+    return true
   end
   
   #
