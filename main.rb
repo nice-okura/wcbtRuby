@@ -1,4 +1,4 @@
-require "taskMaker"
+require "task_maker"
 require "taskCUI"
 require "json"
 require "optparse"  # コマンドライン引数

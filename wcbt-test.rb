@@ -1,8 +1,8 @@
 require "task"
 require "test/unit"
 require "pp"
-require "taskCUI"
-require "taskMaker"
+require "task-CUI"
+require "task-maker"
 
 class Test_wcbt < Test::Unit::TestCase
   include WCBT

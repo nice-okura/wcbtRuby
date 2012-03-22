@@ -84,9 +84,10 @@ class AllManager
   # load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
   #
   def load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
-    puts "Groupデータ読み取り失敗：#{gname}" unless @gm.load_group_data(gname)
-    puts "Requireデータ読み取り失敗：#{rname}" unless @rm.load_require_data(rname)
-    puts "Taskデータ読み取り失敗：#{tname}" unless @tm.load_task_data(tname)
+    return false unless @gm.load_group_data(gname)
+    return false unless @rm.load_require_data(rname)
+    return false unless @tm.load_task_data(tname)
+    return true
   end
  
   #
@@ -94,9 +95,10 @@ class AllManager
   # ファイル名は必須
   #
   def save_tasks(tname, rname, gname)
-    @gm.save_group_data(gname)
-    @rm.save_require_data(rname)
-    @tm.save_task_data(tname)
+    return false unless @gm.save_group_data(gname)
+    return false unless @rm.save_require_data(rname)
+    return false unless @tm.save_task_data(tname)
+    return true
   end
   
   #
@@ -118,32 +120,19 @@ class AllManager
   end
 end
 
+
+
+
 #
 # タスクマネージャークラスの定義
 #
 class TaskManager
   include Singleton
   
+  attr_reader :task_array
   def initialize
     @@task_id = 0
     @@task_array = []
-
-=begin
-    #
-    # 外部ファイルから読み込む場合
-    #
-    if $external_input == true
-      load_task_data
-    end
-=end
-  end
-
-  #
-  # タスクの配列を返す
-  #
-  public
-  def get_task_array
-    return @@task_array
   end
   
   #
@@ -155,7 +144,7 @@ class TaskManager
     # 最大REQ_NUM回リソースを取得
     req_list = []
     REQ_NUM.times{
-      if rand(2) == 1 then
+      if rand(2) == 1
         req_list += [RequireManager.get_random_req]
       end
     }
@@ -187,6 +176,7 @@ class TaskManager
   
   #
   # タスクの配列生成
+  # 生成したタスクの数を返す
   #
   public
   def create_task_array(i)
@@ -199,10 +189,12 @@ class TaskManager
       tarray << create_task
     }
     @@task_array = tarray
+    return @@task_array.size
   end
   
   #
   # タスクの保存(JSON)
+  # 保存したタスクの数を返す．失敗したらfalse
   #
   public
   def save_task_data(filename)
@@ -213,22 +205,26 @@ class TaskManager
     @@task_array.each{|task|
       tasks_json["tasks"] << task.out_alldata
     }
+    
     #pp tasks_json
     begin
-      puts "SAVE"
+      puts "Saving task #{tasks_json["tasks"].size} file..."
       File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(tasks_json)
       }
+      return tasks_json["tasks"].size
     rescue => e
       #puts e.class
       #puts e.message
       puts e.backtrace
       puts("resource file output error: #{filename} could not be created.\n")
+      return false
     end
   end
   
   #
   # タスクの読み込み(JSON)
+  # 読み取ったタスクの配列を返す．失敗したら空の配列を返す
   #
   private
   def load_json_task_data(filename=TASK_FILE_NAME)
@@ -259,6 +255,7 @@ class TaskManager
   #
   # JSONファイルから読み取って作成した(load_task_json_data)ハッシュから
   # タスククラスを作成
+  # 読み取ったタスクの数を返す．失敗したらfalseを返す
   #
   public
   def load_task_data(filename=TASK_FILE_NAME)
@@ -284,6 +281,7 @@ class TaskManager
                    )
       @@task_array << t
     }
+    return @@task_array.size
   end
   
   #
@@ -307,6 +305,179 @@ class TaskManager
   end
 end
 
+#########################################################################
+#########################################################################
+
+
+#
+# リソース要求マネージャーの定義
+#
+class RequireManager
+  include Singleton
+    
+  def initialize
+    @@id = 0
+    @@require_array = []
+  end 
+ 
+  #
+  # ランダムにリソース要求を作成
+  #
+  private
+  def create_require
+    @@id += 1
+    group = GroupManager.get_random_group
+    time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
+    req = []
+    r = RequireManager.get_random_req
+    if r != [] && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long")then
+      # ※2段ネストまで対応
+      if r.res != group && time > r.time
+        req << r.clone
+      end
+    end
+    return Req.new(@@id, group, time, req)
+  end
+  
+  #
+  # ランダムにリソース要求を返す
+  #
+  def RequireManager.get_random_req
+    ra = []
+    if @@require_array.size <= 1 then
+      ra = []
+    else
+      ra = @@require_array[rand(@@require_array.size)].clone
+    end
+    return ra
+  end
+  
+  #
+  # リソース要求IDからリソースのオブジェクト参照の配列を返す
+  #
+  def RequireManager.get_reqlist_from_req_id(req_list)
+    reqs = []
+    req_list.each{|req_id|
+      @@require_array.each{|r|
+        if r.req_id == req_id
+          reqs << r
+          break
+        end
+      }
+    }
+    return reqs
+  end
+
+  #
+  # リソース要求配列の作成
+  # 作成したリソース要求の数を返す
+  #
+  public
+  def create_require_array(i)
+    data_clear
+    i.times{
+      @@require_array << create_require
+    }
+    return @@require_array.size
+  end
+  
+  #
+  # リソース要求の保存(JSON)
+  #
+  public
+  def save_require_data(filename)
+    print_debug("save_require:#{filename}")
+    reqs_json = {
+      "reqs" => []
+    }
+    TaskManager.get_all_require.each{|req|
+      reqs_json["reqs"] << req.out_alldata
+    }
+    begin
+      File.open(filename, "w"){|fp|
+        fp.write JSON.pretty_generate(reqs_json)
+      }
+      rescue => e
+      puts e.backtrace
+      puts("resource file output error: #{filename} could not be created.\n")
+    end
+  end
+  
+  #
+  # リソース要求の読み込み(JSON)
+  # 読み込んだリソース要求の数を返す．失敗したらfalseを返す．
+  #
+  public
+  def load_require_data(filename=REQ_FILE_NAME)
+    print_debug("load_require:#{filename}")
+    json = ""
+    file_type = File::extname(filename)
+    case file_type
+    when ".json"
+      begin
+        File.open(File.expand_path(filename), "r") { |file|
+          while line = file.gets
+            json += line
+          end
+        }
+      rescue
+        puts "application file read error: #{filename} is not exist.\n"
+        return false
+      end
+      
+      data_clear
+      reqs = (JSON.parser.new(json)).parse()
+      
+      #
+      # リソース要求毎の処理
+      # @@require_arrayに読み込んだタスクを追加
+      #
+      reqs["reqs"].each{|req|
+        #
+        # req作成時に「自分より前に作成されていたリソースをネストとする」ため，
+        # reqsのidがreqより先のidであることはない
+        # 
+        b = req["begintime"]
+        g = GroupManager.get_group_from_group_id(req["group"])
+        rs = RequireManager.get_reqlist_from_req_id(req["req_id_list"])
+        r = Req.new(
+                    req["req_id"], 
+                    g, 
+                    req["time"], 
+                    rs,
+                    req["begintime"],
+                    req["outermost"]
+                    )
+        @@require_array << r
+      }
+    else
+      puts "application file read error: #{filename} is not JSON file.\n"
+      return false
+    end
+    
+    return @@require_array.size
+  end
+  
+  #
+  # require_arrayを返す
+  # 
+  public 
+  def get_require_array
+    return @@require_array
+  end
+  
+  #
+  # 内部データのクリア
+  #
+  public
+  def data_clear
+    @@require_array = []
+  end
+end
+
+#########################################################################
+#########################################################################
+
 #
 # グループマネージャークラスの定義
 #
@@ -317,17 +488,8 @@ class GroupManager
     @@group_id = 0
     @@kind = "long"
     @@group_array = []
-
-=begin
-    #
-    # 外部ファイルから読み込む場合
-    #
-    if $external_input == true
-      load_group_data
-    end
-=end
   end
-    
+  
   #
   # グループを生成する
   #
@@ -352,18 +514,14 @@ class GroupManager
       garray << create_group
     }
     @@group_array = garray
+    return @@group_array.size
   end
   
   private
   def get_count
     return @@group_id
   end
-  
-  public
-  def get_group_array
-    return @@group_array
-  end
-  
+    
   #
   # グループの保存(JSON)
   #
@@ -380,17 +538,17 @@ class GroupManager
       File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(grps_json)
       }
-    rescue => e
+      rescue => e
       puts e.backtrace
       puts("resource file output error: #{filename} could not be created.\n")
       return false
     end
     return true
   end
-
+  
   #
   # グループの読み込み(JSON)
-  #
+  # 読み込んだグループ数を返す．失敗したらfalse
   public
   def load_group_data(filename=GRP_FILE_NAME)
     print_debug("load_group:#{filename}")
@@ -432,7 +590,8 @@ class GroupManager
       puts "application file read error: #{filename} is not JSON file.\n"
       return false
     end
-    return true
+    
+    return @@group_array.size
   end
   
   #
@@ -448,12 +607,20 @@ class GroupManager
   end
   
   #
+  # group_arrayを返す
+  #
+  public
+  def get_group_array
+    return @@group_array
+  end
+  
+  #
   # グループをランダムに返す
   #
   def GroupManager.get_random_group
     if @@group_array.size == 0
       puts "グループが生成されていません．"
-      exit()
+      return nil
     end
     return @@group_array[rand(@@group_array.size)]
   end
@@ -464,183 +631,14 @@ class GroupManager
   public
   def data_clear
     @@group_array = []
-  end
-end
-
-#
-# リソース要求マネージャーの定義
-#
-class RequireManager
-  include Singleton
-  
-  def initialize
-    @@id = 0
-    @@require_array = []
-    
-=begin
-    #
-    # 外部ファイルから読み込む場合
-    #
-    if $external_input == true
-      load_require_data
-    end
-=end
-  end 
- 
-  private
-  def create_require
-    @@id += 1
-    group = GroupManager.get_random_group
-    #pp group
-    time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
-    req = []
-    r = RequireManager.get_random_req
-    if r != [] && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long")then
-      # ※2段ネストまで対応
-      if r.res != group && time > r.time
-        # p r.object_id
-        req << r.clone
-      end
-    end
-    Req.new(@@id, group, time, req)
-  end
-  
-  #
-  # クラス変数：require_arrayを返す
-  #
-  public
-  def get_require_array
-    return @@require_array
-  end
-  
-  #
-  #
-  #
-  def RequireManager.get_random_req
-    if @@require_array.size <= 1 then
-      # puts "要求が生成されていません．"
-      []
-    else
-      req = @@require_array[rand(@@require_array.size)]
-      return req.clone
-    end
-  end
-  
-  #
-  # リソース要求IDからリソースのオブジェクト参照の配列を返す
-  #
-  def RequireManager.get_reqlist_from_req_id(req_list)
-    #p "REQUIRE_ARRAY:" + @@require_array.to_s
-    reqs = []
-    req_list.each{|req_id|
-      @@require_array.each{|r|
-        #p r.req_id
-        if r.req_id == req_id
-          reqs << r
-          break
-        end
-      }
-    }
-    #pp reqs
-    return reqs
-  end
-
-  #
-  # リソース要求配列の作成
-  #
-  public
-  def create_require_array(i)
-    data_clear
-    i.times{
-      @@require_array << create_require
-    }
-  end
-  
-  #
-  # リソース要求の保存(JSON)
-  #
-  public
-  def save_require_data(filename)
-    print_debug("save_require:#{filename}")
-    reqs_json = {
-      "reqs" => []
-    }
-    TaskManager.get_all_require.each{|req|
-      reqs_json["reqs"] << req.out_alldata
-    }
-    begin
-      File.open(filename, "w"){|fp|
-        fp.write JSON.pretty_generate(reqs_json)
-      }
-      rescue => e
-      puts e.backtrace
-      puts("resource file output error: #{filename} could not be created.\n")
-    end
-  end
-  
-  #
-  # リソース要求の読み込み(JSON)
-  #
-  public
-  def load_require_data(filename=REQ_FILE_NAME)
-    print_debug("load_require:#{filename}")
-    json = ""
-    file_type = File::extname(filename)
-    case file_type
-      when ".json"
-      begin
-        File.open(File.expand_path(filename), "r") { |file|
-          while line = file.gets
-            json += line
-          end
-        }
-      rescue
-        puts "application file read error: #{filename} is not exist.\n"
-      end
-      
-      data_clear
-      reqs = (JSON.parser.new(json)).parse()
-      
-      #
-      # リソース要求毎の処理
-      # @@req_arrayに読み込んだタスクを追加
-      #
-      reqs["reqs"].each{|req|
-        #
-        # req作成時に「自分より前に作成されていたリソースをネストとする」ため，
-        # reqsのidがreqより先のidであることはない
-        # 
-        b = req["begintime"]
-        g = GroupManager.get_group_from_group_id(req["group"])
-        rs = RequireManager.get_reqlist_from_req_id(req["req_id_list"])
-        r = Req.new(
-                    req["req_id"], 
-                    g, 
-                    req["time"], 
-                    rs,
-                    req["begintime"],
-                    req["outermost"]
-                    )
-        unless b == r.begintime
-          puts "ERROR:begintime"
-        end
-        @@require_array << r
-      }
-    else
-      puts "application file read error: #{filename} is not JSON file.\n"
-      return false
-    end
     return true
   end
-  
-  #
-  # 内部データのクリア
-  #
-  public
-  def data_clear
-    @@require_array = []
-  end
 end
+
+#########################################################################
+#########################################################################
+
+
 
 def print_debug(str)
   puts str if $DEBUG

@@ -2,27 +2,27 @@
   "reqs": [
     {
       "group": 3,
-      "begintime": 16,
+      "begintime": 7,
       "time": 3,
       "req_id_list": [
-        1
+
       ],
       "outermost": true,
       "req_id": 3
     },
     {
       "group": 1,
-      "begintime": 20,
+      "begintime": 8,
       "time": 4,
       "req_id_list": [
-        8
+
       ],
       "outermost": true,
       "req_id": 12
     },
     {
       "group": 2,
-      "begintime": 7,
+      "begintime": 19,
       "time": 2,
       "req_id_list": [
 
@@ -32,7 +32,7 @@
     },
     {
       "group": 2,
-      "begintime": 9,
+      "begintime": 4,
       "time": 4,
       "req_id_list": [
 
@@ -42,7 +42,7 @@
     },
     {
       "group": 10,
-      "begintime": 8,
+      "begintime": 1,
       "time": 4,
       "req_id_list": [
 
@@ -52,7 +52,7 @@
     },
     {
       "group": 6,
-      "begintime": 7,
+      "begintime": 8,
       "time": 3,
       "req_id_list": [
 
@@ -62,27 +62,27 @@
     },
     {
       "group": 1,
-      "begintime": 14,
+      "begintime": 8,
       "time": 4,
       "req_id_list": [
-        8
+
       ],
       "outermost": true,
       "req_id": 12
     },
     {
       "group": 3,
-      "begintime": 2,
+      "begintime": 7,
       "time": 3,
       "req_id_list": [
-        1
+
       ],
       "outermost": true,
       "req_id": 3
     },
     {
       "group": 7,
-      "begintime": 6,
+      "begintime": 16,
       "time": 3,
       "req_id_list": [
 
@@ -92,7 +92,7 @@
     },
     {
       "group": 2,
-      "begintime": 3,
+      "begintime": 4,
       "time": 4,
       "req_id_list": [
 
@@ -102,7 +102,7 @@
     },
     {
       "group": 10,
-      "begintime": 16,
+      "begintime": 10,
       "time": 4,
       "req_id_list": [
 
@@ -112,7 +112,7 @@
     },
     {
       "group": 10,
-      "begintime": 5,
+      "begintime": 7,
       "time": 2,
       "req_id_list": [
 
@@ -122,17 +122,17 @@
     },
     {
       "group": 1,
-      "begintime": 13,
+      "begintime": 8,
       "time": 4,
       "req_id_list": [
-        8
+
       ],
       "outermost": true,
       "req_id": 12
     },
     {
       "group": 2,
-      "begintime": 18,
+      "begintime": 19,
       "time": 2,
       "req_id_list": [
 
@@ -142,7 +142,7 @@
     },
     {
       "group": 9,
-      "begintime": 8,
+      "begintime": 17,
       "time": 4,
       "req_id_list": [
 
@@ -152,17 +152,17 @@
     },
     {
       "group": 3,
-      "begintime": 13,
+      "begintime": 7,
       "time": 3,
       "req_id_list": [
-        1
+
       ],
       "outermost": true,
       "req_id": 3
     },
     {
       "group": 10,
-      "begintime": 16,
+      "begintime": 17,
       "time": 4,
       "req_id_list": [
 
@@ -172,7 +172,7 @@
     },
     {
       "group": 10,
-      "begintime": 14,
+      "begintime": 10,
       "time": 3,
       "req_id_list": [
 
@@ -182,7 +182,7 @@
     },
     {
       "group": 5,
-      "begintime": 17,
+      "begintime": 13,
       "time": 4,
       "req_id_list": [
 
@@ -192,7 +192,7 @@
     },
     {
       "group": 3,
-      "begintime": 4,
+      "begintime": 5,
       "time": 3,
       "req_id_list": [
 
@@ -202,7 +202,7 @@
     },
     {
       "group": 6,
-      "begintime": 7,
+      "begintime": 8,
       "time": 3,
       "req_id_list": [
 
@@ -212,7 +212,7 @@
     },
     {
       "group": 4,
-      "begintime": 10,
+      "begintime": 22,
       "time": 2,
       "req_id_list": [
 
@@ -232,7 +232,7 @@
     },
     {
       "group": 10,
-      "begintime": 1,
+      "begintime": 0,
       "time": 4,
       "req_id_list": [
 
@@ -245,14 +245,14 @@
       "begintime": 8,
       "time": 4,
       "req_id_list": [
-        8
+
       ],
       "outermost": true,
       "req_id": 12
     },
     {
       "group": 10,
-      "begintime": 6,
+      "begintime": 10,
       "time": 4,
       "req_id_list": [
 
@@ -262,7 +262,7 @@
     },
     {
       "group": 1,
-      "begintime": 4,
+      "begintime": 6,
       "time": 4,
       "req_id_list": [
 

@@ -1,4 +1,4 @@
-require "taskCUI"
+require "task-CUI"
 require "task"
 require "test/unit"
 require "pp"
