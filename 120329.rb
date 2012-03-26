@@ -9,8 +9,8 @@
 
 require "wcbt"
 require "task"
-require "taskCUI"
-require "taskMaker"
+require "task-CUI"
+require "manager"
 
 def get_extime_high_priority(proc, priority)
   time = 0
@@ -38,9 +38,9 @@ $DEBUG = false
 @rm.create_require_array(10)
 @tm.create_task_array(10)
 
-@gm.save_group_data
-@rm.save_require_data
-@tm.save_task_data
+@gm.save_group_data("120329_group.json")
+@rm.save_require_data("120329_require.json")
+@tm.save_task_data("120329_task.json")
 
 $taskList = @tm.get_task_array
 taskset = TaskSet.new(@tm.get_task_array)
@@ -48,7 +48,7 @@ taskset = TaskSet.new(@tm.get_task_array)
 puts "通常"
 
 $taskList.each{|task|
-  print "タスク" + task.task_id.to_s
+  print "タスク"
   bb = BB(task)
   ab = AB(task)
   sb = SB(task)
@@ -78,7 +78,7 @@ puts "全部long"
 }
 
 $taskList.each{|task|
-  print "タスク" + task.task_id.to_s
+  print "タスク"# + task.task_id.to_s
   bb = BB(task)
   ab = AB(task)
   sb = SB(task)
@@ -109,7 +109,7 @@ puts "全部short"
 }
 
 $taskList.each{|task|
-  print "タスク" + task.task_id.to_s
+  print "タスク"# + task.task_id.to_s
   bb = BB(task)
   ab = AB(task)
   sb = SB(task)

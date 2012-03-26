@@ -46,6 +46,7 @@ class TestRequireManager < Test::Unit::TestCase
     @@gm = GroupManager.instance
     @@gm.create_group_array(10)
     @@rm = RequireManager.instance
+    @@rm.data_clear
   end
 
   def test_initialize
@@ -72,6 +73,10 @@ class TestRequireManager < Test::Unit::TestCase
     assert_equal(0, @@rm.get_require_array.size)
   end
   
-  def test_save 
+  def test_get_random_req
+    i = rand(100)
+    assert_equal(i, @@rm.create_require_array(i))
+    assert_kind_of(Req, RequireManager.get_random_req)
+  
   end
 end

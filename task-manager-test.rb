@@ -44,11 +44,18 @@ $DEBUG = false
 class Test_taskMaker < Test::Unit::TestCase
   def setup
     @@tm = TaskManager.instance
+    @@rm = RequireManager.instance
+    @@gm = GroupManager.instance
+    i = rand(100)
+    @@gm.create_group_array(i)
+    @@rm.create_require_array(i)
+
   end
 
   def test_initialize
-    assert_not_nil(@@task_array)
-    assert_equal(0, @@task_array)
+    #assert_not_nil(@@tm.get_task_array)
+    assert_equal([], @@tm.get_task_array) 
+    #assert_equal(0, @@tm.get_task_array.size)
   end
   
   def test_create_tasks
@@ -58,17 +65,17 @@ class Test_taskMaker < Test::Unit::TestCase
     
   def test_data_clear
     @@tm.data_clear
-    assert_equal([], @@tm.task_array)
+    assert_equal([], @@tm.get_task_array)
   end
   
   def test_load
     assert_equal(30, @@tm.load_task_data("sample_task.json"))
-    assert_equal(30, @@tm.task_array.size)
+    assert_equal(30, @@tm.get_task_array.size)
     
     @@tm.data_clear
     # JSONじゃないファイルを入力
     @@tm.load_task_data("sample_task.jso")
-    assert_equal(0, @@tm.task_array.size)
+    assert_equal(0, @@tm.get_task_array.size)
   end
   
   def test_save 
