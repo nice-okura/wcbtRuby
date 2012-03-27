@@ -402,13 +402,13 @@ module WCBT
   end
   
   def AB(job)
-    p job.task_id
+    #p job.task_id
     if job == nil
       return 0
     elsif job.get_short_resource_array.size == 0
       return 0
     elsif lowest_priority_task(job.proc)[0].priority == job.priority
-      p "lowest"
+      #p "lowest"
       print_debug("最低優先度")
       return 0
     end

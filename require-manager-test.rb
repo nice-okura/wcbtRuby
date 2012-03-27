@@ -16,7 +16,7 @@ require "pp"
 require "rubygems"  
 
 # 独自ライブラリ
-require "mamager"
+require "manager"
 require "test/unit" # テスト
 
 #==ランダム生成方針

@@ -1,5 +1,5 @@
-require "task_maker"
-require "taskCUI"
+require "manager"
+require "task-CUI"
 require "json"
 require "optparse"  # コマンドライン引数
 #
