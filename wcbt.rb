@@ -153,6 +153,19 @@ module WCBT
     return tsk
   end
   
+  def get_extime_high_priority(task)
+    time = 0
+    $taskList.each{|t|
+      sb = SB(t)
+      if t.proc == task.proc && t.priority < task.priority
+        time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
+        #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
+      end
+    }
+    #puts ""
+    return time
+  end
+
   ##############################
   
   def bbt(task, job)

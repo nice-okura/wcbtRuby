@@ -6,27 +6,16 @@
 # 
 #
 #
-
 require "wcbt"
 require "task"
 require "task-CUI"
 require "manager"
 
+TASK_NUMBER = 6
+
+
 def save
   @manager.save_tasks("120329_min_task.json", "120329_min_require.json", "120329_min_group.json") 
-end
-
-def get_extime_high_priority(task)
-  time = 0
-  $taskList.each{|t|
-    sb = SB(t)
-    if t.proc == task.proc && t.priority < task.priority
-      time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
-      #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
-    end
-  }
-  puts ""
-  return time
 end
 
 def get_wcrt(task, b=nil)
@@ -131,7 +120,7 @@ min_preempt_time = 10000000 # 適当な最大値
 i = 0
 group_times.times{
   $taskList.each{|task|
-    if task.task_id == 4
+    if task.task_id == TASK_NUMBER
       #print "タスク"
       bb = BB(task)
       ab = AB(task)
@@ -142,14 +131,14 @@ group_times.times{
       b = bb + ab + sb + lb + db
       pre = task.extime + get_extime_high_priority(task) + b
       #puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{pri} = #{task.extime + b + pri}"
-      show_groups
       if pre < min_preempt_time
         min_preempt_time = pre
-        puts "!!!!!pre:#{pre}"
+        puts "タスク#{TASK_NUMBER} 最悪応答時間:#{pre}"
+        show_groups
         save
         break
       end
-      print "-> #{pre}"
+      #print "-> #{pre}"
     end
   }
   i += 1
