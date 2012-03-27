@@ -16,7 +16,7 @@ class Task
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id
     @proc = proc
-    @period = period.to_i
+    @period = period.to_f
     @extime = extime
     @priority = priority.to_i
     @offset = offset.to_i

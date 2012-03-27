@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 #= 120329ミーティング用
-#タスクの最悪実行時間を4パターンのタスクセットで比較
-# タスクセットはランダム
+# あるタスクセットのリソースkindを全パターン計算し，最速，最悪のパターンを表示
+# 
 #
 #
 
@@ -12,16 +12,31 @@ require "task"
 require "task-CUI"
 require "manager"
 
-def get_extime_high_priority(proc, priority)
+def get_extime_high_priority(task)
   time = 0
   $taskList.each{|t|
-    if t.proc == proc && t.priority < priority
-      time += t.extime + SB(t)
+    sb = SB(t)
+    if t.proc == task.proc && t.priority < task.priority
+      time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
+      #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
     end
   }
+  puts ""
   return time
 end
 
+def get_wcrt(task, b=nil)
+  time = 0
+  if b == nil
+    block = BB(task)
+  else
+    block = b
+  end
+  
+  time = task.extime + block + get_extime_high_priority(task) 
+  return time 
+  
+end
 include WCBT
 $DEBUG = false
 
@@ -34,9 +49,14 @@ $DEBUG = false
 @rm = RequireManager.instance
 @tm = TaskManager.instance
 
+=begin
 @gm.create_group_array(5)
 @rm.create_require_array(10)
-@tm.create_task_array(10)
+@tm.create_task_array(6)
+=end
+@gm.load_group_data("120329_group.json")
+@rm.load_require_data("120329_require.json")
+@tm.load_task_data("120329_task.json")
 
 @gm.save_group_data("120329_group.json")
 @rm.save_require_data("120329_require.json")
@@ -63,11 +83,13 @@ $taskList.each{|task|
   print "\tDB:" + db.to_s
   print "\tB:" + b.to_s
   print "\n"
-  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + b + get_extime_high_priority(task.proc, task.priority)}"
+  pri = get_extime_high_priority(task) 
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{pri} = #{task.extime + b + pri}"
 }
 
 taskset.show_taskset
 
+=begin
 puts "全部long"
 
 #
@@ -93,7 +115,7 @@ $taskList.each{|task|
   print "\tDB:" + db.to_s
   print "\tB:" + b.to_s
   print "\n"
-  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + b + get_extime_high_priority(task.proc, task.priority)}"
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task)} = #{task.extime + b + get_extime_high_priority(task)}"
 }
 
 taskset.show_taskset
@@ -124,8 +146,8 @@ $taskList.each{|task|
   print "\tDB:" + db.to_s
   print "\tB:" + b.to_s
   print "\n"
-  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + b + get_extime_high_priority(task.proc, task.priority)}"
+  puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{get_extime_high_priority(task)} = #{task.extime + b + get_extime_high_priority(task)}"
 }
 
 taskset.show_taskset
-
+=end
