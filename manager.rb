@@ -173,7 +173,7 @@ class TaskManager
     proc = rand(PROC_NUM) + 1
     priority = rand(PRIORITY_MAX) + 1
     extime = req_time + rand(TASK_EXE_MAX - req_time)
-    period = 1000 #(extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
+    period = (extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
     offset = 0 #rand(10)
 
     #################

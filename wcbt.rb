@@ -188,6 +188,11 @@ module WCBT
       print "\n"
       pri = get_extime_high_priority(task) 
       puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{pri} = #{task.extime + b + pri}"
+      if task.period < task.extime + b + pri
+        puts "\t\t周期#{task.period}<最悪応答時間#{task.extime + b + pri}".red
+      else
+        puts "\t\t周期#{task.period}>最悪応答時間#{task.extime + b + pri}"
+      end
     }
   end
 
