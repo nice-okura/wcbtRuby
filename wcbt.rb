@@ -165,6 +165,28 @@ module WCBT
     #puts ""
     return time
   end
+  
+  def show_blocktime
+    $taskList.each{|task|
+      print "タスク#{task.task_id}"
+      bb = BB(task)
+      ab = AB(task)
+      sb = SB(task)
+      lb = LB(task)
+      db = DB(task)
+      
+      b = bb + ab + sb + lb + db
+      print "\tBB:" + bb.to_s
+      print "\tAB:" + ab.to_s
+      print "\tSB:" + sb.to_s
+      print "\tLB:" + lb.to_s
+      print "\tDB:" + db.to_s
+      print "\tB:" + b.to_s
+      print "\n"
+      pri = get_extime_high_priority(task) 
+      puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{pri} = #{task.extime + b + pri}"
+    }
+  end
 
   ##############################
   
