@@ -166,6 +166,9 @@ module WCBT
     return time
   end
   
+  #
+  # 以下のフォーマットでブロック時間等表示
+  #
   def show_blocktime
     $taskList.each{|task|
       print "タスク#{task.task_id}"

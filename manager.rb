@@ -55,18 +55,7 @@ $task_list = [] # タスクの配列
 # Singleton
 #
 class AllManager
-  attr_reader :tm, :rm, :gm
-  #  @@m = nil
-
-=begin
-  #
-  # インスタンス
-  #
-  def self.instance(tname="", rname="", gname="", tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT)
-    return @@m if @@m
-    @@m=new(tname, rname, gname, tcount, rcount, gcount)
-  end
-=end
+  attr_reader :tm, :rm, :gm, :using_group_array
   
   #
   # 初期化
@@ -87,6 +76,8 @@ class AllManager
     return false unless @gm.load_group_data(gname)
     return false unless @rm.load_require_data(rname)
     return false unless @tm.load_task_data(tname)
+    @using_group_array = get_using_group_array
+    
     return true
   end
  
@@ -108,6 +99,8 @@ class AllManager
     @gm.create_group_array(gcount)
     @rm.create_require_array(rcount)
     @tm.create_task_array(tcount)
+    
+    @using_group_array = get_using_group_array
   end
   
   #
@@ -117,6 +110,23 @@ class AllManager
     @gm.data_clear
     @rm.data_clear
     @tm.data_clear
+  end
+  
+  #
+  # システムで使用中のリソースグループの配列を取得
+  # rarrayはシステムで使用するリソース要求の配列
+  # new_garrayは新しいグループ配列
+  #
+  def get_using_group_array
+    new_garray = []
+    
+    @rm.get_require_array.each{|r|
+      unless new_garray.include?(r.res) 
+        new_garray << r.res
+      end
+    }
+    
+    return new_garray
   end
 end
 
@@ -163,7 +173,7 @@ class TaskManager
     proc = rand(PROC_NUM) + 1
     priority = rand(PRIORITY_MAX) + 1
     extime = req_time + rand(TASK_EXE_MAX - req_time)
-    period = (extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
+    period = 1000 #(extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
     offset = 0 #rand(10)
 
     #################

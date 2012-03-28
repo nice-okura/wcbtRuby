@@ -38,7 +38,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.gm.get_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.using_group_array[i].kind = c.chr=="0" ? "short" : "long"
     i += 1
   }
 end
@@ -47,11 +47,10 @@ end
 # 現在のリソースグループ表示
 #
 def show_groups
-  @manager.gm.get_group_array.each{|g|
+  @manager.using_group_array.each{|g|
     print "#{g.kind[0].chr} "
   }
 end
-
 
 include WCBT
 $DEBUG = false
@@ -66,6 +65,7 @@ $DEBUG = false
 
 $taskList = @manager.tm.get_task_array
 taskset = TaskSet.new(@manager.tm.get_task_array)
+new_group_array = @manager.using_group_array
 
 puts "通常"
 
@@ -74,9 +74,14 @@ show_blocktime
 taskset.show_taskset
 
 #
+# システムで使用するリソースグループを取得
+#
+pp new_group_array
+
+#
 # グループ数
 #
-group_count = @manager.gm.get_group_array.size
+group_count = new_group_array.size
 
 #
 # グループのパターン数
@@ -92,7 +97,7 @@ group_binary = group_times.to_s(2)
 #
 # リソースを全てshortにする
 #
-@manager.gm.get_group_array.each{|g|
+new_group_array.each{|g|
   g.kind = "short"
 }
 
@@ -119,7 +124,7 @@ group_times.times{
     db = DB(task)
     
     b = bb + ab + sb + lb + db
-    wcrt = get_wcrt(taks, b)
+    wcrt = get_wcrt(task, b)
     if wcrt_max_system < wcrt
       wcrt_max_system = wcrt
     end
