@@ -154,13 +154,14 @@ class TaskManager
     req_list = []
     REQ_NUM.times{
       if rand(2) == 1
-        req_list += [RequireManager.get_random_req]
+        req_list << RequireManager.get_random_req unless RequireManager.get_random_req == []
       end
     }
     #reqList.uniq!
     
+    
     req_time = 0
-    #pp reqList
+    #pp req_list
     req_list.each{|req|
       req_time += req.time
     }
@@ -169,13 +170,24 @@ class TaskManager
     # タスクステータス #
     #################
     
+    #
+    # 120409用
+    #
+    @@task_id += 1
+    proc = @@task_id%2 == 0 ? 1 : 2
+    priority = @@task_id
+    period = rand(960) + 40
+    extime = 0.125/4 * period - req_time
+    offset = 0 #rand(10)
+    
+=begin    
     @@task_id += 1
     proc = rand(PROC_NUM) + 1
     priority = rand(PRIORITY_MAX) + 1
     extime = req_time + rand(TASK_EXE_MAX - req_time)
     period = (extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
     offset = 0 #rand(10)
-
+=end
     #################
     
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
@@ -347,7 +359,7 @@ class RequireManager
     time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
     r = RequireManager.get_random_req
-    if r != [] && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long")then
+    if r != [] && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long") && group.kind != r.res.kind
       # ※2段ネストまで対応
       if r.res != group && time > r.time
         req << r.clone
@@ -361,7 +373,7 @@ class RequireManager
   #
   def RequireManager.get_random_req
     ra = []
-    if @@require_array.size <= 1 then
+    if @@require_array.size < 1 then
       ra = []
     else
       ra = @@require_array[rand(@@require_array.size)].clone

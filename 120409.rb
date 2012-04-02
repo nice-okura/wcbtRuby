@@ -87,12 +87,6 @@ taskset = TaskSet.new(@manager.tm.get_task_array)
 #
 new_group_array = @manager.using_group_array
 
-puts "通常"
-
-show_blocktime
-
-taskset.show_taskset
-
 pp new_group_array
 
 #
@@ -102,3 +96,6 @@ new_group_array.each{|g|
   g.kind = "short"
 }
 #save_short
+show_blocktime
+
+taskset.show_taskset

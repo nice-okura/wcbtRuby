@@ -12,7 +12,7 @@
 # タスククラス
 #
 class Task
-  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list
+  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id
     @proc = proc
@@ -21,6 +21,7 @@ class Task
     @priority = priority.to_i
     @offset = offset.to_i
     @req_list = reqarray
+    @reqtime = get_require_time
     check_outermost
     check_over_extime
     set_begin_time
@@ -44,14 +45,22 @@ class Task
   end
   
   #
-  # リソース要求時間が
-  # タスクの実行時間を超えていないかチェック
+  # 総リソース要求時間を計算
   #
-  def check_over_extime
+  def get_require_time
     time = 0
     req_list.each{|req|
       time += req.time
     }
+    return time
+  end
+  
+  #
+  # リソース要求時間が
+  # タスクの実行時間を超えていないかチェック
+  #
+  def check_over_extime
+    time = @reqtime
     
     if @extime < time then
       #puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
