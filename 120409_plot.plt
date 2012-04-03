@@ -152,5 +152,9 @@ set fontpath
 set psdir
 set fit noerrorvariables
 GNUTERM = "x11"
-plot "120409_plot.dat" using 1:2 title "1 short resource" w l, "120409_plot.dat" using 1:3 title "2 short resources" with lines, "120409_plot.dat" using 1:4 title "3 short resources" with lines, "120409_plot.dat" using 1:5 title "4 short resources" with lines
+plot "120409_plot.dat" using 1:2 title "1 short resource" w l, \
+     "120409_plot.dat" using 1:3 title "2 short resources" w l, \
+     "120409_plot.dat" using 1:4 title "3 short resources" w l, \
+     "120409_plot.dat" using 1:5 title "4 short resources" w l, \
+     "120409_plot.dat" using 1:6 title "5 short resources" w l
 #    EOF

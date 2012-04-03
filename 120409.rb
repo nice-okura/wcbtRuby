@@ -85,23 +85,26 @@ uabj_array[0] = []
 uabj_array[1] = []
 uabj_array[2] = []
 uabj_array[3] = []
+uabj_array[4] = []
 
 
 resource_kind = "short"  
-loop_count = 6
+loop_count = 10
 
+granularity = 50  # 粒度
+start_rcls = 0.1
 
-0.1.step(1.0, 0.1){|v|
+start_rcls.step(1.0, 1.0/granularity){|v|
   uabj_hash[v] = 0.0
 }
-pbar = ProgressBar.new("", loop_count*10*4 + 10)
+pbar = ProgressBar.new("", loop_count*granularity*5)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-for resource_count in 1..4
-  10.times{uabj_array[resource_count-1] << 0}
+for resource_count in 1..5
+  granularity.times{uabj_array[resource_count-1] << 0}
   loop_count.times{
-    rcls = 0.1
+    rcls = start_rcls
     i = 0 
     while rcls < 1.0
       #p rcls
@@ -126,10 +129,14 @@ for resource_count in 1..4
       }
       #save_short
       
-      uabj_array[resource_count-1][i] += show_blocktime_120409
-      
+      begin
+        uabj_array[resource_count-1][i] += show_blocktime_120409
+      rescue
+        puts "\n\ni:#{i}"
+        exit
+      end
       #taskset.show_taskset
-      rcls += 0.1
+      rcls += 1.0/granularity
       i += 1
       pbar.inc
     end
@@ -141,16 +148,15 @@ for resource_count in 1..4
   #pp uabj_hash
   
   #pp uabj_array
-  uabj_array[resource_count-1].map!{|x| x/6.0}
+  uabj_array[resource_count-1].map!{|x| x/loop_count}
   #pp uabj_array
 end
 
 File.open("120409_plot.dat", "w"){|fp|
-  rcls = 0.1
-  for i in 0..9
-    fp.puts "#{rcls} #{uabj_array[0][i]} #{uabj_array[1][i]} #{uabj_array[2][i]} #{uabj_array[3][i]}"
-    rcls += 0.1
-    pbar.inc
-  end
+  rcls = start_rcls
+  0.upto(granularity - 1){|i|
+    fp.puts "#{rcls} #{uabj_array[0][i]} #{uabj_array[1][i]} #{uabj_array[2][i]} #{uabj_array[3][i]} #{uabj_array[4][i]}"
+    rcls += 1.0/granularity
+  }
 }
 pbar.finish
