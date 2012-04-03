@@ -12,7 +12,7 @@
 # タスククラス
 #
 class Task
-  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime
+  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id
     @proc = proc

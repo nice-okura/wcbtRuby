@@ -65,8 +65,9 @@ class AllManager
     @tm = TaskManager.instance
     @rm = RequireManager.instance
     @gm = GroupManager.instance
+    
   end
-  
+
   
   #
   # 各要素の読み込み
@@ -95,14 +96,18 @@ class AllManager
   #
   # タスク生成
   #
-  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT)
+  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT, info=["0"])
     @gm.create_group_array(gcount)
+    
+    @rm.set_garray(@gm.get_group_array)
     @rm.create_require_array(rcount)
-    @tm.create_task_array(tcount)
+    
+    @tm.set_array(@rm.get_require_array, @gm.get_group_array)
+    @tm.create_task_array(tcount, info)
     
     @using_group_array = get_using_group_array
   end
-  
+    
   #
   # 全データ初期化
   #
@@ -143,6 +148,76 @@ class TaskManager
     @@task_id = 0
     @@task_array = []
   end
+
+  #
+  # require_arrayとgroup_arrayをセットする
+  #
+  def set_array(rarray, garray)
+    @@rarray = rarray
+    @@garray = garray
+    return true
+  end
+  
+  #
+  # ランダムタスク生成
+  # rcsl:実行時間に対するリソース要求時間の比
+  #
+  private
+  def create_task_120409(task_count, rcsl)
+    #################
+    # タスクステータス #
+    #################
+    
+    #
+    # 120409用
+    #
+    @@task_id += 1
+
+    # リソース要求
+    # 最大REQ_NUM回リソースを取得
+    req_list = []
+    gcount = @@garray.size
+    gnum = @@task_id%gcount + 1  # 使用するグループのID
+    new_garray = []
+    @@rarray.each{|r|
+      if r.res.group == gnum
+        new_garray << r
+      end
+    }
+    REQ_NUM.times{ 
+      loop do
+        r = new_garray.choice
+        #p "gnum:#{gnum}"
+        #p r.res.group
+        if r.res.group == gnum
+          req_list << r
+          break
+        end
+      end
+    }
+        
+    #reqList.uniq!
+    
+    
+    req_time = 0
+    #pp req_list
+    req_list.each{|req|
+      req_time += req.time
+    }
+    
+    proc = @@task_id%PROC_NUM+1
+    priority = @@task_id
+    extime = req_time/rcsl
+    period = extime/((1.0/(task_count/PROC_NUM).to_f)/4.0)
+    offset = 0 #rand(10)
+    
+    #################
+    
+    task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
+    
+    return task
+  end
+  
   
   #
   # ランダムタスク生成
@@ -169,25 +244,12 @@ class TaskManager
     #################
     # タスクステータス #
     #################
-    
-    #
-    # 120409用
-    #
-    @@task_id += 1
-    proc = @@task_id%2 == 0 ? 1 : 2
-    priority = @@task_id
-    period = rand(960) + 40
-    extime = 0.125/4 * period - req_time
-    offset = 0 #rand(10)
-    
-=begin    
     @@task_id += 1
     proc = rand(PROC_NUM) + 1
     priority = rand(PRIORITY_MAX) + 1
     extime = req_time + rand(TASK_EXE_MAX - req_time)
     period = (extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
     offset = 0 #rand(10)
-=end
     #################
     
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
@@ -200,15 +262,25 @@ class TaskManager
   # 生成したタスクの数を返す
   #
   public
-  def create_task_array(i)
-    #
-    # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
-    # そうでなければそのまま
-    #
+  def create_task_array(i, info=["0"])
     tarray = []
-    i.times{
-      tarray << create_task
-    }
+    
+    if info[0] == "0"
+      #
+      # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
+      # そうでなければそのまま
+      #
+      i.times{
+        tarray << create_task
+      }
+    elsif info[0] == "120409"
+      # info[1] はrcls
+      #puts "120409 MODE"
+      i.times{
+        tarray << create_task_120409(i, info[1])
+      }
+    end
+    
     @@task_array = tarray
     return @@task_array.size
   end
@@ -322,6 +394,7 @@ class TaskManager
   #
   public
   def data_clear
+    @@task_id = 0
     @@task_array = []
   end
   
@@ -350,6 +423,13 @@ class RequireManager
   end 
  
   #
+  # group_arrayをセット
+  #
+  def set_garray(garray)
+    @@garray = garray
+  end
+  
+  #
   # ランダムにリソース要求を作成
   #
   private
@@ -376,7 +456,7 @@ class RequireManager
     if @@require_array.size < 1 then
       ra = []
     else
-      ra = @@require_array[rand(@@require_array.size)].clone
+      ra = @@require_array.choice.clone
     end
     return ra
   end
@@ -403,11 +483,24 @@ class RequireManager
   #
   public
   def create_require_array(i)
-    data_clear
-    i.times{
-      @@require_array << create_require
-    }
+    flg = false
+    until flg
+      data_clear
+      garray = []
+      i.times{
+        c = create_require
+        garray << c.res.group
+        @@require_array << c
+      }
+      garray.uniq!
+      
+      #
+      # 全てのグループのリソース要求が作成されたか確認
+      #
+      flg = true if garray.size == @@garray.size
+    end
     return @@require_array.size
+      
   end
   
   #
@@ -500,6 +593,7 @@ class RequireManager
   #
   public
   def data_clear
+    @@id = 0
     @@require_array = []
     return true
   end
@@ -652,7 +746,7 @@ class GroupManager
       puts "グループが生成されていません．"
       return nil
     end
-    return @@group_array[rand(@@group_array.size)]
+    return @@group_array.choice
   end
   
   #
@@ -660,6 +754,7 @@ class GroupManager
   #
   public
   def data_clear
+    @@group_id = 0
     @@group_array = []
     return true
   end

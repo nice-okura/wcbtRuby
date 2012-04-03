@@ -20,6 +20,7 @@ require "task-CUI"
 require "manager"
 require "rubygems"
 require "progressbar"
+require "pp"
 
 #IN_FILENAME = ARGV[0]
 OUT_FILENAME = ARGV[0]
@@ -39,7 +40,7 @@ def get_wcrt(task, b=nil)
   time = 0
   if b == nil
     block = BB(task)
-  else
+    else
     block = b
   end
   
@@ -78,24 +79,78 @@ $DEBUG = false
 
 @manager = AllManager.new
 #@manager.load_tasks("#{IN_FILENAME}_task.json", "#{IN_FILENAME}_require.json", "#{IN_FILENAME}_group.json")
-@manager.create_tasks(32, 1, 1)
-$taskList = @manager.tm.get_task_array
-taskset = TaskSet.new(@manager.tm.get_task_array)
+uabj_hash = Hash::new
+uabj_array = [[]]
+uabj_array[0] = []
+uabj_array[1] = []
+uabj_array[2] = []
+uabj_array[3] = []
 
-#
-# システムで使用するリソースグループを取得
-#
-new_group_array = @manager.using_group_array
 
-pp new_group_array
+resource_kind = "short"  
+loop_count = 6
 
-#
-# リソースを全てshortにする
-#
-new_group_array.each{|g|
-  g.kind = "short"
+
+0.1.step(1.0, 0.1){|v|
+  uabj_hash[v] = 0.0
 }
-#save_short
-show_blocktime
+pbar = ProgressBar.new("", loop_count*10*4 + 10)
+pbar.format_arguments = [:percentage, :bar, :stat]
+pbar.format = "%3d%% %s %s"
 
-taskset.show_taskset
+for resource_count in 1..4
+  10.times{uabj_array[resource_count-1] << 0}
+  loop_count.times{
+    rcls = 0.1
+    i = 0 
+    while rcls < 1.0
+      #p rcls
+      @manager.all_data_clear
+      info = ["120409", rcls]
+      @manager.create_tasks(32, 6, resource_count, info)
+      $taskList = @manager.tm.get_task_array
+      taskset = TaskSet.new(@manager.tm.get_task_array)
+      
+      #
+      # システムで使用するリソースグループを取得
+      #
+      new_group_array = @manager.using_group_array
+      
+      #pp new_group_array
+      
+      #
+      # リソースを全てshortにする
+      #
+      new_group_array.each{|g|
+        g.kind = resource_kind
+      }
+      #save_short
+      
+      uabj_array[resource_count-1][i] += show_blocktime_120409
+      
+      #taskset.show_taskset
+      rcls += 0.1
+      i += 1
+      pbar.inc
+    end
+  }
+  #pp uabj_hash
+  #uabj_hash.each_key{|k|
+  #  uabj_hash[k] /= 6
+  #}
+  #pp uabj_hash
+  
+  #pp uabj_array
+  uabj_array[resource_count-1].map!{|x| x/6.0}
+  #pp uabj_array
+end
+
+File.open("120409_plot.dat", "w"){|fp|
+  rcls = 0.1
+  for i in 0..9
+    fp.puts "#{rcls} #{uabj_array[0][i]} #{uabj_array[1][i]} #{uabj_array[2][i]} #{uabj_array[3][i]}"
+    rcls += 0.1
+    pbar.inc
+  end
+}
+pbar.finish
