@@ -48,8 +48,10 @@ class Test_taskMaker < Test::Unit::TestCase
     @@gm = GroupManager.instance
     i = rand(100)
     @@gm.create_group_array(i)
+    @@rm.set_garray(@@gm.get_group_array)
     @@rm.create_require_array(i)
 
+    @@tm.set_array(@@rm.get_require_array, @@gm.get_group_array)
   end
 
   def test_initialize

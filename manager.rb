@@ -163,22 +163,27 @@ class TaskManager
   # rcsl:実行時間に対するリソース要求時間の比
   #
   private
-  def create_task_120409(task_count, rcsl)
+  def create_task_120405(task_count, rcsl)
     #################
     # タスクステータス #
     #################
     
     #
-    # 120409用
+    # 120405用
     #
     @@task_id += 1
 
+    task_id_array = [1..task_count]
+    get_task_array.each{|t|
+      task_id_array.delete(t.task_id)
+    }
     # リソース要求
     # 最大REQ_NUM回リソースを取得
     req_list = []
     gcount = @@garray.size
     gnum = @@task_id%gcount + 1  # 使用するグループのID
     new_garray = []
+    p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
     @@rarray.each{|r|
       if r.res.group == gnum
         new_garray << r
@@ -206,7 +211,7 @@ class TaskManager
     }
     
     proc = @@task_id%PROC_NUM+1
-    priority = @@task_id
+    priority = task_id_array.choice
     extime = req_time/rcsl
     period = extime/((1.0/(task_count/PROC_NUM).to_f)/4.0)
     offset = 0 #rand(10)
@@ -273,11 +278,11 @@ class TaskManager
       i.times{
         tarray << create_task
       }
-    elsif info[0] == "120409"
+    elsif info[0] == "120405"
       # info[1] はrcls
-      #puts "120409 MODE"
+      #puts "120405 MODE"
       i.times{
-        tarray << create_task_120409(i, info[1])
+        tarray << create_task_120405(i, info[1])
       }
     end
     
