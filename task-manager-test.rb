@@ -46,7 +46,7 @@ class Test_taskMaker < Test::Unit::TestCase
     @@tm = TaskManager.instance
     @@rm = RequireManager.instance
     @@gm = GroupManager.instance
-    i = rand(100)
+    i = 10
     @@gm.create_group_array(i)
     @@rm.set_garray(@@gm.get_group_array)
     @@rm.create_require_array(i)

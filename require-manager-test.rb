@@ -44,8 +44,10 @@ $DEBUG = false
 class TestRequireManager < Test::Unit::TestCase
   def setup
     @@gm = GroupManager.instance
-    @@gm.create_group_array(10)
+    count = rand(100)
+    @@gm.create_group_array(count)
     @@rm = RequireManager.instance
+    @@rm.set_garray(@@gm.get_group_array)
     @@rm.data_clear
   end
 
@@ -54,18 +56,22 @@ class TestRequireManager < Test::Unit::TestCase
   end
   
   def test_create_require
-    i = rand(100)
+    assert_kind_of(Req, @@rm.create_require())
+  end
+  
+  def test_create_require_array
+    i = 1
     assert_equal(i, @@rm.create_require_array(i))
   end
-    
+
   def test_data_clear
     assert(@@rm.data_clear)
     assert_equal([], @@rm.get_require_array)
   end
   
   def test_load
-    assert_equal(28, @@rm.load_require_data("sample_require.json"))
-    assert_equal(28, @@rm.get_require_array.size)
+    assert_equal(31, @@rm.load_require_data("sample_require.json"))
+    assert_equal(31, @@rm.get_require_array.size)
     
     @@rm.data_clear
     # JSONじゃないファイルを入力
@@ -74,9 +80,11 @@ class TestRequireManager < Test::Unit::TestCase
   end
   
   def test_get_random_req
-    i = rand(100)
-    assert_equal(i, @@rm.create_require_array(i))
-    assert_kind_of(Req, RequireManager.get_random_req)
-  
+    100.times{
+      i = rand(100)
+      assert_equal(i, @@rm.create_require_array(i))
+      assert_kind_of(Req || NilClass, RequireManager.get_random_req)
+    }
   end
+
 end

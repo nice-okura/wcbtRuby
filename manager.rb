@@ -234,7 +234,7 @@ class TaskManager
     req_list = []
     REQ_NUM.times{
       if rand(2) == 1
-        req_list << RequireManager.get_random_req unless RequireManager.get_random_req == []
+        req_list << RequireManager.get_random_req unless RequireManager.get_random_req == nil
       end
     }
     #reqList.uniq!
@@ -437,14 +437,18 @@ class RequireManager
   #
   # ランダムにリソース要求を作成
   #
-  private
-  def create_require
+  public #private
+  def create_require(group=nil)
     @@id += 1
-    group = GroupManager.get_random_group
+    if group == nil 
+      #puts "RRRRRRRRRRRRR"
+      group = GroupManager.get_random_group
+    end
     time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
     req = []
+    #p @@id
     r = RequireManager.get_random_req
-    if r != [] && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long") && group.kind != r.res.kind
+    if r != nil && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long") && group.kind != r.res.kind
       # ※2段ネストまで対応
       if r.res != group && time > r.time
         req << r.clone
@@ -455,12 +459,14 @@ class RequireManager
   
   #
   # ランダムにリソース要求を返す
+  # 作成されている要求がなければ，nilを返す
   #
   def RequireManager.get_random_req
     ra = []
     if @@require_array.size < 1 then
-      ra = []
+      ra = nil
     else
+      #p @@require_array.size
       ra = @@require_array.choice.clone
     end
     return ra
@@ -489,20 +495,34 @@ class RequireManager
   public
   def create_require_array(i)
     flg = false
+    g_array = []  # 作るべきリソース要求のグループ
+    @@garray.each{|g|
+      g_array << g
+    }
+    new_group = nil
+    #p g_id_array
     until flg
       data_clear
       garray = []
+      #puts "i:#{i}"
+      
       i.times{
-        c = create_require
+        new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
+        new_group = GroupManager.get_random_group if new_group == nil
+        g_array.delete(new_group)
+        c = create_require(new_group)
+        #p c
         garray << c.res.group
         @@require_array << c
       }
+      #p garray
+
       garray.uniq!
       
-      #
+      #p "@@garray:#{@@garray}"
       # 全てのグループのリソース要求が作成されたか確認
       #
-      flg = true if garray.size == @@garray.size
+      flg = true if garray.size == @@garray.size || i < @@garray.size
     end
     return @@require_array.size
       
