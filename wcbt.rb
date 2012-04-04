@@ -173,19 +173,19 @@ module WCBT
   def show_blocktime
     $taskList.each{|t|
       print "タスク#{t.task_id}"      
-      print "\tBB:" + t.bb.to_s
-      print "\tAB:" + t.ab.to_s
-      print "\tSB:" + t.sb.to_s
-      print "\tLB:" + t.lb.to_s
-      print "\tDB:" + t.db.to_s
-      print "\tB:" + t.b.to_s
+      print "\tBB:" + sprintf("%.3f", t.bb)
+      print "\tAB:" + sprintf("%.3f", t.ab)
+      print "\tSB:" + sprintf("%.3f", t.sb)
+      print "\tLB:" + sprintf("%.3f", t.lb)
+      print "\tDB:" + sprintf("%.3f", t.db)
+      print "\tB:" + sprintf("%.3f", t.b)
       print "\n"
       pri = get_extime_high_priority(t) 
-      puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{t.b} + プリエンプト時間#{pri} = #{t.extime + t.b + pri}"
+      #puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{sprintf("%.3f", t.b)} + プリエンプト時間#{sprintf("%.3f", pri)} = #{sprintf("%.3f", t.extime + t.b + pri)}"
       if t.period < t.extime + t.b + pri
-        puts "\t\t周期#{t.period}<最悪応答時間#{t.extime + t.b + pri}".red
+        puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}".red
       else
-        puts "\t\t周期#{t.period}>最悪応答時間#{t.extime + t.b + pri}"
+        puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}"
       end
     }
   end
@@ -193,6 +193,7 @@ module WCBT
   #
   # タスクにブロック時間情報を格納
   #
+  public
   def set_blocktime(t)
     t.bb = BB(t)
     t.ab = AB(t)
@@ -207,6 +208,7 @@ module WCBT
   # 以下のフォーマットでブロック時間等表示
   # 120409用
   #
+  private
   def show_blocktime_120409
     $taskList.each{|task|
       #RubyProf.start

@@ -182,7 +182,12 @@ class Task
     plus_time = 0
     req_list.each{|req|
       #puts "non_req_time:" + non_req_time.to_s
-      random = rand(non_req_time)
+      begin
+      random = rand(non_req_time.to_i)
+      rescue => e
+        puts e
+        puts "non_req_time:#{non_req_time} extime:#{extime} req_time:#{req_time}"
+      end
       plus_time += non_req_time <= 0 ? 0 : random  # rand関数の引数が0だと0以下の浮動小数点数が返る
       #puts "plus_time:" + plus_time.to_s
       req.begintime += plus_time

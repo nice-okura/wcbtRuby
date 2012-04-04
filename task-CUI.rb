@@ -179,7 +179,7 @@ class TaskCUI
       str += ")"
       reqtime -= subreq.time
     }
-    reqtime.times{
+    reqtime.to_i.times{
       req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
     }
 =begin

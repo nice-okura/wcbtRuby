@@ -2,18 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 #= 120405ミーティング用_3
-# spinningをsuspendingの比較実験
-# Real-time synchronization on multiprocessors: To block or not to block, to suspend or spin?
-# の4.3 Spinning vs. Suspending
-# Spin-based utilization loss
-# にあったように，
-# ・32タスクからなる6タスクセット
-# ・各タスクは[40ms, 1000ms]の周期
-# ・使用率は0.125の4分の1くらい
-# ・コア数は4
-# ・longリソースのみ，1, 2, 4種類のshortリソースのみ，の4種類の場合で実験
-# ・n種類のリソースがある場合は，その32/nグループにタスクを分けて，それぞれが別のリソースと競合するようにする．
-# ・比較は，バックグラウンドのジョブがどんだけ実行できるか．
+# リソース要求時間でlongとshortを分ける
+# 分ける境界(RCLS)はborderとして，0.1〜1.0まで変化させて計算
 
 require "task"
 require "task-CUI"
@@ -77,102 +67,29 @@ $DEBUG = false
 #
 #############################
 
-@manager = AllManager.new
-#@manager.load_tasks("#{IN_FILENAME}_task.json", "#{IN_FILENAME}_require.json", "#{IN_FILENAME}_group.json")
-uabj_array = [[]]
-
+task_count = 12
 resource_max = 4
-resource_kind = "long"
-loop_count = 6
-task_count = 32
 
-granularity = 10  # 粒度
-start_rcls = 0.0
-end_rcls = 1.0
+rcls = 0.3
+rcls_border = 0.1
+info = ["120405_3", rcls]
+@manager = AllManager.new
+@manager.create_tasks(task_count, 10, resource_max, info)
+$taskList = @manager.tm.get_task_array
+taskset = TaskSet.new(@manager.tm.get_task_array)
 
-x_count = ((end_rcls - start_rcls) / (1.0/granularity)).to_i
-p x_count
-0.upto(resource_max-1){|i|
-  uabj_array[i] = []
-  0.upto(x_count-1){|j|
-    uabj_array[i][j] = 0.0
-  }
-}
-
-
-
-pbar = ProgressBar.new("", loop_count*granularity*resource_max)
-pbar.format_arguments = [:percentage, :bar, :stat]
-pbar.format = "%3d%% %s %s"
-taskset = []
-for resource_count in 1..resource_max
-  granularity.times{uabj_array[resource_count-1] << 0}
-  1.upto(loop_count){|lc|
-    rcls = start_rcls
-    i = 0 
-    while rcls < end_rcls
-      #p rcls
-      @manager.all_data_clear
-      info = ["120405", rcls]
-      #p resource_count
-      @manager.create_tasks(task_count, resource_count*2, resource_count, info)
-      $taskList = @manager.tm.get_task_array
-      taskset = TaskSet.new(@manager.tm.get_task_array)
-      
-      #
-      # システムで使用するリソースグループを取得
-      #
-      new_group_array = @manager.using_group_array
-      
-      #pp new_group_array
-      
-      #
-      # リソースを全てshortにする
-      #
-      new_group_array.each{|g|
-        g.kind = resource_kind
-      }
-      #save_short
-      
-      begin
-        uabj_array[resource_count-1][i] += show_blocktime_120409_2
-      rescue => e
-        puts e
-        puts "\n\ni:#{i}"
-        exit
-      end
-=begin
-      if lc == 1 && rcls == 0.1
-        puts "resource_count : #{resource_count}".red
-        taskset.show_taskset
-      end
-=end
-      rcls += 1.0/granularity
-      i += 1
-      pbar.inc
-    end
-  }  
-  #pp uabj_array
-  uabj_array[resource_count-1].map!{|x| x/loop_count} # 平均
-  #pp uabj_array
-end
-show_blocktime
-File.open("120405_2_plot_#{resource_kind}.dat", "w"){|fp|
-  rcls = start_rcls
-  0.upto(x_count - 1){|j|
-    str = ""
-    0.upto(resource_max - 1){|i|
-      begin
-        str +=  "#{uabj_array[i][j]} "
-      rescue => e
-        puts "i:j = #{i}#{j}"
-        puts "#{uabj_array[i]}"
-        $stderr.puts e
-        exit
+0.1.step(1.0, 0.1){|border|
+  puts border.to_s.red
+  $taskList.each{|t|
+    set_blocktime(t)
+    t.req_list.each{|r|
+      if r.time < t.extime * border
+        r.res.kind = "short"
+        else
+        r.res.kind = "long"
       end
     }
-    fp.puts "#{rcls} #{str}"
-    rcls += 1.0/granularity
   }
+  taskset.show_taskset
+  show_blocktime
 }
-pbar.finish
