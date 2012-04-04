@@ -249,7 +249,7 @@ module WCBT
       #      puts "#{partition(p).size}"
       partition(p).each{|t|
         #puts "#{(t.extime+t.sb.to_f)/t.period}"
-        u += (t.extime+t.sb.to_f)/t.period
+        u += (t.extime + t.b - t.lb)/t.period
       }
       #puts "CPU#{p}使用率:#{u}"
       uabj -= u

@@ -83,7 +83,7 @@ class TestRequireManager < Test::Unit::TestCase
     100.times{
       i = rand(100)
       assert_equal(i, @@rm.create_require_array(i))
-      assert_kind_of(Req || NilClass, RequireManager.get_random_req)
+      assert_kind_of(Req, RequireManager.get_random_req)
     }
   end
 

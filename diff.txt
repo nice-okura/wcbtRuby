@@ -1,0 +1,653 @@
+diff --git a/120409.rb b/120409.rb
+index 847a679..b118f65 100644
+--- a/120409.rb
++++ b/120409.rb
+@@ -20,6 +20,7 @@ require "task-CUI"
+ require "manager"
+ require "rubygems"
+ require "progressbar"
++require "pp"
+ 
+ #IN_FILENAME = ARGV[0]
+ OUT_FILENAME = ARGV[0]
+@@ -39,7 +40,7 @@ def get_wcrt(task, b=nil)
+   time = 0
+   if b == nil
+     block = BB(task)
+-  else
++    else
+     block = b
+   end
+   
+@@ -78,24 +79,78 @@ $DEBUG = false
+ 
+ @manager = AllManager.new
+ #@manager.load_tasks("#{IN_FILENAME}_task.json", "#{IN_FILENAME}_require.json", "#{IN_FILENAME}_group.json")
+-@manager.create_tasks(32, 1, 1)
+-$taskList = @manager.tm.get_task_array
+-taskset = TaskSet.new(@manager.tm.get_task_array)
++uabj_hash = Hash::new
++uabj_array = [[]]
++uabj_array[0] = []
++uabj_array[1] = []
++uabj_array[2] = []
++uabj_array[3] = []
+ 
+-#
+-# システムで使用するリソースグループを取得
+-#
+-new_group_array = @manager.using_group_array
+ 
+-pp new_group_array
++resource_kind = "short"  
++loop_count = 6
+ 
+-#
+-# リソースを全てshortにする
+-#
+-new_group_array.each{|g|
+-  g.kind = "short"
++
++0.1.step(1.0, 0.1){|v|
++  uabj_hash[v] = 0.0
+ }
+-#save_short
+-show_blocktime
++pbar = ProgressBar.new("", loop_count*10*4 + 10)
++pbar.format_arguments = [:percentage, :bar, :stat]
++pbar.format = "%3d%% %s %s"
++
++for resource_count in 1..4
++  10.times{uabj_array[resource_count-1] << 0}
++  loop_count.times{
++    rcls = 0.1
++    i = 0 
++    while rcls < 1.0
++      #p rcls
++      @manager.all_data_clear
++      info = ["120409", rcls]
++      @manager.create_tasks(32, 6, resource_count, info)
++      $taskList = @manager.tm.get_task_array
++      taskset = TaskSet.new(@manager.tm.get_task_array)
++      
++      #
++      # システムで使用するリソースグループを取得
++      #
++      new_group_array = @manager.using_group_array
++      
++      #pp new_group_array
++      
++      #
++      # リソースを全てshortにする
++      #
++      new_group_array.each{|g|
++        g.kind = resource_kind
++      }
++      #save_short
++      
++      uabj_array[resource_count-1][i] += show_blocktime_120409
++      
++      #taskset.show_taskset
++      rcls += 0.1
++      i += 1
++      pbar.inc
++    end
++  }
++  #pp uabj_hash
++  #uabj_hash.each_key{|k|
++  #  uabj_hash[k] /= 6
++  #}
++  #pp uabj_hash
++  
++  #pp uabj_array
++  uabj_array[resource_count-1].map!{|x| x/6.0}
++  #pp uabj_array
++end
+ 
+-taskset.show_taskset
++File.open("120409_plot.dat", "w"){|fp|
++  rcls = 0.1
++  for i in 0..9
++    fp.puts "#{rcls} #{uabj_array[0][i]} #{uabj_array[1][i]} #{uabj_array[2][i]} #{uabj_array[3][i]}"
++    rcls += 0.1
++    pbar.inc
++  end
++}
++pbar.finish
+\ No newline at end of file
+diff --git a/120409_plot.dat b/120409_plot.dat
+new file mode 100644
+index 0000000..844899e
+--- /dev/null
++++ b/120409_plot.dat
+@@ -0,0 +1,10 @@
++0.1 2.42699652777778 2.82048611111111 2.62803819444444 2.99557291666667
++0.2 1.88680555555556 2.59539930555556 2.18767361111111 2.98333333333333
++0.3 1.43125 2.44739583333333 1.74140625 2.996875
++0.4 0.998958333333333 2.409375 1.28923611111111 2.95572916666667
++0.5 0.342230902777778 2.09418402777778 0.971354166666667 2.90321180555556
++0.6 -0.348177083333333 1.88125 0.655729166666667 2.95625
++0.7 -0.780425347222222 1.49609375 0.212456597222222 2.94956597222222
++0.8 -1.22951388888889 1.69479166666667 0.0305555555555559 2.93055555555556
++0.9 -2.13046875 1.6265625 -0.361328125 2.923046875
++1.0 -2.796875 1.55815972222222 -1.15147569444444 2.88498263888889
+diff --git a/120409_plot.plt b/120409_plot.plt
+new file mode 100644
+index 0000000..f63ecf0
+--- /dev/null
++++ b/120409_plot.plt
+@@ -0,0 +1,156 @@
++#!/Applications/gnuplot.app/bin/gnuplot -persist
++#
++#    
++#    	G N U P L O T
++#    	Version 4.7 patchlevel 0    last modified 2012-03-12 
++#    	Build System: Darwin x86_64
++#    
++#    	Copyright (C) 1986-1993, 1998, 2004, 2007-2012
++#    	Thomas Williams, Colin Kelley and many others
++#    
++#    	gnuplot home:     http://www.gnuplot.info
++#    	mailing list:     gnuplot-beta@lists.sourceforge.net
++#    	faq, bugs, etc:   type "help FAQ"
++#    	immediate help:   type "help"  (plot window: hit 'h')
++# set terminal x11 
++# set output
++unset clip points
++set clip one
++unset clip two
++set bar 1.000000 front
++set border 31 front linetype -1 linewidth 1.000
++set timefmt z "%d/%m/%y,%H:%M"
++set zdata 
++set timefmt y "%d/%m/%y,%H:%M"
++set ydata 
++set timefmt x "%d/%m/%y,%H:%M"
++set xdata 
++set timefmt cb "%d/%m/%y,%H:%M"
++set timefmt y2 "%d/%m/%y,%H:%M"
++set y2data 
++set timefmt x2 "%d/%m/%y,%H:%M"
++set x2data 
++set boxwidth
++set style fill  empty border
++set style rectangle back fc lt -3 fillstyle   solid 1.00 border lt -1
++set style circle radius graph 0.02, first 0, 0 
++set style ellipse size graph 0.05, 0.03, first 0 angle 0 units xy
++set dummy x,y
++set format x "% g"
++set format y "% g"
++set format x2 "% g"
++set format y2 "% g"
++set format z "% g"
++set format cb "% g"
++set format r "% g"
++set angles radians
++unset grid
++set raxis
++set key title ""
++set key inside right top vertical Right noreverse enhanced autotitles nobox
++set key noinvert samplen 4 spacing 1 width 0 height 0 
++set key maxcolumns 0 maxrows 0
++set key noopaque
++unset label
++unset arrow
++set style increment default
++unset style line
++unset style arrow
++set style histogram clustered gap 2 title  offset character 0, 0, 0
++unset logscale
++set offsets 0, 0, 0, 0
++set pointsize 1
++set pointintervalbox 1
++set encoding default
++unset polar
++unset parametric
++unset decimalsign
++set view 60, 30, 1, 1
++set samples 100, 100
++set isosamples 10, 10
++set surface
++unset contour
++set clabel '%8.3g'
++set mapping cartesian
++set datafile separator whitespace
++unset hidden3d
++set cntrparam order 4
++set cntrparam linear
++set cntrparam levels auto 5
++set cntrparam points 5
++set size ratio 0 1,1
++set origin 0,0
++set style data points
++set style function lines
++set xzeroaxis linetype -2 linewidth 1.000
++set yzeroaxis linetype -2 linewidth 1.000
++set zzeroaxis linetype -2 linewidth 1.000
++set x2zeroaxis linetype -2 linewidth 1.000
++set y2zeroaxis linetype -2 linewidth 1.000
++set ticslevel 0.5
++set mxtics default
++set mytics default
++set mztics default
++set mx2tics default
++set my2tics default
++set mcbtics default
++set xtics border in scale 1,0.5 mirror norotate  offset character 0, 0, 0 autojustify
++set xtics autofreq  norangelimit
++set ytics border in scale 1,0.5 mirror norotate  offset character 0, 0, 0 autojustify
++set ytics autofreq  norangelimit
++set ztics border in scale 1,0.5 nomirror norotate  offset character 0, 0, 0 autojustify
++set ztics autofreq  norangelimit
++set nox2tics
++set noy2tics
++set cbtics border in scale 1,0.5 mirror norotate  offset character 0, 0, 0 autojustify
++set cbtics autofreq  norangelimit
++set rtics axis in scale 1,0.5 nomirror norotate  offset character 0, 0, 0 autojustify
++set rtics autofreq  norangelimit
++set title "The effect of spinning on best-effort job utilization" 
++set title  offset character 0, 0, 0 font "" norotate
++set timestamp bottom 
++set timestamp "" 
++set timestamp  offset character 0, 0, 0 font "" norotate
++set rrange [ * : * ] noreverse nowriteback
++set trange [ * : * ] noreverse nowriteback
++set urange [ * : * ] noreverse nowriteback
++set vrange [ * : * ] noreverse nowriteback
++set xlabel "critical section length" 
++set xlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
++set x2label "" 
++set x2label  offset character 0, 0, 0 font "" textcolor lt -1 norotate
++set xrange [ * : * ] noreverse nowriteback
++set x2range [ * : * ] noreverse nowriteback
++set ylabel "utilization available to background jobs" 
++set ylabel  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
++set y2label "" 
++set y2label  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
++set yrange [ * : * ] noreverse nowriteback
++set y2range [ * : * ] noreverse nowriteback
++set zlabel "" 
++set zlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
++set zrange [ * : * ] noreverse nowriteback
++set cblabel "" 
++set cblabel  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
++set cbrange [ * : * ] noreverse nowriteback
++set zero 1e-08
++set lmargin  -1
++set bmargin  -1
++set rmargin  -1
++set tmargin  -1
++set locale "ja_JP.UTF-8"
++set pm3d explicit at s
++set pm3d scansautomatic
++set pm3d interpolate 1,1 flush begin noftriangles nohidden3d corners2color mean
++set palette positive nops_allcF maxcolors 0 gamma 1.5 color model RGB 
++set palette rgbformulae 7, 5, 15
++set colorbox default
++set colorbox vertical origin screen 0.9, 0.2, 0 size screen 0.05, 0.6, 0 front bdefault
++set style boxplot candles range  1.50 outliers pt 7 separation 1 labels auto unsorted
++set loadpath 
++set fontpath 
++set psdir
++set fit noerrorvariables
++GNUTERM = "x11"
++plot "120409_plot.dat" using 1:2 title "1 short resource" w l, "120409_plot.dat" using 1:3 title "2 short resources" with lines, "120409_plot.dat" using 1:4 title "3 short resources" with lines, "120409_plot.dat" using 1:5 title "4 short resources" with lines
++#    EOF
+diff --git a/config.rb b/config.rb
+index 5decad2..a5620d1 100644
+--- a/config.rb
++++ b/config.rb
+@@ -3,7 +3,7 @@ REQ_EXE_MAX = 5
+ REQ_EXE_MIN = 1
+ TASK_EXE_MAX = 20
+ PRIORITY_MAX = 8
+-REQ_NUM = 2
++REQ_NUM = 1
+ TASK_NUM = 5
+ TASK_FILE_NAME = "./task.json"
+ REQ_FILE_NAME = "./req.json"
+diff --git a/manager.rb b/manager.rb
+index e704c87..0599e6d 100644
+--- a/manager.rb
++++ b/manager.rb
+@@ -65,8 +65,9 @@ class AllManager
+     @tm = TaskManager.instance
+     @rm = RequireManager.instance
+     @gm = GroupManager.instance
++    
+   end
+-  
++
+   
+   #
+   # 各要素の読み込み
+@@ -95,14 +96,18 @@ class AllManager
+   #
+   # タスク生成
+   #
+-  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT)
++  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT, info=["0"])
+     @gm.create_group_array(gcount)
++    
++    @rm.set_garray(@gm.get_group_array)
+     @rm.create_require_array(rcount)
+-    @tm.create_task_array(tcount)
++    
++    @tm.set_array(@rm.get_require_array, @gm.get_group_array)
++    @tm.create_task_array(tcount, info)
+     
+     @using_group_array = get_using_group_array
+   end
+-  
++    
+   #
+   # 全データ初期化
+   #
+@@ -143,6 +148,76 @@ class TaskManager
+     @@task_id = 0
+     @@task_array = []
+   end
++
++  #
++  # require_arrayとgroup_arrayをセットする
++  #
++  def set_array(rarray, garray)
++    @@rarray = rarray
++    @@garray = garray
++    return true
++  end
++  
++  #
++  # ランダムタスク生成
++  # rcsl:実行時間に対するリソース要求時間の比
++  #
++  private
++  def create_task_120409(task_count, rcsl)
++    #################
++    # タスクステータス #
++    #################
++    
++    #
++    # 120409用
++    #
++    @@task_id += 1
++
++    # リソース要求
++    # 最大REQ_NUM回リソースを取得
++    req_list = []
++    gcount = @@garray.size
++    gnum = @@task_id%gcount + 1  # 使用するグループのID
++    new_garray = []
++    @@rarray.each{|r|
++      if r.res.group == gnum
++        new_garray << r
++      end
++    }
++    REQ_NUM.times{ 
++      loop do
++        r = new_garray.choice
++        #p "gnum:#{gnum}"
++        #p r.res.group
++        if r.res.group == gnum
++          req_list << r
++          break
++        end
++      end
++    }
++        
++    #reqList.uniq!
++    
++    
++    req_time = 0
++    #pp req_list
++    req_list.each{|req|
++      req_time += req.time
++    }
++    
++    proc = @@task_id%PROC_NUM+1
++    priority = @@task_id
++    extime = req_time/rcsl
++    period = extime/((1.0/(task_count/PROC_NUM).to_f)/4.0)
++    offset = 0 #rand(10)
++    
++    #################
++    
++    task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
++    
++    return task
++  end
++  
+   
+   #
+   # ランダムタスク生成
+@@ -169,25 +244,12 @@ class TaskManager
+     #################
+     # タスクステータス #
+     #################
+-    
+-    #
+-    # 120409用
+-    #
+-    @@task_id += 1
+-    proc = @@task_id%2 == 0 ? 1 : 2
+-    priority = @@task_id
+-    period = rand(960) + 40
+-    extime = 0.125/4 * period - req_time
+-    offset = 0 #rand(10)
+-    
+-=begin    
+     @@task_id += 1
+     proc = rand(PROC_NUM) + 1
+     priority = rand(PRIORITY_MAX) + 1
+     extime = req_time + rand(TASK_EXE_MAX - req_time)
+     period = (extime/(rand % (1/TASK_NUM.to_f))).to_i + 1 # 1つのCPUに全てのタスクが割り当てられても，CPU使用率が1を超えないタスク使用率にする
+     offset = 0 #rand(10)
+-=end
+     #################
+     
+     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
+@@ -200,15 +262,25 @@ class TaskManager
+   # 生成したタスクの数を返す
+   #
+   public
+-  def create_task_array(i)
+-    #
+-    # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
+-    # そうでなければそのまま
+-    #
++  def create_task_array(i, info=["0"])
+     tarray = []
+-    i.times{
+-      tarray << create_task
+-    }
++    
++    if info[0] == "0"
++      #
++      # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
++      # そうでなければそのまま
++      #
++      i.times{
++        tarray << create_task
++      }
++    elsif info[0] == "120409"
++      # info[1] はrcls
++      #puts "120409 MODE"
++      i.times{
++        tarray << create_task_120409(i, info[1])
++      }
++    end
++    
+     @@task_array = tarray
+     return @@task_array.size
+   end
+@@ -322,6 +394,7 @@ class TaskManager
+   #
+   public
+   def data_clear
++    @@task_id = 0
+     @@task_array = []
+   end
+   
+@@ -350,6 +423,13 @@ class RequireManager
+   end 
+  
+   #
++  # group_arrayをセット
++  #
++  def set_garray(garray)
++    @@garray = garray
++  end
++  
++  #
+   # ランダムにリソース要求を作成
+   #
+   private
+@@ -376,7 +456,7 @@ class RequireManager
+     if @@require_array.size < 1 then
+       ra = []
+     else
+-      ra = @@require_array[rand(@@require_array.size)].clone
++      ra = @@require_array.choice.clone
+     end
+     return ra
+   end
+@@ -403,11 +483,24 @@ class RequireManager
+   #
+   public
+   def create_require_array(i)
+-    data_clear
+-    i.times{
+-      @@require_array << create_require
+-    }
++    flg = false
++    until flg
++      data_clear
++      garray = []
++      i.times{
++        c = create_require
++        garray << c.res.group
++        @@require_array << c
++      }
++      garray.uniq!
++      
++      #
++      # 全てのグループのリソース要求が作成されたか確認
++      #
++      flg = true if garray.size == @@garray.size
++    end
+     return @@require_array.size
++      
+   end
+   
+   #
+@@ -500,6 +593,7 @@ class RequireManager
+   #
+   public
+   def data_clear
++    @@id = 0
+     @@require_array = []
+     return true
+   end
+@@ -652,7 +746,7 @@ class GroupManager
+       puts "グループが生成されていません．"
+       return nil
+     end
+-    return @@group_array[rand(@@group_array.size)]
++    return @@group_array.choice
+   end
+   
+   #
+@@ -660,6 +754,7 @@ class GroupManager
+   #
+   public
+   def data_clear
++    @@group_id = 0
+     @@group_array = []
+     return true
+   end
+diff --git a/task.rb b/task.rb
+index d0580e1..506024f 100644
+--- a/task.rb
++++ b/task.rb
+@@ -12,7 +12,7 @@
+ # タスククラス
+ #
+ class Task
+-  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime
++  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b
+   def initialize(id, proc, period, extime, priority, offset, reqarray)
+     @task_id = id
+     @proc = proc
+diff --git a/wcbt.rb b/wcbt.rb
+index a43a34c..a9fe965 100644
+--- a/wcbt.rb
++++ b/wcbt.rb
+@@ -196,6 +196,68 @@ module WCBT
+     }
+   end
+ 
++  #
++  # タスクにブロック時間情報を格納
++  #
++  def set_blocktime(t)
++    t.bb = BB(t)
++    t.ab = AB(t)
++    t.sb = SB(t)
++    t.lb = LB(t)
++    t.db = DB(t)
++    t.b = t.bb + t.ab + t.sb + t.lb + t.db
++  end
++  
++  
++  #
++  # 以下のフォーマットでブロック時間等表示
++  # 120409用
++  #
++  def show_blocktime_120409
++    $taskList.each{|task|
++      set_blocktime(task)
++
++=begin
++      print "タスク#{task.task_id}"
++      print "(#{(task.extime+task.sb)/task.period})"
++      print "\tBB:#{task.bb}" 
++      print "\tAB:#{task.ab}" 
++      print "\tSB:#{task.sb}" 
++      print "\tLB:#{task.lb}" 
++      print "\tDB:#{task.db}" 
++      print "\tB:#{task.b}" 
++      print "\n"
++      pri = get_extime_high_priority(task) 
++      puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{task.b} + プリエンプト時間#{pri} = #{task.extime + task.b + pri}"
++      
++      if task.period < task.extime + task.b + pri
++        puts "\t\t周期#{task.period}<最悪応答時間#{task.extime + task.b + pri}".red
++        else
++        puts "\t\t周期#{task.period}>最悪応答時間#{task.extime + task.b + pri}"
++      end
++=end
++
++    }
++
++    #
++    # CPU使用率を表示
++    #
++    
++    uabj = PROC_NUM # utilization_available_to_background_jobs
++    procList.each{|p|
++      u = 0
++      #      puts "#{partition(p).size}"
++      partition(p).each{|t|
++        #puts "#{(t.extime+t.sb.to_f)/t.period}"
++        u += (t.extime+t.sb.to_f)/t.period
++      }
++      #puts "CPU#{p}使用率:#{u}"
++      uabj -= u
++    }
++    #puts "uabj:#{uabj}"
++    return uabj
++  end
++  
+   ##############################
+   
+   def bbt(task, job)
