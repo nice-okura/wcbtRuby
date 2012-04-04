@@ -12,6 +12,7 @@
 #
 require "rubygems"
 require "term/ansicolor"
+require "ruby-prof"
 
 class String
   include Term::ANSIColor
@@ -170,28 +171,21 @@ module WCBT
   # 以下のフォーマットでブロック時間等表示
   #
   def show_blocktime
-    $taskList.each{|task|
-      print "タスク#{task.task_id}"
-      bb = BB(task)
-      ab = AB(task)
-      sb = SB(task)
-      lb = LB(task)
-      db = DB(task)
-      
-      b = bb + ab + sb + lb + db
-      print "\tBB:" + bb.to_s
-      print "\tAB:" + ab.to_s
-      print "\tSB:" + sb.to_s
-      print "\tLB:" + lb.to_s
-      print "\tDB:" + db.to_s
-      print "\tB:" + b.to_s
+    $taskList.each{|t|
+      print "タスク#{t.task_id}"      
+      print "\tBB:" + t.bb.to_s
+      print "\tAB:" + t.ab.to_s
+      print "\tSB:" + t.sb.to_s
+      print "\tLB:" + t.lb.to_s
+      print "\tDB:" + t.db.to_s
+      print "\tB:" + t.b.to_s
       print "\n"
-      pri = get_extime_high_priority(task) 
-      puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{pri} = #{task.extime + b + pri}"
-      if task.period < task.extime + b + pri
-        puts "\t\t周期#{task.period}<最悪応答時間#{task.extime + b + pri}".red
+      pri = get_extime_high_priority(t) 
+      puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{t.b} + プリエンプト時間#{pri} = #{t.extime + t.b + pri}"
+      if t.period < t.extime + t.b + pri
+        puts "\t\t周期#{t.period}<最悪応答時間#{t.extime + t.b + pri}".red
       else
-        puts "\t\t周期#{task.period}>最悪応答時間#{task.extime + b + pri}"
+        puts "\t\t周期#{t.period}>最悪応答時間#{t.extime + t.b + pri}"
       end
     }
   end
@@ -215,28 +209,13 @@ module WCBT
   #
   def show_blocktime_120409
     $taskList.each{|task|
+      #RubyProf.start
+
       set_blocktime(task)
-
-=begin
-      print "タスク#{task.task_id}"
-      print "(#{(task.extime+task.sb)/task.period})"
-      print "\tBB:#{task.bb}" 
-      print "\tAB:#{task.ab}" 
-      print "\tSB:#{task.sb}" 
-      print "\tLB:#{task.lb}" 
-      print "\tDB:#{task.db}" 
-      print "\tB:#{task.b}" 
-      print "\n"
-      pri = get_extime_high_priority(task) 
-      puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{task.b} + プリエンプト時間#{pri} = #{task.extime + task.b + pri}"
-      
-      if task.period < task.extime + task.b + pri
-        puts "\t\t周期#{task.period}<最悪応答時間#{task.extime + task.b + pri}".red
-        else
-        puts "\t\t周期#{task.period}>最悪応答時間#{task.extime + task.b + pri}"
-      end
-=end
-
+    
+      #result = RubyProf.stop
+      #printer = RubyProf::FlatPrinter.new(result)
+      #printer.print(STDOUT)
     }
 
     #
@@ -257,6 +236,35 @@ module WCBT
     #puts "uabj:#{uabj}"
     return uabj
   end
+
+  #
+  # 以下のフォーマットでブロック時間等表示
+  # 120409_2用
+  #
+  def show_blocktime_120409_2
+    $taskList.each{|task|
+      set_blocktime(task)
+    }
+    
+    #
+    # CPU使用率を表示
+    #
+    
+    uabj = PROC_NUM # utilization_available_to_background_jobs
+    procList.each{|p|
+      u = 0
+      #      puts "#{partition(p).size}"
+      partition(p).each{|t|
+        #puts "#{(t.extime+t.sb.to_f)/t.period}"
+        u += (t.extime + t.b - t.lb)/t.period
+      }
+      #puts "CPU#{p}使用率:#{u}"
+      uabj -= u
+    }
+    #puts "uabj:#{uabj}"
+    return uabj
+  end
+
   
   ##############################
   

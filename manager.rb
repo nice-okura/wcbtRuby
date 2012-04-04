@@ -182,40 +182,43 @@ class TaskManager
     # リソース要求
     # 最大REQ_NUM回リソースを取得
     req_list = []
-    gcount = @@garray.size
-    gnum = @@task_id%gcount + 1  # 使用するグループのID
-    new_garray = []
-    #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
-    @@rarray.each{|r|
-      if r.res.group == gnum
-        new_garray << r
-      end
-    }
-    REQ_NUM.times{ 
-      loop do
-        r = new_garray.choice
-        #p "gnum:#{gnum}"
-        #p r.res.group
+
+    unless rcsl == 0.0
+      gcount = @@garray.size
+      gnum = @@task_id%gcount + 1  # 使用するグループのID
+      new_garray = []
+      #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
+      @@rarray.each{|r|
         if r.res.group == gnum
-          req_list << r
-          break
+          new_garray << r
         end
-      end
-    }
-        
-    #reqList.uniq!
-    
-    
-    req_time = 0
-    #pp req_list
-    req_list.each{|req|
-      req_time += req.time
-    }
+      }
+      REQ_NUM.times{ 
+        loop do
+          r = new_garray.choice
+          #p "gnum:#{gnum}"
+          #p r.res.group
+          if r.res.group == gnum
+            req_list << r
+            break
+          end
+        end
+      }
+      
+      #reqList.uniq!
+      
+      
+      req_time = 0
+      #pp req_list
+      req_list.each{|req|
+        req_time += req.time
+      }
+    end
     new_task_id = task_id_array.choice
     proc = (new_task_id.to_i%PROC_NUM)+1
     #p task_id_array
     priority = new_task_id
-    extime = req_time/rcsl
+    extime = rcsl == 0.0 ? 10 : req_time/rcsl
     period = extime/((1.0/(task_count/PROC_NUM).to_f)/4.0)
     offset = 0 #rand(10)
     
