@@ -57,11 +57,22 @@ class TestRequireManager < Test::Unit::TestCase
   
   def test_create_require
     assert_kind_of(Req, @@rm.create_require())
+
+    50.times{
+      a_group = rand(20)
+      a_time = rand(100)
+      assert_kind_of(Req, @@rm.create_require(a_group))
+      assert_kind_of(Req, @@rm.create_require(a_group, a_time))
+    }
   end
   
   def test_create_require_array
-    i = 1
-    assert_equal(i, @@rm.create_require_array(i))
+    i = rand(100)
+    50.times{
+      assert_equal(i, @@rm.create_require_array(i))
+      assert_equal(i, @@rm.create_require_array(i, ["120405_3"]))
+    }
+    
   end
 
   def test_data_clear
@@ -80,10 +91,10 @@ class TestRequireManager < Test::Unit::TestCase
   end
   
   def test_get_random_req
-    100.times{
+    10.times{
       i = rand(100)
       assert_equal(i, @@rm.create_require_array(i))
-      assert_kind_of(Req, RequireManager.get_random_req)
+      #assert_kind_of(Req, RequireManager.get_random_req)
     }
   end
 

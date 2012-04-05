@@ -115,7 +115,7 @@ set rrange [ * : * ] noreverse nowriteback
 set trange [ * : * ] noreverse nowriteback
 set urange [ * : * ] noreverse nowriteback
 set vrange [ * : * ] noreverse nowriteback
-set xlabel "critical section length" 
+set xlabel "critical section length(RTSL)" 
 set xlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  offset character 0, 0, 0 font "" textcolor lt -1 norotate
@@ -152,6 +152,8 @@ set fontpath
 set psdir
 set fit noerrorvariables
 GNUTERM = "x11"
+set terminal png
+set output "120405_plot_short.png"
 plot "120405_plot.dat" using 1:2 title "1 short resource" w l, \
      "120405_plot.dat" using 1:3 title "2 short resources" w l, \
      "120405_plot.dat" using 1:4 title "3 short resources" w l, \

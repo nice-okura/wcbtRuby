@@ -516,7 +516,7 @@ class RequireManager
   #
   # ランダムにリソース要求を作成
   #
-  private
+  public #private
   def create_require(a_group=nil, a_time=nil)
     @@id += 1
     if a_group == nil 
@@ -595,11 +595,10 @@ class RequireManager
         new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
         new_group = GroupManager.get_random_group if new_group == nil
         g_array.delete(new_group)
-        if info[0] == "0"
-          c = create_require(new_group)
-        elsif info[0] == "120405_3"
-          p time
+        if info[0] == "120405_3"
           c = create_require(new_group, 50.0/(time+1.0))
+        else
+          c = create_require(new_group)
         end
         #p c
         garray << c.res.group

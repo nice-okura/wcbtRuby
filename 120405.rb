@@ -81,17 +81,24 @@ $DEBUG = false
 #@manager.load_tasks("#{IN_FILENAME}_task.json", "#{IN_FILENAME}_require.json", "#{IN_FILENAME}_group.json")
 uabj_array = [[]]
 
-resource_max = 12
-
-0.upto(resource_max-1){|i|
-  uabj_array[i] = []
-}
+resource_max = 16
 resource_kind = "short"
-loop_count = 20
-task_count = 32
+loop_count = 12
+task_count = 64
 
 granularity = 10  # 粒度
-start_rcls = 0.1
+start_rcsl = 0.1
+end_rcsl = 1.0
+
+x_count = ((end_rcsl - start_rcsl) / (1.0/granularity)).to_i
+p x_count
+0.upto(resource_max-1){|i|
+  uabj_array[i] = []
+  0.upto(x_count-1){|j|
+    uabj_array[i][j] = 0.0
+  }
+}
+
 
 pbar = ProgressBar.new("", loop_count*granularity*resource_max)
 pbar.format_arguments = [:percentage, :bar, :stat]
@@ -100,16 +107,24 @@ pbar.format = "%3d%% %s %s"
 for resource_count in 1..resource_max
   granularity.times{uabj_array[resource_count-1] << 0}
   1.upto(loop_count){|lc|
-    rcls = start_rcls
-    i = 0 
-    while rcls < 1.0
-      #p rcls
-      @manager.all_data_clear
-      info = ["120405", rcls]
-      #p resource_count
-      @manager.create_tasks(task_count, resource_count*2, resource_count, info)
-      $taskList = @manager.tm.get_task_array
-      taskset = TaskSet.new(@manager.tm.get_task_array)
+    rcsl = start_rcsl
+    i = 0
+    #p rcsl
+    @manager.all_data_clear
+    info = ["120405", rcsl]
+    #p resource_count
+    @manager.create_tasks(task_count, resource_count*2, resource_count, info)
+    $taskList = @manager.tm.get_task_array
+    taskset = TaskSet.new(@manager.tm.get_task_array)
+    while rcsl < 1.0
+      #
+      # クリティカルセクションの変更
+      #
+      $taskList.each{|t|
+        t.req_list.each{|r|
+          r.time = t.extime * rcsl
+        }
+      }
       
       #
       # システムで使用するリソースグループを取得
@@ -133,12 +148,12 @@ for resource_count in 1..resource_max
         exit
       end
 =begin
-      if lc == 1 && rcls == 0.1
+      if lc == 1 && rcsl == 0.1
         puts "resource_count : #{resource_count}".red
         taskset.show_taskset
       end
 =end
-      rcls += 1.0/granularity
+      rcsl += 1.0/granularity
       i += 1
       pbar.inc
     end
@@ -149,7 +164,7 @@ for resource_count in 1..resource_max
 end
 
 File.open("120405_plot.dat", "w"){|fp|
-  rcls = start_rcls
+  rcsl = start_rcsl
   0.upto(granularity - 1){|j|
     str = ""
     0.upto(resource_max - 1){|i|
@@ -162,8 +177,8 @@ File.open("120405_plot.dat", "w"){|fp|
         exit
       end
     }
-    fp.puts "#{rcls} #{str}"
-    rcls += 1.0/granularity
+    fp.puts "#{rcsl} #{str}"
+    rcsl += 1.0/granularity
   }
 }
 pbar.finish

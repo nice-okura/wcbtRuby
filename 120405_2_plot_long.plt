@@ -115,7 +115,7 @@ set rrange [ * : * ] noreverse nowriteback
 set trange [ * : * ] noreverse nowriteback
 set urange [ * : * ] noreverse nowriteback
 set vrange [ * : * ] noreverse nowriteback
-set xlabel "critical section length" 
+set xlabel "critical section length(RCSL)" 
 set xlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  offset character 0, 0, 0 font "" textcolor lt -1 norotate
@@ -154,17 +154,17 @@ set fit noerrorvariables
 GNUTERM = "x11"
 set terminal png
 set output "120405_2_plot_long.png"
-plot "120405_2_plot_long.dat" using 1:2 title "1 short resource" w l, \
-     "120405_2_plot_long.dat" using 1:3 title "2 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:4 title "3 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:5 title "4 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:6 title "5 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:7 title "6 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:8 title "7 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:9 title "8 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:10 title "9 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:11 title "10 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:12 title "11 short resources" w l, \
-     "120405_2_plot_long.dat" using 1:13 title "12 short resources" w l
+plot "120405_2_plot_long.dat" using 1:2 title "1 long resource" w l, \
+     "120405_2_plot_long.dat" using 1:3 title "2 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:4 title "3 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:5 title "4 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:6 title "5 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:7 title "6 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:8 title "7 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:9 title "8 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:10 title "9 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:11 title "10 long resources w l, \
+     "120405_2_plot_long.dat" using 1:12 title "11 long resources" w l, \
+     "120405_2_plot_long.dat" using 1:13 title "12 long resources" w l
 
 #    EOF
