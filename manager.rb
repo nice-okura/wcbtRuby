@@ -17,7 +17,7 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-#require "wcbt"      # 最大ブロック時間計算モジュール
+require "wcbt"      # 最大ブロック時間計算モジュール
 require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
@@ -79,7 +79,9 @@ class AllManager
     return false unless @tm.load_task_data(tname)
     @using_group_array = get_using_group_array
     $taskList = @tm.get_task_array
-    
+    $taskList.each{|t|
+      set_blocktime(t)
+    }
     return true
   end
  
@@ -109,6 +111,9 @@ class AllManager
     @using_group_array = get_using_group_array
     
     $taskList = @tm.get_task_array
+    $taskList.each{|t|
+      set_blocktime(t)
+    }
   end
     
   #
