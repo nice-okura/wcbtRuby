@@ -54,6 +54,7 @@ $task_list = [] # タスクの配列
 # タスク，リソース要求，グループのマネージャー管理
 # Singleton
 #
+include WCBT
 class AllManager
   attr_reader :tm, :rm, :gm, :using_group_array
   
@@ -546,7 +547,7 @@ class RequireManager
   #
   # ランダムにリソース要求を作成
   #
-  public #private
+  private
   def create_require(a_group=nil, a_time=nil)
     @@id += 1
     if a_group == nil 
@@ -569,6 +570,7 @@ class RequireManager
         req << r.clone
       end
     end
+    #p time
     return Req.new(@@id, group, time, req)
   end
   
@@ -626,6 +628,7 @@ class RequireManager
         new_group = GroupManager.get_random_group if new_group == nil
         g_array.delete(new_group)
         
+
         if info[0] == "120405_3"
           #
           # new_group(long or short)で要求時間timeの要求を作成
@@ -637,9 +640,9 @@ class RequireManager
           # リソース要求時間は実行時間のrcsl比で決める
           #
           a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
-          rcls = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
-          c = create_require(new_group, a_extime*rcls)
-          
+          rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
+          c = create_require(new_group, a_extime*rcsl)
+        else
           #
           #
           # リソース要求時間はランダム
