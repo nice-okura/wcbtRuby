@@ -87,7 +87,7 @@ loop_count = 12
 task_count = 64
 
 granularity = 10  # 粒度
-start_rcsl = 0.1
+start_rcsl = 0.0
 end_rcsl = 1.0
 
 x_count = ((end_rcsl - start_rcsl) / (1.0/granularity)).to_i
