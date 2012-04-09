@@ -78,6 +78,7 @@ class AllManager
     return false unless @rm.load_require_data(rname)
     return false unless @tm.load_task_data(tname)
     @using_group_array = get_using_group_array
+    $taskList = @tm.get_task_array
     
     return true
   end
@@ -106,12 +107,15 @@ class AllManager
     @tm.create_task_array(tcount, info)
     
     @using_group_array = get_using_group_array
+    
+    $taskList = @tm.get_task_array
   end
     
   #
   # 全データ初期化
   #
   def all_data_clear
+    $taskList = []
     @gm.data_clear
     @rm.data_clear
     @tm.data_clear
@@ -231,14 +235,13 @@ class TaskManager
   
   #
   # ランダムタスク生成
-  # rcsl:実行時間に対するリソース要求時間の比
+  # 
   #
   private
-  def create_task_120405_3(task_count)
+  def create_task_120405_3(task_count, a_extime=50)
     #################
     # タスクステータス #
     #################
-    
     #
     # 120405_3用
     #
@@ -287,7 +290,7 @@ class TaskManager
     proc = (new_task_id.to_i%PROC_NUM)+1
     #p task_id_array
     priority = new_task_id
-    extime = 50
+    extime = a_extime
     period = (extime/(1.0/task_count))
     offset = 0 #rand(10)
     
@@ -342,8 +345,8 @@ class TaskManager
   #
   public
   def create_task_array(i, info=["0"])
-    tarray = []
-    
+    #tarray = []
+    #p info
     if info[0] == "0"
       #
       # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
@@ -353,16 +356,38 @@ class TaskManager
         #tarray << create_task
         @@task_array << create_task
       }
-    elsif info[0] == "120405"
+      #
+      # rcslを考慮したタスク実行時間を作成．
+      # 各CPUに均等にタスクは割り当てられる
+      #
+    elsif info[0] == "120405" 
       # info[1] はrcls
       #puts "120405 MODE"
-      i.times{
-        @@task_array << create_task_120405(i, info[1])
-      }
-    elsif info[0] = "120405_3"
-      i.times{
-        @@task_array << create_task_120405_3(i)
-      }
+      if info[1] == nil
+        $stderr.puts "create_task_array:[#{__LINE__}行目]rcslが設定されていません"
+      else
+        i.times{
+          @@task_array << create_task_120405(i, info[1])
+        }
+      end
+      
+      #
+      # rcslは不要
+      # 指定した実行時間info[1](初期値50)のタスクを生成．
+      # 各CPUに均等にタスクは割り当てられる．
+      #
+    elsif info[0] == "120405_3" || info[0] == "120411"
+      if info[1].to_i == 0
+        i.times{
+          @@task_array << create_task_120405_3(i)
+        }
+      else
+        i.times{
+          @@task_array << create_task_120405_3(i, info[1].to_i)
+        }
+      end
+    else
+      $stderr.puts "create_task_array:infoエラー"
     end
     
     #@@task_array = tarray
@@ -595,9 +620,25 @@ class RequireManager
         new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
         new_group = GroupManager.get_random_group if new_group == nil
         g_array.delete(new_group)
+        
         if info[0] == "120405_3"
-          c = create_require(new_group, 50.0/(time+1.0))
-        else
+          #
+          # new_group(long or short)で要求時間timeの要求を作成
+          #
+          a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
+          c = create_require(new_group, a_extime/(time+1.0))
+        elsif info[0] == "120411"
+          #
+          # リソース要求時間は実行時間のrcsl比で決める
+          #
+          a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
+          rcls = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
+          c = create_require(new_group, a_extime*rcls)
+          
+          #
+          #
+          # リソース要求時間はランダム
+          #
           c = create_require(new_group)
         end
         #p c

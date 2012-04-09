@@ -153,8 +153,20 @@ class Task
     return short_resource_array
   end
   
+  #
+  # リソース要求のbegintimeを設定
+  #
   private
   def set_begin_time
+    #
+    # set_begintimeする必要があるかチェック
+    #
+    req_list.each{|req|
+      if req.begintime != 0
+        return false
+      end
+    }
+    
     req_time = 0
     req_list.each{|req|
       req_time += req.time
@@ -205,6 +217,7 @@ class Task
       }
     }
     # おわり
+    return true
   end
 end
 

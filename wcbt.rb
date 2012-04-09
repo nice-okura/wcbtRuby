@@ -195,6 +195,7 @@ module WCBT
   #
   public
   def set_blocktime(t)
+    #puts "SET_BLOCKTIME"
     t.bb = BB(t)
     t.ab = AB(t)
     t.sb = SB(t)

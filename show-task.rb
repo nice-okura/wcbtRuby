@@ -11,7 +11,5 @@ FILENAME = ARGV[0]
 @manager.load_tasks("#{FILENAME}_task.json", "#{FILENAME}_require.json", "#{FILENAME}_group.json")
 
 taskset = TaskSet.new(@manager.tm.get_task_array)
-$taskList = @manager.tm.get_task_array
 taskset.show_taskset
-
 show_blocktime
