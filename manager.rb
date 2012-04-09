@@ -80,9 +80,8 @@ class AllManager
     return false unless @tm.load_task_data(tname)
     @using_group_array = get_using_group_array
     $taskList = @tm.get_task_array
-    $taskList.each{|t|
-      set_blocktime(t)
-    }
+    set_blocktime
+    
     return true
   end
  
@@ -112,9 +111,8 @@ class AllManager
     @using_group_array = get_using_group_array
     
     $taskList = @tm.get_task_array
-    $taskList.each{|t|
-      set_blocktime(t)
-    }
+    set_blocktime
+    
   end
     
   #

@@ -3,6 +3,18 @@
     {
       "kind": "long",
       "group": 1
+    },
+    {
+      "kind": "short",
+      "group": 2
+    },
+    {
+      "kind": "long",
+      "group": 3
+    },
+    {
+      "kind": "short",
+      "group": 4
     }
   ]
 }

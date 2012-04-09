@@ -1,8 +1,20 @@
 {
   "grps": [
     {
-      "kind": "long",
+      "kind": "short",
       "group": 1
+    },
+    {
+      "kind": "short",
+      "group": 2
+    },
+    {
+      "kind": "short",
+      "group": 3
+    },
+    {
+      "kind": "short",
+      "group": 4
     }
   ]
 }

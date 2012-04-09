@@ -194,16 +194,17 @@ module WCBT
   # タスクにブロック時間情報を格納
   #
   public
-  def set_blocktime(t)
-    #puts "SET_BLOCKTIME"
-    t.bb = BB(t)
-    t.ab = AB(t)
-    t.sb = SB(t)
-    t.lb = LB(t)
-    t.db = DB(t)
-    t.b = t.bb + t.ab + t.sb + t.lb + t.db
+  def set_blocktime
+    $taskList.each{|t|
+      #puts "SET_BLOCKTIME"
+      t.bb = BB(t)
+      t.ab = AB(t)
+      t.sb = SB(t)
+      t.lb = LB(t)
+      t.db = DB(t)
+      t.b = t.bb + t.ab + t.sb + t.lb + t.db
+    }
   end
-  
   
   #
   # 以下のフォーマットでブロック時間等表示
