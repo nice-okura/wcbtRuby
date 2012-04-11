@@ -56,6 +56,20 @@ def show_groups
   }
 end
 
+#
+# longグループ数を取得
+#
+def get_long_groups
+  c = 0
+  @manager.gm.get_group_array.each{|g|
+    #c += 1 if g.kind == "long"
+    if g.kind == "long"
+      c += 1
+      #puts "long"
+    end
+  }
+  return c
+end
 
 include WCBT
 $DEBUG = false
@@ -114,6 +128,7 @@ def compute_wcrt
 
   i = 0
   change_count = 0
+  long_count = 0
   group_times.times{
     wcrt_max_system = -1 # 適当な最小値
     set_blocktime
@@ -130,15 +145,19 @@ def compute_wcrt
       #puts "最悪応答時間:#{min_all_wcrt}"
       #show_groups
       #save_min
+      long_count = get_long_groups
       change_count += 1
     end
     i += 1
     istr = ("%010b" % [i])[10-group_count, group_count]
     #p "#{i}:#{istr}"
     change_groups(istr)
+    
+
   }
   #show_blocktime
-  return change_count
+  #return [get_long_groups, change_count]
+  return long_count
 end
 
 #
@@ -149,26 +168,41 @@ requires = 10
 groups = 4
 rcsl = 0.3
 extime = 50
+resouce_count_max = 4
+start_task_num = 8
+end_task_num = 16
+task_step_num = 4
+loop_count = 2
+
+
 @manager = AllManager.new
-loop_count = 10
-pbar = ProgressBar.new("WCRTの計測", 10*loop_count)
+
+
+pbar = ProgressBar.new("WCRTの計測", 10*((end_task_num - start_task_num)/task_step_num + 1)*resouce_count_max*loop_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 mes = ""
 
 
-0.1.step(1.0, 0.1){|r|
-  rcsl = r
-  c = 0
-  info = ["120411", extime, rcsl]
-  loop_count.times{
-    @manager.create_tasks(tasks, requires, groups, info)
-    #@manager.save_tasks("#{FILENAME}_task.json", "#{FILENAME}_require.json", "#{FILENAME}_group.json")
-    c += compute_wcrt
-    pbar.inc
-    @manager.all_data_clear
+8.step(16, 4){|t|
+  tasks = t
+  1.upto(resouce_count_max){|g|
+    groups = g
+    0.1.step(1.0, 0.1){|r|
+      rcsl = r
+      c = 0
+      info = ["120411", extime, rcsl]
+      loop_count.times{
+        @manager.create_tasks(tasks, requires, groups, info)
+        #@manager.save_tasks("#{FILENAME}_task.json", "#{FILENAME}_require.json", "#{FILENAME}_group.json")
+        c += compute_wcrt
+        pbar.inc
+        @manager.all_data_clear
+      }
+      puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{rcsl} ]long_count:#{c.to_f/loop_count.to_f}\n"
+    }
+    puts "------------------------------------------------------------"
   }
-  mes += "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{rcsl} ]change_count:#{c.to_f/loop_count.to_f}\n"
 }
 puts mes
 pbar.finish

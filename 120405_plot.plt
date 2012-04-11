@@ -165,6 +165,11 @@ plot "120405_plot.dat" using 1:2 title "1 short resource" w l, \
      "120405_plot.dat" using 1:10 title "9 short resources" w l, \
      "120405_plot.dat" using 1:11 title "10 short resources" w l, \
      "120405_plot.dat" using 1:12 title "11 short resources" w l, \
-     "120405_plot.dat" using 1:13 title "12 short resources" w l
+     "120405_plot.dat" using 1:13 title "12 short resources" w l, \
+     "120405_plot.dat" using 1:14 title "13 short resources" w l, \
+     "120405_plot.dat" using 1:15 title "14 short resources" w l, \
+     "120405_plot.dat" using 1:16 title "15 short resources" w l, \
+     "120405_plot.dat" using 1:17 title "16 short resources" w l
+
 
 #    EOF
