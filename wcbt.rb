@@ -157,7 +157,7 @@ module WCBT
   def get_extime_high_priority(task)
     time = 0
     $taskList.each{|t|
-      sb = SB(t)
+      sb = t.sb
       if t.proc == task.proc && t.priority < task.priority
         time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
         #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
@@ -173,12 +173,12 @@ module WCBT
   def show_blocktime
     $taskList.each{|t|
       print "タスク#{t.task_id}"      
-      print "\tBB:" + sprintf("%.3f", t.bb)
-      print "\tAB:" + sprintf("%.3f", t.ab)
-      print "\tSB:" + sprintf("%.3f", t.sb)
-      print "\tLB:" + sprintf("%.3f", t.lb)
-      print "\tDB:" + sprintf("%.3f", t.db)
-      print "\tB:" + sprintf("%.3f", t.b)
+      print ["\tBB:", sprintf("%.3f", t.bb)].join
+      print ["\tAB:", sprintf("%.3f", t.ab)].join
+      print ["\tSB:", sprintf("%.3f", t.sb)].join
+      print ["\tLB:", sprintf("%.3f", t.lb)].join
+      print ["\tDB:", sprintf("%.3f", t.db)].join
+      print ["\tB:", sprintf("%.3f", t.b)].join
       print "\n"
       pri = get_extime_high_priority(t) 
       #puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{sprintf("%.3f", t.b)} + プリエンプト時間#{sprintf("%.3f", pri)} = #{sprintf("%.3f", t.extime + t.b + pri)}"
@@ -286,9 +286,9 @@ module WCBT
     0.upto(min-1){|num|
       len += tuples[num].req.time
     }
-    print_debug("  bbt_tuples = #{str}")
-    print_debug("bbt_min = min(#{tuples.size}, #{narr(job)+1})")
-    print_debug("bbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{len}")
+    #print_debug("  bbt_tuples = #{str}")
+    #print_debug("bbt_min = min(#{tuples.size}, #{narr(job)+1})")
+    #print_debug("bbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{len}")
     return len
   end
   
@@ -309,7 +309,7 @@ module WCBT
     tuples.each{|t|
       str += t.prints
     }
-    print_debug("abr(#{job.task_id.to_s.red}) = #{str}")
+    #print_debug("abr(#{job.task_id.to_s.red}) = #{str}")
     return tuples
   end
   
@@ -352,7 +352,7 @@ module WCBT
         b += 1
       end
     }
-    print_debug("ndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta})")
+    #print_debug("ndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta})")
     return [a, b].min
   end
   
@@ -364,7 +364,7 @@ module WCBT
         time += rblp(job, proc)
       end
     }
-    print_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
+    #print_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
     return time 
   end
   
@@ -373,7 +373,7 @@ module WCBT
     partition(proc).each{|task|
       count += rblt(task, job)
     }
-    print_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
+    #print_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -393,9 +393,9 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("      tuples = #{str}")
-    print_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
-    print_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
+    #print_debug("      tuples = #{str}")
+    #print_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    #print_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -415,7 +415,7 @@ module WCBT
         time += rbsp(job, proc)
       end
     }
-    print_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
+    #print_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -430,7 +430,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
+    #print_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
     return time
   end
   
@@ -478,7 +478,7 @@ module WCBT
         time += sbgp(job, group, proc)
       end
     }
-    print_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
+    #print_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
     return time
   end 
   
@@ -495,7 +495,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
+    #print_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
     time
   end
   
@@ -526,7 +526,7 @@ module WCBT
       return 0
     elsif lowest_priority_task(job.proc)[0].priority == job.priority
       #p "lowest"
-      print_debug("最低優先度")
+      #print_debug("最低優先度")
       return 0
     end
       
@@ -536,7 +536,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("ABmin = min(#{tuples.size}, #{narr(job)+1})")
+    #print_debug("ABmin = min(#{tuples.size}, #{narr(job)+1})")
     return time
   end
   

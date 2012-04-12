@@ -6,8 +6,6 @@
 # 
 #
 #
-require "wcbt"
-require "task"
 require "task-CUI"
 require "manager"
 require "progressbar"
@@ -166,13 +164,13 @@ end
 tasks = 12
 requires = 10
 groups = 4
-rcsl = 0.3
+rcsl = 0.1
 extime = 50
 resouce_count_max = 4
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 2
+loop_count = 5
 
 
 @manager = AllManager.new
@@ -184,25 +182,32 @@ pbar.format = "%3d%% %s %s"
 mes = ""
 
 
-8.step(16, 4){|t|
-  tasks = t
-  1.upto(resouce_count_max){|g|
+#8.step(16, 4){|t|
+  tasks = 16
+  for g in [1, 2, 4, 8]
     groups = g
-    0.1.step(1.0, 0.1){|r|
-      rcsl = r
+    rcsl = 0.1
+    info = ["120411", extime, rcsl]
+    @manager.create_tasks(tasks, requires, groups, info)
+    while rcsl < 1.0
       c = 0
-      info = ["120411", extime, rcsl]
-      loop_count.times{
-        @manager.create_tasks(tasks, requires, groups, info)
-        #@manager.save_tasks("#{FILENAME}_task.json", "#{FILENAME}_require.json", "#{FILENAME}_group.json")
-        c += compute_wcrt
-        pbar.inc
-        @manager.all_data_clear
+      #
+      # クリティカルセクションの変更
+      #
+      $taskList.each{|t|
+        t.req_list.each{|r|
+          r.time = t.extime * rcsl
+        }
       }
+      c += compute_wcrt
       puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{rcsl} ]long_count:#{c.to_f/loop_count.to_f}\n"
-    }
+      pbar.inc
+      rcsl += 0.1
+    end
+    @manager.all_data_clear
+    
     puts "------------------------------------------------------------"
-  }
-}
+  end
+#}
 puts mes
 pbar.finish
