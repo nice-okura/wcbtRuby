@@ -8,7 +8,7 @@ TASK_NUM = 5
 TASK_FILE_NAME = "./task.json"
 REQ_FILE_NAME = "./req.json"
 GRP_FILE_NAME = "./grp.json"
-NEST_FLG = FALSE
+NEST_FLG = TRUE
 
 TASK_COUNT = 10
 REQ_COUNT = 10
