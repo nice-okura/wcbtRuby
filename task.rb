@@ -25,8 +25,64 @@ class Task
     check_outermost
     check_over_extime
     set_begin_time
+
+    #
+    # all_requireを事前に求めておく
+    #
+    @all_require = []
+    
+    if NEST_FLG == TRUE
+      
+      req_list.each{|req|
+        @all_require << req
+        if req.reqs != nil then
+          req.reqs.each{|req2|
+            # 同じリソースのネストは不可能
+            # req1.res == req2.res はダメ
+            #if req2.res == req.res then 
+            #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
+            #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
+            #exit # 強制終了
+            #end
+            # グループが異なるときに別要求としてreq_listに追加
+            # 同じグループならグループロックを1回取得するだけで良いから
+            # 同グループなら別要求としては扱わない．
+            if req2.res.group != req.res.group then
+              @all_require << req2
+            end
+          }
+        end
+      }
+    else
+      @all_require = @req_list
+    end
+    
+    #
+    # shortリソース要求の配列を返す
+    # outermost なもののみ
+    # ネストされているものもふくむ
+    #
+    @short_require_array = []
+    get_all_require.each{|req|
+      if req.res.kind == "short" && req.outermost == true then
+        @short_require_array << req
+      end
+    }
+    
+    #
+    # longリソースの配列を返す
+    # outermostなもののみ
+    # ネストされているものも含む
+    #
+    @long_require_array = []
+    get_all_require.each{|req|
+      if req.res.kind == "long" && req.outermost == true then
+        @long_require_array << req
+      end
+    }
   end
-  
+    
+    
   def get_resource_count
     @req_list.size
   end
@@ -94,69 +150,25 @@ class Task
   # @req_listはネストしているものは含まれていない
   #
   def get_all_require
-    all_require = []
-
-    if NEST_FLG == TRUE
-      
-      req_list.each{|req|
-        all_require << req
-        if req.reqs != nil then
-          req.reqs.each{|req2|
-            # 同じリソースのネストは不可能
-            # req1.res == req2.res はダメ
-            #if req2.res == req.res then 
-            #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
-            #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
-            #exit # 強制終了
-            #end
-            # グループが異なるときに別要求としてreq_listに追加
-            # 同じグループならグループロックを1回取得するだけで良いから
-            # 同グループなら別要求としては扱わない．
-            if req2.res.group != req.res.group then
-              all_require << req2
-            end
-          }
-        end
-      }
-    else
-      all_require = req_list
-    end
-    return all_require  
+    return @all_require 
   end
   
   #
   # longリソースの配列を返す
   # outermostなもののみ
+  # ネストされているものも含む
   #
-  def get_long_resource_array
-    long_resource_array = []
-    get_all_require.each{|req|
-      if req.res.kind == "long" && req.outermost == true then
-        long_resource_array << req.res
-      end
-    }
-    return long_resource_array
+  def get_long_require_array
+    return @long_require_array
   end
   
   #
-  # shortリソースの配列を返す
+  # shortリソース要求の配列を返す
   # outermost なもののみ
+  # ネストされているものもふくむ
   #
-  def get_short_resource_array
-    short_resource_array = []
-    get_all_require.each{|req|
-      if req.res.kind == "short" && req.outermost == true then
-        short_resource_array << req.res
-=begin
-         req.reqs.each{|req2|
-         if req2.res.group != req.res.group then
-         get_short_resource_array << req2.res
-         end
-         }
-=end
-      end
-    }
-    return short_resource_array
+  def get_short_require_array
+    return @short_require_array
   end
   
   #

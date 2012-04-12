@@ -133,6 +133,7 @@ module WCBT
       return []
     end
     k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+    #pp WCSR(task)
     1.upto(k){|n|
       WCSR(task).each{|req|
         if req.res.kind == "short" && req.nested == false then
@@ -148,7 +149,7 @@ module WCBT
   end
   
   def narr(job)
-    job.get_long_resource_array.size
+    job.get_long_require_array.size
   end
   
   def partition(proc)
@@ -345,10 +346,12 @@ module WCBT
         end
       end
     }
+=begin
     tuples.each{|t|
       str += t.prints
     }
-    #print_debug("abr(#{job.task_id.to_s.red}) = #{str}")
+    print_debug("abr(#{job.task_id.to_s.red}) = #{str}")
+=end
     return tuples
   end
   
@@ -379,7 +382,7 @@ module WCBT
   
   def ndbtg(task, job, group)
     a = b = 0
-    #  pp job.get_long_resource_array.size
+    #  pp job.get_long_require_array.size
     LR(job).each{|req|
       a += 1 if req.res.group == group
     }
@@ -541,7 +544,7 @@ module WCBT
   ##############################
   
   def BB(job)
-    if job.get_long_resource_array.size == 0 then
+    if job.get_long_require_array.size == 0 then
       return 0
     end
     time = 0
@@ -557,17 +560,20 @@ module WCBT
     #p job.task_id
     if job == nil
       return 0
-    elsif job.get_short_resource_array.size == 0
-      return 0
     elsif lowest_priority_task(job.proc)[0].priority == job.priority
       #p "lowest"
       #print_debug("最低優先度")
       return 0
+    else
+      flg = false
+      job.req_list.each{|r|
+        flg = true if r.res.kind == "short"
+      }
+      return 0 if flg == false 
     end
       
     time = 0
     tuples = abr(job)
-    pp tuples
     min = [tuples.size, narr(job) + 1].min
     0.upto(min-1){|num|
       time += tuples[num].req.time
@@ -580,7 +586,7 @@ module WCBT
     #RubyProf.start
     if job == nil then
       return 0
-    elsif job.get_long_resource_array.size == 0
+    elsif job.get_long_require_array  .size == 0
       return 0
     end
     return rbl(job) + rbs(job)
@@ -593,7 +599,7 @@ module WCBT
   def SB(job)
     if job == nil then
       return 0
-    elsif job.get_short_resource_array.size == 0
+    elsif job.get_short_require_array.size == 0
       return 0
     end
     g = []

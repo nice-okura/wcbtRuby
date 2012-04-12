@@ -229,32 +229,32 @@ class Test_wcbt < Test::Unit::TestCase
     $taskList = [task1, task2, task3]
     init_computing
     
-    assert_equal(2, task1.get_long_resource_array.size )
-    assert_equal(3, task2.get_long_resource_array.size )
-    assert_equal(2, task3.get_long_resource_array.size )
-    assert_equal(0, task1.get_short_resource_array.size )
-    assert_equal(0, task2.get_short_resource_array.size )
-    assert_equal(0, task3.get_short_resource_array.size )
+    assert_equal(2, task1.get_long_require_array.size )
+    assert_equal(3, task2.get_long_require_array.size )
+    assert_equal(2, task3.get_long_require_array.size )
+    assert_equal(0, task1.get_short_require_array.size )
+    assert_equal(0, task2.get_short_require_array.size )
+    assert_equal(0, task3.get_short_require_array.size )
 
     $taskList = [task4, task5, task6]
     init_computing
 
-    assert_equal(1, task4.get_long_resource_array.size )
-    assert_equal(1, task5.get_long_resource_array.size )
-    assert_equal(1, task6.get_long_resource_array.size )
-    assert_equal(1, task4.get_short_resource_array.size )
-    assert_equal(2, task5.get_short_resource_array.size )
-    assert_equal(1, task6.get_short_resource_array.size )
+    assert_equal(1, task4.get_long_require_array.size )
+    assert_equal(1, task5.get_long_require_array.size )
+    assert_equal(1, task6.get_long_require_array.size )
+    assert_equal(1, task4.get_short_require_array.size )
+    assert_equal(2, task5.get_short_require_array.size )
+    assert_equal(1, task6.get_short_require_array.size )
 
     $taskList = [task7, task8, task9]
     init_computing
 
-    assert_equal(0, task7.get_long_resource_array.size )
-    assert_equal(0, task8.get_long_resource_array.size )
-    assert_equal(0, task9.get_long_resource_array.size )
-    assert_equal(2, task7.get_short_resource_array.size )
-    assert_equal(3, task8.get_short_resource_array.size )
-    assert_equal(2, task9.get_short_resource_array.size )
+    assert_equal(0, task7.get_long_require_array.size )
+    assert_equal(0, task8.get_long_require_array.size )
+    assert_equal(0, task9.get_long_require_array.size )
+    assert_equal(2, task7.get_short_require_array.size )
+    assert_equal(3, task8.get_short_require_array.size )
+    assert_equal(2, task9.get_short_require_array.size )
 
   end
   
@@ -393,7 +393,7 @@ class Test_wcbt < Test::Unit::TestCase
     
     assert(procList == [1,2])
   end
-    
+
   def test_AB
     task1 = Task.new(1, 1, 600, 10, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 600, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
@@ -407,8 +407,8 @@ class Test_wcbt < Test::Unit::TestCase
     task8 = Task.new(8, 1, 600, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
     task9 = Task.new(9, 2, 600, 10, 3, 0, [@req16_ShortShort2])
     p "test_AB"
-    $taskList = [task1, task2, task3]
-    init_computing
+    #$taskList = [task1, task2, task3]
+    #init_computing
     
     #assert_same(0, AB(task1))
     #assert_same(0, AB(task2))
@@ -418,14 +418,14 @@ class Test_wcbt < Test::Unit::TestCase
     taskset = TaskSet.new($taskList)
     taskset.show_taskset
     init_computing
-    pp task5
-    pp wcsx(task5, task4)
+    #pp task5
+    #pp wcsx(task5, task4)
     assert_same(0, AB(task4))
-    assert_same(0, AB(task5))
-    assert_same(0, AB(task6))
+    #assert_same(0, AB(task5))
+    #assert_same(0, AB(task6))
     
-    $taskList = [task7, task8, task9]
-    init_computing
+    #$taskList = [task7, task8, task9]
+    #init_computing
     
     #assert_same(4, AB(task7))
     #assert_same(0, AB(task8))
