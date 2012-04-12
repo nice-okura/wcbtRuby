@@ -12,7 +12,7 @@
 #
 require "rubygems"
 require "term/ansicolor"
-require "ruby-prof"
+#require "ruby-prof"
 
 class String
   include Term::ANSIColor
@@ -342,15 +342,11 @@ module WCBT
     a = b = 0
     #  pp job.get_long_resource_array.size
     LR(job).each{|req|
-      if req.res.group == group then 
-        a += 1
-      end
+      a += 1 if req.res.group == group
     }
     #pp WCLR(task).size
     WCLR(task).each{|req|
-      if req.res.group == group then
-        b += 1
-      end
+      b += 1 if req.res.group == group
     }
     #print_debug("ndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta})")
     return [a, b].min
@@ -541,12 +537,17 @@ module WCBT
   end
   
   def LB(job)
+    #RubyProf.start
     if job == nil then
       return 0
     elsif job.get_long_resource_array.size == 0
       return 0
     end
     return rbl(job) + rbs(job)
+    #result = RubyProf.stop
+    # Print a flat profile to text
+    #printer = RubyProf::FlatPrinter.new(result)
+    #printer.print(STDOUT)
   end
   
   def SB(job)

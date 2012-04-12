@@ -95,26 +95,32 @@ class Task
   #
   def get_all_require
     all_require = []
-    req_list.each{|req|
-      all_require << req 
-      if req.reqs != nil then
-        req.reqs.each{|req2|
-          # 同じリソースのネストは不可能
-          # req1.res == req2.res はダメ
-          if req2.res == req.res then 
+
+    if NEST_FLG == TRUE
+      
+      req_list.each{|req|
+        all_require << req
+        if req.reqs != nil then
+          req.reqs.each{|req2|
+            # 同じリソースのネストは不可能
+            # req1.res == req2.res はダメ
+            #if req2.res == req.res then 
             #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
             #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
             #exit # 強制終了
-          end
-          # グループが異なるときに別要求としてreq_listに追加
-          # 同じグループならグループロックを1回取得するだけで良いから
-          # 同グループなら別要求としては扱わない．
-          if req2.res.group != req.res.group then
-            all_require << req2
-          end
-        }
-      end
-    }
+            #end
+            # グループが異なるときに別要求としてreq_listに追加
+            # 同じグループならグループロックを1回取得するだけで良いから
+            # 同グループなら別要求としては扱わない．
+            if req2.res.group != req.res.group then
+              all_require << req2
+            end
+          }
+        end
+      }
+    else
+      all_require = req_list
+    end
     return all_require
   end
   

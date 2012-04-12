@@ -184,7 +184,7 @@ mes = ""
 
 #8.step(16, 4){|t|
   tasks = 16
-  for g in [1, 2, 4, 8]
+  for g in [8]
     groups = g
     rcsl = 0.1
     info = ["120411", extime, rcsl]
@@ -195,9 +195,7 @@ mes = ""
       # クリティカルセクションの変更
       #
       $taskList.each{|t|
-        t.req_list.each{|r|
-          r.time = t.extime * rcsl
-        }
+        t.req_list[0].time = t.extime * rcsl
       }
       c += compute_wcrt
       puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{rcsl} ]long_count:#{c.to_f/loop_count.to_f}\n"
