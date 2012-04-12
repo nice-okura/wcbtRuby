@@ -75,7 +75,7 @@ module WCBT
       # narrの計算
       #
       $NARR[task.task_id] = task.get_long_require_array.size
-      
+      p $NARR[task.task_id]
     }
     
     
@@ -169,7 +169,7 @@ module WCBT
   end
   
   def narr(job)
-    $NARR[job.task_id]
+    return $NARR[job.task_id]
   end
   
   def partition(proc)

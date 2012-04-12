@@ -80,6 +80,7 @@ class AllManager
     return false unless @tm.load_task_data(tname)
     @using_group_array = get_using_group_array
     $taskList = @tm.get_task_array
+    init_computing
     set_blocktime
     
     return true
@@ -111,6 +112,7 @@ class AllManager
     @using_group_array = get_using_group_array
     
     $taskList = @tm.get_task_array
+    init_computing
     set_blocktime
     
   end
