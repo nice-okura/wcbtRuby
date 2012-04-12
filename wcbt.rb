@@ -23,6 +23,9 @@ end
 #
 $WCLR = Hash::new
 $WCSR = Hash::new
+$LR = Hash::new 
+$SR = Hash::new
+$NARR = Hash::new
 
 module WCBT
   def print_debug(str)
@@ -37,20 +40,45 @@ module WCBT
   def init_computing
     $WCLR.clear
     $WCSR.clear
+    $LR.clear
+    $SR.clear
+    
     $taskList.each{|task|
       lreqs = []
       sreqs = []
       task.req_list.each{|req|
-        if req.outermost == true && req.res.kind == "long" then
+        if req.outermost == true && req.res.kind == "long"
           lreqs << req
-        elsif req.outermost == true && req.res.kind == "short" then
+        elsif req.outermost == true && req.res.kind == "short"
           sreqs << req
         end
       }
       $WCLR[task.task_id] = lreqs unless lreqs == []
       $WCSR[task.task_id] = sreqs unless sreqs == []
+      
+      #
+      # SR, LRの計算
+      #
+      lr = []
+      sr = []
+      task.get_all_require.each{|req|
+        if req.res.kind == "long" && req.outermost == true
+          lr << req
+        elsif req.res.kind == "short" && req.outermost == true
+          sr << req
+        end
+      }
+      $LR[task.task_id] = lr unless lr == []
+      $SR[task.task_id] = sr unless sr == []
+      
+      #
+      # narrの計算
+      #
+      $NARR[task.task_id] = task.get_long_require_array.size
+      
     }
-    #pp $WCSR
+    
+    
   end
   
   def WCLR(task)
@@ -84,23 +112,15 @@ module WCBT
   end
   
   def LR(job)
-    lr = []
-    job.get_all_require.each{|req|
-      if req.res.kind == "long" && req.outermost == true then
-        lr << req
-      end
-    }
-    lr
+    ret = $LR[job.task_id]
+    ret = [] if ret == nil
+    return ret
   end
   
   def SR(job)
-    sr = []
-    job.get_all_require.each{|req|
-      if req.res.kind == "short" && req.outermost == true then
-        sr << req
-      end
-    }
-    sr
+    ret = $SR[job.task_id]
+    ret = [] if ret == nil
+    return ret
   end
   
   def wclx(task, job)
@@ -149,7 +169,7 @@ module WCBT
   end
   
   def narr(job)
-    job.get_long_require_array.size
+    $NARR[job.task_id]
   end
   
   def partition(proc)
@@ -586,7 +606,7 @@ module WCBT
     #RubyProf.start
     if job == nil then
       return 0
-    elsif job.get_long_require_array  .size == 0
+    elsif job.get_long_require_array.size == 0
       return 0
     end
     return rbl(job) + rbs(job)

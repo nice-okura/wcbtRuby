@@ -183,8 +183,8 @@ mes = ""
 
 
 #8.step(16, 4){|t|
-  tasks = 16
-  for g in [8]
+  tasks = 8
+  for g in [4]
     groups = g
     rcsl = 0.1
     info = ["120411", extime, rcsl]
