@@ -121,7 +121,7 @@ class Task
     else
       all_require = req_list
     end
-    return all_require
+    return all_require  
   end
   
   #
@@ -266,7 +266,7 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost
+  attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost, :nested
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
     @res = res
@@ -274,6 +274,7 @@ class Req
     @begintime = begintime
     @reqs = reqs
     @outermost = outermost
+    @nested = false # ネスト"されている"場合 true
     
     # outermost のアクセス時間timeが最大でないといけない
     nesttime = 0
@@ -284,6 +285,9 @@ class Req
       # print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
       #exit
     end
+    reqs.each{|r|
+      r.nested = true unless r == []
+    }
   end
   
   #

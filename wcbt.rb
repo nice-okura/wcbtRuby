@@ -135,7 +135,7 @@ module WCBT
     k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
     1.upto(k){|n|
       WCSR(task).each{|req|
-        if req.res.kind == "short" then
+        if req.res.kind == "short" && req.nested == false then
           tuples << ReqTuple.new(req, n)
         end
       }
@@ -143,6 +143,7 @@ module WCBT
     tuples.sort!{|a, b|
       (-1) * (a.req.time <=> b.req.time)
     }
+ 
     tuples
   end
   
