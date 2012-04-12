@@ -18,6 +18,12 @@ class String
   include Term::ANSIColor
 end
 
+#
+# WCLRなど
+#
+$WCLR = Hash::new
+$WCSR = Hash::new
+
 module WCBT
   def print_debug(str)
     if $DEBUG == true
@@ -25,7 +31,30 @@ module WCBT
     end
   end
   
+  #
+  # 予め計算しておく
+  #
+  def init_computing
+    $WCLR.clear
+    $WCSR.clear
+    $taskList.each{|task|
+      lreqs = []
+      sreqs = []
+      task.req_list.each{|req|
+        if req.outermost == true && req.res.kind == "long" then
+          lreqs << req
+        elsif req.outermost == true && req.res.kind == "short" then
+          sreqs << req
+        end
+      }
+      $WCLR[task.task_id] = lreqs unless lreqs == []
+      $WCSR[task.task_id] = sreqs unless sreqs == []
+    }
+    #pp $WCSR
+  end
+  
   def WCLR(task)
+=begin
     reqs = []
     task.req_list.each{|req|
       if req.outermost == true && req.res.kind == "long" then
@@ -33,9 +62,14 @@ module WCBT
       end
     }
     reqs
+=end
+    ret = $WCLR[task.task_id]
+    ret = [] if ret == nil
+    return ret
   end
   
   def WCSR(task)
+=begin
     reqs = []
     task.req_list.each{|req|
       if req.outermost == true && req.res.kind == "short" then
@@ -43,6 +77,10 @@ module WCBT
       end
     }
     reqs
+=end
+    ret = $WCSR[task.task_id]
+    ret = [] if ret == nil
+    return ret
   end
   
   def LR(job)
