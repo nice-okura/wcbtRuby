@@ -567,6 +567,7 @@ module WCBT
       
     time = 0
     tuples = abr(job)
+    pp tuples
     min = [tuples.size, narr(job) + 1].min
     0.upto(min-1){|num|
       time += tuples[num].req.time
