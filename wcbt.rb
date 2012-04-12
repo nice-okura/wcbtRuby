@@ -21,11 +21,13 @@ end
 #
 # WCLRなど
 #
-$WCLR = Hash::new
-$WCSR = Hash::new
-$LR = Hash::new 
-$SR = Hash::new
-$NARR = Hash::new
+$WCLR = Hash.new
+$WCSR = Hash.new
+$LR = Hash.new 
+$SR = Hash.new
+$NARR = Hash.new
+$wclx = Hash.new
+$wcsx = Hash.new
 
 module WCBT
   def print_debug(str)
@@ -42,6 +44,11 @@ module WCBT
     $WCSR.clear
     $LR.clear
     $SR.clear
+    $NARR.clear
+    $wclx.clear
+    $wcsx.clear
+    
+    puts "INIT_COMPUTING"
     
     $taskList.each{|task|
       lreqs = []
@@ -75,37 +82,54 @@ module WCBT
       # narrの計算
       #
       $NARR[task.task_id] = task.get_long_require_array.size
-      p $NARR[task.task_id]
+      
+      #
+      # wclx, wcsxの計算
+      #
+      $taskList.each{|job|
+        tuplesl = []
+        tupless = []
+        
+        if task == nil || job == nil then 
+          return []
+        end
+        begin
+          k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+        rescue
+          puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
+          exit
+        end
+        1.upto(k){|n|
+          WCLR(task).each{|req|
+            if req.res.kind == "long" then
+              tuplesl << ReqTuple.new(req, n)
+            end
+          }
+          WCSR(task).each{|req|
+            if req.res.kind == "short" && req.nested == false then
+              tupless << ReqTuple.new(req, n)
+            end
+          }
+        }
+        tuplesl.sort!{|a, b|
+          (-1) * (a.req.time <=> b.req.time)
+        }
+        tupless.sort!{|a, b|
+          (-1) * (a.req.time <=> b.req.time)
+        }
+        $wclx[[task.task_id, job.task_id]] = tuplesl
+        $wcsx[[task.task_id, job.task_id]] = tupless
+      }
     }
-    
-    
   end
   
   def WCLR(task)
-=begin
-    reqs = []
-    task.req_list.each{|req|
-      if req.outermost == true && req.res.kind == "long" then
-        reqs << req
-      end
-    }
-    reqs
-=end
     ret = $WCLR[task.task_id]
     ret = [] if ret == nil
     return ret
   end
   
   def WCSR(task)
-=begin
-    reqs = []
-    task.req_list.each{|req|
-      if req.outermost == true && req.res.kind == "short" then
-        reqs << req
-      end
-    }
-    reqs
-=end
     ret = $WCSR[task.task_id]
     ret = [] if ret == nil
     return ret
@@ -124,48 +148,11 @@ module WCBT
   end
   
   def wclx(task, job)
-    tuples = []
-    if task == nil || job == nil then 
-      return []
-    end
-    begin
-      k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
-      rescue
-      puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
-      exit
-    end
-    1.upto(k){|n|
-      WCLR(task).each{|req|
-        if req.res.kind == "long" then
-          tuples << ReqTuple.new(req, n)
-        end
-      }
-    }
-    tuples.sort!{|a, b|
-      (-1) * (a.req.time <=> b.req.time)
-    }
-    return tuples
+    return $wclx[[task.task_id, job.task_id]]
   end
   
   def wcsx(task, job)
-    tuples = []
-    if task == nil || job == nil then 
-      return []
-    end
-    k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
-    #pp WCSR(task)
-    1.upto(k){|n|
-      WCSR(task).each{|req|
-        if req.res.kind == "short" && req.nested == false then
-          tuples << ReqTuple.new(req, n)
-        end
-      }
-    }
-    tuples.sort!{|a, b|
-      (-1) * (a.req.time <=> b.req.time)
-    }
- 
-    tuples
+    return $wcsx[[task.task_id, job.task_id]]
   end
   
   def narr(job)
@@ -401,7 +388,8 @@ module WCBT
   end
   
   def ndbtg(task, job, group)
-    a = b = 0
+    a = 0
+    b = 0
     #  pp job.get_long_require_array.size
     LR(job).each{|req|
       a += 1 if req.res.group == group
