@@ -49,9 +49,14 @@ new_datas.sort!{ |a, b|
   end
 }
 
-File.open("pltdata_#{filename}.dat", "w"){|fp|
-  new_datas.each{|data|
-    p data
-    fp.puts "#{data[3].to_f} #{data[4].to_f}" unless data == nil
+for num in [8, 12, 16]
+  File.open("pltdata_#{filename}_#{num}tasks.dat", "w"){|fp|
+    10.times{ 
+      data = new_datas[0]
+      p data
+      fp.puts "#{data[3].to_f} #{data[4].to_f} #{data[5].to_f} #{data[6].to_f} #{data[7].to_f}" unless data == nil
+      new_datas.delete_at(0)
+    }
   }
-}
+  puts "write pltdata_#{filename}_#{num}tasks.dat"
+end
