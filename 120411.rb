@@ -182,30 +182,39 @@ pbar.format = "%3d%% %s %s"
 mes = ""
 
 
-#8.step(16, 4){|t|
-  tasks = 8
-  for g in [1,2,4,8]
+8.step(16, 4){|t|
+  tasks = t
+  for g in [1, 2, 4, 8]
     groups = g
-    rcsl = 0.1
     info = ["120411", extime, rcsl]
-    @manager.create_tasks(tasks, requires, groups, info)
-    while rcsl < 1.0
-      c = 0
-      #
-      # クリティカルセクションの変更
-      #
-      $taskList.each{|t|
-        t.req_list[0].time = t.extime * rcsl
-      }
-      c += compute_wcrt
-      puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{rcsl} ]long_count:#{c.to_f/loop_count.to_f}\n"
-      pbar.inc
-      rcsl += 0.1
-    end
-    @manager.all_data_clear
-    
+    c = []
+    c.fill(0,0..9)
+
+    loop_count.times{
+      i = 0
+      rcsl = 0.1
+      @manager.create_tasks(tasks, requires, groups, info)
+      while rcsl < 1.0
+        #
+        # クリティカルセクションの変更
+        #
+        $taskList.each{|t|
+          t.req_list[0].time = t.extime * rcsl
+        }
+        c[i] += compute_wcrt
+        pbar.inc
+        rcsl += 0.1
+        i += 1
+      end
+      @manager.all_data_clear
+    }
+    j = 0.1
+    c.each{|l|
+      puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{j} ]long_count:#{l.to_f/loop_count.to_f}\n"
+      j += 0.1
+    }
     puts "------------------------------------------------------------"
   end
-#}
+}
 puts mes
 pbar.finish

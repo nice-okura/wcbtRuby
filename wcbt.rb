@@ -48,7 +48,7 @@ module WCBT
     $wclx.clear
     $wcsx.clear
     
-    puts "INIT_COMPUTING"
+    #puts "INIT_COMPUTING"
     
     $taskList.each{|task|
       lreqs = []

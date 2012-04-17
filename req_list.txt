@@ -1,0 +1,981 @@
+ランダムタスク
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ed8
+  @begintime=19,
+  @outermost=true,
+  @req_id=3,
+  @reqs=[],
+  @res=#<Group:0x1015364f0 @group=2, @kind="short">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015360b8
+  @begintime=29,
+  @outermost=true,
+  @req_id=2,
+  @reqs=[],
+  @res=#<Group:0x101536478 @group=3, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535460
+  @begintime=21,
+  @outermost=true,
+  @req_id=10,
+  @reqs=[],
+  @res=#<Group:0x101536400 @group=4, @kind="short">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x101535ac8
+  @begintime=41,
+  @outermost=true,
+  @req_id=6,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time=5.0>]
+[#<Req:0x1015361f8
+  @begintime=15,
+  @outermost=true,
+  @req_id=1,
+  @reqs=[],
+  @res=#<Group:0x101536568 @group=1, @kind="long">,
+  @time

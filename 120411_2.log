@@ -1,0 +1,450 @@
+ランダムタスク
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.2
+[TASKS:8 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.4
+[TASKS:8 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:0.0
+[TASKS:8 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:0.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.4
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.4
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.4
+[TASKS:12 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:0.2
+[TASKS:12 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.4
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.0
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.6
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.4
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.8
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.8
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.8
+[TASKS:16 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.8
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:0.2
+[TASKS:16 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.2
+[TASKS:20 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.8
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.6
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:0.4
+[TASKS:20 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.0
+[TASKS:24 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.4
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:0.8
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:1.0
+[TASKS:24 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:1.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.4
+[TASKS:28 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.2
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.8
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:1.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:1.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:1.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:1.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:1.0
+[TASKS:28 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:1.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.1 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.2 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.3 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.4 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.5 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.6 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.7 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.8 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:0.9 ]long_count:0.0
+[TASKS:32 CPUs:4 GROUPS:1 RCSL:1.0 ]long_count:0.0
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.1 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.2 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.3 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.4 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.5 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.6 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.7 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.8 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:0.9 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:2 RCSL:1.0 ]long_count:0.2
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.1 ]long_count:0.2
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.2 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.3 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.4 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.5 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.6 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.7 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.8 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:0.9 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:4 RCSL:1.0 ]long_count:0.4
+------------------------------------------------------------
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+INIT_COMPUTING
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.1 ]long_count:0.4
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.2 ]long_count:0.6
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.3 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.4 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.5 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.6 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.7 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.8 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:0.9 ]long_count:0.8
+[TASKS:32 CPUs:4 GROUPS:8 RCSL:1.0 ]long_count:0.8
+------------------------------------------------------------
+
