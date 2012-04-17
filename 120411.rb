@@ -210,7 +210,10 @@ mes = ""
     }
     j = 0.1
     c.each{|l|
-      puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{j} ]long_count:#{l.to_f/loop_count.to_f}\n"
+      # long_count 全タスク中のlongリソースであり，
+      # タスク数が増えれ増えて当たり前なので，1タスクあたりの平均longリソース数を見るため，
+      # タスク数で割る
+      puts "[TASKS:#{tasks} CPUs:#{PROC_NUM} GROUPS:#{groups} RCSL:#{j} ]long_count:#{l.to_f/loop_count.to_f/tasks.to_f}\n"
       j += 0.1
     }
     puts "------------------------------------------------------------"
