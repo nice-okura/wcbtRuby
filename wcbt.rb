@@ -28,6 +28,8 @@ $SR = Hash.new
 $NARR = Hash.new
 $wclx = Hash.new
 $wcsx = Hash.new
+$bbt = Hash.new
+$abr = Hash.new
 
 module WCBT
   def print_debug(str)
@@ -47,7 +49,9 @@ module WCBT
     $NARR.clear
     $wclx.clear
     $wcsx.clear
-    
+    $bbt.clear
+    $abr.clear
+   
     #puts "INIT_COMPUTING"
     
     $taskList.each{|task|
@@ -90,7 +94,7 @@ module WCBT
         tuplesl = []
         tupless = []
         
-        if task == nil || job == nil then 
+        if task == nil || job == nil
           return []
         end
         begin
@@ -101,12 +105,12 @@ module WCBT
         end
         1.upto(k){|n|
           WCLR(task).each{|req|
-            if req.res.kind == "long" then
+            if req.res.kind == "long"
               tuplesl << ReqTuple.new(req, n)
             end
           }
           WCSR(task).each{|req|
-            if req.res.kind == "short" && req.nested == false then
+            if req.res.kind == "short" && req.nested == false
               tupless << ReqTuple.new(req, n)
             end
           }
@@ -120,6 +124,44 @@ module WCBT
         $wclx[[task.task_id, job.task_id]] = tuplesl
         $wcsx[[task.task_id, job.task_id]] = tupless
       }
+    }
+
+
+    #
+    # 上記の計算をした後でしか計算できないもの
+    #
+    $taskList.each{ |job|
+      tuple_abr = []
+      tuples_abr = []
+      $taskList.each{ |task|
+        #
+        # abrの計算
+        #
+        if task.proc == job.proc && task.priority > job.priority
+          tuple_abr = wcsx(task, job)
+          if tuple_abr != []
+            tuples_abr += tuple_abr
+          end
+        end
+
+        
+        #
+        # bbtの計算
+        #
+        len = 0
+        tuples = wclx(task, job)
+        str = ""
+        #tuples.each{|t|
+        #  str += t.prints
+        #}
+        min = [tuples.size, narr(job) + 1].min
+        0.upto(min-1){|num|
+          len += tuples[num].req.time
+        }
+        $bbt[[task.task_id, job.task_id]] = len
+
+      }
+      $abr[job.task_id] = tuples_abr
     }
   end
   
@@ -174,8 +216,9 @@ module WCBT
     $taskList.each{|task|
       proc << task.proc
     }
-    proc = proc.sort
-    proc = proc.uniq
+    
+    proc.uniq!
+    proc.sort!    
     return proc
   end
   
@@ -320,46 +363,19 @@ module WCBT
   ##############################
   
   def bbt(task, job)
-    if task == job then
-      return 0
-    end
-    len = 0
-    tuples = wclx(task, job)
-    str = ""
-    tuples.each{|t|
-      str += t.prints
-    }
-    min = [tuples.size, narr(job) + 1].min
-    0.upto(min-1){|num|
-      len += tuples[num].req.time
-    }
-    #print_debug("  bbt_tuples = #{str}")
-    #print_debug("bbt_min = min(#{tuples.size}, #{narr(job)+1})")
-    #print_debug("bbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{len}")
-    return len
+    return $bbt[[task.task_id, job.task_id]]
   end
   
   def abr(job)
-    if job == nil then 
+    short_flg = false
+    job.req_list.each{ |req|
+      short_flg = true if req.res.kind == "short"
+    }
+    if short_flg
+      return $abr[job.task_id]
+    else
       return []
     end
-    tuples = []
-    str = ""
-    $taskList.each{|task|
-      if task.proc == job.proc && task.priority > job.priority then
-        tuple = wcsx(task, job)
-        if tuple != [] then
-          tuples += tuple
-        end
-      end
-    }
-=begin
-    tuples.each{|t|
-      str += t.prints
-    }
-    print_debug("abr(#{job.task_id.to_s.red}) = #{str}")
-=end
-    return tuples
   end
   
   

@@ -107,7 +107,6 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(1, WCLR(task3).size)
     assert_equal(2, WCLR(task3)[0].time)
     
-    pp WCSR(task1)
     assert_equal(0, WCSR(task1).size)
     assert_equal(0, WCSR(task2).size)
     assert_equal(0, WCSR(task3).size)
@@ -371,13 +370,16 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, abr(task2).size )
     assert_equal(0, abr(task3).size )
     $taskList = [task4, task5, task6]
+    
     init_computing
     
-    assert_equal(2, abr(task4).size )
+    assert_equal(0, abr(task4).size )
     assert_equal(0, abr(task5).size )
     assert_equal(0, abr(task6).size )
     $taskList = [task7, task8, task9]
     init_computing
+    #taskset = TaskSet.new($taskList)
+    #taskset.show_taskset
     
     assert_equal(4, abr(task7).size )
     assert_equal(0, abr(task8).size )
@@ -406,31 +408,29 @@ class Test_wcbt < Test::Unit::TestCase
     task7 = Task.new(7, 1, 600, 10, 1, 0, [@req10_ShortShort4])
     task8 = Task.new(8, 1, 600, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
     task9 = Task.new(9, 2, 600, 10, 3, 0, [@req16_ShortShort2])
-    p "test_AB"
-    #$taskList = [task1, task2, task3]
-    #init_computing
+    $taskList = [task1, task2, task3]
+    init_computing
     
-    #assert_same(0, AB(task1))
-    #assert_same(0, AB(task2))
-    #assert_same(0, AB(task3))
+    assert_same(0, AB(task1))
+    assert_same(0, AB(task2))
+    assert_same(0, AB(task3))
 
     $taskList = [task4, task5, task6]
-    taskset = TaskSet.new($taskList)
-    taskset.show_taskset
+    #taskset = TaskSet.new($taskList)
+    #taskset.show_taskset
     init_computing
-    #pp task5
-    #pp wcsx(task5, task4)
+    
     assert_same(0, AB(task4))
-    #assert_same(0, AB(task5))
-    #assert_same(0, AB(task6))
+    assert_same(0, AB(task5))
+    assert_same(0, AB(task6))
     
-    #$taskList = [task7, task8, task9]
-    #init_computing
+    $taskList = [task7, task8, task9]
+    init_computing
     
-    #assert_same(4, AB(task7))
-    #assert_same(0, AB(task8))
-    #assert_same(0, AB(task9))
-    p "end_test_AB"
+    assert_same(4, AB(task7))
+    assert_same(0, AB(task8))
+    assert_same(0, AB(task9))
+    #p "end_test_AB"
   end
     
   def test_partition
@@ -880,7 +880,7 @@ class Test_wcbt < Test::Unit::TestCase
     $taskList = [task1, task2, task3]
     init_computing
     
-    p B(task1)
+    assert_equal(7, B(task1))
   end
   
   def test_beginTime
