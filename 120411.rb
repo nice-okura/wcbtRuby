@@ -170,7 +170,7 @@ resouce_count_max = 4
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 5
+loop_count = 10
 
 
 @manager = AllManager.new
@@ -184,7 +184,9 @@ mes = ""
 
 8.step(16, 4){|t|
   tasks = t
-  for g in [1, 2, 4, 8]
+  for g in [4]
+  end
+  #for g in [1, 2, 4, 8]
     groups = g
     info = ["120411", extime, rcsl]
     c = []
@@ -205,6 +207,8 @@ mes = ""
         pbar.inc
         rcsl += 0.1
         i += 1
+        taskset = TaskSet.new($taskList)
+        taskset.show_taskset
       end
       @manager.all_data_clear
     }
