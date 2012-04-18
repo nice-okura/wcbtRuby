@@ -5,7 +5,7 @@
 #
 #Author:: Takahiro FUJITANI (ERTL, Nagoya Univ.)
 #Version:: 0.5.0
-#License::
+#License:: 
 #
 #
 # 最大ブロック時間計算用モジュール
@@ -30,6 +30,8 @@ $wclx = Hash.new
 $wcsx = Hash.new
 $bbt = Hash.new
 $abr = Hash.new
+$proc_list = Hash.new
+$proc_task_list = Hash.new
 
 module WCBT
   def print_debug(str)
@@ -51,8 +53,12 @@ module WCBT
     $wcsx.clear
     $bbt.clear
     $abr.clear
-   
+    $proc_list.clear
+    $proc_task_list.clear 
+
     #puts "INIT_COMPUTING"
+    
+    proc = [] # proc_list用プロセッサ配列
     
     $taskList.each{|task|
       lreqs = []
@@ -86,7 +92,13 @@ module WCBT
       # narrの計算
       #
       $NARR[task.task_id] = task.get_long_require_array.size
-      
+
+
+      #
+      # proc_listの計算
+      #      
+      proc << task.proc      
+
       #
       # wclx, wcsxの計算
       #
@@ -125,7 +137,13 @@ module WCBT
         $wcsx[[task.task_id, job.task_id]] = tupless
       }
     }
-
+    
+    #
+    # proc_list設定
+    #
+    proc.uniq!
+    proc.sort!    
+    $proc_list = proc
 
     #
     # 上記の計算をした後でしか計算できないもの
@@ -163,6 +181,20 @@ module WCBT
       }
       $abr[job.task_id] = tuples_abr
     }
+
+    
+    #
+    # partitionの計算
+    #
+    $proc_list.each{ |proc|
+      proc_task_list = []
+      $taskList.each{|task|
+        proc_task_list << task if task.proc == proc
+      }
+      $proc_task_list[proc] = proc_task_list
+    }
+
+
   end
   
   def WCLR(task)
@@ -202,161 +234,11 @@ module WCBT
   end
   
   def partition(proc)
-    procTaskList = []
-    $taskList.each{|task|
-      if task.proc == proc then
-        procTaskList << task
-      end
-    }
-    return procTaskList
+    return $proc_task_list[proc]
   end
   
   def procList
-    proc = []
-    $taskList.each{|task|
-      proc << task.proc
-    }
-    
-    proc.uniq!
-    proc.sort!    
-    return proc
-  end
-  
-  #
-  # 同一プロセッサ内で最低優先度を持つタスクのリストを返す
-  #
-  private
-  def lowest_priority_task(proc)
-    pri = 0 # 最高優先度
-    tsk = []
-    $taskList.each{|t|
-      if t.proc == proc
-        if pri < t.priority
-          pri = t.priority
-        end
-      end
-    }
-    $taskList.each{|t|
-        if pri == t.priority && t.proc == proc
-          tsk << t
-        end
-    }
-    return tsk
-  end
-  
-  def get_extime_high_priority(task)
-    time = 0
-    $taskList.each{|t|
-      sb = t.sb
-      if t.proc == task.proc && t.priority < task.priority
-        time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
-        #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
-      end
-    }
-    #puts ""
-    return time
-  end
-  
-  #
-  # 以下のフォーマットでブロック時間等表示
-  #
-  def show_blocktime
-    $taskList.each{|t|
-      print "タスク#{t.task_id}"      
-      print ["\tBB:", sprintf("%.3f", t.bb)].join
-      print ["\tAB:", sprintf("%.3f", t.ab)].join
-      print ["\tSB:", sprintf("%.3f", t.sb)].join
-      print ["\tLB:", sprintf("%.3f", t.lb)].join
-      print ["\tDB:", sprintf("%.3f", t.db)].join
-      print ["\tB:", sprintf("%.3f", t.b)].join
-      print "\n"
-      pri = get_extime_high_priority(t) 
-      #puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{sprintf("%.3f", t.b)} + プリエンプト時間#{sprintf("%.3f", pri)} = #{sprintf("%.3f", t.extime + t.b + pri)}"
-      if t.period < t.extime + t.b + pri
-        puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}".red
-      else
-        puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}"
-      end
-    }
-  end
-
-  #
-  # タスクにブロック時間情報を格納
-  #
-  public
-  def set_blocktime
-    $taskList.each{|t|
-      #puts "SET_BLOCKTIME"
-      t.bb = BB(t)
-      t.ab = AB(t)
-      t.sb = SB(t)
-      t.lb = LB(t)
-      t.db = DB(t)
-      t.b = t.bb + t.ab + t.sb + t.lb + t.db
-    }
-  end
-  
-  #
-  # 以下のフォーマットでブロック時間等表示
-  # 120409用
-  #
-  private
-  def show_blocktime_120409
-    $taskList.each{|task|
-      #RubyProf.start
-
-      set_blocktime(task)
-    
-      #result = RubyProf.stop
-      #printer = RubyProf::FlatPrinter.new(result)
-      #printer.print(STDOUT)
-    }
-
-    #
-    # CPU使用率を表示
-    #
-    
-    uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each{|p|
-      u = 0
-      #      puts "#{partition(p).size}"
-      partition(p).each{|t|
-        #puts "#{(t.extime+t.sb.to_f)/t.period}"
-        u += (t.extime + t.b - t.lb)/t.period
-      }
-      #puts "CPU#{p}使用率:#{u}"
-      uabj -= u
-    }
-    #puts "uabj:#{uabj}"
-    return uabj
-  end
-
-  #
-  # 以下のフォーマットでブロック時間等表示
-  # 120409_2用
-  #
-  def show_blocktime_120409_2
-    $taskList.each{|task|
-      set_blocktime(task)
-    }
-    
-    #
-    # CPU使用率を表示
-    #
-    
-    uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each{|p|
-      u = 0
-      #      puts "#{partition(p).size}"
-      partition(p).each{|t|
-        #puts "#{(t.extime+t.sb.to_f)/t.period}"
-        u += (t.extime + t.b - t.lb)/t.period
-      }
-      #puts "CPU#{p}使用率:#{u}"
-      uabj -= u
-    }
-    #puts "uabj:#{uabj}"
-    return uabj
+    return $proc_list
   end
 
   
@@ -652,5 +534,145 @@ module WCBT
     return BB(job) + AB(job) + LB(job) + SB(job) + DB(job)
   end
   
-  #############################
+#############################
+#
+# その他関数
+#
+#############################
+  #
+  # 同一プロセッサ内で最低優先度を持つタスクのリストを返す
+  #
+  private
+  def lowest_priority_task(proc)
+    pri = 0 # 最高優先度
+    tsk = []
+    $taskList.each{|t|
+      if t.proc == proc
+        if pri < t.priority
+          pri = t.priority
+        end
+      end
+    }
+    $taskList.each{|t|
+        if pri == t.priority && t.proc == proc
+          tsk << t
+        end
+    }
+    return tsk
+  end
+  
+  def get_extime_high_priority(task)
+    time = 0
+    $taskList.each{|t|
+      sb = t.sb
+      if t.proc == task.proc && t.priority < task.priority
+        time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
+        #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
+      end
+    }
+    #puts ""
+    return time
+  end
+  
+  #
+  # 以下のフォーマットでブロック時間等表示
+  #
+  def show_blocktime
+    $taskList.each{|t|
+      print "タスク#{t.task_id}"      
+      print ["\tBB:", sprintf("%.3f", t.bb)].join
+      print ["\tAB:", sprintf("%.3f", t.ab)].join
+      print ["\tSB:", sprintf("%.3f", t.sb)].join
+      print ["\tLB:", sprintf("%.3f", t.lb)].join
+      print ["\tDB:", sprintf("%.3f", t.db)].join
+      print ["\tB:", sprintf("%.3f", t.b)].join
+      print "\n"
+      pri = get_extime_high_priority(t) 
+      #puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{sprintf("%.3f", t.b)} + プリエンプト時間#{sprintf("%.3f", pri)} = #{sprintf("%.3f", t.extime + t.b + pri)}"
+      if t.period < t.extime + t.b + pri
+        puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}".red
+      else
+        puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}"
+      end
+    }
+  end
+
+  #
+  # タスクにブロック時間情報を格納
+  #
+  public
+  def set_blocktime
+    $taskList.each{|t|
+      #puts "SET_BLOCKTIME"
+      t.bb = BB(t)
+      t.ab = AB(t)
+      t.sb = SB(t)
+      t.lb = LB(t)
+      t.db = DB(t)
+      t.b = t.bb + t.ab + t.sb + t.lb + t.db
+    }
+  end
+  
+  #
+  # 以下のフォーマットでブロック時間等表示
+  # 120409用
+  #
+  private
+  def show_blocktime_120409
+    $taskList.each{|task|
+      #RubyProf.start
+
+      set_blocktime(task)
+    
+      #result = RubyProf.stop
+      #printer = RubyProf::FlatPrinter.new(result)
+      #printer.print(STDOUT)
+    }
+
+    #
+    # CPU使用率を表示
+    #
+    
+    uabj = PROC_NUM # utilization_available_to_background_jobs
+    procList.each{|p|
+      u = 0
+      #      puts "#{partition(p).size}"
+      partition(p).each{|t|
+        #puts "#{(t.extime+t.sb.to_f)/t.period}"
+        u += (t.extime + t.b - t.lb)/t.period
+      }
+      #puts "CPU#{p}使用率:#{u}"
+      uabj -= u
+    }
+    #puts "uabj:#{uabj}"
+    return uabj
+  end
+
+  #
+  # 以下のフォーマットでブロック時間等表示
+  # 120409_2用
+  #
+  def show_blocktime_120409_2
+    $taskList.each{|task|
+      set_blocktime(task)
+    }
+    
+    #
+    # CPU使用率を表示
+    #
+    
+    uabj = PROC_NUM # utilization_available_to_background_jobs
+    procList.each{|p|
+      u = 0
+      #      puts "#{partition(p).size}"
+      partition(p).each{|t|
+        #puts "#{(t.extime+t.sb.to_f)/t.period}"
+        u += (t.extime + t.b - t.lb)/t.period
+      }
+      #puts "CPU#{p}使用率:#{u}"
+      uabj -= u
+    }
+    #puts "uabj:#{uabj}"
+    return uabj
+  end
 end
