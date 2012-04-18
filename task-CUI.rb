@@ -7,11 +7,17 @@ class String
   include Term::ANSIColor
 end
 
-OFFSET_CHAR = " "       # offset : " "
-LONG_CHAR = "L".red     # long要求 : "L"
-SHORT_CHAR = "S".blue   # short要求 : "S"
-CALC_CHAR = "-"         # ただの計算 : "-"
-
+if $COLOR_CHAR == true
+  OFFSET_CHAR = " "       # offset : " "
+  LONG_CHAR = "L".red     # long要求 : "L"
+  SHORT_CHAR = "S".blue   # short要求 : "S"
+  CALC_CHAR = "-"         # ただの計算 : "-"
+else
+  OFFSET_CHAR = " "       # offset : " "
+  LONG_CHAR = "L"         # long要求 : "L"
+  SHORT_CHAR = "S"        # short要求 : "S"
+  CALC_CHAR = "-"         # ただの計算 : "-"
+end
 
 class TaskSet 
   attr_accessor :task_list

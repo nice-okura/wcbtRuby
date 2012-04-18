@@ -185,7 +185,6 @@ mes = ""
 8.step(16, 4){|t|
   tasks = t
   for g in [4]
-  end
   #for g in [1, 2, 4, 8]
     groups = g
     info = ["120411", extime, rcsl]
@@ -207,8 +206,6 @@ mes = ""
         pbar.inc
         rcsl += 0.1
         i += 1
-        taskset = TaskSet.new($taskList)
-        taskset.show_taskset
       end
       @manager.all_data_clear
     }
