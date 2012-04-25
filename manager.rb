@@ -275,7 +275,8 @@ class TaskManager
     }
     REQ_NUM.times{ 
       loop do
-        r = new_garray.choice
+        RUBY_VERSION == "1.9.3" ? r = new_garray.sample : r = new_garray.choice
+        #r = new_garray.choice
         #p "gnum:#{gnum}"
         #p r.res.group
         if r.res.group == gnum
@@ -293,7 +294,7 @@ class TaskManager
     req_list.each{|req|
       req_time += req.time
     }
-    new_task_id = task_id_array.choice
+    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.choice : new_task_id = task_id_array.choice 
     proc = (new_task_id.to_i%PROC_NUM)+1
     #p task_id_array
     priority = new_task_id
@@ -585,7 +586,7 @@ class RequireManager
       ra = nil
     else
       #p @@require_array.size
-      ra = @@require_array.choice.clone
+      RUBY_VERSION == "1.9.3" ? ra = @@require_array.sample.clone : ra = @@require_array.choice.clone
     end
     return ra
   end
@@ -910,7 +911,7 @@ class GroupManager
       puts "グループが生成されていません．"
       return nil
     end
-    return @@group_array.choice
+    return RUBY_VERSION == "1.9.3" ? @@group_array.sample : @@group_array.choice
   end
   
   #
