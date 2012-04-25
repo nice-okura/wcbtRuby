@@ -224,7 +224,7 @@ class TaskManager
         req_time += req.time
       }
     end
-    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.choice : new_task_id = task_id_array.choice 
+    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
     
     proc = (new_task_id.to_i%PROC_NUM)+1
     #p task_id_array
@@ -294,7 +294,7 @@ class TaskManager
     req_list.each{|req|
       req_time += req.time
     }
-    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.choice : new_task_id = task_id_array.choice 
+    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
     proc = (new_task_id.to_i%PROC_NUM)+1
     #p task_id_array
     priority = new_task_id
@@ -626,7 +626,7 @@ class RequireManager
       #puts "i:#{i}"
       
       i.times{|time|
-        new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
+        RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
         new_group = GroupManager.get_random_group if new_group == nil
         g_array.delete(new_group)
         

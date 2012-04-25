@@ -1,4 +1,4 @@
-o#! /usr/bin/ruby
+#! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
 #= 120502ミーティング用
