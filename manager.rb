@@ -205,7 +205,7 @@ class TaskManager
       }
       REQ_NUM.times{ 
         loop do
-          r = new_garray.choice
+          RUBY_VERSION == "1.9.3" ? r = new_garray.sample : r = new_garray.choice
           #p "gnum:#{gnum}"
           #p r.res.group
           if r.res.group == gnum
@@ -224,7 +224,8 @@ class TaskManager
         req_time += req.time
       }
     end
-    new_task_id = task_id_array.choice
+    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.choice : new_task_id = task_id_array.choice 
+    
     proc = (new_task_id.to_i%PROC_NUM)+1
     #p task_id_array
     priority = new_task_id

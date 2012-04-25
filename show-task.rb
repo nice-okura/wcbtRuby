@@ -1,3 +1,4 @@
+$:.unshift(File.dirname(__FILE__))
 require "manager"
 require "task-CUI"
 require "json"

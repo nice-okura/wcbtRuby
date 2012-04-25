@@ -1,7 +1,9 @@
+#! /usr/bin/ruby
+# -*- coding: utf-8 -*-
 $:.unshift(File.dirname(__FILE__))
 require "pp"
 require "wcbt"
-require "rubygems"
+require "rubygems" unless RUBY_VERSION == "1.9.3"
 require "term/ansicolor"
 
 class String
