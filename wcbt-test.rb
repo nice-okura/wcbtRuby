@@ -917,9 +917,82 @@ class Test_wcbt < Test::Unit::TestCase
     t7 = @manager.tm.get_task_array[6]
     t8 = @manager.tm.get_task_array[7]
     
-    pp t1
-    pp t2
-    assert_equal(0, wclx(t2, t1).size)
+
+    assert_equal(2, wclx(t2, t1).size)
+    assert_equal(4, wclx(t3, t1).size)
+    assert_equal(2, wclx(t4, t1).size)
+    assert_equal(2, wclx(t5, t1).size)
+    assert_equal(3, wclx(t6, t1).size)
+    assert_equal(0, wclx(t7, t1).size)
+    assert_equal(0, wclx(t8, t1).size)
+    
+    assert_equal(3, wclx(t1, t2).size)
+    assert_equal(5, wclx(t3, t2).size)
+    assert_equal(3, wclx(t4, t2).size)
+    assert_equal(2, wclx(t5, t2).size)
+    assert_equal(3, wclx(t6, t2).size)
+    assert_equal(0, wclx(t7, t2).size)
+    assert_equal(0, wclx(t8, t2).size)
+
+    assert_equal(2, wclx(t1, t3).size)
+    assert_equal(2, wclx(t2, t3).size)
+    assert_equal(2, wclx(t4, t3).size)
+    assert_equal(2, wclx(t5, t3).size)
+    assert_equal(2, wclx(t6, t3).size)
+    assert_equal(0, wclx(t7, t3).size)
+    assert_equal(0, wclx(t8, t3).size)
+
+    assert_equal(8, wclx(t1, t7).size)
+    assert_equal(6, wclx(t2, t7).size)
+    assert_equal(17, wclx(t3, t7).size)
+    assert_equal(8, wclx(t4, t7).size)
+    assert_equal(3, wclx(t5, t7).size)
+    assert_equal(8, wclx(t6, t7).size)
+    assert_equal(0, wclx(t8, t7).size)
+
+    #
+    # BB
+    #
+    assert_equal(4, bbt(t2, t1))
+    assert_equal(4, bbt(t3, t1))
+    assert_equal(6, bbt(t4, t1))
+    assert_equal(4, bbt(t5, t1))
+    assert_equal(4, bbt(t6, t1))
+    assert_equal(0, bbt(t7, t1))
+    assert_equal(0, bbt(t8, t1))
+
+    assert_equal(4, bbt(t1, t2))
+    assert_equal(4, bbt(t3, t2))
+    assert_equal(6, bbt(t4, t2))
+    assert_equal(4, bbt(t5, t2))
+    assert_equal(4, bbt(t6, t2))
+    assert_equal(0, bbt(t7, t2))
+    assert_equal(0, bbt(t8, t2))
+
+    assert_equal(4, bbt(t1, t3))
+    assert_equal(4, bbt(t2, t3))
+    assert_equal(6, bbt(t4, t3))
+    assert_equal(4, bbt(t5, t3))
+    assert_equal(4, bbt(t6, t3))
+    assert_equal(0, bbt(t7, t3))
+    assert_equal(0, bbt(t8, t3))
+    
+    assert_equal(2, bbt(t1, t7))
+    assert_equal(2, bbt(t2, t7))
+    assert_equal(2, bbt(t3, t7))
+    assert_equal(3, bbt(t4, t7))
+    assert_equal(2, bbt(t5, t7))
+    assert_equal(2, bbt(t6, t7))
+    assert_equal(0, bbt(t8, t7))
+
+    assert_equal(0, t1.bb)
+    assert_equal(4, t2.bb)
+    assert_equal(0, t3.bb)
+    assert_equal(4, t4.bb)
+    assert_equal(0, t5.bb)
+    assert_equal(4, t6.bb)
+    assert_equal(0, t7.bb)
+    assert_equal(0, t8.bb)
     
   end
 

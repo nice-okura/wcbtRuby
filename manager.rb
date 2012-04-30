@@ -599,7 +599,7 @@ class RequireManager
       #p @@require_array.size
       RUBY_VERSION == "1.9.3" ? ra = @@require_array.sample.clone : ra = @@require_array.choice.clone
       
-      pp ra
+      #pp ra
       ra.req_id = @@id
       ra.reqs.each{|r|
         @@id += 1
@@ -695,11 +695,9 @@ class RequireManager
     reqs_json = {
       "reqs" => []
     }
-    pp TaskManager.get_all_require
     TaskManager.get_all_require.each{|req|
       reqs_json["reqs"] << req.out_alldata
     }
-    pp reqs_json["reqs"]
     begin
       File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(reqs_json)
