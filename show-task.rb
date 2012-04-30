@@ -9,8 +9,9 @@ include WCBT
 FILENAME = ARGV[0]
 
 @manager = AllManager.new
-@manager.load_tasks("#{FILENAME}_task.json", "#{FILENAME}_require.json", "#{FILENAME}_group.json")
+@manager.load_tasks("#{FILENAME}")
 
 taskset = TaskSet.new(@manager.tm.get_task_array)
+pp @manager.rm.get_require_array
 taskset.show_taskset
 show_blocktime

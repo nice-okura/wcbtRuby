@@ -903,7 +903,24 @@ class Test_wcbt < Test::Unit::TestCase
     tm = TaskManager.instance
     
   end
-=begin
 
-=end
+  def test_120430_fortest
+    @manager = AllManager.new
+    @manager.load_tasks("120430_fortest")
+    
+    t1 = @manager.tm.get_task_array[0]
+    t2 = @manager.tm.get_task_array[1]
+    t3 = @manager.tm.get_task_array[2]
+    t4 = @manager.tm.get_task_array[3]
+    t5 = @manager.tm.get_task_array[4]
+    t6 = @manager.tm.get_task_array[5]
+    t7 = @manager.tm.get_task_array[6]
+    t8 = @manager.tm.get_task_array[7]
+    
+    pp t1
+    pp t2
+    assert_equal(0, wclx(t2, t1).size)
+    
+  end
+
 end

@@ -74,20 +74,15 @@ class Test_taskMaker < Test::Unit::TestCase
   end
   
   def test_load
-    @@m.load_tasks("sample_task.json", "sample_require.json", "sample_group.json")
+    @@m.load_tasks("sample")
     assert_same(30, @@m.tm.get_task_array.size)
     assert_same(30, @@m.rm.get_require_array.size)
     assert_same(10, @@m.gm.get_group_array.size)
     
     @@m.all_data_clear
-    # JSONじゃないファイルを入力
-    @@m.load_tasks("sample_task.jso", "sample_require.jso", "sample_group.jso")
-    assert_same(0, @@m.tm.get_task_array.size)
-    assert_same(0, @@m.rm.get_require_array.size)
-    assert_same(0, @@m.gm.get_group_array.size)
   end
   
   def test_save 
-    assert(@@m.save_tasks("sample_test_task.json", "sample_test_require.json", "sample_test_group.json"))
+    assert(@@m.save_tasks("sample"))
   end
 end

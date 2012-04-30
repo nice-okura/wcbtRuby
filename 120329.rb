@@ -14,11 +14,11 @@ require "manager"
 TASK_NUMBER = 10
 
 def save_min
-  @manager.save_tasks("120329_min_task.json", "120329_min_require.json", "120329_min_group.json") 
+  @manager.save_tasks("120329_min")
 end
 
 def save_max
-  @manager.save_tasks("120329_max_task.json", "120329_max_require.json", "120329_max_group.json") 
+  @manager.save_tasks("120329_max") 
 end
 
 
@@ -66,7 +66,7 @@ $DEBUG = false
 #############################
 
 @manager = AllManager.new
-@manager.load_tasks("120329_task.json", "120329_require.json", "120329_group.json")
+@manager.load_tasks("120329")
 
 $taskList = @manager.tm.get_task_array
 taskset = TaskSet.new(@manager.tm.get_task_array)

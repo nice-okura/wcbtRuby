@@ -13,7 +13,7 @@ require "manager"
 require "progressbar"
 
 def save_min
-  @manager.save_tasks("120329_2_min_task.json", "120329_2_min_require.json", "120329_2_min_group.json") 
+  @manager.save_tasks("120329_2_min") 
 end
 
 #
@@ -61,7 +61,7 @@ $DEBUG = false
 #############################
 
 @manager = AllManager.new
-@manager.load_tasks("120329_2_task.json", "120329_2_require.json", "120329_2_group.json")
+@manager.load_tasks("120329_2")
 
 $taskList = @manager.tm.get_task_array
 taskset = TaskSet.new(@manager.tm.get_task_array)

@@ -35,7 +35,7 @@ class Task
       
       req_list.each{|req|
         @all_require << req
-        if req.reqs != nil then
+        if req.reqs != nil
           req.reqs.each{|req2|
             # 同じリソースのネストは不可能
             # req1.res == req2.res はダメ
@@ -47,7 +47,7 @@ class Task
             # グループが異なるときに別要求としてreq_listに追加
             # 同じグループならグループロックを1回取得するだけで良いから
             # 同グループなら別要求としては扱わない．
-            if req2.res.group != req.res.group then
+            if req2.res.group != req.res.group
               @all_require << req2
             end
           }
@@ -56,7 +56,6 @@ class Task
     else
       @all_require = @req_list
     end
-    
     #
     # shortリソース要求の配列を返す
     # outermost なもののみ
@@ -81,8 +80,7 @@ class Task
       end
     }
   end
-    
-    
+  
   def get_resource_count
     @req_list.size
   end

@@ -74,10 +74,14 @@ class AllManager
   # 各要素の読み込み
   # load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
   #
-  def load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
-    return false unless @gm.load_group_data(gname)
-    return false unless @rm.load_require_data(rname)
-    return false unless @tm.load_task_data(tname)
+  def load_tasks(name)
+    if name == "" || name == nil
+      puts "ファイル名を指定して下さいよ" 
+      return false
+    end
+    return false unless @gm.load_group_data("#{name}_group.json")
+    return false unless @rm.load_require_data("#{name}_require.json")
+    return false unless @tm.load_task_data("#{name}_task.json")
     @using_group_array = get_using_group_array
     $taskList = @tm.get_task_array
     init_computing
@@ -90,10 +94,14 @@ class AllManager
   # 各要素の書き込み
   # ファイル名は必須
   #
-  def save_tasks(tname, rname, gname)
-    return false unless @gm.save_group_data(gname)
-    return false unless @rm.save_require_data(rname)
-    return false unless @tm.save_task_data(tname)
+  def save_tasks(name)
+    if name == "" || name == nil
+      puts "ファイル名を指定して下さいよ" 
+      return false
+    end
+    return false unless @gm.save_group_data("#{name}_group.json")
+    return false unless @rm.save_require_data("#{name}_require.json")
+    return false unless @tm.save_task_data("#{name}_task.json")
     return true
   end
   
@@ -501,7 +509,7 @@ class TaskManager
   def TaskManager.get_all_require
     req_array = []
     @@task_array.each{|tsk|
-      req_array += tsk.req_list
+      req_array += tsk.get_all_require
     }
     return req_array
   end
@@ -677,9 +685,11 @@ class RequireManager
     reqs_json = {
       "reqs" => []
     }
+    pp TaskManager.get_all_require
     TaskManager.get_all_require.each{|req|
       reqs_json["reqs"] << req.out_alldata
     }
+    pp reqs_json["reqs"]
     begin
       File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(reqs_json)
@@ -718,12 +728,28 @@ class RequireManager
       #
       # リソース要求毎の処理
       # @@require_arrayに読み込んだタスクを追加
+      # 1回目
+      #
+      temp_array = []
+      reqs["reqs"].each{|req|
+        b = req["begintime"]
+        g = GroupManager.get_group_from_group_id(req["group"])
+        #rs = RequireManager.get_reqlist_from_req_id(req["req_id_list"])
+        r = Req.new(
+                    req["req_id"], 
+                    g, 
+                    req["time"], 
+                    [], # まずは[]でよい，2回目のループで設定
+                    req["begintime"],
+                    req["outermost"]
+                    )
+        @@require_array << r
+      }
+      #
+      # 2回目
+      # ネストしたリソース要求の読み込み
       #
       reqs["reqs"].each{|req|
-        #
-        # req作成時に「自分より前に作成されていたリソースをネストとする」ため，
-        # reqsのidがreqより先のidであることはない
-        # 
         b = req["begintime"]
         g = GroupManager.get_group_from_group_id(req["group"])
         rs = RequireManager.get_reqlist_from_req_id(req["req_id_list"])
@@ -735,8 +761,9 @@ class RequireManager
                     req["begintime"],
                     req["outermost"]
                     )
-        @@require_array << r
+        temp_array << r
       }
+      @@require_array = temp_array
     else
       puts "application file read error: #{filename} is not JSON file.\n"
       return false
