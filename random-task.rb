@@ -21,5 +21,5 @@ p info
 @manager.create_tasks(ARGV[1].to_i, ARGV[2].to_i, ARGV[3].to_i, info)
 @manager.save_tasks("#{FILENAME}_task.json", "#{FILENAME}_require.json", "#{FILENAME}_group.json")
 
-#taskset = TaskSet.new(@manager.tm.get_task_array)
-#taskset.show_taskset
+taskset = TaskSet.new(@manager.tm.get_task_array)
+taskset.show_taskset
