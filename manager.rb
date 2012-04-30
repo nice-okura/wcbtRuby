@@ -327,7 +327,8 @@ class TaskManager
     req_list = []
     REQ_NUM.times{
       if rand(2) == 1
-        req_list << RequireManager.get_random_req unless RequireManager.get_random_req == nil
+        r = RequireManager.get_random_req
+        req_list << r unless r == nil
       end
     }
     #reqList.uniq!
@@ -580,6 +581,7 @@ class RequireManager
         req << r.clone
       end
     end
+    
     #p time
     return Req.new(@@id, group, time, req)
   end
@@ -589,12 +591,20 @@ class RequireManager
   # 作成されている要求がなければ，nilを返す
   #
   def RequireManager.get_random_req
+    @@id += 1
     ra = []
-    if @@require_array.size < 1 then
+    if @@require_array.size < 1
       ra = nil
     else
       #p @@require_array.size
       RUBY_VERSION == "1.9.3" ? ra = @@require_array.sample.clone : ra = @@require_array.choice.clone
+      
+      pp ra
+      ra.req_id = @@id
+      ra.reqs.each{|r|
+        @@id += 1
+        r.req_id = @@id
+      }
     end
     return ra
   end
