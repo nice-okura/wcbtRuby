@@ -9,9 +9,9 @@
 # そこで，リソース種をX軸にしてグラフを作成してみる．
 #
 #
-
-require "task-CUI"
-require "manager"
+$:.unshift(File.dirname(__FILE__))
+require "../task-CUI"
+require "../manager"
 require "progressbar"
 
 
