@@ -1,31 +1,28 @@
 #! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
-#= 120502ミーティング用
+#= 120416ミーティング用
 # あるタスクセットのリソースグループを全パターン計算し，最速，最悪のパターンを表示
-# 
+# 120411では，X軸を横軸にしてlongリソース数の割合を見ていたが，
+# いまいち傾向がわからなかった．
+# ただ，8tasksの時に8種類のリソースを使った場合は，各タスクが別々のリソースにアクセスするため，競合が起こらず，longリソースがないとかんがえられる．
+# そこで，リソース種をX軸にしてグラフを作成してみる．
 #
 #
 $:.unshift(File.dirname(__FILE__))
 require "../task-CUI"
 require "../manager"
+require "progressbar"
 
-TASK_NUMBER = 10
 
 def save_min
-  @manager.save_tasks("120502_min_task.json", "120502_min_require.json", "120502_min_group.json") 
+  @manager.save_tasks("120512_min_task.json", "120512_min_require.json", "120512_min_group.json") 
 end
-
-def save_max
-  @manager.save_tasks("120502_max_task.json", "120502_max_require.json", "120502_max_group.json") 
-end
-
-
 
 def get_wcrt(task, b=nil)
   time = 0
   if b == nil
-    block = BB(task)
+    block = task.b
   else
     block = b
   end
@@ -55,6 +52,20 @@ def show_groups
   }
 end
 
+#
+# longグループ数を取得
+#
+def get_long_groups
+  c = 0
+  @manager.gm.get_group_array.each{|g|
+    #c += 1 if g.kind == "long"
+    if g.kind == "long"
+      c += 1
+      #puts "long"
+    end
+  }
+  return c
+end
 
 include WCBT
 $DEBUG = false
@@ -62,82 +73,120 @@ $DEBUG = false
 
 #############################
 #
+#
 #############################
 
 def compute_wcrt
-
   #
   # グループ数
   #
   group_count = @manager.gm.get_group_array.size
-
+  
   #
   # グループのパターン数
   #
   group_times = 2**group_count
-  p "#{group_times}times"
-
+  #p "#{group_times}times"
+  
   #
   # グループパターン数を２進数で記録
   #
   group_binary = group_times.to_s(2)
-
+  
   #
   # リソースを全てshortにする
   #
   @manager.gm.get_group_array.each{|g|
     g.kind = "short"
   }
+  taskset = TaskSet.new(@manager.tm.get_task_array)
 
   #
-  # タスクTASK_NUMBER の最悪応答時間
+  # システム全体の最悪応答時間
   #
-  min_preempt_time = 10000000 # 適当な最大値
-  max_preempt_time = -1       # 適当な最小値
+  min_all_wcrt = 10000000 # 適当な最大値
+  max_all_wcrt = -1       # 適当な最小値
+  
+  #
+  # システム全体の最悪応答時間が最も良くなる場合を探す
+  #
 
-  #
-  # タスク TASK_NUMBER の最悪応答時間が最も良くなる場合を探す
-  #
   i = 0
+  change_count = 0
+  long_count = 0
   group_times.times{
-    $taskList.each{|task|
-      pre = task.extime + get_extime_high_priority(task) + task.b
-      #puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{b} + プリエンプト時間#{pri} = #{task.extime + b + pri}"
-      if pre < min_preempt_time
-        min_preempt_time = pre
-        puts "タスク#{TASK_NUMBER} MIN 最悪応答時間:#{pre}"
-        show_groups
-        save_min
-        break
+    wcrt_max_system = -1 # 適当な最小値
+    #show_blocktime
+    $taskList.each{|t|
+      wcrt = get_wcrt(t, t.b)
+      if wcrt_max_system < wcrt
+        wcrt_max_system = wcrt
       end
-=begin
-      if pre > max_preempt_time
-        max_preempt_time = pre
-        puts "タスク#{TASK_NUMBER} MAX 最悪応答時間:#{pre}"
-        show_groups
-        save_max
-        break
-      end
-=end
-      #print "-> #{pre}"
-
+      #pbar.inc
     }
+    if wcrt_max_system < min_all_wcrt
+      min_all_wcrt = wcrt_max_system
+      puts "最悪応答時間:#{min_all_wcrt}"
+      show_groups
+      save_min
+      long_count = get_long_groups
+      change_count += 1
+      #puts "long_count#{long_count}}"
+      #$COLOR_CHAR = false
+      #taskset = TaskSet.new($taskList)
+      #taskset.show_taskset
+      #$COLOR_CHAR = true
+    end
     i += 1
     istr = ("%010b" % [i])[10-group_count, group_count]
     #p "#{i}:#{istr}"
     change_groups(istr)
   }
+  return long_count
 end
 
-
-extime = 80
-rcsl = 0.2
+#
+# main関数
+#
 tasks = 16
-requires = 10
+requires = 20
 groups = 8
+rcsl = 0.2
+extime = 50
+resouce_count_max = 4
+start_task_num = 8
+end_task_num = 16
+task_step_num = 4
+loop_count = 100
+
+
 @manager = AllManager.new
 
-info = ["120411", extime ,rcsl]
-@manager.create_tasks(tasks, requires, groups, info)
-compute_wcrt
-@manager.all_data_clear
+
+pbar = ProgressBar.new("WCRTの計測", loop_count)
+pbar.format_arguments = [:percentage, :bar, :stat]
+pbar.format = "%3d%% %s %s"
+
+info = ["120411", extime, rcsl]
+loop_count.times{
+  @manager.create_tasks(tasks, requires, groups, info)
+  #
+  # クリティカルセクションの変更
+  #
+  #$taskList.each{|t|
+  #  t.req_list[0].time = t.extime * rcsl
+  #}
+  pbar.inc
+  if 1 < compute_wcrt
+    taskset = TaskSet.new($taskList)
+    taskset.show_taskset
+  end
+  
+  #end
+  @manager.all_data_clear
+  
+}
+
+
+
+pbar.finish
