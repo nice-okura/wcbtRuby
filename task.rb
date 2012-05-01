@@ -25,7 +25,10 @@ class Task
     check_outermost
     check_over_extime
     set_begin_time
-
+    resetting
+  end
+  
+  def resetting
     #
     # all_requireを事前に求めておく
     #
@@ -74,6 +77,7 @@ class Task
     # ネストされているものも含む
     #
     @long_require_array = []
+    
     get_all_require.each{|req|
       if req.res.kind == "long" && req.outermost == true then
         @long_require_array << req

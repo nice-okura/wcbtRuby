@@ -102,19 +102,19 @@ class TaskSet
     @taskset_proc.each{|tasks|
       tasks.each{|t|
         print "タスク#{t.task_id}"      
-        print ["\tBB:", sprintf("%.2f", t.bb)].join
-        print ["\tAB:", sprintf("%.2f", t.ab)].join
-        print ["\tSB:", sprintf("%.2f", t.sb)].join
-        print ["\tLB:", sprintf("%.2f", t.lb)].join
-        print ["\tDB:", sprintf("%.2f", t.db)].join
-        print ["\tB:", sprintf("%.2f", t.b)].join
+        print ["\tBB:", sprintf("%.1f", t.bb)].join
+        print ["\tAB:", sprintf("%.1f", t.ab)].join
+        print ["\tSB:", sprintf("%.1f", t.sb)].join
+        print ["\tLB:", sprintf("%.1f", t.lb)].join
+        print ["\tDB:", sprintf("%.1f", t.db)].join
+        print ["\tB:", sprintf("%.1f", t.b)].join
         print "\n"
         pri = get_extime_high_priority(t) 
         
         if t.period < t.extime + t.b + pri
-          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.2f", t.extime + t.b + pri)}".red
+          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.extime + t.b + pri)}".red
           else
-          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.2f", t.extime + t.b + pri)}"
+          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.extime + t.b + pri)}"
         end
       }
     }

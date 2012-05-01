@@ -11,7 +11,9 @@ FILENAME = ARGV[0]
 @manager = AllManager.new
 @manager.load_tasks("#{FILENAME}")
 
+$DEBUG=true
 taskset = TaskSet.new(@manager.tm.get_task_array)
-pp @manager.rm.get_require_array
 taskset.show_taskset
-show_blocktime
+init_computing
+set_blocktime
+taskset.show_blocktime

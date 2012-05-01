@@ -1,11 +1,11 @@
 {
   "grps": [
     {
-      "kind": "short",
+      "kind": "long",
       "group": 1
     },
     {
-      "kind": "long",
+      "kind": "short",
       "group": 2
     }
   ]

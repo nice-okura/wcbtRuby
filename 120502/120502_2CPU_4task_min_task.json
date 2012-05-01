@@ -18,18 +18,7 @@
       "priority": 2,
       "extime": 20,
       "req_id_list": [
-        2
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": "1",
-      "proc": 2,
-      "period": 80.0,
-      "priority": 1,
-      "extime": 20,
-      "req_id_list": [
-        8
+        16
       ],
       "offset": 0
     },
@@ -40,7 +29,18 @@
       "priority": 3,
       "extime": 20,
       "req_id_list": [
-        2
+        12
+      ],
+      "offset": 0
+    },
+    {
+      "task_id": "1",
+      "proc": 2,
+      "period": 80.0,
+      "priority": 1,
+      "extime": 20,
+      "req_id_list": [
+        6
       ],
       "offset": 0
     }

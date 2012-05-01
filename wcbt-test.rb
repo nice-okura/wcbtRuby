@@ -377,7 +377,7 @@ class Test_wcbt < Test::Unit::TestCase
     
     init_computing
     
-    assert_equal(0, abr(task4).size )
+    assert_equal(2, abr(task4).size )
     assert_equal(0, abr(task5).size )
     assert_equal(0, abr(task6).size )
     $taskList = [task7, task8, task9]
@@ -415,25 +415,25 @@ class Test_wcbt < Test::Unit::TestCase
     $taskList = [task1, task2, task3]
     init_computing
     
-    assert_same(0, AB(task1))
-    assert_same(0, AB(task2))
-    assert_same(0, AB(task3))
+    assert_equal(0, AB(task1))
+    assert_equal(0, AB(task2))
+    assert_equal(0, AB(task3))
 
     $taskList = [task4, task5, task6]
     #taskset = TaskSet.new($taskList)
     #taskset.show_taskset
     init_computing
     
-    assert_same(0, AB(task4))
-    assert_same(0, AB(task5))
-    assert_same(0, AB(task6))
+    assert_equal(2, AB(task4))
+    assert_equal(0, AB(task5))
+    assert_equal(0, AB(task6))
     
     $taskList = [task7, task8, task9]
     init_computing
     
-    assert_same(4, AB(task7))
-    assert_same(0, AB(task8))
-    assert_same(0, AB(task9))
+    assert_equal(4, AB(task7))
+    assert_equal(0, AB(task8))
+    assert_equal(0, AB(task9))
     #p "end_test_AB"
   end
     
@@ -994,6 +994,32 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, t7.bb)
     assert_equal(0, t8.bb)
     
+  end
+  
+  def test_120502_test
+    @manager = AllManager.new
+    @manager.load_tasks("120502_fortest")
+    
+    l = @manager.tm.get_task_array
+    l.sort!{|a, b|
+      a.task_id.to_i <=> b.task_id.to_i
+    }
+    
+    t1 = l[0]
+    t2 = l[1]
+    t3 = l[2]
+    t4 = l[3]
+    t5 = l[4]
+    t6 = l[5]
+    
+    taskset = TaskSet.new($taskList)
+    taskset.show_taskset
+    pp t4
+    pp rbl(t4)
+    pp rblp(t4, 1)
+    pp rblp(t4, 2)
+
+    puts LB(t4)
   end
 
 end

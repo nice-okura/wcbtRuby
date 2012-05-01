@@ -16,14 +16,14 @@ require "progressbar"
 
 
 def save_min
-  @manager.save_tasks("120502_min") 
+  @manager.save_tasks("120502_2CPU_6task_min") 
 end
 
 def get_wcrt(task, b=nil)
   time = 0
   if b == nil
     block = task.b
-  else
+    else
     block = b
   end
   
@@ -77,7 +77,7 @@ $DEBUG = false
 #############################
 
 def compute_wcrt
-  pp @manager.using_group_array
+  #pp @manager.using_group_array
   #
   # グループ数
   #
@@ -101,7 +101,7 @@ def compute_wcrt
     g.kind = "short"
   }
   taskset = TaskSet.new(@manager.tm.get_task_array)
-
+  
   #
   # システム全体の最悪応答時間
   #
@@ -111,37 +111,43 @@ def compute_wcrt
   #
   # システム全体の最悪応答時間が最も良くなる場合を探す
   #
-
+  
   i = 0
   change_count = 0
   long_count = 0
+  
+  #$DEBUG = true
+  
   group_times.times{
     wcrt_max_system = -1 # 適当な最小値
+    
+    $taskList.each{|t|
+      t.resetting
+    }
     init_computing
     set_blocktime
     
     $taskList.each{|t|
       wcrt = get_wcrt(t, t.b)
-      if wcrt_max_system < wcrt
-        wcrt_max_system = wcrt
-      end
+      wcrt_max_system = wcrt if wcrt_max_system < wcrt
       #pbar.inc
     }
     
-    taskset = TaskSet.new($taskList)
-    taskset.show_taskset
-    taskset.show_blocktime
     
     if wcrt_max_system < min_all_wcrt
       min_all_wcrt = wcrt_max_system
       puts "最悪応答時間:#{min_all_wcrt}"
-      #show_groups
+      show_groups
       save_min
       long_count = get_long_groups
       change_count += 1
       puts "long_count:#{long_count}"
       #$COLOR_CHAR = false
-      
+      if long_count > 0
+        taskset = TaskSet.new($taskList)
+        taskset.show_taskset
+        taskset.show_blocktime
+      end
       #$COLOR_CHAR = true
     end
     #taskset = TaskSet.new($taskList)
@@ -162,13 +168,13 @@ end
 tasks = 4
 requires = 8
 groups = 2
-rcsl = 0.1
-extime = 20
+rcsl = 0.6
+extime = 100
 resouce_count_max = 4
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 1
+loop_count = 10
 
 
 @manager = AllManager.new
@@ -189,7 +195,7 @@ loop_count.times{
   #}
   pbar.inc  
   
-  compute_wcrt  
+  compute_wcrt
   #end
   @manager.all_data_clear
   
