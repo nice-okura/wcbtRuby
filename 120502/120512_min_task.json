@@ -1,178 +1,46 @@
 {
   "tasks": [
     {
-      "task_id": 9,
+      "task_id": "2",
       "proc": 1,
-      "period": 5965.0,
-      "priority": 4,
-      "extime": 16,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 3,
-      "proc": 2,
-      "period": 222.0,
-      "priority": 8,
-      "extime": 14,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 2,
-      "proc": 2,
-      "period": 2939.0,
-      "priority": 4,
-      "extime": 10,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 15,
-      "proc": 2,
-      "period": 70.0,
-      "priority": 4,
-      "extime": 12,
-      "req_id_list": [
-        47
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 7,
-      "proc": 2,
-      "period": 480.0,
+      "period": 80.0,
       "priority": 2,
-      "extime": 14,
+      "extime": 20,
       "req_id_list": [
-        43
+        6
       ],
       "offset": 0
     },
     {
-      "task_id": 1,
-      "proc": 3,
-      "period": 43.0,
-      "priority": 5,
-      "extime": 8,
-      "req_id_list": [
-        41
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 5,
-      "proc": 3,
-      "period": 355.0,
-      "priority": 8,
-      "extime": 8,
-      "req_id_list": [
-        42
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 8,
-      "proc": 3,
-      "period": 130.0,
-      "priority": 6,
-      "extime": 19,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 4,
-      "proc": 3,
-      "period": 71.0,
-      "priority": 2,
-      "extime": 7,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 12,
-      "proc": 4,
-      "period": 620.0,
+      "task_id": "4",
+      "proc": 1,
+      "period": 80.0,
       "priority": 4,
-      "extime": 16,
+      "extime": 20,
       "req_id_list": [
-
+        10
       ],
       "offset": 0
     },
     {
-      "task_id": 11,
-      "proc": 4,
-      "period": 108.0,
-      "priority": 1,
-      "extime": 12,
-      "req_id_list": [
-        45
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 10,
-      "proc": 4,
-      "period": 67.0,
+      "task_id": "3",
+      "proc": 2,
+      "period": 80.0,
       "priority": 3,
-      "extime": 8,
+      "extime": 20,
       "req_id_list": [
-        44
+        4
       ],
       "offset": 0
     },
     {
-      "task_id": 13,
-      "proc": 4,
-      "period": 88.0,
-      "priority": 6,
-      "extime": 11,
+      "task_id": "1",
+      "proc": 2,
+      "period": 80.0,
+      "priority": 1,
+      "extime": 20,
       "req_id_list": [
-        46
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 14,
-      "proc": 4,
-      "period": 179.0,
-      "priority": 5,
-      "extime": 8,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 6,
-      "proc": 4,
-      "period": 235.0,
-      "priority": 2,
-      "extime": 18,
-      "req_id_list": [
-
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": 16,
-      "proc": 4,
-      "period": 90.0,
-      "priority": 5,
-      "extime": 12,
-      "req_id_list": [
-        48
+        14
       ],
       "offset": 0
     }

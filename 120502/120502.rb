@@ -16,7 +16,7 @@ require "progressbar"
 
 
 def save_min
-  @manager.save_tasks("120512_min") 
+  @manager.save_tasks("120502_min") 
 end
 
 def get_wcrt(task, b=nil)
@@ -119,7 +119,7 @@ def compute_wcrt
     wcrt_max_system = -1 # 適当な最小値
     init_computing
     set_blocktime
-    #show_blocktime
+    
     $taskList.each{|t|
       wcrt = get_wcrt(t, t.b)
       if wcrt_max_system < wcrt
@@ -127,17 +127,21 @@ def compute_wcrt
       end
       #pbar.inc
     }
+    
+    taskset = TaskSet.new($taskList)
+    taskset.show_taskset
+    taskset.show_blocktime
+    
     if wcrt_max_system < min_all_wcrt
       min_all_wcrt = wcrt_max_system
       puts "最悪応答時間:#{min_all_wcrt}"
       #show_groups
-      #save_min
+      save_min
       long_count = get_long_groups
       change_count += 1
       puts "long_count:#{long_count}"
       #$COLOR_CHAR = false
-      taskset = TaskSet.new($taskList)
-      taskset.show_taskset
+      
       #$COLOR_CHAR = true
     end
     #taskset = TaskSet.new($taskList)
@@ -155,11 +159,11 @@ end
 #
 # main関数
 #
-tasks = 8
+tasks = 4
 requires = 8
-groups = 4
-rcsl = 0.2
-extime = 50
+groups = 2
+rcsl = 0.1
+extime = 20
 resouce_count_max = 4
 start_task_num = 8
 end_task_num = 16
@@ -176,19 +180,16 @@ pbar.format = "%3d%% %s %s"
 
 info = ["120411", extime, rcsl]
 loop_count.times{
-  @manager.create_tasks(tasks, requires, groups)
+  @manager.create_tasks(tasks, requires, groups, info)
   #
   # クリティカルセクションの変更
   #
   #$taskList.each{|t|
   #  t.req_list[0].time = t.extime * rcsl
   #}
-  pbar.inc
-  if 1 < compute_wcrt
-    taskset = TaskSet.new($taskList)
-    taskset.show_taskset
-  end
+  pbar.inc  
   
+  compute_wcrt  
   #end
   @manager.all_data_clear
   

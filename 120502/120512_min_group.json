@@ -5,32 +5,8 @@
       "group": 1
     },
     {
-      "kind": "short",
+      "kind": "long",
       "group": 2
-    },
-    {
-      "kind": "short",
-      "group": 3
-    },
-    {
-      "kind": "short",
-      "group": 4
-    },
-    {
-      "kind": "short",
-      "group": 5
-    },
-    {
-      "kind": "short",
-      "group": 6
-    },
-    {
-      "kind": "short",
-      "group": 7
-    },
-    {
-      "kind": "short",
-      "group": 8
     }
   ]
 }
