@@ -38,7 +38,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.gm.get_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.using_group_array[i].kind = c.chr=="0" ? "short" : "long"
     i += 1
   }
 end
@@ -117,7 +117,9 @@ def compute_wcrt
   long_count = 0
   group_times.times{
     wcrt_max_system = -1 # 適当な最小値
+    init_computing
     set_blocktime
+    #show_blocktime
     $taskList.each{|t|
       wcrt = get_wcrt(t, t.b)
       if wcrt_max_system < wcrt
@@ -127,21 +129,21 @@ def compute_wcrt
     }
     if wcrt_max_system < min_all_wcrt
       min_all_wcrt = wcrt_max_system
-      #puts "最悪応答時間:#{min_all_wcrt}"
+      puts "最悪応答時間:#{min_all_wcrt}"
       #show_groups
       #save_min
       long_count = get_long_groups
       change_count += 1
-      #puts "long_count#{long_count}}"
+      puts "long_count:#{long_count}"
       #$COLOR_CHAR = false
-      #taskset = TaskSet.new($taskList)
-      #taskset.show_taskset
+      taskset = TaskSet.new($taskList)
+      taskset.show_taskset
       #$COLOR_CHAR = true
     end
-    taskset = TaskSet.new($taskList)
-    taskset.show_taskset
-    show_groups
-    puts wcrt_max_system
+    #taskset = TaskSet.new($taskList)
+    #taskset.show_taskset
+    #show_groups
+    #puts wcrt_max_system
     i += 1
     istr = ("%010b" % [i])[10-group_count, group_count]
     #p "#{i}:#{istr}"
@@ -154,7 +156,7 @@ end
 # main関数
 #
 tasks = 8
-requires = 20
+requires = 8
 groups = 4
 rcsl = 0.2
 extime = 50
