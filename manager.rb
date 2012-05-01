@@ -143,10 +143,10 @@ class AllManager
   def get_using_group_array
     new_garray = []
     
-    @rm.get_require_array.each{|r|
-      unless new_garray.include?(r.res) 
-        new_garray << r.res
-      end
+    @tm.get_task_array.each{|t|
+      t.get_all_require.each{|r|
+        new_garray << r.res unless new_garray.include?(r.res) 
+      }
     }
     
     return new_garray

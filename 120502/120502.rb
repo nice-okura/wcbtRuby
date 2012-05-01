@@ -16,7 +16,7 @@ require "progressbar"
 
 
 def save_min
-  @manager.save_tasks("120512_min_task.json", "120512_min_require.json", "120512_min_group.json") 
+  @manager.save_tasks("120512_min") 
 end
 
 def get_wcrt(task, b=nil)
@@ -47,7 +47,7 @@ end
 # 現在のリソースグループ表示
 #
 def show_groups
-  @manager.gm.get_group_array.each{|g|
+  @manager.using_group_array.each{|g|
     print "#{g.kind[0].chr} "
   }
 end
@@ -57,7 +57,7 @@ end
 #
 def get_long_groups
   c = 0
-  @manager.gm.get_group_array.each{|g|
+  @manager.using_group_array.each{|g|
     #c += 1 if g.kind == "long"
     if g.kind == "long"
       c += 1
@@ -77,10 +77,11 @@ $DEBUG = false
 #############################
 
 def compute_wcrt
+  pp @manager.using_group_array
   #
   # グループ数
   #
-  group_count = @manager.gm.get_group_array.size
+  group_count = @manager.using_group_array.size
   
   #
   # グループのパターン数
@@ -116,7 +117,7 @@ def compute_wcrt
   long_count = 0
   group_times.times{
     wcrt_max_system = -1 # 適当な最小値
-    #show_blocktime
+    set_blocktime
     $taskList.each{|t|
       wcrt = get_wcrt(t, t.b)
       if wcrt_max_system < wcrt
@@ -126,9 +127,9 @@ def compute_wcrt
     }
     if wcrt_max_system < min_all_wcrt
       min_all_wcrt = wcrt_max_system
-      puts "最悪応答時間:#{min_all_wcrt}"
-      show_groups
-      save_min
+      #puts "最悪応答時間:#{min_all_wcrt}"
+      #show_groups
+      #save_min
       long_count = get_long_groups
       change_count += 1
       #puts "long_count#{long_count}}"
@@ -137,6 +138,10 @@ def compute_wcrt
       #taskset.show_taskset
       #$COLOR_CHAR = true
     end
+    taskset = TaskSet.new($taskList)
+    taskset.show_taskset
+    show_groups
+    puts wcrt_max_system
     i += 1
     istr = ("%010b" % [i])[10-group_count, group_count]
     #p "#{i}:#{istr}"
@@ -148,16 +153,16 @@ end
 #
 # main関数
 #
-tasks = 16
+tasks = 8
 requires = 20
-groups = 8
+groups = 4
 rcsl = 0.2
 extime = 50
 resouce_count_max = 4
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 100
+loop_count = 1
 
 
 @manager = AllManager.new
@@ -169,7 +174,7 @@ pbar.format = "%3d%% %s %s"
 
 info = ["120411", extime, rcsl]
 loop_count.times{
-  @manager.create_tasks(tasks, requires, groups, info)
+  @manager.create_tasks(tasks, requires, groups)
   #
   # クリティカルセクションの変更
   #
