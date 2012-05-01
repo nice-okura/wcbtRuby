@@ -599,7 +599,7 @@ module WCBT
   public
   def set_blocktime
     $taskList.each{|t|
-      puts "SET_BLOCKTIME:タスク#{t.task_id}"
+      #puts "SET_BLOCKTIME:タスク#{t.task_id}"
       t.bb = BB(t)
       t.ab = AB(t)
       t.sb = SB(t)

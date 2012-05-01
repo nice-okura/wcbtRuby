@@ -165,16 +165,16 @@ end
 #
 # main関数
 #
-tasks = 4
+tasks = 6
 requires = 8
-groups = 2
+groups = 3
 rcsl = 0.6
 extime = 100
 resouce_count_max = 4
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 10
+loop_count = 1
 
 
 @manager = AllManager.new

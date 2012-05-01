@@ -3,7 +3,7 @@
     {
       "group": 2,
       "begintime": 4,
-      "time": 10.0,
+      "time": 5.0,
       "req_id_list": [
 
       ],
@@ -13,7 +13,7 @@
     {
       "group": 1,
       "begintime": 16,
-      "time": 10.0,
+      "time": 20.0,
       "req_id_list": [
 
       ],
@@ -23,7 +23,7 @@
     {
       "group": 1,
       "begintime": 16,
-      "time": 10.0,
+      "time": 20.0,
       "req_id_list": [
 
       ],

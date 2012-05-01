@@ -7,7 +7,18 @@
       "priority": 2,
       "extime": 100,
       "req_id_list": [
-        12
+        6
+      ],
+      "offset": 0
+    },
+    {
+      "task_id": "4",
+      "proc": 1,
+      "period": 600.0,
+      "priority": 4,
+      "extime": 100,
+      "req_id_list": [
+        14
       ],
       "offset": 0
     },
@@ -23,35 +34,13 @@
       "offset": 0
     },
     {
-      "task_id": "4",
-      "proc": 1,
-      "period": 600.0,
-      "priority": 4,
-      "extime": 100,
-      "req_id_list": [
-        8
-      ],
-      "offset": 0
-    },
-    {
       "task_id": "1",
       "proc": 2,
       "period": 600.0,
       "priority": 1,
       "extime": 100,
       "req_id_list": [
-        4
-      ],
-      "offset": 0
-    },
-    {
-      "task_id": "5",
-      "proc": 2,
-      "period": 600.0,
-      "priority": 5,
-      "extime": 100,
-      "req_id_list": [
-        14
+        8
       ],
       "offset": 0
     },
@@ -63,6 +52,17 @@
       "extime": 100,
       "req_id_list": [
         10
+      ],
+      "offset": 0
+    },
+    {
+      "task_id": "5",
+      "proc": 2,
+      "period": 600.0,
+      "priority": 5,
+      "extime": 100,
+      "req_id_list": [
+        16
       ],
       "offset": 0
     }
