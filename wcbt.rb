@@ -35,8 +35,8 @@ $proc_list = Hash.new
 $proc_task_list = Hash.new
 
 module WCBT
-  def print_debug(str)
-      puts("\t" + str) if $DEBUGFlg == true
+  def p_debug(str)
+    puts("\t" + str) if $DEBUGFlg == true
   end
   
   #
@@ -260,7 +260,7 @@ module WCBT
     partition(proc).each{|task|
       count += ndbt(task, job)
     }
-    print_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
+    p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -274,7 +274,7 @@ module WCBT
     g.each{|group|
       count += ndbtg(task, job, group)
     }
-    print_debug("\tndbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{count}")
+    p_debug("\tndbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{count}")
     return count
   end
   
@@ -287,7 +287,7 @@ module WCBT
     WCLR(task).each{|req|
       b += 1 if req.res.group == group
     }
-#    print_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
+    p_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
     return [a, b].min
   end
   
@@ -298,7 +298,7 @@ module WCBT
         time += rblp(job, proc)
       end
     }
-    print_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
+    p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
     return time 
   end
   
@@ -307,7 +307,7 @@ module WCBT
     partition(proc).each{|task|
       count += rblt(task, job)
     }
-    print_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
+    p_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -327,9 +327,9 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("      tuples = #{str}")
-    print_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
-    print_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
+    p_debug("      tuples = #{str}")
+    p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -349,7 +349,7 @@ module WCBT
         time += rbsp(job, proc)
       end
     }
-    print_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
+    p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -364,7 +364,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
+    p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
     return time
   end
   
@@ -412,7 +412,7 @@ module WCBT
         time += sbgp(job, group, proc)
       end
     }
-    print_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
+    p_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
     return time
   end 
   
@@ -429,7 +429,7 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
+    p_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
     time
   end
   
@@ -465,17 +465,17 @@ module WCBT
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    print_debug("ABmin = min(#{tuples.size}, #{narr(job)+1})")
+    p_debug("ABmin = min(#{tuples.size}, #{narr(job)+1})")
     return time
   end
   
   def LB(job)
-    print_debug("LB(#{job.task_id})")
+    p_debug("LB(#{job.task_id})")
     #RubyProf.start
     if job == nil
       return 0
     elsif job.get_long_require_array.size == 0
-      print_debug("\tget_long_require_array.size == 0")
+      p_debug("\tget_long_require_array.size == 0")
       return 0
     end
     return rbl(job) + rbs(job)
@@ -657,5 +657,26 @@ module WCBT
     }
     #puts "uabj:#{uabj}"
     return uabj
+  end
+
+  #
+  # 最悪応答時間導出
+  #
+  def worst_case_response_time(job)
+    
+  end
+  
+  #
+  # 最悪応答時間
+  #
+  def it_wcrt(job, n)
+    return job.extime + job.b if n == 0
+    time = 0
+    $taskList.each{ |t|
+      if t.priority < job.priority && t.proc == job.proc 
+        time += (((it_wcrt(job, n-1)+t.lb)/t.period).ceil)*(t.extime + t.b - t.lb)
+      end  
+    }
+    return job.extime + job.b + time
   end
 end
