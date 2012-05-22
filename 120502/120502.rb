@@ -186,7 +186,8 @@ pbar.format = "%3d%% %s %s"
 
 info = ["120411", extime, rcsl]
 loop_count.times{
-  @manager.create_tasks(tasks, requires, groups, info)
+  #@manager.create_tasks(tasks, requires, groups, info)
+  @manager.load_tasks("120502_8task_4CPU")
   #
   # クリティカルセクションの変更
   #

@@ -21,7 +21,7 @@ def get_extime_high_priority(proc, priority)
 end
 
 include WCBT
-$DEBUG = true
+$DEBUGFlgFlg
 
 
 #############################

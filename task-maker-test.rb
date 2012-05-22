@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+xo#! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
 #= タスク生成本体　TaskManager, RequireManager, GroupManager
@@ -39,9 +39,8 @@ require "test/unit" # テスト
 #  group:       ランダムに選択
 #  time:        (ある限度までで)ランダムに選択->20~50
 #  reqs:        groupとは異なるグループのリソースを選択
-# $external_input = true
+# $external_input
 
-$DEBUG = false
 class Test_taskMaker < Test::Unit::TestCase
   def setup
     @@m = AllManager.new

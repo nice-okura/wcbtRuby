@@ -12,6 +12,7 @@
 #
 require "rubygems"
 require "term/ansicolor"
+require "config"
 #require "ruby-prof"
 
 class String
@@ -35,9 +36,7 @@ $proc_task_list = Hash.new
 
 module WCBT
   def print_debug(str)
-    if $DEBUG == true
-      puts("\t" + str)
-    end
+      puts("\t" + str) if $DEBUGFlg == true
   end
   
   #
@@ -261,6 +260,7 @@ module WCBT
     partition(proc).each{|task|
       count += ndbt(task, job)
     }
+    print_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -274,21 +274,20 @@ module WCBT
     g.each{|group|
       count += ndbtg(task, job, group)
     }
+    print_debug("\tndbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{count}")
     return count
   end
   
   def ndbtg(task, job, group)
     a = 0
     b = 0
-    #  pp job.get_long_require_array.size
     LR(job).each{|req|
       a += 1 if req.res.group == group
     }
-    #pp WCLR(task).size
     WCLR(task).each{|req|
       b += 1 if req.res.group == group
     }
-    #print_debug("ndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta})")
+#    print_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
     return [a, b].min
   end
   
@@ -457,20 +456,8 @@ module WCBT
     #p job.task_id
     if job == nil
       return 0
-    elsif lowest_priority_task(job.proc)[0].priority == job.priority
-      #p "lowest"
-      print_debug("最低優先度")
-      return 0
-    else
-      flg = false
-      partition(job.proc).each{|t|
-        
-        t.req_list.each{|r|
-          flg = true if r.res.kind == "short"
-        }
-      }
-      return 0 if flg == false 
     end
+
       
     time = 0
     tuples = abr(job)

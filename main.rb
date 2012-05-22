@@ -11,7 +11,7 @@ opt = OptionParser.new
 # 外部のタスク，リソース要求，グループファイルを読み込む場合
 #
 opt.on('-l') { |v|
-  $external_input = true
+  $external_input
 }
 
 opt.parse!(ARGV)

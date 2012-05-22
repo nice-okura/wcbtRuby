@@ -676,11 +676,10 @@ class RequireManager
       #p garray
 
       garray.uniq!
-      
       #p "@@garray:#{@@garray}"
       # 全てのグループのリソース要求が作成されたか確認
       #
-      flg = true if garray.size == @@garray.size || i < @@garray.size
+      flg = true if garray.size == @@garray.size || i <= @@garray.size
     end
     return @@require_array.size
       
@@ -966,7 +965,7 @@ end
 
 
 def print_debug(str)
-  puts str if $DEBUG
+  puts str if $DEBUGFlgFlg
 end
 #
 # main関数

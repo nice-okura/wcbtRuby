@@ -58,7 +58,7 @@ end
 
 
 include WCBT
-$DEBUG = false
+$DEBUGFlgFlg = false
 
 
 #############################

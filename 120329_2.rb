@@ -53,7 +53,7 @@ def show_groups
 end
 
 include WCBT
-$DEBUG = false
+$DEBUGFlgFlg = false
 
 
 #############################

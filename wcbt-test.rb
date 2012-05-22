@@ -996,7 +996,8 @@ class Test_wcbt < Test::Unit::TestCase
     
   end
   
-  def test_120502_test
+  def test_120502
+
     @manager = AllManager.new
     @manager.load_tasks("120502_fortest")
     
@@ -1011,15 +1012,27 @@ class Test_wcbt < Test::Unit::TestCase
     t4 = l[3]
     t5 = l[4]
     t6 = l[5]
-    
-    taskset = TaskSet.new($taskList)
-    taskset.show_taskset
-    pp t4
-    pp rbl(t4)
-    pp rblp(t4, 1)
-    pp rblp(t4, 2)
 
-    puts LB(t4)
-  end
+    assert_equal(0, ndbt(t1, t2))
+    assert_equal(0, ndbp(t2, 2))
+    assert_equal(2, ndbp(t4, 2))
+    assert_equal(0, ndbp(t6, 2))
+
+    assert_equal(0, rbl(t2))
+    assert_equal(0, rbs(t2))
+    assert_equal(8, rbl(t4))
+    assert_equal(4, rbs(t4))
+    assert_equal(0, rbl(t6))
+    assert_equal(0, rbs(t6))
+    
+    assert_equal(0, bbt(t6, t4))
+    assert_equal(4, bbt(t3, t1))
+    assert_equal(2, abr(t2).size)
+    assert_equal(2, AB(t2))
+    assert_equal(, AB(t4))
+    assert_equal(0, AB(t6))
+    
+   end
 
 end
+ 

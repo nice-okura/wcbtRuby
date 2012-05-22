@@ -38,9 +38,8 @@ require "test/unit" # テスト
 #  group:       ランダムに選択
 #  time:        (ある限度までで)ランダムに選択->20~50
 #  reqs:        groupとは異なるグループのリソースを選択
-# $external_input = true
+# $external_input
 
-$DEBUG = false
 class TestRequireManager < Test::Unit::TestCase
   def setup
     @@gm = GroupManager.instance

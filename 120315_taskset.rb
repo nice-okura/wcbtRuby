@@ -13,7 +13,7 @@ def get_extime_high_priority(proc, priority)
 end
 
 include WCBT
-$DEBUG = true
+$DEBUGFlgFlg
 
 0.upto(1000){
   #
@@ -162,7 +162,7 @@ $DEBUG = true
   
 
   if a > b + 5
-    $DEBUG = true
+    $DEBUGFlgFlg
     $taskList = tasks1
     tasks1.each{|task|
       print "タスク" + task.task_id.to_s

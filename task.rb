@@ -300,7 +300,7 @@ class Req
       #exit
     end
     reqs.each{|r|
-      r.nested = true unless r == []
+      r.nested unless r == []
     }
   end
   
