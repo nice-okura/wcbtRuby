@@ -14,4 +14,4 @@ TASK_COUNT = 10
 REQ_COUNT = 10
 GRP_COUNT = 10
 $COLOR_CHAR = true
-$DEBUGFlg = true
+$DEBUGFlg = false

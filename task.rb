@@ -12,7 +12,7 @@
 # タスククラス
 #
 class Task
-  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b
+  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b, :wcrt
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id
     @proc = proc
@@ -22,6 +22,7 @@ class Task
     @offset = offset.to_i
     @req_list = reqarray
     @reqtime = get_require_time
+    @wcrt = 0
     check_outermost
     check_over_extime
     set_begin_time

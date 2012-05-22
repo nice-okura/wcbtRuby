@@ -10,7 +10,7 @@
 #== Usage:
 #
 #=== 
-
+$:.unshift(File.dirname(__FILE__))
 # 標準ライブラリ
 require "pp"
 require "rubygems"  
@@ -647,8 +647,7 @@ class RequireManager
         RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
         new_group = GroupManager.get_random_group if new_group == nil
         g_array.delete(new_group)
-        
-
+      
         if info[0] == "120405_3"
           #
           # new_group(long or short)で要求時間timeの要求を作成
@@ -682,7 +681,7 @@ class RequireManager
       flg = true if garray.size == @@garray.size || i <= @@garray.size
     end
     return @@require_array.size
-      
+    
   end
   
   #

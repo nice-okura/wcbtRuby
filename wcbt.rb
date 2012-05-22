@@ -9,7 +9,7 @@
 #
 #
 # 最大ブロック時間計算用モジュール
-#
+#$:.unshift(File.dirname(__FILE__))
 require "rubygems"
 require "term/ansicolor"
 require "config"
@@ -593,6 +593,7 @@ module WCBT
       t.lb = LB(t)
       t.db = DB(t)
       t.b = t.bb + t.ab + t.sb + t.lb + t.db
+      t.wcrt = wcrt(t)
     }
   end
   
@@ -660,23 +661,30 @@ module WCBT
   end
 
   #
-  # 最悪応答時間導出
-  #
-  def worst_case_response_time(job)
-    
-  end
-  
-  #
   # 最悪応答時間
   #
-  def it_wcrt(job, n)
-    return job.extime + job.b if n == 0
-    time = 0
-    $taskList.each{ |t|
-      if t.priority < job.priority && t.proc == job.proc 
-        time += (((it_wcrt(job, n-1)+t.lb)/t.period).ceil)*(t.extime + t.b - t.lb)
-      end  
-    }
-    return job.extime + job.b + time
+  def wcrt(job)
+    time = job.extime + job.b
+    pre_wcrt = job.extime + job.b
+    n = 1
+    puts "job:#{job.task_id}"
+    while(1)
+      $taskList.each{ |t|
+        if t.priority < job.priority && t.proc == job.proc
+          count =  (((pre_wcrt+t.lb)/t.period).ceil)
+          puts "task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
+          time += count*(t.extime + t.b - t.lb)
+        end
+      }
+      p time
+      if time == pre_wcrt
+        break
+      else
+        pre_wcrt = time
+        time = 0
+        n += 1
+      end
+    end
+    return time
   end
 end
