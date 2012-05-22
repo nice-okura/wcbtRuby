@@ -664,15 +664,16 @@ module WCBT
   # 最悪応答時間
   #
   def wcrt(job)
-    time = job.extime + job.b
+ 
     pre_wcrt = job.extime + job.b
     n = 1
     puts "job:#{job.task_id}"
     while(1)
+      time = job.extime + job.b
       $taskList.each{ |t|
         if t.priority < job.priority && t.proc == job.proc
           count =  (((pre_wcrt+t.lb)/t.period).ceil)
-          puts "task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
+          puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
           time += count*(t.extime + t.b - t.lb)
         end
       }
@@ -681,7 +682,6 @@ module WCBT
         break
       else
         pre_wcrt = time
-        time = 0
         n += 1
       end
     end

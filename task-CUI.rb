@@ -111,10 +111,10 @@ class TaskSet
         print "\n"
         pri = get_extime_high_priority(t) 
         
-        if t.period < t.extime + t.b + pri
-          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.extime + t.b + pri)}".red
-          else
-          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.extime + t.b + pri)}"
+        if t.period < t.wcrt
+          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.wcrt)}".red
+        else
+          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
         end
       }
     }
@@ -140,7 +140,8 @@ class TaskCUI
   # タスク名表示
   #
   def get_task_name
-    return "タスク" + @task.task_id.to_s + "(" + "%1.3f"%(@task.extime.to_f/@task.period.to_f) + ")" + ":"
+    return "タスク#{@task.task_id}(#{"%1.3f"%(@task.extime.to_f/@task.period.to_f)}):"
+    #return "タスク" + @task.task_id.to_s + "(" + "%1.3f"%(@task.extime.to_f/@task.period.to_f) + ")" + ":"
   end
   
   
