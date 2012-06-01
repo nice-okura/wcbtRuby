@@ -1,0 +1,17 @@
+PROC_NUM = 4
+REQ_EXE_MAX = 5
+REQ_EXE_MIN = 1
+TASK_EXE_MAX = 20
+PRIORITY_MAX = 8
+REQ_NUM = 4
+TASK_NUM = 5
+TASK_FILE_NAME = "./task.json"
+REQ_FILE_NAME = "./req.json"
+GRP_FILE_NAME = "./grp.json"
+NEST_FLG = TRUE
+
+TASK_COUNT = 10
+REQ_COUNT = 10
+GRP_COUNT = 10
+$COLOR_CHAR = true
+$DEBUGFlg = false
