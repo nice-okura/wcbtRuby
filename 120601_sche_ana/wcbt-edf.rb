@@ -82,6 +82,44 @@ module WCBT
     }
     return reqlist
   end
+
+  
+  #
+  # Tabがnon-preemptiveである可能性のある時間は　spin時間+CS長
+  #　np(Tab) = max{ spin(Tab, R) + |R| : R はTabによる短期リソース要求}
+  #
+  def np(job)
+    nplist = []
+    job.get_short_require_array.each{ |req|
+      nplist << (spin(job, req) + req.time)
+    }
+    return nplist.max
+  end
+
+  #
+  # 周期がp(Ti)より長いTi以外のタスクのジョブの集合
+  #
+  #
+  def B(task)
+    
+  end
+  
+  #
+  # Ti以外のタスクのジョブの集合
+  #
+  #
+  def A(task)
+    
+  end
+
+  #
+  # Tiの任意のジョブから発行されるl-outermost要求の数
+  #
+  #
+  def L(task)
+    
+  end
+
   #
   #
   #
@@ -99,6 +137,15 @@ module WCBT
   #
   def NPB(t)
     npb = 0
+    alist = []
+    blist = []
+    B(t).each{ |job|
+      blist << np(job)
+    }
+    A(t).each{ |job|
+      alist << np(job)
+    }
+    npb = blist.max + L(t)*alist.max
     return npb
   end
   
