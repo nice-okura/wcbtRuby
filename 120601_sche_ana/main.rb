@@ -17,5 +17,10 @@ include WCBT
 msum(5, [1,2])
 
 @manager = AllManager.new
-@manager.create_tasks(4, 10, 10)
-pp $taskList
+@manager.load_tasks("120601")
+#@manager.create_tasks(4, 5, 5, ["0"])
+#@manager.save_tasks("120601")
+t = @manager.tm.get_task_array[0]
+g = t.req_list[0].res.group
+p g
+pp get_Rset_for_spin(t, g)
