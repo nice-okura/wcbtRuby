@@ -17,8 +17,8 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-require "wcbt"      # 最大ブロック時間計算モジュール
-require "task"      # タスク等のクラス
+require "wcbt_edf"      # 最大ブロック時間計算モジュール
+require "task_edf"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 #require "taskCUI"   # タスク表示ライブラリ
@@ -69,7 +69,6 @@ class AllManager
     
   end
 
-  
   #
   # 各要素の読み込み
   # load_tasks(tname=TASK_FILE_NAME, rname=REQ_FILE_NAME, gname=GRP_FILE_NAME)
