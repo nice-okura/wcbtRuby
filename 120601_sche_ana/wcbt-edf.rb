@@ -98,26 +98,38 @@ module WCBT
 
   #
   # 周期がp(Ti)より長いTi以外のタスクのジョブの集合
-  #
+  # @param [TASK] 
+  # @return [Array<TASK>]
   #
   def B(task)
+    tlist = []
+    $taskList.each{ |t|
+      tlist << t if t.period > task,period
+    }
     
+    return tlist
   end
   
   #
   # Ti以外のタスクのジョブの集合
-  #
+  # @param [TASK] 
+  # @return [Array<TASK>]
   #
   def A(task)
+    tlist = []
+    $taskList.each{ |t|
+      tlist << t t != task
+    }
     
+    return tlist
   end
 
   #
   # Tiの任意のジョブから発行されるl-outermost要求の数
-  #
+  # 
   #
   def L(task)
-    
+    return task.get_long_requrie_array
   end
 
   #
