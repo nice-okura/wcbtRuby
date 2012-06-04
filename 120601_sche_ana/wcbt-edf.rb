@@ -259,8 +259,34 @@ module WCBT
   #
   # スケジューラビリティチェック(FMLP-P)
   # @param[Fixnum, Fixnum] k : プロセッサ，i : 割当てるタスク数
+  # @return [bool]
   #
-  def p-schedulability_check(k, i)
-    
+  def p_schedulability_check(k, i)
+    tlist = partition(k)
+    max = [i, tlist.size].min
+    c = 0
+    puts "proc#{k}:#{max}tasks"
+    0.upto(max-1){ |j|
+      t = tlist[j]
+      c += (t.extime + t.bw)/t.period
+    }
+
+    tsk = tlist[max-1]
+    p ((tsk.b - tsk.bw)/tsk.period + c)
+    return ((tsk.b - tsk.bw)/tsk.period + c) >= 1
   end
+
+  
+  #
+  # 指定したプロセッサに割り当てられているタスク
+  #
+  def partition(proc)
+    tlist = []
+    $taskList.each{ |t|
+      tlist << t if t.proc == proc
+    }
+
+    return tlist 
+  end
+  
 end
