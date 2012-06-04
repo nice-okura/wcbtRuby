@@ -529,7 +529,7 @@ class RequireManager
   # ランダムにリソース要求を返す
   # 作成されている要求がなければ，nilを返す
   #
-  def RequireManager.get_random_req
+  def self.get_random_req
     @@id += 1
     ra = []
     if @@require_array.size < 1
@@ -551,7 +551,7 @@ class RequireManager
   #
   # リソース要求IDからリソースのオブジェクト参照の配列を返す
   #
-  def RequireManager.get_reqlist_from_req_id(req_list)
+  def self.get_reqlist_from_req_id(req_list)
     reqs = []
     req_list.each{|req_id|
       @@require_array.each{|r|
@@ -570,55 +570,61 @@ class RequireManager
   #
   public
   def create_require_array(i, info=["0"])
-    flg = false
-    g_array = []  # 作るべきリソース要求のグループ
-    @@garray.each{|g|
-      g_array << g
-    }
-    new_group = nil
-    #p g_id_array
-    until flg
-      data_clear
-      garray = []
-      #puts "i:#{i}"
-      
-      i.times{|time|
-        RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
-        new_group = GroupManager.get_random_group if new_group == nil
-        g_array.delete(new_group)
-      
-        if info[0] == "120405_3"
-          #
-          # new_group(long or short)で要求時間timeの要求を作成
-          #
-          a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
-          c = create_require(new_group, a_extime/(time+1.0))
-        elsif info[0] == "120411"
-          #
-          # リソース要求時間は実行時間のrcsl比で決める
-          #
-          a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
-          rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
-          c = create_require(new_group, a_extime*rcsl)
-        else
-          #
+    if info[0] == 0
+
+      flg = false
+      g_array = []  # 作るべきリソース要求のグループ
+      @@garray.each{|g|
+        g_array << g
+      }
+      new_group = nil
+      #p g_id_array
+      until flg
+        data_clear
+        garray = []
+        #puts "i:#{i}"
+        
+        i.times{|time|
+          RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
+          new_group = GroupManager.get_random_group if new_group == nil
+          g_array.delete(new_group)
+          
           #
           # リソース要求時間はランダム
           #
           c = create_require(new_group)
-        end
-        #p c
-        garray << c.res.group
-        @@require_array << c
-      }
-      #p garray
+          
+          #p c
+          garray << c.res.group
+          @@require_array << c
+        }
+        #p garray
 
-      garray.uniq!
-      #p "@@garray:#{@@garray}"
-      # 全てのグループのリソース要求が作成されたか確認
+        garray.uniq!
+        #p "@@garray:#{@@garray}"
+        # 全てのグループのリソース要求が作成されたか確認
+        #
+        flg = true if garray.size == @@garray.size || i <= @@garray.size
+      end
+
+    elsif info[0] == "sche_check"
       #
-      flg = true if garray.size == @@garray.size || i <= @@garray.size
+      # スケジューラビリティ解析用
+      #
+      
+      # shortリソース要求作成
+      i_max = SHORT_REQ_COUNT*3
+      d = 5.2/i_max.to_f
+      i_max.times{ |i|
+        @@id += 1
+        g = GroupManager.get_group_from_group_id(i%SHORT_REQ_COUNT)
+        time = 1.3 + d*i # [1.3, 6.5]
+        @@require_array << Req.new(@@id, g, time, [])
+#            return Req.new(@@id, group, time, req)
+      }
     end
+    
+    
     return @@require_array.size
     
   end
@@ -768,13 +774,35 @@ class GroupManager
   # i個のグループを生成し，group_arrayとする
   #
   public
-  def create_group_array(i)
+  def create_group_array(i, info=["0"])
     data_clear
-    garray = []
-    i.times{
-      garray << create_group
-    }
-    @@group_array = garray
+    
+    if info[0] == "0" 
+      garray = []
+      i.times{
+        garray << create_group
+      }
+      @@group_array = garray
+    elsif info[0] == "sche_check"
+      #
+      # スケジューラビリティ解析用
+      #
+      i = 6*TASK_NUM/PROC_NUM
+      @@kind == "short"
+      # Shortリソースを6*TASK_NUM/PROC_NUM個作る
+      i.times{ 
+        @@group_id += 1
+        garray << Group.new(@@group_id, @@kind)
+      }
+      # Longリソースを2個作る
+      @@group_id += 1
+      @@kind == "long"
+      garray << Group.new(@@group_id, @@kind)
+      @@group_id += 1
+      garray << Group.new(@@group_id, @@kind)
+      
+      @@group_array = garray
+    end
     return @@group_array.size
   end
   
@@ -859,7 +887,7 @@ class GroupManager
   # group_idからグループのオブジェクトの参照を返す
   #
   public
-  def GroupManager.get_group_from_group_id(group_id)
+  def self.get_group_from_group_id(group_id)
     @@group_array.each{|g|
       if g.group == group_id
         return g
@@ -878,7 +906,7 @@ class GroupManager
   #
   # グループをランダムに返す
   #
-  def GroupManager.get_random_group
+  def self.get_random_group
     if @@group_array.size == 0
       puts "グループが生成されていません．"
       return nil
