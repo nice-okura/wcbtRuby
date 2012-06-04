@@ -125,11 +125,89 @@ module WCBT
   end
 
   #
-  # Tiの任意のジョブから発行されるl-outermost要求の数
+  # Tiの任意のジョブから発行されるl-outermost要求の集合
   # 
   #
   def L(task)
-    return task.get_long_require_array.size
+    return task.get_long_require_array
+  end
+  
+  #
+  # グループgに属する長期リソース要求Raを行うタスクTaのジョブの保持時間
+  # 
+  #
+  def ht(ta, ra)
+    spintime = 0
+    ra.reqs.each{ |req|
+      spintime += spin(ta, req) if req.res.kind == "short"
+    }
+    ra.time + spintime
+  end
+
+  #
+  # Taのジョブのグループgに属するリソースl-outermost要求の集合
+  # 
+  #
+  def G(t, g)
+    reqlist = []
+    L(t).each{ |req|
+      reqlist << req if req.res.group == g.group
+    }
+    
+    return reqlist
+  end
+  
+  #
+  # Tiの任意のジョブによるl-outermost要求の集合
+  # 
+  #
+  def L(t)
+    return t.get_long_require_array
+  end
+  
+  #
+  # グループgのリソースを要求を発行するジョブを持つTj以外のタスクの集合
+  # @param [GROUP] taskの発行する要求のリソースグループ
+  #
+  def Z(task, g)
+    tlist = []
+    $taskList.each{ |t|
+      next if t == task
+      #puts "タスク#{t.task_id}:#{t.req_list.size}"
+      t.req_list.each{ |req|
+        if req.res.group == g.group
+          tlist << t
+          break
+        end
+      }
+    }
+    return tlist
+  end
+
+  #
+  # TijのR上のdirect blockの総時間
+  # 
+  #
+  def db(t, r)
+    dbtime = 0
+    
+    g = r.res
+    tlist = Z(t, g)
+    tlist.each{ |ta|
+      npxy = []
+      A(ta).each{ |txy|
+        npxy << np(txy)
+      }
+      htta = []
+      G(ta, g).each{ |ra|
+        htta << ht(ta, ra)
+      }
+      npxy = [0] if npxy == []
+      htta = [0] if htta == []
+      dbtime += (npxy.max + htta.max)
+    }
+    
+    return dbtime
   end
 
   #
@@ -159,7 +237,7 @@ module WCBT
     }
     blist = [0] if blist == []
     alist = [0] if alist == []
-    npb = blist.max + L(t)*alist.max
+    npb = blist.max + L(t).size*alist.max
     return npb
   end
   
@@ -167,7 +245,22 @@ module WCBT
   #
   #
   def DB(t)
-    db = 0
-    return db
+    time = 0
+    
+    L(t).each{ |r|
+      time += db(t, r)
+    }
+    return time
+  end
+
+
+
+
+  #
+  # スケジューラビリティチェック(FMLP-P)
+  # @param[Fixnum, Fixnum] k : プロセッサ，i : 割当てるタスク数
+  #
+  def p-schedulability_check(k, i)
+    
   end
 end
