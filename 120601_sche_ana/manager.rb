@@ -23,6 +23,8 @@ require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 #require "taskCUI"   # タスク表示ライブラリ
 
+# タスクの最大使用率
+UMAX = 0.1
 
 #==ランダム生成方針
 # Task(taskId, proc, period, extime, priority, offset, reqList)
@@ -252,66 +254,29 @@ class TaskManager
   # 
   #
   private
-  def create_task_120405_3(task_count, a_extime=50)
+  def create_task_sche_check
     #################
     # タスクステータス #
     #################
     #
-    # 120405_3用
+    # FMLP_P-EDFスケジューラビリティ解析用
     #
-    @@task_id += 1  # ここではタスクのidとしては用いない．task_id_arrayからnew_task_idを用いる
     
-    task_id_array = Array.new(task_count){|index| "#{index+1}"}
-    #p @@task_array
-    @@task_array.each{|t|
-      task_id_array.delete(t.task_id)
-    }
-    #puts "@@task_id:#{@@task_id}:#{task_id_array}"
-    # リソース要求
-    # 最大REQ_NUM回リソースを取得
-    req_list = []
-    
-    gcount = @@garray.size
-    gnum = @@task_id%gcount + 1  # 使用するグループのID
-    new_garray = []
-    #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
-    @@rarray.each{|r|
-      if r.res.group == gnum
-        new_garray << r
-      end
-    }
-    REQ_NUM.times{ 
-      loop do
-        RUBY_VERSION == "1.9.3" ? r = new_garray.sample : r = new_garray.choice
-        #r = new_garray.choice
-        #p "gnum:#{gnum}"
-        #p r.res.group
-        if r.res.group == gnum
-          req_list << r
-          break
-        end
-      end
-    }
-    
-    #reqList.uniq!
-    
-    
-    req_time = 0
-    #pp req_list
-    req_list.each{|req|
-      req_time += req.time
-    }
-    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
-    proc = (new_task_id.to_i%PROC_NUM)+1
+    # タスクの最大使用率
+    umax = UMAX
+    util = umax - (rand%umax) # タスクの使用率は[0, umax] 
+
+    @@task_id += 1
+    proc = @@task_id%PROC_NUM
     #p task_id_array
-    priority = new_task_id
-    extime = a_extime
-    period = (extime/(1.0/task_count))
+    #priority = new_task_id # EDFなのでpriorityは後から決めるしかない
+    extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
+    period = extime/util
     offset = 0 #rand(10)
-    
+    req_list = []
     #################
     
-    task = Task.new(new_task_id, proc, period, extime, priority, offset, req_list)
+    task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
     
     return task
   end
@@ -321,6 +286,7 @@ class TaskManager
   #
   private
   def create_task
+
     # リソース要求
     # 最大REQ_NUM回リソースを取得
     req_list = []
@@ -373,40 +339,14 @@ class TaskManager
         @@task_array << create_task
       }
       #
-      # rcslを考慮したタスク実行時間を作成．
-      # 各CPUに均等にタスクは割り当てられる
+      # スケジューラビリティ解析用
       #
-    elsif info[0] == "120405" 
-      # info[1] はrcls
-      #puts "120405 MODE"
-      if info[1] == nil
-        $stderr.puts "create_task_array:[#{__LINE__}行目]rcslが設定されていません"
-      else
-        i.times{
-          @@task_array << create_task_120405(i, info[1])
-        }
-      end
-      
-      #
-      # rcslは不要
-      # 指定した実行時間info[1](初期値50)のタスクを生成．
-      # 各CPUに均等にタスクは割り当てられる．
-      #
-    elsif info[0] == "120405_3" || info[0] == "120411"
-      if info[1].to_i == 0
-        i.times{
-          @@task_array << create_task_120405_3(i)
-        }
-      else
-        i.times{
-          @@task_array << create_task_120405_3(i, info[1].to_i)
-        }
-      end
-    else
-      $stderr.puts "create_task_array:infoエラー"
+    elsif info[0] == "sche_check" 
+      i.times{
+        @@task_array << create_task_sche_check
+      }
     end
     
-    #@@task_array = tarray
     return @@task_array.size
   end
   
