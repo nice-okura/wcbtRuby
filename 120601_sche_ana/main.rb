@@ -10,7 +10,7 @@
 #== Usage:
 #
 #=== 
-$:.unshift(File.dirname(__FILE__))
+#$:.unshift(File.dirname(__FILE__))
 require "manager"
 
 include WCBT
@@ -19,7 +19,19 @@ include WCBT
 #@manager.create_tasks(4, 5, 5, ["0"])
 #@manager.save_tasks("120601")
 
-t = @manager.tm.get_task_array[0]
-#g = t.req_list[0].res.group
-#pp get_Rset_for_spin(t, g)
-pp t.bw
+@manager.tm.get_task_array.each{ |t|
+  #g = t.req_list[0].res.group
+  #pp get_Rset_for_spin(t, g)
+  aid = []
+  bid = []
+  A(t).each{ |ta|
+    aid << ta.task_id
+  }
+  B(t).each{ |tb|
+    bid << tb.task_id
+  }
+  
+  puts "A(タスク#{t.task_id}):#{aid}"
+  puts "B(タスク#{t.task_id}):#{bid}"
+  puts "L(タスク#{t.task_id}):#{L(t)}"
+}

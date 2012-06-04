@@ -93,6 +93,7 @@ module WCBT
     job.get_short_require_array.each{ |req|
       nplist << (spin(job, req) + req.time)
     }
+    nplist = [0] if nplist = []
     return nplist.max
   end
 
@@ -104,9 +105,8 @@ module WCBT
   def B(task)
     tlist = []
     $taskList.each{ |t|
-      tlist << t if t.period > task,period
+      tlist << t if t.period > task.period
     }
-    
     return tlist
   end
   
@@ -118,7 +118,7 @@ module WCBT
   def A(task)
     tlist = []
     $taskList.each{ |t|
-      tlist << t t != task
+      tlist << t if t != task
     }
     
     return tlist
@@ -129,7 +129,7 @@ module WCBT
   # 
   #
   def L(task)
-    return task.get_long_requrie_array
+    return task.get_long_require_array.size
   end
 
   #
@@ -157,6 +157,8 @@ module WCBT
     A(t).each{ |job|
       alist << np(job)
     }
+    blist = [0] if blist == []
+    alist = [0] if alist == []
     npb = blist.max + L(t)*alist.max
     return npb
   end
