@@ -110,7 +110,7 @@ class AllManager
   # タスク生成
   #
   def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT, info=["0"])
-    @gm.create_group_array(gcount)
+    @gm.create_group_array(gcount, info)
     
     @rm.set_garray(@gm.get_group_array)
     @rm.create_require_array(rcount, info)
@@ -267,13 +267,14 @@ class TaskManager
     util = umax - (rand%umax) # タスクの使用率は[0, umax] 
 
     @@task_id += 1
-    proc = @@task_id%PROC_NUM
+    proc = @@task_id%PROC_NUM+1
     #p task_id_array
     #priority = new_task_id # EDFなのでpriorityは後から決めるしかない
     extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
     period = extime/util
     offset = 0 #rand(10)
     req_list = []
+    priority = 1
     #################
     
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
@@ -615,13 +616,30 @@ class RequireManager
       # shortリソース要求作成
       i_max = SHORT_REQ_COUNT*3
       d = 5.2/i_max.to_f
-      i_max.times{ |i|
+      0.upto(i_max-1){ |i|
         @@id += 1
-        g = GroupManager.get_group_from_group_id(i%SHORT_REQ_COUNT)
+        g = GroupManager.get_group_from_group_id(i%SHORT_REQ_COUNT+1)
         time = 1.3 + d*i # [1.3, 6.5]
         @@require_array << Req.new(@@id, g, time, [])
 #            return Req.new(@@id, group, time, req)
       }
+      
+      # longリソース要求作成
+      # それぞれのlongリソース要求に対し，2〜4個のこのリソースアクセスしている異なったタスクを選択する．
+      # なので，予め2(longリソース個数)*4(longリソース要求する最大タスク数)=8 のリソース要求を作成しておく
+
+      0.upto(LONG_REQ_COUNT-1){ |i|
+        @@id += 1
+        g_id = 30 + i%2+1
+        p g_id
+        g = GroupManager.get_group_from_group_id(g_id)
+        
+        time = 20 + rand(11)
+        
+        @@require_array << Req.new(@@id, g, time, [])
+      }
+
+      pp @@require_array
     end
     
     
@@ -776,9 +794,9 @@ class GroupManager
   public
   def create_group_array(i, info=["0"])
     data_clear
-    
+    garray = []
+
     if info[0] == "0" 
-      garray = []
       i.times{
         garray << create_group
       }
@@ -787,8 +805,8 @@ class GroupManager
       #
       # スケジューラビリティ解析用
       #
-      i = 6*TASK_NUM/PROC_NUM
-      @@kind == "short"
+      i = SHORT_REQ_COUNT
+      @@kind = "short"
       # Shortリソースを6*TASK_NUM/PROC_NUM個作る
       i.times{ 
         @@group_id += 1
@@ -796,12 +814,14 @@ class GroupManager
       }
       # Longリソースを2個作る
       @@group_id += 1
-      @@kind == "long"
+      @@kind = "long"
       garray << Group.new(@@group_id, @@kind)
       @@group_id += 1
       garray << Group.new(@@group_id, @@kind)
       
+
       @@group_array = garray
+      #pp @@group_array
     end
     return @@group_array.size
   end
