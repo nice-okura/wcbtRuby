@@ -121,6 +121,16 @@ class AllManager
     @using_group_array = get_using_group_array
     
     $taskList = @tm.get_task_array
+    
+    
+    # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
+    tmplist = $taskList.sort_by{ rand } # タスクをランダムに並び替える
+    task_count = 2 + rand(3) # 2~4の乱数
+    0.upto(task_count-1){ |i|
+      @tm.set_long_require(tmplist[i])
+      tmplist[i].resetting
+    }
+    
     #init_computing
     set_blocktime
     
@@ -279,8 +289,33 @@ class TaskManager
     
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
     
+    set_short_require(task)
+    task.resetting
     return task
   end
+
+
+  # shce_check用に，タスクに1~3個のshortリソース要求を割当てる
+  def set_short_require(task)
+    req_id_list = []
+    count = rand(3) + 1 # 1~3の乱数
+    count.times{ 
+      req_id = rand(90) + 1 # req_id 1~90がshortリソース要求
+      req_id_list << req_id
+    }
+    # リソース要求更新
+    task.req_list = RequireManager.get_reqlist_from_req_id(req_id_list)
+  end
+
+  public
+  # shce_check用に，タスクに1個のlongリソース要求を割当てる
+  def set_long_require(task)
+    req_id = rand(9) + 91 # req_id 91~98がlongリソース要求
+   
+    # リソース要求更新
+    task.req_list = RequireManager.get_reqlist_from_req_id([req_id])
+  end
+  
   
   #
   # ランダムタスク生成
@@ -631,7 +666,6 @@ class RequireManager
       0.upto(LONG_REQ_COUNT-1){ |i|
         @@id += 1
         g_id = 30 + i%2+1
-        p g_id
         g = GroupManager.get_group_from_group_id(g_id)
         
         time = 20 + rand(11)
@@ -639,7 +673,7 @@ class RequireManager
         @@require_array << Req.new(@@id, g, time, [])
       }
 
-      pp @@require_array
+      #pp @@require_array
     end
     
     
@@ -663,7 +697,7 @@ class RequireManager
       File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(reqs_json)
       }
-      rescue => e
+    rescue => e
       puts e.backtrace
       puts("resource file output error: #{filename} could not be created.\n")
     end
