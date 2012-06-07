@@ -122,15 +122,88 @@ class AllManager
     
     $taskList = @tm.get_task_array
     
+    if info[0] == "sche_check"
+      # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
+      tmplist = $taskList.sort_by{ rand } # タスクをランダムに並び替える
+      task_count = 2 + rand(3) # 2~4の乱数
+      0.upto(task_count-1){ |i|
+        @tm.set_long_require(tmplist[i])
+        tmplist[i].resetting
+      }
+
+#=begin
+      f = info[2] # nesting_factor
+      # ネストした要求を生成して割り当て
+      f_one = 2.0*f*(1.0-f) * 10000            # 1つネストする確率
+      f_two = f*f * 10000                      # 2つネストする確率
+      
+      puts "ネストつくりまーす.f_one#{f_one} f_two#{f_two}"
+      id = 100                                 # ネストするリソース要求IDは100番以降とする
+      # 全リソース要求に対して
+      # 上記の確率でネストさせる
+      $taskList.each{ |t|
+        t.req_list.each{ |r|
+          prob = rand(10001) + 1 # 1~10000の乱数
+#          print "#{prob} "
+          reqs = []
+          # fの確率でネスト作成
+          if prob < f_two
+            # 2つのネストしたリソース要求
+            if r.res.kind == "short"
+              # shortの場合は |Rn| = R/3
+              time = r.time/3
+              # shortグループの中からランダムに選択する
+              g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+              g_id2 = rand(SHORT_GRP_COUNT) + 1 
+            elsif r.res.kind == "long"
+              # longの場合は |Rn| = 3 (from 論文．意味がわからない)
+              time = 3.0
+              # longグループの中からランダムに選択する
+              g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+              g_id2 = rand(2) + 1 + 30 
+            end
+            g1 = GroupManager.get_group_from_group_id(g_id1)
+            g2 = GroupManager.get_group_from_group_id(g_id2)
+            req = []
+            id += 1
+            req1 = Req.new(id, g1, time, req)
+            id += 1
+            req2 = Req.new(id, g2, time, req)
+            @rm.add_require(req1)
+            @rm.add_require(req2)
+            reqs << req1
+            reqs << req2
+          elsif prob < f_one
+            # 1つのネストしたリソース要求
+            if r.res.kind == "short"
+              # shortの場合は |Rn| = R/3
+              time = r.time/3
+              # shortグループの中からランダムに選択する
+              g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+            elsif r.res.kind == "long"
+              # longの場合は |Rn| = 3 (from 論文．意味がわからない)
+              time = 3.0
+              # longグループの中からランダムに選択する
+              g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+            end
+            g1 = GroupManager.get_group_from_group_id(g_id1)
+            req = []
+            id += 1
+            req1 = Req.new(id, g1, time, req)
+            @rm.add_require(req1)
+            reqs << req1
+          end
+          r.reqs = reqs
+        }
+      }
+#=end
+      puts "リソース要求数#{@rm.get_require_array.size}"
+    end
     
-    # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
-    tmplist = $taskList.sort_by{ rand } # タスクをランダムに並び替える
-    task_count = 2 + rand(3) # 2~4の乱数
-    0.upto(task_count-1){ |i|
-      @tm.set_long_require(tmplist[i])
-      tmplist[i].resetting
+    # 全タスクの設定しなおし
+    $taskList.each{ |t|
+      t.resetting
     }
-    
     #init_computing
     set_blocktime
     
@@ -193,9 +266,9 @@ class TaskManager
   #
   private
   def create_task_120405(task_count, rcsl)
-    #################
+    ####################
     # タスクステータス #
-    #################
+    ####################
     
     #
     # 120405用
@@ -264,7 +337,7 @@ class TaskManager
   # 
   #
   private
-  def create_task_sche_check
+  def create_task_sche_check(umax)
     #################
     # タスクステータス #
     #################
@@ -273,7 +346,6 @@ class TaskManager
     #
     
     # タスクの最大使用率
-    umax = UMAX
     util = umax - (rand%umax) # タスクの使用率は[0, umax] 
 
     @@task_id += 1
@@ -379,7 +451,7 @@ class TaskManager
       #
     elsif info[0] == "sche_check" 
       i.times{
-        @@task_array << create_task_sche_check
+        @@task_array << create_task_sche_check(info[1])
       }
     end
     
@@ -625,16 +697,12 @@ class RequireManager
           new_group = GroupManager.get_random_group if new_group == nil
           g_array.delete(new_group)
           
-          #
           # リソース要求時間はランダム
-          #
           c = create_require(new_group)
           
-          #p c
           garray << c.res.group
           @@require_array << c
         }
-        #p garray
 
         garray.uniq!
         #p "@@garray:#{@@garray}"
@@ -648,12 +716,14 @@ class RequireManager
       # スケジューラビリティ解析用
       #
       
+      f = info[2] # nesting_factor
+
       # shortリソース要求作成
-      i_max = SHORT_REQ_COUNT*3
+      i_max = SHORT_GRP_COUNT*3
       d = 5.2/i_max.to_f
       0.upto(i_max-1){ |i|
         @@id += 1
-        g = GroupManager.get_group_from_group_id(i%SHORT_REQ_COUNT+1)
+        g = GroupManager.get_group_from_group_id(i%SHORT_GRP_COUNT+1)
         time = 1.3 + d*i # [1.3, 6.5]
         @@require_array << Req.new(@@id, g, time, [])
 #            return Req.new(@@id, group, time, req)
@@ -672,13 +742,17 @@ class RequireManager
         
         @@require_array << Req.new(@@id, g, time, [])
       }
-
       #pp @@require_array
     end
     
     
     return @@require_array.size
     
+  end
+
+  public
+  def add_require(req)
+    return @@require_array << req
   end
   
   #
@@ -839,7 +913,7 @@ class GroupManager
       #
       # スケジューラビリティ解析用
       #
-      i = SHORT_REQ_COUNT
+      i = SHORT_GRP_COUNT
       @@kind = "short"
       # Shortリソースを6*TASK_NUM/PROC_NUM個作る
       i.times{ 
