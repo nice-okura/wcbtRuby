@@ -17,3 +17,5 @@ REQ_COUNT = 10
 GRP_COUNT = 10
 $COLOR_CHAR = true
 $DEBUGFlg = false
+
+JSON_FOLDER = "./json"

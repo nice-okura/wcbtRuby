@@ -23,9 +23,6 @@ require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 #require "taskCUI"   # タスク表示ライブラリ
 
-# タスクの最大使用率
-UMAX = 0.1
-
 #==ランダム生成方針
 # Task(taskId, proc, period, extime, priority, offset, reqList)
 #  taskId: タスク生成順にインクリメント
@@ -1055,7 +1052,10 @@ end
 
 #########################################################################
 #########################################################################
-
+class ProcessorManager
+  def initialize
+  end
+end
 
 
 def print_debug(str)
@@ -1069,7 +1069,7 @@ end
 # gm = GroupManager.instance
 # rm = RequireManager.instance
 # tm = TaskManager.instance
-puts "ランダムタスク"
+
 # 
 # グループをランダムに5個作成
 # gm.createGroupArray(5)
