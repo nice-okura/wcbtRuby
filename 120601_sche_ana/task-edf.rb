@@ -27,6 +27,7 @@ class Processor
   # プロセッサにタスク割り当て
   def assign_task(task)
     @task_list << task
+    task.proc = proc_id
     @util = calc_util
   end
 
