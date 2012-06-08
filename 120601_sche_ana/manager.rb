@@ -134,7 +134,7 @@ class AllManager
       f_one = 2.0*f*(1.0-f) * 10000            # 1つネストする確率
       f_two = f*f * 10000                      # 2つネストする確率
       
-      puts "ネストつくりまーす.f_one#{f_one} f_two#{f_two}"
+      #puts "ネストつくりまーす.f_one#{f_one} f_two#{f_two}"
       id = 100                                 # ネストするリソース要求IDは100番以降とする
       # 全リソース要求に対して
       # 上記の確率でネストさせる
@@ -194,7 +194,7 @@ class AllManager
         }
       }
 #=end
-      puts "リソース要求数#{@rm.get_require_array.size}"
+      #puts "リソース要求数#{@rm.get_require_array.size}"
     end
     
     # 全タスクの設定しなおし
