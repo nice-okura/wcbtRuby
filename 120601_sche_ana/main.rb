@@ -28,7 +28,7 @@ end
 # @param idx 
 def assign_task_worstfit(idx)
   tsk = $task_list[idx]
-=begin
+#=begin
   # longリソース要求をしているタスクかチェック
   unless tsk.get_long_require_array.size == 0
     # longリソースがある場合，
@@ -42,10 +42,10 @@ def assign_task_worstfit(idx)
       }
     }
   else 
-=end
+#=end
     proc_id = lowest_util_proc_id
     @proc_list[proc_id - 1].assign_task(tsk)
-  #end
+  end
 end
 
 
@@ -92,6 +92,19 @@ def p_schedulability(k, i)
   return ((tsk.b - tsk.bw)/tsk.period + c)
 end
 
+
+#
+# 現在割り当てられているタスクリストを返す
+#
+def get_using_tasks
+  tasks = []
+  @proc_list.each{ |p|
+    tasks += p.task_list
+  }
+  
+  return tasks
+end
+
 #
 # main
 #
@@ -133,7 +146,9 @@ pbar.format = "%3d%% %s %s"
     task_count = 0  # 割当てることのできたタスク数
     1.upto(@manager.tm.get_task_array.size){ |id|
       assign_task_worstfit(id-1) # プロセッサにタスク割り当て
-      #set_blocktime
+      
+      set_blocktime(get_using_tasks)
+      
       sche = 0
       1.upto(PROC_NUM){ |p_id|
         sche += p_schedulability(p_id, id+1)

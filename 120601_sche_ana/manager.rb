@@ -85,7 +85,7 @@ class AllManager
     @using_group_array = get_using_group_array
     $task_list = @tm.get_task_array
     #init_computing
-    set_blocktime
+    #set_blocktime
     
     return true
   end
@@ -204,7 +204,7 @@ class AllManager
       t.resetting
     }
     #init_computing
-    set_blocktime
+    #set_blocktime
     
   end
     

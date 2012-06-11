@@ -25,7 +25,9 @@ module WCBT
   #
   # ブロック時間を計算し，格納
   #
-  def set_blocktime()
+  def set_blocktime(tasks)
+    $calc_task = tasks
+
     $calc_task.each{ |t|
       t.bw = BW(t)
       t.npb = NPB(t)
@@ -33,7 +35,15 @@ module WCBT
       t.b = t.bw + t.npb + t.db
     }
   end
+
+
+  ###########################################
+  #
+  #   以下 private 
+  #
+  ###########################################
   
+  private
   #
   # 集合sのmin(n, |s|)番目までの要素の和を返す関数
   # @param [Fixnum, Array]

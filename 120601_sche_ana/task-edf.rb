@@ -32,7 +32,7 @@ class Processor
   end
 
   # プロセッサ使用率を計算
-  # @return [Fixnum] プロセッサ使用率
+  # @return [Float] プロセッサ使用率
   private
   def calc_util
     util = 0.0
@@ -61,6 +61,10 @@ class Task
     @req_list = reqarray
     @reqtime = get_require_time
     @wcrt = 0
+    @bw = 0.0
+    @npb = 0.0
+    @db = 0.0
+    @b = 0.0
     check_outermost
     check_over_extime
     set_begin_time
