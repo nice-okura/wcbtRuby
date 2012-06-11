@@ -15,6 +15,8 @@ require "term/ansicolor"
 require "config"
 #require "ruby-prof"
 
+$calc_task = [] # WCBTモジュールで使用するタスク
+
 class String
   include Term::ANSIColor
 end
@@ -24,7 +26,7 @@ module WCBT
   # ブロック時間を計算し，格納
   #
   def set_blocktime()
-    $taskList.each{ |t|
+    $calc_task.each{ |t|
       t.bw = BW(t)
       t.npb = NPB(t)
       t.db = DB(t)
@@ -65,7 +67,7 @@ module WCBT
   #
   def get_Rset_for_spin(job, g)
     reqlist = []
-    $taskList.each{ |t|
+    $calc_task.each{ |t|
       next if t.proc == job.proc
       tmp_reqlist = []
       t.req_list.each{ |req|
@@ -104,7 +106,7 @@ module WCBT
   #
   def B(task)
     tlist = []
-    $taskList.each{ |t|
+    $calc_task.each{ |t|
       tlist << t if t.period > task.period
     }
     return tlist
@@ -117,7 +119,7 @@ module WCBT
   #
   def A(task)
     tlist = []
-    $taskList.each{ |t|
+    $calc_task.each{ |t|
       tlist << t if t != task
     }
     
@@ -171,7 +173,7 @@ module WCBT
   #
   def Z(task, g)
     tlist = []
-    $taskList.each{ |t|
+    $calc_task.each{ |t|
       next if t == task
       #puts "タスク#{t.task_id}:#{t.req_list.size}"
       t.req_list.each{ |req|
@@ -258,7 +260,7 @@ module WCBT
   #
   def partition(proc)
     tlist = []
-    $taskList.each{ |t|
+    $calc_task.each{ |t|
       tlist << t if t.proc == proc
     }
 

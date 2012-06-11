@@ -19,7 +19,7 @@ include WCBT
 
 # タスクを使用率の降順に並び替え
 def sort_tasklist_by_utilization
-  $taskList.sort{ |a, b|
+  $task_list.sort{ |a, b|
     -1 * (a.extime/a.period <=> b.extime/b.period)
   }
 end
@@ -27,7 +27,7 @@ end
 # 指定したインデックスのtasklListのタスクをworst-fitでプロセッサに割り当て
 # @param idx 
 def assign_task_worstfit(idx)
-  tsk = $taskList[idx]
+  tsk = $task_list[idx]
 =begin
   # longリソース要求をしているタスクかチェック
   unless tsk.get_long_require_array.size == 0
@@ -98,7 +98,7 @@ end
 taskset_count = 50 # 使用するタスクセット数
 taskcount_ave = 0.0 # 割り当てられたタスクの平均
 umax = 0.3          # タスク使用率の最大値
-f_max = 0.1         # nesting factor
+f_max = 0.05         # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
@@ -133,7 +133,7 @@ pbar.format = "%3d%% %s %s"
     task_count = 0  # 割当てることのできたタスク数
     1.upto(@manager.tm.get_task_array.size){ |id|
       assign_task_worstfit(id-1) # プロセッサにタスク割り当て
-      set_blocktime
+      #set_blocktime
       sche = 0
       1.upto(PROC_NUM){ |p_id|
         sche += p_schedulability(p_id, id+1)
@@ -154,7 +154,7 @@ pbar.format = "%3d%% %s %s"
   
   output_str << (taskcount_ave/TASK_NUM)*100
 }
-taskset = TaskSet.new($taskList)
+taskset = TaskSet.new($task_list)
 taskset.show_taskset
 
 File.open("#{taskset_count}taskset_umax#{umax}.dat", "w"){ |fp|

@@ -47,13 +47,15 @@ $external_input = false # 外部入力ファイルの設定
 #$output_group_file = GRP_FILE_NAME  # グループの出力先ファイル名
 #$output_require_file = REQ_FILE_NAME  # リソース要求の出力先ファイル名
 
-$task_list = [] # タスクの配列
+$all_task_list = []     # 全タスクリスト
+$task_list = []         # 割り当て済みタスリスト 
 
 #
 # タスク，リソース要求，グループのマネージャー管理
 # Singleton
 #
 include WCBT
+
 class AllManager
   attr_reader :tm, :rm, :gm, :using_group_array
   
@@ -81,7 +83,7 @@ class AllManager
     return false unless @rm.load_require_data("#{name}_require.json")
     return false unless @tm.load_task_data("#{name}_task.json")
     @using_group_array = get_using_group_array
-    $taskList = @tm.get_task_array
+    $task_list = @tm.get_task_array
     #init_computing
     set_blocktime
     
@@ -117,11 +119,11 @@ class AllManager
     
     @using_group_array = get_using_group_array
     
-    $taskList = @tm.get_task_array
+    $task_list = @tm.get_task_array
     
     if info[0] == "sche_check"
       # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
-      tmplist = $taskList.sort_by{ rand } # タスクをランダムに並び替える
+      tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
       task_count = 2 + rand(3) # 2~4の乱数
       0.upto(task_count-1){ |i|
         @tm.set_long_require(tmplist[i])
@@ -138,7 +140,7 @@ class AllManager
       id = 100                                 # ネストするリソース要求IDは100番以降とする
       # 全リソース要求に対して
       # 上記の確率でネストさせる
-      $taskList.each{ |t|
+      $task_list.each{ |t|
         t.req_list.each{ |r|
           prob = rand(10001) + 1 # 1~10000の乱数
 #          print "#{prob} "
@@ -198,7 +200,7 @@ class AllManager
     end
     
     # 全タスクの設定しなおし
-    $taskList.each{ |t|
+    $task_list.each{ |t|
       t.resetting
     }
     #init_computing
@@ -210,7 +212,7 @@ class AllManager
   # 全データ初期化
   #
   def all_data_clear
-    $taskList = []
+    $task_list = []
     @gm.data_clear
     @rm.data_clear
     @tm.data_clear
