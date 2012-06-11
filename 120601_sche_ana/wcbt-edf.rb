@@ -23,7 +23,7 @@ module WCBT
   #
   # ブロック時間を計算し，格納
   #
-  def set_blocktime
+  def set_blocktime()
     $taskList.each{ |t|
       t.bw = BW(t)
       t.npb = NPB(t)

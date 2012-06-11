@@ -13,6 +13,7 @@
 #$:.unshift(File.dirname(__FILE__))
 require "manager"
 require 'progressbar'
+require 'task-CUI'
 
 include WCBT
 
@@ -26,9 +27,27 @@ end
 # 指定したインデックスのtasklListのタスクをworst-fitでプロセッサに割り当て
 # @param idx 
 def assign_task_worstfit(idx)
-  proc_id = lowest_util_proc_id
-  @proc_list[proc_id - 1].assign_task($taskList[idx])
+  tsk = $taskList[idx]
+=begin
+  # longリソース要求をしているタスクかチェック
+  unless tsk.get_long_require_array.size == 0
+    # longリソースがある場合，
+    # longリソース要求をするタスクのあるプロセッサに割当てる
+    @proc_list.each{ |p|
+      p.task_list.each{ |t|
+        if t.get_long_require_array.size > 0
+          #このプロセッサに割り当て
+          p.assign_task(tsk)
+        end
+      }
+    }
+  else 
+=end
+    proc_id = lowest_util_proc_id
+    @proc_list[proc_id - 1].assign_task(tsk)
+  #end
 end
+
 
 # CPU使用率が一番低いプロセッサIDを返す
 def lowest_util_proc_id
@@ -43,6 +62,7 @@ def lowest_util_proc_id
 
   return id 
 end
+
 
 # 各プロセッサの使用率と割当てられているタスク数を表示
 def show_proc_info
@@ -75,13 +95,13 @@ end
 #
 # main
 #
-
-taskset_count = 500 # 使用するタスクセット数
+taskset_count = 50 # 使用するタスクセット数
 taskcount_ave = 0.0 # 割り当てられたタスクの平均
 umax = 0.3          # タスク使用率の最大値
-f_max = 0.1             # nesting factor
+f_max = 0.1         # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
+
 # プログレスバー
 pbar = ProgressBar.new("スケジューラビリティ解析", taskset_count*((f_max/0.01).to_i+1))
 pbar.format_arguments = [:percentage, :bar, :stat]
@@ -112,7 +132,8 @@ pbar.format = "%3d%% %s %s"
     # タスクworstfitで割り当て
     task_count = 0  # 割当てることのできたタスク数
     1.upto(@manager.tm.get_task_array.size){ |id|
-      assign_task_worstfit(id-1)
+      assign_task_worstfit(id-1) # プロセッサにタスク割り当て
+      set_blocktime
       sche = 0
       1.upto(PROC_NUM){ |p_id|
         sche += p_schedulability(p_id, id+1)
@@ -133,6 +154,8 @@ pbar.format = "%3d%% %s %s"
   
   output_str << (taskcount_ave/TASK_NUM)*100
 }
+taskset = TaskSet.new($taskList)
+taskset.show_taskset
 
 File.open("#{taskset_count}taskset_umax#{umax}.dat", "w"){ |fp|
   f = 0.0 
@@ -140,7 +163,6 @@ File.open("#{taskset_count}taskset_umax#{umax}.dat", "w"){ |fp|
     fp.puts "#{f} #{str}"
     f += 0.01
   }
-
 }
 pbar.finish
 #show_proc_info
