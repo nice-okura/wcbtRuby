@@ -76,10 +76,10 @@ end
 # main
 #
 
-taskset_count = 100 # 使用するタスクセット数
+taskset_count = 500 # 使用するタスクセット数
 taskcount_ave = 0.0 # 割り当てられたタスクの平均
-umax = 0.1          # タスク使用率の最大値
-f_max = 0.03             # nesting factor
+umax = 0.3          # タスク使用率の最大値
+f_max = 0.1             # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 # プログレスバー
@@ -90,6 +90,7 @@ pbar.format = "%3d%% %s %s"
 
 # スケジューラビリティ解析ループ
 0.step(f_max, 0.01){ |f|
+#  p f
   taskset_count.times{
     @manager = AllManager.new
     @manager.all_data_clear
@@ -129,7 +130,8 @@ pbar.format = "%3d%% %s %s"
     pbar.inc 
   }
   taskcount_ave /= taskset_count
-  output_str << taskcount_ave
+  
+  output_str << (taskcount_ave/TASK_NUM)*100
 }
 
 File.open("#{taskset_count}taskset_umax#{umax}.dat", "w"){ |fp|
