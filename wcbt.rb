@@ -44,7 +44,9 @@ module WCBT
   #
   # 予め計算しておく
   #
-  def init_computing
+  def init_computing(tasks)
+    $calc_task = tasks
+
     $WCLR.clear
     $WCSR.clear
     $LR.clear
@@ -61,7 +63,7 @@ module WCBT
     
     proc = [] # proc_list用プロセッサ配列
     
-    $taskList.each{|task|
+    $calc_task.each{|task|
       lreqs = []
       sreqs = []
       task.req_list.each{|req|
@@ -103,7 +105,7 @@ module WCBT
       #
       # wclx, wcsxの計算
       #
-      $taskList.each{|job|
+      $calc_task.each{|job|
         tuplesl = []
         tupless = []
         
@@ -149,10 +151,10 @@ module WCBT
     #
     # 上記の計算をした後でしか計算できないもの
     #
-    $taskList.each{ |job|
+    $calc_task.each{ |job|
       tuple_abr = []
       tuples_abr = []
-      $taskList.each{ |task|
+      $calc_task.each{ |task|
         #
         # abrの計算
         #
@@ -189,7 +191,7 @@ module WCBT
     #
     $proc_list.each{ |proc|
       proc_task_list = []
-      $taskList.each{|task|
+      $calc_task.each{|task|
         proc_task_list << task if task.proc == proc
       }
       $proc_task_list[proc] = proc_task_list
@@ -457,7 +459,7 @@ module WCBT
       return 0
     end
     time = 0
-    $taskList.each{|tas|
+    $calc_task.each{|tas|
       if tas.proc == job.proc && tas.priority > job.priority then
         time += bbt(tas, job)
       end
@@ -518,7 +520,7 @@ module WCBT
   
   def DB(task)
     time = 0
-    $taskList.each{|tas|
+    $calc_task.each{|tas|
       if tas.proc == task.proc && tas.priority < task.priority then
         time += [tas.extime, lbt(tas)].min
       end
@@ -542,14 +544,14 @@ module WCBT
   def lowest_priority_task(proc)
     pri = 0 # 最高優先度
     tsk = []
-    $taskList.each{|t|
+    $calc_task.each{|t|
       if t.proc == proc
         if pri < t.priority
           pri = t.priority
         end
       end
     }
-    $taskList.each{|t|
+    $calc_task.each{|t|
         if pri == t.priority && t.proc == proc
           tsk << t
         end
@@ -559,7 +561,7 @@ module WCBT
   
   def get_extime_high_priority(task)
     time = 0
-    $taskList.each{|t|
+    $calc_task.each{|t|
       sb = t.sb
       if t.proc == task.proc && t.priority < task.priority
         time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
@@ -574,7 +576,7 @@ module WCBT
   # 以下のフォーマットでブロック時間等表示
   #
   def show_blocktime
-    $taskList.each{|t|
+    $calc_task.each{|t|
       print "タスク#{t.task_id}"      
       print ["\tBB:", sprintf("%.3f", t.bb)].join
       print ["\tAB:", sprintf("%.3f", t.ab)].join
@@ -598,7 +600,7 @@ module WCBT
   #
   public
   def set_blocktime
-    $taskList.each{|t|
+    $calc_task.each{|t|
       #puts "SET_BLOCKTIME:タスク#{t.task_id}"
       t.bb = BB(t)
       t.ab = AB(t)
@@ -616,7 +618,7 @@ module WCBT
   #
   private
   def show_blocktime_120409
-    $taskList.each{|task|
+    $calc_task.each{|task|
       #RubyProf.start
 
       set_blocktime(task)
@@ -650,7 +652,7 @@ module WCBT
   # 120409_2用
   #
   def show_blocktime_120409_2
-    $taskList.each{|task|
+    $calc_task.each{|task|
       set_blocktime(task)
     }
     
@@ -683,7 +685,7 @@ module WCBT
     puts "job:#{job.task_id}"
     while(1)
       time = job.extime + job.b
-      $taskList.each{ |t|
+      $calc_task.each{ |t|
         if t.priority < job.priority && t.proc == job.proc
           count =  (((pre_wcrt+t.lb)/t.period).ceil)
           puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"

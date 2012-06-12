@@ -147,7 +147,8 @@ pbar.format = "%3d%% %s %s"
     1.upto(@manager.tm.get_task_array.size){ |id|
       assign_task_worstfit(id-1) # プロセッサにタスク割り当て
       
-      set_blocktime(get_using_tasks)
+      init_computing(get_using_tasks)
+      set_blocktime
       
       sche = 0
       1.upto(PROC_NUM){ |p_id|
