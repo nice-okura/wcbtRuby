@@ -5,3 +5,9 @@ schesim*
 doc/*
 \#*#
 *.bak
+*.json
+*.dat
+*.png
+*.plt
+*.txt
+*.log
