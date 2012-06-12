@@ -118,17 +118,18 @@ def compute_wcrt
     
     if wcrt_max_system < min_all_wcrt
       min_all_wcrt = wcrt_max_system
-      puts "最悪応答時間:#{min_all_wcrt}"
-      show_groups
-      save_min
       long_count = get_long_groups
       change_count += 1
-      puts "long_count:#{long_count}"
+
       #$COLOR_CHAR = false
       if long_count > 0
+        puts "long_count:#{long_count}"
+        puts "最悪応答時間:#{min_all_wcrt}"
         taskset = TaskSet.new($task_list)
         taskset.show_taskset
         taskset.show_blocktime
+        show_groups
+        save_min
       end
       #$COLOR_CHAR = true
     end
@@ -148,15 +149,15 @@ end
 # main関数
 #
 tasks = 8
-requires = 4
-groups = 4
-rcsl = 0.1
-extime = 100
+requires = 20
+groups = 6
+rcsl = 0.3
+extime = 80
 resouce_count_max = 1
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 1
+loop_count = 100
 
 
 @manager = AllManager.new
@@ -166,8 +167,9 @@ pbar = ProgressBar.new("WCRTの計測", loop_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = ["120613", extime, rcsl]
+info = {:mode => "120613", :extime => extime, :rcsl => rcsl}
 loop_count.times{
+  @manager.all_data_clear
   @manager.create_tasks(tasks, requires, groups, info)
   #@manager.load_tasks("120613_8task_4CPU")
   #
@@ -180,10 +182,8 @@ loop_count.times{
   
   compute_wcrt
   #end
-  @manager.all_data_clear
+
   
 }
-
-
-
+#save_min
 pbar.finish

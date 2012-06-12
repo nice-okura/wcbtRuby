@@ -22,6 +22,7 @@ require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 require "create_task"
+require "create_require"
 #require "taskCUI"   # タスク表示ライブラリ
 
 
@@ -109,7 +110,7 @@ class AllManager
   #
   # タスク生成
   #
-  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT, info=["0"])
+  def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT, info={ })
     @gm.create_group_array(gcount, info)
     
     @rm.set_garray(@gm.get_group_array)
@@ -122,7 +123,7 @@ class AllManager
     
     $task_list = @tm.get_task_array
     
-    if info[0] == "sche_check"
+    if info[:mode] == "sche_check"
       # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
       tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
       task_count = 2 + rand(3) # 2~4の乱数
@@ -132,7 +133,7 @@ class AllManager
       }
 
 #=begin
-      f = info[2] # nesting_factor
+      f = info[:f] # nesting_factor
       # ネストした要求を生成して割り当て
       f_one = 2.0*f*(1.0-f) * 10000            # 1つネストする確率
       f_two = f*f * 10000                      # 2つネストする確率
@@ -498,10 +499,10 @@ class TaskManager
   # 生成したタスクの数を返す
   #
   public
-  def create_task_array(i, info=["0"])
+  def create_task_array(i, info={ })
     #tarray = []
     #p info
-    case info[0]
+    case info[:mode]
     when "0"
       #
       # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
@@ -518,11 +519,11 @@ class TaskManager
     when "120405" 
       # info[1] はrcls
       #puts "120405 MODE"
-      if info[1] == nil
+      if info[:rcsl] == nil
         $stderr.puts "create_task_array:[#{__LINE__}行目]rcslが設定されていません"
       else
         i.times{
-          @@task_array << create_task_120405(i, info[1])
+          @@task_array << create_task_120405(i, info[:rcsl])
         }
       end
       
@@ -532,13 +533,13 @@ class TaskManager
       # 各CPUに均等にタスクは割り当てられる．
       #
     when "120405_3", "120411"
-      if info[1].to_i == 0
+      if info[:extime].to_i == 0
         i.times{
           @@task_array << create_task_120405_3(i)
         }
       else
         i.times{
-          @@task_array << create_task_120405_3(i, info[1].to_i)
+          @@task_array << create_task_120405_3(i, info[:extime])
         }
       end
     when "sche_check"
@@ -546,11 +547,11 @@ class TaskManager
       # スケジューラビリティ解析用
       #
       i.times{
-        @@task_array << create_task_sche_check(info[1])
+        @@task_array << create_task_sche_check(info[:extime])
       }
     when "120613"
       i.times{ 
-        @@task_array << create_task_120613(i, info[1].to_i)
+        @@task_array << create_task_120613(i, info[:extime])
       }
     else
       $stderr.puts "create_task_array:infoエラー"
@@ -789,13 +790,14 @@ class RequireManager
   # 作成したリソース要求の数を返す
   #
   public
-  def create_require_array(i, info=["0"])
-    if info[0] == "sche_check"
+  def create_require_array(i, info={ })
+    case info[:mode]
+    when "sche_check"
       #
       # スケジューラビリティ解析用
       #
       
-      f = info[2] # nesting_factor
+      f = info[:f] # nesting_factor
 
       # shortリソース要求作成
       i_max = SHORT_GRP_COUNT*3
@@ -830,8 +832,8 @@ class RequireManager
       @@garray.each{|g|
         g_array << g
       }
+      
       new_group = nil
-      #p g_id_array
       until flg
         data_clear
         garray = []
@@ -839,23 +841,28 @@ class RequireManager
         
         i.times{|time|
           RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
-          new_group = GroupManager.get_random_group if new_group == nil
+          new_group = GroupManager.get_random_group if g_array == []
           g_array.delete(new_group)
-          
-          if info[0] == "120405_3"
+          info[:group] = new_group
+          case info[:mode]
+          when "120405_3"
             #
             # new_group(long or short)で要求時間timeの要求を作成
             #
-            a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
+            a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
             c = create_require(new_group, a_extime/(time+1.0))
-          elsif info[0] == "120411"
+          when"120411"
             #
             # リソース要求時間は実行時間のrcsl比で決める
             #
-            a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
+            a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
             rcsl = rand%0.3
             #rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
             c = create_require(new_group, a_extime*rcsl)
+          when "120613"
+
+            c = create_require_120613(info)
+
           else
             #
             #
@@ -1029,11 +1036,11 @@ class GroupManager
   # i個のグループを生成し，group_arrayとする
   #
   public
-  def create_group_array(i, info=["0"])
+  def create_group_array(i, info={ })
     data_clear
     garray = []
 
-    if info[0] == "sche_check"
+    if info[:mode] == "sche_check"
       #
       # スケジューラビリティ解析用
       #

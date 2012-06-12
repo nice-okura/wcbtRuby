@@ -43,7 +43,6 @@ class TaskManager
     
     #reqList.uniq!
     
-    
     req_time = 0
     #pp req_list
     req_list.each{|req|
