@@ -15,6 +15,8 @@ require "term/ansicolor"
 require "config"
 #require "ruby-prof"
 
+$calc_task = [] # WCBTモジュールで使用するタスク
+
 class String
   include Term::ANSIColor
 end
@@ -195,7 +197,13 @@ module WCBT
 
 
   end
-  
+  ###########################################
+  #
+  #   以下 private 
+  #
+  ###########################################
+  private
+
   def WCLR(task)
     ret = $WCLR[task.task_id]
     ret = [] if ret == nil
@@ -437,8 +445,13 @@ module WCBT
   def lbt(task)
     LB(task)
   end
-  ##############################
-  
+
+  ###########################################
+  #
+  #   以下 public
+  #
+  ###########################################
+  public
   def BB(job)
     if job.get_long_require_array.size == 0 then
       return 0
