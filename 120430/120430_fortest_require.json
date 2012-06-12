@@ -1,0 +1,104 @@
+{
+  "reqs": [
+    {
+      "group": 1,
+      "begintime": 4,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 7
+    },
+    {
+      "group": 1,
+      "begintime": 9,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 15
+    },
+    {
+      "group": 5,
+      "begintime": 3,
+      "time": 2,
+      "req_id_list": [
+        3
+      ],
+      "outermost": true,
+      "req_id": 4
+    },
+    {
+      "group": 5,
+      "begintime": 0,
+      "time": 2,
+      "req_id_list": [
+        12
+      ],
+      "outermost": true,
+      "req_id": 11
+    },
+    {
+      "group": 3,
+      "begintime": 4,
+      "time": 3,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 10
+    },
+    {
+      "group": 1,
+      "begintime": 10,
+      "time": 2,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "req_id": 7
+    },
+    {
+      "group": 5,
+      "begintime": 7,
+      "time": 2,
+      "req_id_list": [
+        14
+      ],
+      "outermost": true,
+      "req_id": 13
+    },
+    {
+      "group": 2,
+      "begintime": 1,
+      "time": 1,
+      "req_id_list": [
+        
+      ],
+      "outermost": true,
+      "req_id": 12
+    },
+    {
+      "group": 2,
+      "begintime": 4,
+      "time": 1,
+      "req_id_list": [
+        
+      ],
+      "outermost": true,
+      "req_id": 3
+    },
+    {
+      "group": 2,
+      "begintime": 8,
+      "time": 1,
+      "req_id_list": [
+        
+      ],
+      "outermost": true,
+      "req_id": 14
+    }
+  ]
+}
