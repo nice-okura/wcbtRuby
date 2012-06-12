@@ -127,7 +127,6 @@ def compute_wcrt
       #$COLOR_CHAR = false
       if long_count > 0
         taskset = TaskSet.new($task_list)
-        p $task_list.size
         taskset.show_taskset
         taskset.show_blocktime
       end

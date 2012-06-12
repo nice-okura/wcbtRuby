@@ -264,7 +264,7 @@ module WCBT
   
   
   def ndbp(job, proc)
-    if job.proc == proc then
+    if job.proc == proc
       return 0
     end
     count = 0
@@ -305,7 +305,7 @@ module WCBT
   def rbl(job)
     time = 0
     procList.each{|proc|
-      if job.proc != proc then
+      if job.proc != proc
         time += rblp(job, proc)
       end
     }
@@ -325,9 +325,9 @@ module WCBT
   def rblt(task, job)
     time = 0
     str = ""
-    if task == nil || job == nil then
+    if task == nil || job == nil
       return 0
-      elsif task.proc  == job.proc then 
+      elsif task.proc  == job.proc 
       return 0
     end
     tuples = wclx(task, job)
@@ -356,7 +356,7 @@ module WCBT
   def rbs(job)
     time = 0
     procList.each{|proc|
-      if job.proc != proc then
+      if job.proc != proc
         time += rbsp(job, proc)
       end
     }
@@ -366,7 +366,7 @@ module WCBT
   
   def rbsp(job, proc)
     time = 0
-    if job == nil then
+    if job == nil
       return 0
     end
     str = ""
@@ -382,7 +382,7 @@ module WCBT
   
   def wcsxg(task, job, group)
     tuples = []
-    if task == nil || job == nil then 
+    if task == nil || job == nil 
       return []
     end
     begin
@@ -394,7 +394,7 @@ module WCBT
     end
     1.upto(k){|n|
       task.req_list.each{|req|
-        if req.res.kind == SHORT && req.res.group == group then
+        if req.res.kind == SHORT && req.res.group == group
           tuples << ReqTuple.new(req, n)
         end
       }
@@ -420,7 +420,7 @@ module WCBT
     time = 0
     # p procList
     procList.each{|proc|
-      if job.proc != proc then
+      if job.proc != proc
         time += sbgp(job, group, proc)
       end
     }
@@ -432,7 +432,7 @@ module WCBT
     time = 0
     b = 0
     SR(job).each{|req|
-      if req.res.group == group then
+      if req.res.group == group
         b += 1
       end
     }
@@ -457,12 +457,10 @@ module WCBT
   ###########################################
   public
   def BB(job)
-    if job.get_long_require_array.size == 0 then
-      return 0
-    end
+    return 0 if job == nil
     time = 0
     $calc_task.each{|tas|
-      if tas.proc == job.proc && tas.priority > job.priority then
+      if tas.proc == job.proc && tas.priority > job.priority
         time += bbt(tas, job)
       end
     }
@@ -503,7 +501,7 @@ module WCBT
   end
   
   def SB(job)
-    if job == nil then
+    if job == nil
       return 0
     elsif job.get_short_require_array.size == 0
       return 0
@@ -523,7 +521,7 @@ module WCBT
   def DB(task)
     time = 0
     $calc_task.each{|tas|
-      if tas.proc == task.proc && tas.priority < task.priority then
+      if tas.proc == task.proc && tas.priority < task.priority
         time += [tas.extime, lbt(tas)].min
       end
     }
@@ -560,6 +558,7 @@ module WCBT
     }
     return tsk
   end
+  
   
   def get_extime_high_priority(task)
     time = 0

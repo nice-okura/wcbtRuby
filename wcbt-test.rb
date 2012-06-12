@@ -342,7 +342,7 @@ class Test_wcbt < Test::Unit::TestCase
     
     $task_list = [task4, task5, task6]
     init_computing($task_list)
-    
+
     assert_equal(8, BB(task4) )
     assert_equal(0, BB(task5) )
     assert_equal(0, BB(task6) )
@@ -353,6 +353,20 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, BB(task7) )
     assert_equal(0, BB(task8) )
     assert_equal(0, BB(task9) )
+  end
+  
+  def test_BB2  
+    ###
+    @manager = AllManager.new
+    @manager.load_tasks("120613")
+
+    #ts = TaskSet.new(@manager.tm.get_task_array)
+    #ts.show_taskset
+    t2 = @manager.tm.get_task(2)
+    t6 = @manager.tm.get_task(6)
+
+    assert_equal(4, BB(t2))
+    
   end
 
   def test_abr
@@ -994,8 +1008,8 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(4, t4.bb)
     assert_equal(0, t5.bb)
     assert_equal(4, t6.bb)
-    assert_equal(0, t7.bb)
-    assert_equal(0, t8.bb)
+    assert_equal(2, t7.bb)
+    assert_equal(2, t8.bb)
     
   end
   
