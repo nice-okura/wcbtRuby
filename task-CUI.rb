@@ -207,7 +207,7 @@ class TaskCUI
     req.reqs.each{|subreq|
       rt = subreq.begintime - curTime
       rt.times{
-        req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
+        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
       }
       reqtime -= rt
       str += "("
@@ -216,7 +216,7 @@ class TaskCUI
       reqtime -= subreq.time
     }
     reqtime.to_i.times{
-      req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
+      req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
     }
 =begin
     subreqArray = req.reqs
@@ -237,18 +237,18 @@ class TaskCUI
           i += 1
         else
           p "2"
-          req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR 
+          req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
           curTime += 1
           reqtime -= 1
         end
       end
       reqtime.times{
-        req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR
+        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR
       }
     else
       # ネストしていない場合
       reqtime.times{
-        req.res.kind == "long" ? str += LONG_CHAR : str += SHORT_CHAR
+        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR
       }
     end
 =end

@@ -33,8 +33,8 @@ $DEBUGFlgFlg
 # Groupクラス定義
 # Group.new(group, kind)
 #
-@grp1 = Group.new(1, "short")
-@grp2 = Group.new(2, "short")
+@grp1 = Group.new(1, SHORT)
+@grp2 = Group.new(2, SHORT)
 #
 # Requireクラス定義
 # Req.new(reqId, res, time, reqs)
@@ -87,8 +87,8 @@ taskset.show_taskset
 #
 #############################
 
-@grp1.kind = "short"
-@grp2.kind = "long"
+@grp1.kind = SHORT
+@grp2.kind = LONG
 
 $task_list = tasks1
 tasks1.each{|task|
@@ -118,8 +118,8 @@ taskset.show_taskset
 #
 #############################
 
-@grp1.kind = "long"
-@grp2.kind = "short"
+@grp1.kind = LONG
+@grp2.kind = SHORT
 
 $task_list = tasks1
 tasks1.each{|task|
@@ -156,8 +156,8 @@ taskset.show_taskset
 # Groupクラス定義
 # Group.new(group, kind)
 #
-@grp3 = Group.new(1, "long")
-@grp4 = Group.new(2, "long")
+@grp3 = Group.new(1, LONG)
+@grp4 = Group.new(2, LONG)
 
 #
 # Requireクラス定義

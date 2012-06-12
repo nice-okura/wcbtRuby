@@ -55,7 +55,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.using_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.using_group_array[i].kind = c.chr=="0" ? SHORT : LONG
     i += 1
   }
 end
@@ -82,7 +82,7 @@ $DEBUG = false
 uabj_array = [[]]
 
 resource_max = 16
-resource_kind = "short"
+resource_kind = SHORT
 loop_count = 12
 task_count = 64
 

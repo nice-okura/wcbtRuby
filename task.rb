@@ -27,7 +27,13 @@ class Processor
   # プロセッサにタスク割り当て
   def assign_task(task)
     @task_list << task
+
+    # プロセッサ番号設定
     task.proc = proc_id
+    # 優先度設定
+    task.priority = @task_list.size
+
+    # プロセッサ使用率計算
     @util = calc_util
   end
 
@@ -105,7 +111,7 @@ class Task
     #
     @short_require_array = []
     get_all_require.each{|req|
-      if req.res.kind == "short" && req.outermost == true then
+      if req.res.kind == SHORT && req.outermost == true then
         @short_require_array << req
       end
     }
@@ -118,7 +124,7 @@ class Task
     @long_require_array = []
     
     get_all_require.each{|req|
-      if req.res.kind == "long" && req.outermost == true then
+      if req.res.kind == LONG && req.outermost == true then
         @long_require_array << req
       end
     }

@@ -67,9 +67,9 @@ module WCBT
       lreqs = []
       sreqs = []
       task.req_list.each{|req|
-        if req.outermost == true && req.res.kind == "long"
+        if req.outermost == true && req.res.kind == LONG
           lreqs << req
-        elsif req.outermost == true && req.res.kind == "short"
+        elsif req.outermost == true && req.res.kind == SHORT
           sreqs << req
         end
       }
@@ -82,9 +82,9 @@ module WCBT
       lr = []
       sr = []
       task.get_all_require.each{|req|
-        if req.res.kind == "long" && req.outermost == true
+        if req.res.kind == LONG && req.outermost == true
           lr << req
-        elsif req.res.kind == "short" && req.outermost == true
+        elsif req.res.kind == SHORT && req.outermost == true
           sr << req
         end
       }
@@ -120,12 +120,12 @@ module WCBT
         end
         1.upto(k){|n|
           WCLR(task).each{|req|
-            if req.res.kind == "long"
+            if req.res.kind == LONG
               tuplesl << ReqTuple.new(req, n)
             end
           }
           WCSR(task).each{|req|
-            if req.res.kind == "short" && req.nested == false
+            if req.res.kind == SHORT && req.nested == false
               tupless << ReqTuple.new(req, n)
             end
           }
@@ -392,7 +392,7 @@ module WCBT
     end
     1.upto(k){|n|
       task.req_list.each{|req|
-        if req.res.kind == "short" && req.res.group == group then
+        if req.res.kind == SHORT && req.res.group == group then
           tuples << ReqTuple.new(req, n)
         end
       }
@@ -678,6 +678,7 @@ module WCBT
   #
   # 最悪応答時間
   #
+  private
   def wcrt(job)
  
     pre_wcrt = job.extime + job.b

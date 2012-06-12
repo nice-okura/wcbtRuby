@@ -42,7 +42,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.gm.get_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.gm.get_group_array[i].kind = c.chr=="0" ? SHORT : LONG
     i += 1
   }
 end
@@ -97,7 +97,7 @@ group_binary = group_times.to_s(2)
 # リソースを全てshortにする
 #
 @manager.gm.get_group_array.each{|g|
-  g.kind = "short"
+  g.kind = SHORT
 }
 
 #
@@ -152,7 +152,7 @@ puts "全部long"
 # リソースを全てlongにする
 #
 @gm.get_group_array.each{|g|
-  g.kind = "long"
+  g.kind = LONG
 }
 
 $task_list.each{|task|
@@ -183,7 +183,7 @@ puts "全部short"
 # リソースを全てshortにする
 #
 @gm.get_group_array.each{|g|
-  g.kind = "short"
+  g.kind = SHORT
 }
 
 $task_list.each{|task|

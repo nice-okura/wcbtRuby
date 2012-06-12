@@ -151,7 +151,7 @@ module WCBT
   def ht(ta, ra)
     spintime = 0
     ra.reqs.each{ |req|
-      spintime += spin(ta, req) if req.res.kind == "short"
+      spintime += spin(ta, req) if req.res.kind == SHORT
     }
     ra.time + spintime
   end

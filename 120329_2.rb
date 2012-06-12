@@ -38,7 +38,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.using_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.using_group_array[i].kind = c.chr=="0" ? SHORT : LONG
     i += 1
   }
 end
@@ -98,7 +98,7 @@ group_binary = group_times.to_s(2)
 # リソースを全てshortにする
 #
 new_group_array.each{|g|
-  g.kind = "short"
+  g.kind = SHORT
 }
 
 #

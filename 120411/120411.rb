@@ -40,7 +40,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.gm.get_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.gm.get_group_array[i].kind = c.chr=="0" ? SHORT : LONG
     i += 1
   }
 end
@@ -60,10 +60,10 @@ end
 def get_long_groups
   c = 0
   @manager.gm.get_group_array.each{|g|
-    #c += 1 if g.kind == "long"
-    if g.kind == "long"
+    #c += 1 if g.kind == LONG
+    if g.kind == LONG
       c += 1
-      #puts "long"
+      #puts LONG
     end
   }
   return c
@@ -98,7 +98,7 @@ def compute_wcrt
   # リソースを全てshortにする
   #
   @manager.gm.get_group_array.each{|g|
-    g.kind = "short"
+    g.kind = SHORT
   }
   #set_blocktime
   taskset = TaskSet.new(@manager.tm.get_task_array)

@@ -148,13 +148,13 @@ class AllManager
           # fの確率でネスト作成
           if prob < f_two
             # 2つのネストしたリソース要求
-            if r.res.kind == "short"
+            if r.res.kind == SHORT
               # shortの場合は |Rn| = R/3
               time = r.time/3
               # shortグループの中からランダムに選択する
               g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
               g_id2 = rand(SHORT_GRP_COUNT) + 1 
-            elsif r.res.kind == "long"
+            elsif r.res.kind == LONG
               # longの場合は |Rn| = 3 (from 論文．意味がわからない)
               time = 3.0
               # longグループの中からランダムに選択する
@@ -174,12 +174,12 @@ class AllManager
             reqs << req2
           elsif prob < f_one
             # 1つのネストしたリソース要求
-            if r.res.kind == "short"
+            if r.res.kind == SHORT
               # shortの場合は |Rn| = R/3
               time = r.time/3
               # shortグループの中からランダムに選択する
               g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
-            elsif r.res.kind == "long"
+            elsif r.res.kind == LONG
               # longの場合は |Rn| = 3 (from 論文．意味がわからない)
               time = 3.0
               # longグループの中からランダムに選択する
@@ -621,7 +621,7 @@ class RequireManager
     req = []
     #p @@id
     r = RequireManager.get_random_req
-    if r != nil && r.reqs.size == 0 && !(group.kind == "short" && r.res.kind == "long") && group.kind != r.res.kind
+    if r != nil && r.reqs.size == 0 && !(group.kind == SHORT && r.res.kind == LONG) && group.kind != r.res.kind
       # ※2段ネストまで対応
       if r.res != group && time > r.time && NEST_FLG
         req << r.clone
@@ -879,7 +879,7 @@ class GroupManager
   
   def initialize
     @@group_id = 0
-    @@kind = "long"
+    @@kind = LONG
     @@group_array = []
   end
   
@@ -890,8 +890,8 @@ class GroupManager
   def create_group
     @@group_id += 1
     group = Group.new(@@group_id, @@kind)
-    #@@kind = "short"
-    @@kind = @@kind == "long" ? "short" : "long"
+    #@@kind = SHORT
+    @@kind = @@kind == LONG ? SHORT : LONG
     
     return group
   end
@@ -914,7 +914,7 @@ class GroupManager
       # スケジューラビリティ解析用
       #
       i = SHORT_GRP_COUNT
-      @@kind = "short"
+      @@kind = SHORT
       # Shortリソースを6*TASK_NUM/PROC_NUM個作る
       i.times{ 
         @@group_id += 1
@@ -922,7 +922,7 @@ class GroupManager
       }
       # Longリソースを2個作る
       @@group_id += 1
-      @@kind = "long"
+      @@kind = LONG
       garray << Group.new(@@group_id, @@kind)
       @@group_id += 1
       garray << Group.new(@@group_id, @@kind)
@@ -992,7 +992,7 @@ class GroupManager
       # @@grpArrayに読み込んだタスクを追加
       #
       grps["grps"].each{|grp|
-        if grp["group"] > 0 && (grp["kind"]=="long"||grp["kind"]=="short")
+        if grp["group"] > 0 && (grp["kind"]==LONG||grp["kind"]==SHORT)
           g = Group.new(
                         grp["group"], 
                         grp["kind"]

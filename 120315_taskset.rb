@@ -20,8 +20,8 @@ $DEBUGFlgFlg
   # Groupクラス定義
   # Group.new(group, kind)
   #
-  @grp1 = Group.new(1, "short")
-  @grp2 = Group.new(2, "short")
+  @grp1 = Group.new(1, SHORT)
+  @grp2 = Group.new(2, SHORT)
   
   #
   #  乱数生成のための種を生成
@@ -112,8 +112,8 @@ $DEBUGFlgFlg
   # Groupクラス定義
   # Group.new(group, kind)
   #
-  @grp3 = Group.new(1, "long")
-  @grp4 = Group.new(2, "long")
+  @grp3 = Group.new(1, LONG)
+  @grp4 = Group.new(2, LONG)
   
   #
   # Requireクラス定義

@@ -7,12 +7,12 @@ class Test_taskCUI < Test::Unit::TestCase
   def setup
     # Groupクラス
     # Group.new(group, kind)
-    @grp1 = Group.new(1, "long")
-    @grp2 = Group.new(2, "short")
-    @grp3 = Group.new(3, "long")
-    @grp4 = Group.new(4, "short")
+    @grp1 = Group.new(1, LONG)
+    @grp2 = Group.new(2, SHORT)
+    @grp3 = Group.new(3, LONG)
+    @grp4 = Group.new(4, SHORT)
     
-    @grp0 = Group.new(0, "long") # dummy Resource
+    @grp0 = Group.new(0, LONG) # dummy Resource
     @req0 = Req.new(0, 0, 0, []) # dummy Require
     
     # Require

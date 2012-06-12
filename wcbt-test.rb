@@ -15,12 +15,12 @@ class Test_wcbt < Test::Unit::TestCase
     # Groupクラス定義
     # Group.new(group, kind)
     #
-    @grp1 = Group.new(1, "long")
-    @grp2 = Group.new(2, "short")
-    @grp3 = Group.new(3, "long")
-    @grp4 = Group.new(4, "short")
+    @grp1 = Group.new(1, LONG)
+    @grp2 = Group.new(2, SHORT)
+    @grp3 = Group.new(3, LONG)
+    @grp4 = Group.new(4, SHORT)
     
-    @grp0 = Group.new(0, "long") # dummy Resource
+    @grp0 = Group.new(0, LONG) # dummy Resource
     @req0 = Req.new(0, 0, 0, []) # dummy Require
     
     #
@@ -671,11 +671,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_rbspLB
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
       req2 = Req.new(2, long2, 2, [])
@@ -699,11 +699,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_wcsxg
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
     req2 = Req.new(2, long2, 2, [])
@@ -729,11 +729,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_wcspg
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
     req2 = Req.new(2, long2, 2, [])
@@ -757,11 +757,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_sbgp
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
     req2 = Req.new(2, long2, 2, [])
@@ -785,11 +785,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_sbgSB
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
     req2 = Req.new(2, long2, 2, [])
@@ -813,11 +813,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_DB
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
     req2 = Req.new(2, long2, 2, [])
@@ -840,9 +840,9 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_B
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    long3 = Group.new(3, "long")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    long3 = Group.new(3, LONG)
     
     req1 = Req.new(1, long3, 1, [])
     req2 = Req.new(2, long1, 2, [])
@@ -861,11 +861,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_B2
-    long1 = Group.new(1, "long")
-    long2 = Group.new(2, "long")
-    short1 = Group.new(3, "short")
-    short2 = Group.new(4, "short")
-    short3 = Group.new(5, "short")
+    long1 = Group.new(1, LONG)
+    long2 = Group.new(2, LONG)
+    short1 = Group.new(3, SHORT)
+    short2 = Group.new(4, SHORT)
+    short3 = Group.new(5, SHORT)
     
     # Req.new(reqId, res, time, reqs)
     req2 = Req.new(2, long2, 2, [])

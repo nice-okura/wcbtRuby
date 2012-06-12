@@ -45,7 +45,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.using_group_array[i].kind = c.chr=="0" ? "short" : "long"
+    @manager.using_group_array[i].kind = c.chr=="0" ? SHORT : LONG
     i += 1
   }
 end
@@ -84,9 +84,9 @@ taskset = TaskSet.new(@manager.tm.get_task_array)
     set_blocktime(t)
     t.req_list.each{|r|
       if r.time < t.extime * border
-        r.res.kind = "short"
+        r.res.kind = SHORT
         else
-        r.res.kind = "long"
+        r.res.kind = LONG
       end
     }
   }

@@ -137,6 +137,8 @@ pbar.format = "%3d%% %s %s"
 
     info = ["sche_check", umax, f]
     @manager.create_tasks(TASK_NUM, 30, 10, info)
+    # タスクリストを使用率の降順でソート
+    sort_tasklist_by_utilization
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
     #@manager.save_tasks("#{JSON_FOLDER}/sche_check")
