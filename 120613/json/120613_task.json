@@ -1,92 +1,92 @@
 {
   "tasks": [
     {
-      "period": 800.0,
+      "offset": 0,
       "extime": 100,
+      "period": 800.0,
       "priority": 4,
       "proc": 1,
+      "task_id": "4",
       "req_id_list": [
         8
-      ],
-      "offset": 0,
-      "task_id": "4"
+      ]
     },
     {
-      "period": 800.0,
+      "offset": 0,
       "extime": 100,
+      "period": 800.0,
       "priority": 8,
       "proc": 1,
+      "task_id": "8",
       "req_id_list": [
-        2
-      ],
-      "offset": 0,
-      "task_id": "8"
+        4
+      ]
     },
     {
-      "period": 800.0,
+      "offset": 0,
       "extime": 100,
+      "period": 800.0,
       "priority": 1,
       "proc": 2,
-      "req_id_list": [
-        6
-      ],
-      "offset": 0,
-      "task_id": "1"
-    },
-    {
-      "period": 800.0,
-      "extime": 100,
-      "priority": 5,
-      "proc": 2,
-      "req_id_list": [
-        2
-      ],
-      "offset": 0,
-      "task_id": "5"
-    },
-    {
-      "period": 800.0,
-      "extime": 100,
-      "priority": 2,
-      "proc": 3,
-      "req_id_list": [
-        4
-      ],
-      "offset": 0,
-      "task_id": "2"
-    },
-    {
-      "period": 800.0,
-      "extime": 100,
-      "priority": 6,
-      "proc": 3,
-      "req_id_list": [
-        6
-      ],
-      "offset": 0,
-      "task_id": "6"
-    },
-    {
-      "period": 800.0,
-      "extime": 100,
-      "priority": 3,
-      "proc": 4,
+      "task_id": "1",
       "req_id_list": [
         8
-      ],
-      "offset": 0,
-      "task_id": "3"
+      ]
     },
     {
-      "period": 800.0,
+      "offset": 0,
       "extime": 100,
+      "period": 800.0,
+      "priority": 5,
+      "proc": 2,
+      "task_id": "5",
+      "req_id_list": [
+        2
+      ]
+    },
+    {
+      "offset": 0,
+      "extime": 100,
+      "period": 800.0,
+      "priority": 6,
+      "proc": 3,
+      "task_id": "6",
+      "req_id_list": [
+        6
+      ]
+    },
+    {
+      "offset": 0,
+      "extime": 100,
+      "period": 800.0,
+      "priority": 2,
+      "proc": 3,
+      "task_id": "2",
+      "req_id_list": [
+        6
+      ]
+    },
+    {
+      "offset": 0,
+      "extime": 100,
+      "period": 800.0,
       "priority": 7,
       "proc": 4,
+      "task_id": "7",
       "req_id_list": [
         4
-      ],
+      ]
+    },
+    {
       "offset": 0,
-      "task_id": "7"
+      "extime": 100,
+      "period": 800.0,
+      "priority": 3,
+      "proc": 4,
+      "task_id": "3",
+      "req_id_list": [
+        2
+      ]
     }
   ]
 }

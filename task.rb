@@ -58,7 +58,7 @@ end
 class Task
   attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b, :wcrt
   def initialize(id, proc, period, extime, priority, offset, reqarray)
-    @task_id = id
+    @task_id = id.to_i
     @proc = proc
     @period = period.to_f
     @extime = extime
@@ -223,7 +223,7 @@ class Task
   def get_short_require_array
     return @short_require_array
   end
-  
+
   #
   # リソース要求のbegintimeを設定
   #

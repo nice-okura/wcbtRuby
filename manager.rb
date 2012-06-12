@@ -85,8 +85,8 @@ class AllManager
     return false unless @tm.load_task_data("#{name}_task.json")
     @using_group_array = get_using_group_array
     $task_list = @tm.get_task_array
-    #init_computing
-    #set_blocktime
+    init_computing($task_list)
+    set_blocktime
     
     return true
   end
@@ -657,7 +657,7 @@ class TaskManager
   # 全タスクで使われているリソース要求の配列を返す
   #
   public
-  def TaskManager.get_all_require
+  def self.get_all_require
     req_array = []
     @@task_array.each{|tsk|
       req_array += tsk.get_all_require
@@ -680,6 +680,15 @@ class TaskManager
   public
   def get_task_array
     return @@task_array
+  end
+  
+  # 指定したタスクIDのタスクを返す
+  def get_task(id)
+    id = id.to_i
+    @@task_array.each{ |t|
+      return t if t.task_id == id
+    }
+    return nil
   end
 end
 
