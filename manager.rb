@@ -530,7 +530,7 @@ class TaskManager
       # 指定した実行時間info[1](初期値50)のタスクを生成．
       # 各CPUに均等にタスクは割り当てられる．
       #
-    when "120405_3" || "120411"
+    when "120405_3", "120411"
       if info[1].to_i == 0
         i.times{
           @@task_array << create_task_120405_3(i)
@@ -848,7 +848,6 @@ class RequireManager
             #
             c = create_require(new_group)
           end
-          #p c
           garray << c.res.group
           @@require_array << c
         }
@@ -1019,12 +1018,7 @@ class GroupManager
     data_clear
     garray = []
 
-    if info[0] == "0" 
-      i.times{
-        garray << create_group
-      }
-      @@group_array = garray
-    elsif info[0] == "sche_check"
+    if info[0] == "sche_check"
       #
       # スケジューラビリティ解析用
       #
@@ -1045,6 +1039,11 @@ class GroupManager
 
       @@group_array = garray
       #pp @@group_array
+    else
+      i.times{
+        garray << create_group
+      }
+      @@group_array = garray
     end
     return @@group_array.size
   end
@@ -1149,7 +1148,7 @@ class GroupManager
   #
   # グループをランダムに返す
   #
-  def GroupManager.get_random_group
+  def self.get_random_group
     if @@group_array.size == 0
       puts "グループが生成されていません．"
       return nil
