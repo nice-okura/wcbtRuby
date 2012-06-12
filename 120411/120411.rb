@@ -12,11 +12,11 @@ require "progressbar"
 
 
 def save_min
-  @manager.save_tasks("120411_min_task.json", "120411_min_require.json", "120411_min_group.json") 
+  @manager.save_tasks("120411_min_task") 
 end
 
 def save_max
-  @manager.save_tasks("120411_max_task.json", "120411_max_require.json", "120411_max_group.json") 
+  @manager.save_tasks("120411_max_task") 
 end
 
 
@@ -78,11 +78,6 @@ $DEBUG = false
 #############################
 
 def compute_wcrt
-  #@manager = AllManager.new
-  #@manager.load_tasks("120411_task.json", "120411_require.json", "120411_group.json")
-  
-  
-  
   #
   # グループ数
   #

@@ -1,3 +1,6 @@
+SHORT = "short"
+LONG = "long"
+
 PROC_NUM = 4 # 4 or 8
 REQ_EXE_MAX = 5
 REQ_EXE_MIN = 1

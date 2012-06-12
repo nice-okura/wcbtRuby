@@ -108,8 +108,8 @@ end
 #
 # main
 #
-taskset_count = 1  # 使用するタスクセット数
-umax = 0.1          # タスク使用率の最大値
+taskset_count = 500  # 使用するタスクセット数
+umax = 0.3          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
