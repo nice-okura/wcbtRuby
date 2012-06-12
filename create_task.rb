@@ -9,7 +9,7 @@ class TaskManager
     #
     @@task_id += 1  # ここではタスクのidとしては用いない．task_id_arrayからnew_task_idを用いる
     
-    task_id_array = Array.new(task_count){|index| "#{index+1}"}
+    task_id_array = Array.new(task_count){|index| "#{index+1}".to_i}
     #p @@task_array
     @@task_array.each{|t|
       task_id_array.delete(t.task_id)
