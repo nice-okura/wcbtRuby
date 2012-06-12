@@ -94,7 +94,7 @@ module WCBT
       #
       # narrの計算
       #
-      $NARR[task.task_id] = task.get_long_require_array.size
+      $NARR[task.task_id] = task.get_long_require_array_nest.size
 
 
       #

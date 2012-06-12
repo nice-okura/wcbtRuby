@@ -85,39 +85,35 @@ class Task
     #
     @all_require = []
     
-    if NEST_FLG == TRUE
-      
-      req_list.each{|req|
-        @all_require << req
-        if req.reqs != nil
-          req.reqs.each{|req2|
-            # 同じリソースのネストは不可能
-            # req1.res == req2.res はダメ
-            #if req2.res == req.res then 
-            #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
-            #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
-            #exit # 強制終了
-            #end
-            # グループが異なるときに別要求としてreq_listに追加
-            # 同じグループならグループロックを1回取得するだけで良いから
-            # 同グループなら別要求としては扱わない．
-            if req2.res.group != req.res.group
-              @all_require << req2
-            end
-          }
-        end
-      }
-    else
-      @all_require = @req_list
-    end
+    @req_list.each{|req|
+      @all_require << req
+      if req.reqs != nil
+        req.reqs.each{|req2|
+          # 同じリソースのネストは不可能
+          # req1.res == req2.res はダメ
+          #if req2.res == req.res then 
+          #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
+          #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
+          #exit # 強制終了
+          #end
+          # グループが異なるときに別要求としてreq_listに追加
+          # 同じグループならグループロックを1回取得するだけで良いから
+          # 同グループなら別要求としては扱わない．
+          if req2.res.group != req.res.group
+            @all_require << req2
+          end
+        }
+      end
+    }
+
     #
     # shortリソース要求の配列を返す
     # outermost なもののみ
-    # ネストされているものもふくむ
+    # ネストされているものは含まない
     #
     @short_require_array = []
-    get_all_require.each{|req|
-      if req.res.kind == SHORT && req.outermost == true then
+    @req_list.each{|req|
+      if req.res.kind == SHORT && req.outermost == true
         @short_require_array << req
       end
     }
@@ -125,12 +121,12 @@ class Task
     #
     # longリソースの配列を返す
     # outermostなもののみ
-    # ネストされているものも含む
+    # ネストされているものは含まない
     #
     @long_require_array = []
     
-    get_all_require.each{|req|
-      if req.res.kind == LONG && req.outermost == true then
+    @req_list.each{|req|
+      if req.res.kind == LONG && req.outermost == true
         @long_require_array << req
       end
     }
@@ -146,7 +142,7 @@ class Task
   def check_outermost
     req_list.each{|req|
       req.reqs.each{|req2|
-        if req2.res.group == req.res.group then
+        if req2.res.group == req.res.group
           req2.outermost = false
         end
       }
@@ -171,7 +167,7 @@ class Task
   def check_over_extime
     time = @reqtime
     
-    if @extime < time then
+    if @extime < time
       #puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
       #exit
     end
@@ -211,6 +207,19 @@ class Task
   # outermostなもののみ
   # ネストされているものも含む
   #
+  def get_long_require_array_nest
+    rlist = []
+    @all_require.each{ |req|
+      rlist << req if req.res.kind == LONG && req.outermost == true
+    }
+    return rlist
+  end
+
+  #
+  # longリソース要求の配列を返す
+  # outermost なもののみ
+  # ネストされているものは含まない
+  #
   def get_long_require_array
     return @long_require_array
   end
@@ -219,6 +228,19 @@ class Task
   # shortリソース要求の配列を返す
   # outermost なもののみ
   # ネストされているものもふくむ
+  #
+  def get_short_require_array_nest
+    rlist = []
+    @all_require.each{ |req|
+      rlist << req if req.res.kind == SHORT && req.outermost == true
+    }
+    return rlist
+  end
+
+  #
+  # shortリソース要求の配列を返す
+  # outermost なもののみ
+  # ネストされているものは含まない
   #
   def get_short_require_array
     return @short_require_array

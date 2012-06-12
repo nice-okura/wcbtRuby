@@ -231,10 +231,10 @@ class Test_wcbt < Test::Unit::TestCase
     
     $task_list = [task1, task2, task3]
     init_computing($task_list)
-    
-    assert_equal(2, task1.get_long_require_array.size )
-    assert_equal(3, task2.get_long_require_array.size )
-    assert_equal(2, task3.get_long_require_array.size )
+
+    assert_equal(1, task1.get_long_require_array.size )
+    assert_equal(2, task2.get_long_require_array.size )
+    assert_equal(1, task3.get_long_require_array.size )
     assert_equal(0, task1.get_short_require_array.size )
     assert_equal(0, task2.get_short_require_array.size )
     assert_equal(0, task3.get_short_require_array.size )
@@ -245,9 +245,9 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(1, task4.get_long_require_array.size )
     assert_equal(1, task5.get_long_require_array.size )
     assert_equal(1, task6.get_long_require_array.size )
-    assert_equal(1, task4.get_short_require_array.size )
-    assert_equal(2, task5.get_short_require_array.size )
-    assert_equal(1, task6.get_short_require_array.size )
+    assert_equal(0, task4.get_short_require_array.size )
+    assert_equal(1, task5.get_short_require_array.size )
+    assert_equal(0, task6.get_short_require_array.size )
 
     $task_list = [task7, task8, task9]
     init_computing($task_list)
@@ -255,9 +255,9 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, task7.get_long_require_array.size )
     assert_equal(0, task8.get_long_require_array.size )
     assert_equal(0, task9.get_long_require_array.size )
-    assert_equal(2, task7.get_short_require_array.size )
-    assert_equal(3, task8.get_short_require_array.size )
-    assert_equal(2, task9.get_short_require_array.size )
+    assert_equal(1, task7.get_short_require_array.size )
+    assert_equal(2, task8.get_short_require_array.size )
+    assert_equal(1, task9.get_short_require_array.size )
 
   end
   
@@ -883,7 +883,8 @@ class Test_wcbt < Test::Unit::TestCase
     task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
     $task_list = [task1, task2, task3]
     init_computing($task_list)
-    
+#    ts = TaskSet.new($task_list)
+#    ts.show_taskset
     assert_equal(7, B(task1))
   end
   
@@ -908,8 +909,8 @@ class Test_wcbt < Test::Unit::TestCase
     @manager = AllManager.new
     @manager.load_tasks("120430_fortest")
     
-    ts = TaskSet.new(@manager.tm.get_task_array)
-    ts.show_taskset
+    #ts = TaskSet.new(@manager.tm.get_task_array)
+    #ts.show_taskset
 
     t1 = @manager.tm.get_task(1)
     t2 = @manager.tm.get_task(2)
@@ -999,7 +1000,6 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_120502
-
     @manager = AllManager.new
     @manager.load_tasks("120502_fortest")
   
