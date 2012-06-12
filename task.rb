@@ -67,6 +67,12 @@ class Task
     @req_list = reqarray
     @reqtime = get_require_time
     @wcrt = 0
+    @b = 0.0
+    @bb = 0.0
+    @ab = 0.0
+    @sb = 0.0
+    @lb = 0.0
+    @db = 0.0
     check_outermost
     check_over_extime
     set_begin_time

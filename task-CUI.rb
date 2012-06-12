@@ -109,7 +109,7 @@ class TaskSet
         print ["\tDB:", sprintf("%.1f", t.db)].join
         print ["\tB:", sprintf("%.1f", t.b)].join
         print "\n"
-        pri = get_extime_high_priority(t) 
+        #pri = get_extime_high_priority(t) 
         
         if t.period < t.wcrt
           puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.wcrt)}".red

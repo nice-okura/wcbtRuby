@@ -21,6 +21,7 @@ require "wcbt"      # 最大ブロック時間計算モジュール
 require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
+require "create_task"
 #require "taskCUI"   # タスク表示ライブラリ
 
 
@@ -547,6 +548,10 @@ class TaskManager
       i.times{
         @@task_array << create_task_sche_check(info[1])
       }
+    when "120613"
+      i.times{ 
+        @@task_array << create_task_120613(i, info[1].to_i)
+      }
     else
       $stderr.puts "create_task_array:infoエラー"
       exit
@@ -839,7 +844,8 @@ class RequireManager
             # リソース要求時間は実行時間のrcsl比で決める
             #
             a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
-            rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
+            rcsl = rand%0.3
+            #rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
             c = create_require(new_group, a_extime*rcsl)
           else
             #

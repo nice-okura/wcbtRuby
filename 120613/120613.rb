@@ -14,19 +14,6 @@ def save_min
   @manager.save_tasks(JSON_FOLDER + "/" + FILENAME)
 end
 
-def get_wcrt(task, b=nil)
-  time = 0
-  if b == nil
-    block = task.b
-    else
-    block = b
-  end
-  
-  time = task.extime + block + get_extime_high_priority(task) 
-  return time 
-end
-
-
 #
 # グループを変更
 #
@@ -123,7 +110,7 @@ def compute_wcrt
     set_blocktime
     
     $task_list.each{|t|
-      wcrt = get_wcrt(t, t.b)
+      wcrt = t.wcrt
       wcrt_max_system = wcrt if wcrt_max_system < wcrt
       #pbar.inc
     }
@@ -160,12 +147,12 @@ end
 #
 # main関数
 #
-tasks = 4
+tasks = 8
 requires = 4
-groups = 3
-rcsl = 0.3
+groups = 4
+rcsl = 0.1
 extime = 100
-resouce_count_max = 4
+resouce_count_max = 1
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
@@ -179,7 +166,7 @@ pbar = ProgressBar.new("WCRTの計測", loop_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = ["120411", extime, rcsl]
+info = ["120613", extime, rcsl]
 loop_count.times{
   @manager.create_tasks(tasks, requires, groups, info)
   #@manager.load_tasks("120613_8task_4CPU")

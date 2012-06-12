@@ -114,7 +114,8 @@ module WCBT
         end
         begin
           k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
-        rescue
+        rescue => e
+          p e
           puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
           exit
         end
@@ -386,7 +387,8 @@ module WCBT
     end
     begin
       k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
-      rescue
+      rescue => e
+      p e
       puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
       exit
     end
@@ -608,6 +610,9 @@ module WCBT
       t.lb = LB(t)
       t.db = DB(t)
       t.b = t.bb + t.ab + t.sb + t.lb + t.db
+    }
+    # 最悪応答時間の計算
+    $calc_task.each{ |t|
       t.wcrt = wcrt(t)
     }
   end
@@ -680,16 +685,16 @@ module WCBT
   #
   private
   def wcrt(job)
- 
     pre_wcrt = job.extime + job.b
     n = 1
     #puts "job:#{job.task_id}"
     while(1)
       time = job.extime + job.b
       $calc_task.each{ |t|
+        #pp t
         if t.priority < job.priority && t.proc == job.proc
-          count =  (((pre_wcrt+t.lb)/t.period).ceil)
-          puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
+          count = (((pre_wcrt+t.lb)/t.period).ceil)
+          #puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
           time += count*(t.extime + t.b - t.lb)
         end
       }
