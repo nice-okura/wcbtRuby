@@ -63,7 +63,7 @@ $DEBUGFlgFlg = false
 @manager = AllManager.new
 @manager.load_tasks("120329_2")
 
-$taskList = @manager.tm.get_task_array
+$task_list = @manager.tm.get_task_array
 taskset = TaskSet.new(@manager.tm.get_task_array)
 new_group_array = @manager.using_group_array
 
@@ -110,13 +110,13 @@ min_all_wcrt = 10000000 # 適当な最大値
 # システム全体の最悪応答時間が最も良くなる場合を探す
 #
 i = 0
-pbar = ProgressBar.new("WCRTの計測", group_times*$taskList.size)
+pbar = ProgressBar.new("WCRTの計測", group_times*$task_list.size)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
 group_times.times{
   wcrt_max_system = -1 # 適当な最小値
-  $taskList.each{|task|
+  $task_list.each{|task|
     bb = BB(task)
     ab = AB(task)
     sb = SB(task)

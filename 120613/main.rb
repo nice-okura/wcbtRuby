@@ -85,11 +85,11 @@ def p_schedulability(k, i)
   #puts "proc#{k}:#{max}tasks"
   0.upto(max-1){ |j|
     t = tlist[j]
-    c += (t.extime + t.bw)/t.period
+    c += (t.extime + t.sb)/t.period
   }
   tsk = tlist[-1] # 最後に追加されたタスク
 
-  return ((tsk.b - tsk.bw)/tsk.period + c)
+  return ((tsk.b - tsk.sb)/tsk.period + c)
 end
 
 
@@ -108,8 +108,8 @@ end
 #
 # main
 #
-taskset_count = 500  # 使用するタスクセット数
-umax = 0.3          # タスク使用率の最大値
+taskset_count = 1  # 使用するタスクセット数
+umax = 0.1          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用

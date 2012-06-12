@@ -68,7 +68,7 @@ $DEBUGFlgFlg = false
 @manager = AllManager.new
 @manager.load_tasks("120329")
 
-$taskList = @manager.tm.get_task_array
+$task_list = @manager.tm.get_task_array
 taskset = TaskSet.new(@manager.tm.get_task_array)
 
 puts "通常"
@@ -111,7 +111,7 @@ max_preempt_time = -1       # 適当な最小値
 #
 i = 0
 group_times.times{
-  $taskList.each{|task|
+  $task_list.each{|task|
     if task.task_id == TASK_NUMBER
       #print "タスク"
       bb = BB(task)
@@ -155,7 +155,7 @@ puts "全部long"
   g.kind = "long"
 }
 
-$taskList.each{|task|
+$task_list.each{|task|
   print "タスク"# + task.task_id.to_s
   bb = BB(task)
   ab = AB(task)
@@ -186,7 +186,7 @@ puts "全部short"
   g.kind = "short"
 }
 
-$taskList.each{|task|
+$task_list.each{|task|
   print "タスク"# + task.task_id.to_s
   bb = BB(task)
   ab = AB(task)

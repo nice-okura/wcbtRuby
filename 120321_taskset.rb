@@ -12,7 +12,7 @@ require "taskCUI"
 
 def get_extime_high_priority(proc, priority)
   time = 0
-  $taskList.each{|t|
+  $task_list.each{|t|
     if t.proc == proc && t.priority < priority
       time += t.extime + SB(t)
     end
@@ -58,10 +58,10 @@ task2 = Task.new(2, 2, 50, 15, 2, 3, [@req2_1, @req2_2])
 task3 = Task.new(3, 1, 50, 10, 3, 0, [@req3_1, @req3_2])
 task4 = Task.new(4, 2, 50, 5, 4, 0, [@req4_1])
 
-$taskList = [task1, task2, task3, task4]
-tasks1 = $taskList
+$task_list = [task1, task2, task3, task4]
+tasks1 = $task_list
 
-$taskList = tasks1
+$task_list = tasks1
 tasks1.each{|task|
   print "タスク" + task.task_id.to_s
   bb = BB(task)
@@ -90,7 +90,7 @@ taskset.show_taskset
 @grp1.kind = "short"
 @grp2.kind = "long"
 
-$taskList = tasks1
+$task_list = tasks1
 tasks1.each{|task|
   print "タスク" + task.task_id.to_s
   bb = BB(task)
@@ -121,7 +121,7 @@ taskset.show_taskset
 @grp1.kind = "long"
 @grp2.kind = "short"
 
-$taskList = tasks1
+$task_list = tasks1
 tasks1.each{|task|
   print "タスク" + task.task_id.to_s
   bb = BB(task)
@@ -184,12 +184,12 @@ task8 = Task.new(4, 2, 50, 5, 4, 0, [@req8_1])
 
 
 
-$taskList = [task5, task6, task7, task8]
+$task_list = [task5, task6, task7, task8]
 
-task = $taskList[2]
-tasks2 = $taskList
+task = $task_list[2]
+tasks2 = $task_list
 
-$taskList = tasks2
+$task_list = tasks2
 tasks2.each{|task|
   print "タスク" + task.task_id.to_s
   bb = BB(task)

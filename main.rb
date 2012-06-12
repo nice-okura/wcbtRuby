@@ -33,7 +33,7 @@ taskset = TaskSet.new(@tm.get_task_array)
 taskset.show_taskset
 
 =begin
-$taskList.each{|task|
+$task_list.each{|task|
   puts "タスク" + task.taskId.to_s
   puts "BB:" + BB(task).to_s
   puts "AB:" + AB(task).to_s

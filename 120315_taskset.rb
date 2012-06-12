@@ -4,7 +4,7 @@ require "taskCUI"
 
 def get_extime_high_priority(proc, priority)
   time = 0
-  $taskList.each{|t|
+  $task_list.each{|t|
     if t.proc == proc && t.priority < priority
       time += t.extime + SB(t)
     end
@@ -80,11 +80,11 @@ $DEBUGFlgFlg
   task3 = Task.new(3, 1, 50, extime3, 3, 0, [@req3_1, @req3_2])
   task4 = Task.new(4, 2, 50, extime4, 4, 0, [@req4_1])
   
-  $taskList = [task1, task2, task3, task4]
-  tasks1 = $taskList
+  $task_list = [task1, task2, task3, task4]
+  tasks1 = $task_list
   #puts "#{@grp1.kind}, #{@grp2.kind}"
 =begin
-   $taskList.each{|task|
+   $task_list.each{|task|
    print "タスク" + task.task_id.to_s
    print "\tBB:" + BB(task).to_s
    print "\tAB:" + AB(task).to_s
@@ -96,7 +96,7 @@ $DEBUGFlgFlg
    puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{B(task)} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + B(task) + get_extime_high_priority(task.proc, task.priority)}"
    }
 =end
-  task = $taskList[2]
+  task = $task_list[2]
   a = task.extime + B(task) + get_extime_high_priority(task.proc, task.priority)
   t1 = task
   
@@ -140,10 +140,10 @@ $DEBUGFlgFlg
   
   
   
-  $taskList = [task5, task6, task7, task8]
+  $task_list = [task5, task6, task7, task8]
   #puts "#{@grp3.kind}, #{@grp4.kind}"
 =begin
-   $taskList.each{|task|
+   $task_list.each{|task|
    print "タスク" + task.task_id.to_s
    print "\tBB:" + BB(task).to_s
    print "\tAB:" + AB(task).to_s
@@ -155,15 +155,15 @@ $DEBUGFlgFlg
    puts "\t最悪応答時間：実行時間#{task.extime} + 最大ブロック時間#{B(task)} + プリエンプト時間#{get_extime_high_priority(task.proc, task.priority)} = #{task.extime + B(task) + get_extime_high_priority(task.proc, task.priority)}"
    }
 =end
-  task = $taskList[2]
-  tasks2 = $taskList
-  b = task.extime + B($taskList[2]) + get_extime_high_priority(task.proc, task.priority)
+  task = $task_list[2]
+  tasks2 = $task_list
+  b = task.extime + B($task_list[2]) + get_extime_high_priority(task.proc, task.priority)
 
   
 
   if a > b + 5
     $DEBUGFlgFlg
-    $taskList = tasks1
+    $task_list = tasks1
     tasks1.each{|task|
       print "タスク" + task.task_id.to_s
       bb = BB(task)
@@ -185,7 +185,7 @@ $DEBUGFlgFlg
     taskset = TaskSet.new(tasks1)
     taskset.show_taskset
     
-    $taskList = tasks2
+    $task_list = tasks2
     tasks2.each{|task|
       print "タスク" + task.task_id.to_s
       bb = BB(task)
