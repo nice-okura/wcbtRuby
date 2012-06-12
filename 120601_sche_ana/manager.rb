@@ -348,7 +348,7 @@ class TaskManager
     util = umax - (rand%umax) # タスクの使用率は[0, umax] 
 
     @@task_id += 1
-    proc = @@task_id%PROC_NUM+1
+    proc = -1                 # 未割り当ては-1
     #p task_id_array
     #priority = new_task_id # EDFなのでpriorityは後から決めるしかない
     extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
@@ -719,11 +719,12 @@ class RequireManager
 
       # shortリソース要求作成
       i_max = SHORT_GRP_COUNT*3
-      d = 5.2/i_max.to_f
+      #d = 5.2/i_max.to_f
       0.upto(i_max-1){ |i|
         @@id += 1
         g = GroupManager.get_group_from_group_id(i%SHORT_GRP_COUNT+1)
-        time = 1.3 + d*i # [1.3, 6.5]
+        time = 1.3 + rand(6) + rand%0.2 # 1.3 + [0, 5] + [0.0, 0.2)
+        #time = 1.3 + d*i # [1.3, 6.5]
         @@require_array << Req.new(@@id, g, time, [])
 #            return Req.new(@@id, group, time, req)
       }
