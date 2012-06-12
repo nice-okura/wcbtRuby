@@ -3,6 +3,8 @@ TLV*
 __MACOSX/*
 schesim*
 doc/*
+*/doc/
+tags
 \#*#
 *.bak
 *.json
