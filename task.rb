@@ -9,6 +9,44 @@
 #
 
 #
+# プロセッサクラス
+#
+class Processor
+  # プロセッサに割り当てられているタスクのリスト
+  attr_accessor :task_list
+  attr_reader :util, :proc_id
+  
+  # コンストラクタ
+  def initialize(attr)
+    @task_list = []
+    @proc_id = attr['id'] # IDは1から始まる
+    @util = 0.0
+  end
+
+  public 
+  # プロセッサにタスク割り当て
+  def assign_task(task)
+    @task_list << task
+    task.proc = proc_id
+    @util = calc_util
+  end
+
+  # プロセッサ使用率を計算
+  # @return [Float] プロセッサ使用率
+  private
+  def calc_util
+    util = 0.0
+    @task_list.each{ |t|
+      util += t.extime/t.period
+    }
+    
+    return util
+  end
+  
+  
+end
+
+#
 # タスククラス
 #
 class Task

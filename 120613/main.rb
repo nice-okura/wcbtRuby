@@ -11,9 +11,9 @@
 #
 #=== 
 #$:.unshift(File.dirname(__FILE__))
-require "manager"
+require "../manager"
 require 'progressbar'
-require 'task-CUI'
+#require '../task-CUI'
 
 include WCBT
 

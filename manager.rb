@@ -17,8 +17,8 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-require "wcbt_edf"      # 最大ブロック時間計算モジュール
-require "task_edf"      # タスク等のクラス
+require "wcbt"      # 最大ブロック時間計算モジュール
+require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 #require "taskCUI"   # タスク表示ライブラリ
@@ -48,7 +48,8 @@ $external_input = false # 外部入力ファイルの設定
 #$output_group_file = GRP_FILE_NAME  # グループの出力先ファイル名
 #$output_require_file = REQ_FILE_NAME  # リソース要求の出力先ファイル名
 
-$task_list = [] # タスクの配列
+$all_task_list = []     # 全タスクリスト
+$task_list = []         # 割り当て済みタスリスト 
 
 #
 # タスク，リソース要求，グループのマネージャー管理
@@ -82,9 +83,9 @@ class AllManager
     return false unless @rm.load_require_data("#{name}_require.json")
     return false unless @tm.load_task_data("#{name}_task.json")
     @using_group_array = get_using_group_array
-    $taskList = @tm.get_task_array
-    init_computing
-    set_blocktime
+    $task_list = @tm.get_task_array
+    #init_computing
+    #set_blocktime
     
     return true
   end
@@ -108,7 +109,7 @@ class AllManager
   # タスク生成
   #
   def create_tasks(tcount=TASK_COUNT, rcount=REQ_COUNT, gcount=GRP_COUNT, info=["0"])
-    @gm.create_group_array(gcount)
+    @gm.create_group_array(gcount, info)
     
     @rm.set_garray(@gm.get_group_array)
     @rm.create_require_array(rcount, info)
@@ -118,9 +119,92 @@ class AllManager
     
     @using_group_array = get_using_group_array
     
-    $taskList = @tm.get_task_array
-    init_computing
-    set_blocktime
+    $task_list = @tm.get_task_array
+    
+    if info[0] == "sche_check"
+      # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
+      tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
+      task_count = 2 + rand(3) # 2~4の乱数
+      0.upto(task_count-1){ |i|
+        @tm.set_long_require(tmplist[i])
+        tmplist[i].resetting
+      }
+
+#=begin
+      f = info[2] # nesting_factor
+      # ネストした要求を生成して割り当て
+      f_one = 2.0*f*(1.0-f) * 10000            # 1つネストする確率
+      f_two = f*f * 10000                      # 2つネストする確率
+      
+      #puts "ネストつくりまーす.f_one#{f_one} f_two#{f_two}"
+      id = 100                                 # ネストするリソース要求IDは100番以降とする
+      # 全リソース要求に対して
+      # 上記の確率でネストさせる
+      $task_list.each{ |t|
+        t.req_list.each{ |r|
+          prob = rand(10001) + 1 # 1~10000の乱数
+#          print "#{prob} "
+          reqs = []
+          # fの確率でネスト作成
+          if prob < f_two
+            # 2つのネストしたリソース要求
+            if r.res.kind == "short"
+              # shortの場合は |Rn| = R/3
+              time = r.time/3
+              # shortグループの中からランダムに選択する
+              g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+              g_id2 = rand(SHORT_GRP_COUNT) + 1 
+            elsif r.res.kind == "long"
+              # longの場合は |Rn| = 3 (from 論文．意味がわからない)
+              time = 3.0
+              # longグループの中からランダムに選択する
+              g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+              g_id2 = rand(2) + 1 + 30 
+            end
+            g1 = GroupManager.get_group_from_group_id(g_id1)
+            g2 = GroupManager.get_group_from_group_id(g_id2)
+            req = []
+            id += 1
+            req1 = Req.new(id, g1, time, req)
+            id += 1
+            req2 = Req.new(id, g2, time, req)
+            @rm.add_require(req1)
+            @rm.add_require(req2)
+            reqs << req1
+            reqs << req2
+          elsif prob < f_one
+            # 1つのネストしたリソース要求
+            if r.res.kind == "short"
+              # shortの場合は |Rn| = R/3
+              time = r.time/3
+              # shortグループの中からランダムに選択する
+              g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+            elsif r.res.kind == "long"
+              # longの場合は |Rn| = 3 (from 論文．意味がわからない)
+              time = 3.0
+              # longグループの中からランダムに選択する
+              g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+            end
+            g1 = GroupManager.get_group_from_group_id(g_id1)
+            req = []
+            id += 1
+            req1 = Req.new(id, g1, time, req)
+            @rm.add_require(req1)
+            reqs << req1
+          end
+          r.reqs = reqs
+        }
+      }
+#=end
+      #puts "リソース要求数#{@rm.get_require_array.size}"
+    end
+    
+    # 全タスクの設定しなおし
+    $task_list.each{ |t|
+      t.resetting
+    }
+    #init_computing
+    #set_blocktime
     
   end
     
@@ -128,7 +212,7 @@ class AllManager
   # 全データ初期化
   #
   def all_data_clear
-    $taskList = []
+    $task_list = []
     @gm.data_clear
     @rm.data_clear
     @tm.data_clear
@@ -181,9 +265,9 @@ class TaskManager
   #
   private
   def create_task_120405(task_count, rcsl)
-    #################
+    ####################
     # タスクステータス #
-    #################
+    ####################
     
     #
     # 120405用
@@ -250,7 +334,60 @@ class TaskManager
   #
   # ランダムタスク生成
   # 
-  #
+  private
+  def create_task_sche_check(umax)
+    #################
+    # タスクステータス #
+    #################
+    #
+    # FMLP_P-EDFスケジューラビリティ解析用
+    #
+    
+    # タスクの最大使用率
+    util = umax - (rand%umax) # タスクの使用率は[0, umax] 
+
+    @@task_id += 1
+    proc = -1                 # 未割り当ては-1
+    #p task_id_array
+    #priority = new_task_id # EDFなのでpriorityは後から決めるしかない
+    extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
+    period = extime/util
+    offset = 0 #rand(10)
+    req_list = []
+    priority = 1
+    #################
+    
+    task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
+    
+    set_short_require(task)
+    task.resetting
+    return task
+  end
+
+
+  # shce_check用に，タスクに1~3個のshortリソース要求を割当てる
+  def set_short_require(task)
+    req_id_list = []
+    count = rand(3) + 1 # 1~3の乱数
+    count.times{ 
+      req_id = rand(90) + 1 # req_id 1~90がshortリソース要求
+      req_id_list << req_id
+    }
+    # リソース要求更新
+    task.req_list = RequireManager.get_reqlist_from_req_id(req_id_list)
+  end
+
+  public
+  # shce_check用に，タスクに1個のlongリソース要求を割当てる
+  def set_long_require(task)
+    req_id = rand(9) + 91 # req_id 91~98がlongリソース要求
+   
+    # リソース要求更新
+    task.req_list = RequireManager.get_reqlist_from_req_id([req_id])
+  end
+
+  
+  
   private
   def create_task_120405_3(task_count, a_extime=50)
     #################
@@ -363,7 +500,8 @@ class TaskManager
   def create_task_array(i, info=["0"])
     #tarray = []
     #p info
-    if info[0] == "0"
+    case info[0]
+    when "0"
       #
       # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
       # そうでなければそのまま
@@ -376,7 +514,7 @@ class TaskManager
       # rcslを考慮したタスク実行時間を作成．
       # 各CPUに均等にタスクは割り当てられる
       #
-    elsif info[0] == "120405" 
+    when "120405" 
       # info[1] はrcls
       #puts "120405 MODE"
       if info[1] == nil
@@ -392,7 +530,7 @@ class TaskManager
       # 指定した実行時間info[1](初期値50)のタスクを生成．
       # 各CPUに均等にタスクは割り当てられる．
       #
-    elsif info[0] == "120405_3" || info[0] == "120411"
+    when "120405_3" || "120411"
       if info[1].to_i == 0
         i.times{
           @@task_array << create_task_120405_3(i)
@@ -402,8 +540,16 @@ class TaskManager
           @@task_array << create_task_120405_3(i, info[1].to_i)
         }
       end
+    when "sche_check"
+      #
+      # スケジューラビリティ解析用
+      #
+      i.times{
+        @@task_array << create_task_sche_check(info[1])
+      }
     else
       $stderr.puts "create_task_array:infoエラー"
+      exit
     end
     
     #@@task_array = tarray
@@ -589,7 +735,7 @@ class RequireManager
   # ランダムにリソース要求を返す
   # 作成されている要求がなければ，nilを返す
   #
-  def RequireManager.get_random_req
+  def self.get_random_req
     @@id += 1
     ra = []
     if @@require_array.size < 1
@@ -611,7 +757,7 @@ class RequireManager
   #
   # リソース要求IDからリソースのオブジェクト参照の配列を返す
   #
-  def RequireManager.get_reqlist_from_req_id(req_list)
+  def self.get_reqlist_from_req_id(req_list)
     reqs = []
     req_list.each{|req_id|
       @@require_array.each{|r|
@@ -630,57 +776,98 @@ class RequireManager
   #
   public
   def create_require_array(i, info=["0"])
-    flg = false
-    g_array = []  # 作るべきリソース要求のグループ
-    @@garray.each{|g|
-      g_array << g
-    }
-    new_group = nil
-    #p g_id_array
-    until flg
-      data_clear
-      garray = []
-      #puts "i:#{i}"
-      
-      i.times{|time|
-        RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
-        new_group = GroupManager.get_random_group if new_group == nil
-        g_array.delete(new_group)
-      
-        if info[0] == "120405_3"
-          #
-          # new_group(long or short)で要求時間timeの要求を作成
-          #
-          a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
-          c = create_require(new_group, a_extime/(time+1.0))
-        elsif info[0] == "120411"
-          #
-          # リソース要求時間は実行時間のrcsl比で決める
-          #
-          a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
-          rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
-          c = create_require(new_group, a_extime*rcsl)
-        else
-          #
-          #
-          # リソース要求時間はランダム
-          #
-          c = create_require(new_group)
-        end
-        #p c
-        garray << c.res.group
-        @@require_array << c
-      }
-      #p garray
-
-      garray.uniq!
-      #p "@@garray:#{@@garray}"
-      # 全てのグループのリソース要求が作成されたか確認
+    if info[0] == "sche_check"
       #
-      flg = true if garray.size == @@garray.size || i <= @@garray.size
+      # スケジューラビリティ解析用
+      #
+      
+      f = info[2] # nesting_factor
+
+      # shortリソース要求作成
+      i_max = SHORT_GRP_COUNT*3
+      #d = 5.2/i_max.to_f
+      0.upto(i_max-1){ |i|
+        @@id += 1
+        g = GroupManager.get_group_from_group_id(i%SHORT_GRP_COUNT+1)
+        time = 1.3 + rand(6) + rand%0.2 # 1.3 + [0, 5] + [0.0, 0.2)
+        #time = 1.3 + d*i # [1.3, 6.5]
+        @@require_array << Req.new(@@id, g, time, [])
+        #            return Req.new(@@id, group, time, req)
+      }
+      
+      # longリソース要求作成
+      # それぞれのlongリソース要求に対し，2〜4個のこのリソースアクセスしている異なったタスクを選択する．
+      # なので，予め2(longリソース個数)*4(longリソース要求する最大タスク数)=8 のリソース要求を作成しておく
+
+      0.upto(LONG_REQ_COUNT-1){ |i|
+        @@id += 1
+        g_id = 30 + i%2+1
+        g = GroupManager.get_group_from_group_id(g_id)
+        
+        time = 20 + rand(11)
+        
+        @@require_array << Req.new(@@id, g, time, [])
+      }
+    else
+      # それ以外
+
+      flg = false
+      g_array = []  # 作るべきリソース要求のグループ
+      @@garray.each{|g|
+        g_array << g
+      }
+      new_group = nil
+      #p g_id_array
+      until flg
+        data_clear
+        garray = []
+        #puts "i:#{i}"
+        
+        i.times{|time|
+          RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
+          new_group = GroupManager.get_random_group if new_group == nil
+          g_array.delete(new_group)
+          
+          if info[0] == "120405_3"
+            #
+            # new_group(long or short)で要求時間timeの要求を作成
+            #
+            a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
+            c = create_require(new_group, a_extime/(time+1.0))
+          elsif info[0] == "120411"
+            #
+            # リソース要求時間は実行時間のrcsl比で決める
+            #
+            a_extime = info[1].to_i == 0 ? 50 : info[1].to_i
+            rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
+            c = create_require(new_group, a_extime*rcsl)
+          else
+            #
+            #
+            # リソース要求時間はランダム
+            #
+            c = create_require(new_group)
+          end
+          #p c
+          garray << c.res.group
+          @@require_array << c
+        }
+        #p garray
+
+        garray.uniq!
+        #p "@@garray:#{@@garray}"
+        # 全てのグループのリソース要求が作成されたか確認
+        #
+        flg = true if garray.size == @@garray.size || i <= @@garray.size
+      end
     end
     return @@require_array.size
     
+  end
+
+  public
+  def add_require(req)
+    return @@require_array << req
   end
   
   #
@@ -828,13 +1015,37 @@ class GroupManager
   # i個のグループを生成し，group_arrayとする
   #
   public
-  def create_group_array(i)
+  def create_group_array(i, info=["0"])
     data_clear
     garray = []
-    i.times{
-      garray << create_group
-    }
-    @@group_array = garray
+
+    if info[0] == "0" 
+      i.times{
+        garray << create_group
+      }
+      @@group_array = garray
+    elsif info[0] == "sche_check"
+      #
+      # スケジューラビリティ解析用
+      #
+      i = SHORT_GRP_COUNT
+      @@kind = "short"
+      # Shortリソースを6*TASK_NUM/PROC_NUM個作る
+      i.times{ 
+        @@group_id += 1
+        garray << Group.new(@@group_id, @@kind)
+      }
+      # Longリソースを2個作る
+      @@group_id += 1
+      @@kind = "long"
+      garray << Group.new(@@group_id, @@kind)
+      @@group_id += 1
+      garray << Group.new(@@group_id, @@kind)
+      
+
+      @@group_array = garray
+      #pp @@group_array
+    end
     return @@group_array.size
   end
   
@@ -919,7 +1130,7 @@ class GroupManager
   # group_idからグループのオブジェクトの参照を返す
   #
   public
-  def GroupManager.get_group_from_group_id(group_id)
+  def self.get_group_from_group_id(group_id)
     @@group_array.each{|g|
       if g.group == group_id
         return g
@@ -973,7 +1184,7 @@ end
 # gm = GroupManager.instance
 # rm = RequireManager.instance
 # tm = TaskManager.instance
-puts "ランダムタスク"
+
 # 
 # グループをランダムに5個作成
 # gm.createGroupArray(5)

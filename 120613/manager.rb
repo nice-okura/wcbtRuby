@@ -334,7 +334,6 @@ class TaskManager
   #
   # ランダムタスク生成
   # 
-  #
   private
   def create_task_sche_check(umax)
     #################
@@ -677,7 +676,7 @@ class RequireManager
   #
   public
   def create_require_array(i, info=["0"])
-    if info[0] == 0
+    if info[0] == "0"
 
       flg = false
       g_array = []  # 作るべきリソース要求のグループ
