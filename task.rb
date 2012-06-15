@@ -13,18 +13,35 @@
 #
 class Processor
   # プロセッサに割り当てられているタスクのリスト
-  attr_accessor :task_list
+  attr_reader :task_list
   attr_reader :util, :proc_id
   
   # コンストラクタ
   def initialize(attr)
     @task_list = []
-    @proc_id = attr[:id] # IDは1から始まる
+
     @util = 0.0
+
+    unless attr[TASK_LIST_SYN] == nil
+      tlist = TaskManager.get_tasks(attr[TASK_LIST_SYN])
+      tlist.each{ |t|
+        #pp t
+        assign_task(t)
+      }
+    end
+
+    id = attr[PROC_ID_SYN] # IDは1から始まる
+    if id == nil || id < 1 
+      puts "プロセッサコンストラクタ(#{__FILE__} : #{__LINE__}行目)\nプロセッサIDが不正です．"
+      exit
+    end
+    @proc_id = id
   end
 
   public 
   # プロセッサにタスク割り当て
+  # @param [Task] 割当てるタスク
+  # @return 成功したらtrue
   def assign_task(task)
     @task_list << task
 
@@ -35,6 +52,7 @@ class Processor
 
     # プロセッサ使用率計算
     @util = calc_util
+    return true
   end
 
   #
@@ -47,8 +65,8 @@ class Processor
       tsk_list << t.task_id
     }
     return {
-      :proc_id => @proc_id, 
-      :task_list => tsk_list
+      PROC_ID_SYN => @proc_id, 
+      TASK_LIST_SYN => tsk_list
     }
     #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
@@ -61,7 +79,7 @@ class Processor
     @task_list.each{ |t|
       util += t.extime/t.period
     }
-    
+
     return util
   end
 

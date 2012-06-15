@@ -85,6 +85,7 @@ class AllManager
     return false unless @gm.load_group_data("#{name}_group.json")
     return false unless @rm.load_require_data("#{name}_require.json")
     return false unless @tm.load_task_data("#{name}_task.json")
+    return false unless @pm.load_processor_data("#{name}_proc.json") == 0
     @using_group_array = get_using_group_array
     $task_list = @tm.get_task_array
     init_computing($task_list)
@@ -123,7 +124,7 @@ class AllManager
 
     # プロセッサの作成
     @pm.create_processor_list(info)
-
+    
     @using_group_array = get_using_group_array
     
     $task_list = @tm.get_task_array
@@ -218,7 +219,7 @@ class AllManager
   # 指定したIDのtask_listのタスクをworst-fitでプロセッサに割り当て
   # @param idx 
   def assign_task_worstfit(id, opt={ })
-    tsk = @tm.get_task(id)
+    tsk = TaskManager.get_task(id)
     
     # longリソース要求をするタスクのあるプロセッサに割当てる場合
     if opt[:long_same_proc] == true
@@ -506,12 +507,23 @@ class TaskManager
   end
   
   # 指定したタスクIDのタスクを返す
-  def get_task(id)
+  def self.get_task(id)
     id = id.to_i
     @@task_array.each{ |t|
       return t if t.task_id == id
     }
     return nil
+  end
+  
+  # 指定したタスクIDリストのタスクのリストを返す
+  # @param task_id_list [Array<Fixnum>] タスクIDリスト
+  # @return task_list [Array<Task>] タスクリスト
+  def self.get_tasks(task_id_list)
+    task_list = []
+    task_id_list.each{ |id|
+      task_list << self.get_task(id)
+    }
+    return task_list
   end
 end
 

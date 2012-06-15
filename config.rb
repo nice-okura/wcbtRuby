@@ -23,3 +23,6 @@ $DEBUGFlg = false
 
 JSON_FOLDER = "./json"
 SCHE_CHECK = "sche_check"
+WORST_FIT = "worst_fit"
+PROC_ID_SYN = "proc_id"
+TASK_LIST_SYN = "task_list"
