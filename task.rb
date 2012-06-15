@@ -19,7 +19,7 @@ class Processor
   # コンストラクタ
   def initialize(attr)
     @task_list = []
-    @proc_id = attr['id'] # IDは1から始まる
+    @proc_id = attr[:id] # IDは1から始まる
     @util = 0.0
   end
 

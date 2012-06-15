@@ -21,9 +21,9 @@ require "wcbt"      # 最大ブロック時間計算モジュール
 require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
-require "create_task"
-require "create_require"
-require "proc_manager"
+require "create-task"
+require "create-require"
+require "proc-manager"
 #require "taskCUI"   # タスク表示ライブラリ
 
 
@@ -60,7 +60,7 @@ $task_list = []         # 割り当て済みタスリスト
 #
 include WCBT
 class AllManager
-  attr_reader :tm, :rm, :gm, :using_group_array
+  attr_reader :tm, :rm, :gm, :pm, :using_group_array
   
   #
   # 初期化
@@ -105,6 +105,7 @@ class AllManager
     return false unless @gm.save_group_data("#{name}_group.json")
     return false unless @rm.save_require_data("#{name}_require.json")
     return false unless @tm.save_task_data("#{name}_task.json")
+    return false unless @pm.save_processor_data("#{name}_proc.json") == 0
     return true
   end
 
@@ -119,7 +120,10 @@ class AllManager
     
     @tm.set_array(@rm.get_require_array, @gm.get_group_array)
     @tm.create_task_array(tcount, info)
-    
+
+    # プロセッサの作成
+    @pm.create_processor_list(info)
+
     @using_group_array = get_using_group_array
     
     $task_list = @tm.get_task_array
@@ -432,6 +436,7 @@ class TaskManager
 
       data_clear
       tasks = (JSON.parser.new(json)).parse()
+      puts "Loding #{tasks["tasks"].size} tasks..."
       return tasks
     else
       puts "application file read error: #{filename} is not JSON file.\n"
