@@ -121,13 +121,13 @@ def compute_wcrt
   group_times.times{
     wcrt_max_system = -1 # 適当な最小値
     
-    $taskList.each{|t|
+    $task_list.each{|t|
       t.resetting
     }
-    init_computing
+    init_computing($task_list)
     set_blocktime
     
-    $taskList.each{|t|
+    $task_list.each{|t|
       wcrt = get_wcrt(t, t.b)
       wcrt_max_system = wcrt if wcrt_max_system < wcrt
       #pbar.inc
@@ -144,13 +144,13 @@ def compute_wcrt
       puts "long_count:#{long_count}"
       #$COLOR_CHAR = false
       if long_count > 0
-        taskset = TaskSet.new($taskList)
+        taskset = TaskSet.new($task_list)
         taskset.show_taskset
         taskset.show_blocktime
       end
       #$COLOR_CHAR = true
     end
-    #taskset = TaskSet.new($taskList)
+    #taskset = TaskSet.new($task_list)
     #taskset.show_taskset
     #show_groups
     #puts wcrt_max_system
@@ -184,20 +184,20 @@ pbar = ProgressBar.new("WCRTの計測", loop_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = ["120411", extime, rcsl]
+info = { :mode => "120411", :extime => extime, :rcsl => rcsl }
 loop_count.times{
-  #@manager.create_tasks(tasks, requires, groups, info)
-  @manager.load_tasks("120502_8task_4CPU")
+  @manager.create_tasks(tasks, requires, groups, info)
+  #@manager.load_tasks("120502_8task_4CPU")
   #
   # クリティカルセクションの変更
   #
-  #$taskList.each{|t|
+  #$task_list.each{|t|
   #  t.req_list[0].time = t.extime * rcsl
   #}
   pbar.inc  
   
   compute_wcrt
-  #end
+
   @manager.all_data_clear
   
 }

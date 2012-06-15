@@ -114,13 +114,13 @@ for resource_count in 1..resource_max
     info = ["120405", rcsl]
     #p resource_count
     @manager.create_tasks(task_count, resource_count*2, resource_count, info)
-    $taskList = @manager.tm.get_task_array
+    $task_list = @manager.tm.get_task_array
     taskset = TaskSet.new(@manager.tm.get_task_array)
     while rcsl < 1.0
       #
       # クリティカルセクションの変更
       #
-      $taskList.each{|t|
+      $task_list.each{|t|
         t.req_list.each{|r|
           r.time = t.extime * rcsl
         }

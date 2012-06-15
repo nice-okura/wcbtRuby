@@ -75,12 +75,12 @@ rcls_border = 0.1
 info = ["120405_3", rcls]
 @manager = AllManager.new
 @manager.create_tasks(task_count, 10, resource_max, info)
-$taskList = @manager.tm.get_task_array
+$task_list = @manager.tm.get_task_array
 taskset = TaskSet.new(@manager.tm.get_task_array)
 
 0.1.step(1.0, 0.1){|border|
   puts border.to_s.red
-  $taskList.each{|t|
+  $task_list.each{|t|
     set_blocktime(t)
     t.req_list.each{|r|
       if r.time < t.extime * border

@@ -125,7 +125,7 @@ def compute_wcrt
   #
   # システム全体の最悪応答時間が最も良くなる場合を探す
   #
-  #pbar = ProgressBar.new("WCRTの計測", group_times*$taskList.size)
+  #pbar = ProgressBar.new("WCRTの計測", group_times*$task_list.size)
   #pbar.format_arguments = [:percentage, :bar, :stat]
   #  pbar.format = "%3d%% %s %s"
 
@@ -136,7 +136,7 @@ def compute_wcrt
     wcrt_max_system = -1 # 適当な最小値
     set_blocktime
     #show_blocktime
-    $taskList.each{|t|
+    $task_list.each{|t|
       wcrt = get_wcrt(t, t.b)
       if wcrt_max_system < wcrt
         wcrt_max_system = wcrt
@@ -152,7 +152,7 @@ def compute_wcrt
       change_count += 1
       puts "long_count#{long_count}}"
         $COLOR_CHAR = false
-        taskset = TaskSet.new($taskList)
+        taskset = TaskSet.new($task_list)
         taskset.show_taskset
         $COLOR_CHAR = true
     end
@@ -207,7 +207,7 @@ for g in 8..tasks
     #
     # クリティカルセクションの変更
     #
-    #$taskList.each{|t|
+    #$task_list.each{|t|
     #  t.req_list[0].time = t.extime * rcsl
     #}
     c[8-g] += compute_wcrt
