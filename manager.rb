@@ -23,6 +23,7 @@ require "singleton" # singletonモジュール
 require "config"    # コンフィグファイル
 require "create_task"
 require "create_require"
+require "proc_manager"
 #require "taskCUI"   # タスク表示ライブラリ
 
 
@@ -69,7 +70,7 @@ class AllManager
     @tm = TaskManager.instance
     @rm = RequireManager.instance
     @gm = GroupManager.instance
-    
+    @pm = ProcessorManager.instance
   end
 
   #
@@ -209,7 +210,37 @@ class AllManager
     #set_blocktime
     
   end 
+
+  # 指定したIDのtask_listのタスクをworst-fitでプロセッサに割り当て
+  # @param idx 
+  def assign_task_worstfit(id, opt={ })
+    tsk = @tm.get_task(id)
     
+    # longリソース要求をするタスクのあるプロセッサに割当てる場合
+    if opt[:long_same_proc] == true
+      # longリソース要求をしているタスクかチェック
+      unless tsk.get_long_require_array.size == 0
+        # longリソースがある場合，
+        # longリソース要求をするタスクのあるプロセッサに割当てる
+        @pm.proc_list.each{ |p|
+          p.task_list.each{ |t|
+            if t.get_long_require_array.size > 0
+              #このプロセッサに割り当て
+              p.assign_task(tsk)
+            end
+          }
+        }
+      else 
+        proc_id = lowest_util_proc_id
+        @pm.proc_list[proc_id - 1].assign_task(tsk)
+      end
+    else
+      # 通常時
+      proc_id = lowest_util_proc_id
+      @pm.proc_list[proc_id - 1].assign_task(tsk)
+    end
+  end
+  
   #
   # 全データ初期化
   #
@@ -218,6 +249,7 @@ class AllManager
     @gm.data_clear
     @rm.data_clear
     @tm.data_clear
+    @pm.data_clear
   end
   
   #
@@ -848,42 +880,9 @@ end
 
 
 
+
+###############################################################
+
 def print_debug(str)
   puts str if $DEBUGFlgFlg
 end
-#
-# main関数
-#
-# 使用方法 
-# グループ，要求，タスクのマネージャーインスタンスを作成
-# gm = GroupManager.instance
-# rm = RequireManager.instance
-# tm = TaskManager.instance
-
-# 
-# グループをランダムに5個作成
-# gm.createGroupArray(5)
-#
-# それらのグループから要求から5つの要求を作成
-# rm.create_requireArray(5)
-#
-# それらの要求から5つのタスクを作成
-# pp tm.create_task_array(5)
-
-=begin
-gm = GroupManager.instance
-rm = RequireManager.instance
-tm = TaskManager.instance
-
-gm.create_group_array(3)
-rm.create_require_array(15)
-tm.create_task_array(TASK_NUM)
-
-tm.get_task_array
-taskset = TaskSet.new(tm.get_task_array)
-taskset.show_taskset
-
-tm.save_task_data
-gm.save_group_data
-rm.save_require_data
-=end

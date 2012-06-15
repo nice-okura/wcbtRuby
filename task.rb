@@ -37,6 +37,22 @@ class Processor
     @util = calc_util
   end
 
+  #
+  # プロセッサのデータを返す
+  # JSON外部出力用
+  # 
+  def out_alldata
+    tsk_list = []
+    @task_list.each{|t|
+      tsk_list << t.task_id
+    }
+    return {
+      :proc_id => @proc_id, 
+      :task_list => tsk_list
+    }
+    #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
+  end
+
   # プロセッサ使用率を計算
   # @return [Float] プロセッサ使用率
   private
@@ -48,6 +64,8 @@ class Processor
     
     return util
   end
+
+
   
   
 end
