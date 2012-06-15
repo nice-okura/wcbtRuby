@@ -121,7 +121,7 @@ class AllManager
     
     $task_list = @tm.get_task_array
     
-    if info[0] == "sche_check"
+    if info[0] == SCHE_CHECK
       # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
       tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
       task_count = 2 + rand(3) # 2~4の乱数
@@ -448,7 +448,7 @@ class TaskManager
       #
       # スケジューラビリティ解析用
       #
-    elsif info[0] == "sche_check" 
+    elsif info[0] == SCHE_CHECK 
       i.times{
         @@task_array << create_task_sche_check(info[1])
       }
@@ -710,7 +710,7 @@ class RequireManager
         flg = true if garray.size == @@garray.size || i <= @@garray.size
       end
 
-    elsif info[0] == "sche_check"
+    elsif info[0] == SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #
@@ -909,7 +909,7 @@ class GroupManager
         garray << create_group
       }
       @@group_array = garray
-    elsif info[0] == "sche_check"
+    elsif info[0] == SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #

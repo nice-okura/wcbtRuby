@@ -22,3 +22,4 @@ $COLOR_CHAR = true
 $DEBUGFlg = false
 
 JSON_FOLDER = "./json"
+SCHE_CHECK = "sche_check"

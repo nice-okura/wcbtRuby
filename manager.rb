@@ -123,7 +123,7 @@ class AllManager
     
     $task_list = @tm.get_task_array
     
-    if info[:mode] == "sche_check"
+    if info[:mode] == SCHE_CHECK
       # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
       tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
       task_count = 2 + rand(3) # 2~4の乱数
@@ -542,7 +542,7 @@ class TaskManager
           @@task_array << create_task_120405_3(i, info[:extime])
         }
       end
-    when "sche_check"
+    when SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #
@@ -792,7 +792,7 @@ class RequireManager
   public
   def create_require_array(i, info={ })
     case info[:mode]
-    when "sche_check"
+    when SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #
@@ -860,7 +860,6 @@ class RequireManager
             #rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
             c = create_require(new_group, a_extime*rcsl)
           when "120613"
-
             c = create_require_120613(info)
 
           else
@@ -1040,7 +1039,7 @@ class GroupManager
     data_clear
     garray = []
 
-    if info[:mode] == "sche_check"
+    if info[:mode] == SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #

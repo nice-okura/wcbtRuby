@@ -44,10 +44,10 @@ class Test_wcbt < Test::Unit::TestCase
   def test_schedulability_check
     @manager.all_data_clear
     
-    # ["sche_check", umax, f]
+    # [SCHE_CHECK, umax, f]
     umax = 0.1
     f = 0.1
-    info = ["sche_check", umax, f]
+    info = [SCHE_CHECK, umax, f]
     @manager.create_tasks(TASK_NUM, 30, 10, info)
     puts @manager.gm.get_group_array.size
     puts @manager.rm.get_require_array.size

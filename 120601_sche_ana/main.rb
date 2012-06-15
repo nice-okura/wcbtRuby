@@ -135,7 +135,7 @@ pbar.format = "%3d%% %s %s"
       @proc_list << Processor.new({ 'id'=> id }) 
     }
 
-    info = ["sche_check", umax, f]
+    info = [SCHE_CHECK, umax, f]
     @manager.create_tasks(TASK_NUM, 30, 10, info)
     # タスクリストを使用率の降順でソート
     sort_tasklist_by_utilization

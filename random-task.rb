@@ -12,9 +12,9 @@ end
   
 FILENAME = ARGV[0]
 unless ARGV[4] == nil
-  info = ARGV[4].split(',')
+  info = { :mode => ARGV[4].split(',')[0], :extime => ARGV[4].split(',')[1], :rcsl => ARGV[4].split(',')[2] }
 else
-  info = ["0"]
+  info = { }
 end
 p info
 @manager = AllManager.new

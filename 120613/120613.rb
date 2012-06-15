@@ -150,14 +150,14 @@ end
 #
 tasks = 8
 requires = 20
-groups = 6
+groups = 4
 rcsl = 0.3
 extime = 80
 resouce_count_max = 1
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 100
+loop_count = 1
 
 
 @manager = AllManager.new
@@ -185,5 +185,5 @@ loop_count.times{
 
   
 }
-#save_min
+save_min
 pbar.finish
