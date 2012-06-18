@@ -688,7 +688,7 @@ module WCBT
     n = 1
     #puts "job:#{job.task_id}"
     while(1)
-      time = job.extime + job.b
+      time = job.extime + job.b - job.db
       $calc_task.each{ |t|
         #pp t
         if t.priority < job.priority && t.proc == job.proc
