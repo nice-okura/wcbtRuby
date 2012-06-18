@@ -148,8 +148,8 @@ end
 #
 # main関数
 #
-tasks = 8
-requires = 20
+tasks = 12
+requires = 4
 groups = 4
 rcsl = 0.3
 extime = 80
@@ -157,7 +157,7 @@ resouce_count_max = 1
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 1
+loop_count = 100
 
 
 @manager = AllManager.new

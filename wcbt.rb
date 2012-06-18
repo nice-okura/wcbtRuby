@@ -692,9 +692,9 @@ module WCBT
       $calc_task.each{ |t|
         #pp t
         if t.priority < job.priority && t.proc == job.proc
-          count = (((pre_wcrt+t.lb)/t.period).ceil)
+          count = ((pre_wcrt/t.period).ceil)
           #puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
-          time += count*(t.extime + t.b - t.lb - t.db)
+          time += count*(t.extime + t.sb)
         end
       }
       #p time
