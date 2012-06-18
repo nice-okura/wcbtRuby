@@ -37,7 +37,12 @@ class Processor
     end
     @proc_id = id
   end
-
+  
+  ###############################################################
+  #
+  # 以下 public
+  #
+  ###############################################################
   public 
   # プロセッサにタスク割り当て
   # @param [Task] 割当てるタスク
@@ -55,10 +60,9 @@ class Processor
     return true
   end
 
-  #
+
   # プロセッサのデータを返す
   # JSON外部出力用
-  # 
   def out_alldata
     tsk_list = []
     @task_list.each{|t|
@@ -71,6 +75,12 @@ class Processor
     #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
 
+
+  ###############################################################
+  #
+  # 以下 private
+  #
+  ###############################################################
   # プロセッサ使用率を計算
   # @return [Float] プロセッサ使用率
   private
@@ -83,8 +93,19 @@ class Processor
     return util
   end
 
-
+  # タスクをIDの降順で並べる
+  def sort_by_task_id
+    @task_list.sort!{ |a, b|
+      a.task_id <=> b.task_id
+    }
+  end
   
+  # タスク使用率の降順で並べる
+  def sort_by_task_util
+    @task_list.sort!{ |a, b|
+      a.extime/a.period <=> b.extime/b.period
+    }
+  end
   
 end
 

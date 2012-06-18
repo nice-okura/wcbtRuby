@@ -1010,7 +1010,6 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(4, t6.bb)
     assert_equal(2, t7.bb)
     assert_equal(2, t8.bb)
-    
   end
   
   def test_120502
