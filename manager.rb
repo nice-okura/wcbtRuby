@@ -371,7 +371,7 @@ class TaskManager
       i.times{
         @@task_array << create_task_sche_check(info[:extime])
       }
-    when "120613"
+    when "120613", "120620"
       i.times{ 
         @@task_array << create_task_120613(i, info[:extime])
       }

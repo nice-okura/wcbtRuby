@@ -148,10 +148,10 @@ end
 #
 # main関数
 #
-tasks = 8
+tasks = 12
 requires = 20
-groups = 4
-rcsl = 0.3
+groups = 3
+rcsl = 0.1
 extime = 80
 resouce_count_max = 1
 start_task_num = 8

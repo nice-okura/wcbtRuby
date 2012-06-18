@@ -1,24 +1,30 @@
 class RequireManager
   #
   # ランダムにリソース要求を作成
+  # 120620ミーティング用
+  #
+  private
+  def create_require_120620(info = { })
+    @@id += 1
+    group = info[:group]
+    # グループ1は長いリソースにする
+    time = group.group==1 ? info[:extime]*info[:rcsl]*3 : info[:extime]*info[:rcsl]/2
+    req = []
+
+    return Req.new(@@id, group, time, req)
+  end
+
+  #
+  # ランダムにリソース要求を作成
+  # 120613ミーティング用
   #
   private
   def create_require_120613(info = { })
     @@id += 1
     group = info[:group]
-#    p group 
     time = info[:extime]*(rand%info[:rcsl])
     req = []
-    #p @@id
-    r = RequireManager.get_random_req
-    if r != nil && r.reqs.size == 0 && !(group.kind == SHORT && r.res.kind == LONG) && group.kind != r.res.kind
-      # ※2段ネストまで対応
-      if r.res != group && time > r.time && NEST_FLG
-        req << r.clone
-      end
-    end
-    
-    #p time
+
     return Req.new(@@id, group, time, req)
   end
 
@@ -135,7 +141,8 @@ class RequireManager
             c = create_require(new_group, a_extime*rcsl)
           when "120613"
             c = create_require_120613(info)
-
+          when "120620"
+            c = create_require_120620(info)
           else
             #
             #
