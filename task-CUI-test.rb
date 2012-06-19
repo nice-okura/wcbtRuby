@@ -2,7 +2,7 @@ require "task-CUI"
 require "task"
 require "test/unit"
 require "pp"
-
+require "manager"
 class Test_taskCUI < Test::Unit::TestCase
   def setup
     # Groupクラス
@@ -60,6 +60,19 @@ class Test_taskCUI < Test::Unit::TestCase
     tc.show_task_char
     pp task2
   
+  end
+
+  def test_show_taskset
+    info = { :mode => "0", :assign_mode => LIST_ORDER}
+    @manager = AllManager.new
+    @manager.all_data_clear
+    @manager.create_tasks(10, 4, 4, info)
+    @manager.pm.assign_tasks(@manager.tm.get_task_array.sort_by{ rand }, info)
+    @manager.pm.show_proc_info
+    taskset = TaskSet.new
+    taskset.show_taskset
+    @manager.pm.sort_tasks(SORT_UTIL)
+    taskset.show_taskset
   end
 end
   

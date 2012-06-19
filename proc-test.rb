@@ -23,12 +23,6 @@ class Test_proc < Test::Unit::TestCase
   end
   
   def test_assign
-    #@manager.all_data_clear
-    #@manager.create_tasks(10, 4, 4, { :mode => "0"})
-    #@manager.pm.assign_tasks(@manager.tm.get_task_array)
-    #@manager.pm.show_proc_info
-    #@manager.save_tasks("test")
-    
     @manager.all_data_clear
     @manager.load_tasks("test")
     @manager.pm.show_proc_info

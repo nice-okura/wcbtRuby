@@ -60,6 +60,19 @@ class Processor
     return true
   end
 
+  # プロセッサ内のタスクのソート
+  def sort_tasks(mode)
+    case mode
+    when SORT_PRIORITY
+      sort_by_task_pri
+    when SORT_ID
+      sort_by_task_id
+    when SORT_UTIL
+      sort_by_task_util
+    else 
+      # ソートしない
+    end
+  end
 
   # プロセッサのデータを返す
   # JSON外部出力用
@@ -107,6 +120,13 @@ class Processor
   def sort_by_task_util
     @task_list.sort!{ |a, b|
       a.extime/a.period <=> b.extime/b.period
+    }
+  end
+
+  # タスク優先度の降順で並べる
+  def sort_by_task_pri
+    @task_list.sort!{ |a, b|
+      a.priority <=> b.priority
     }
   end
   

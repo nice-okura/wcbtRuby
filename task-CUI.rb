@@ -25,8 +25,17 @@ end
 
 class TaskSet 
   attr_accessor :task_list
+  
+  # コンストラクタ
+  # @param [Array<Task>] タスクリスト
+  # @param [ProcessorManager] プロセッサマネージャー
+  def initialize()
 
+  end
+=begin
+  # 旧仕様のコンストラクタ
   def initialize(task_list)
+    puts "旧仕様TaskSetのinitializeを呼び出しました."
     @task_list = task_list
     @taskset_proc = []
     
@@ -51,7 +60,7 @@ class TaskSet
       }
     }
   end
-  
+=end
   #
   # システム全体のプロセッサのリスト
   #
@@ -87,8 +96,20 @@ class TaskSet
     @taskset_proc.push(task_array)
     #p @task_list.size
   end
-  
+ 
+  # ProcessorManagerからプロセッサ情報を得てタスクを表示させる
   def show_taskset
+    ProcessorManager.proc_list.each{ |proc|
+      puts "[プロセッサ#{proc.proc_id}]"
+      proc.task_list.each{ |t|
+        tc = TaskCUI.new(t)
+        tc.show_task_char
+      }
+    }
+  end
+
+  # 旧仕様のshow_taskset
+  def show_taskset_old
     proc_num = 1
     @taskset_proc.each{|tasks|
       puts "[プロセッサ#{proc_num}]"

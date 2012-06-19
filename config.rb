@@ -25,10 +25,15 @@ JSON_FOLDER = "./json"
 SCHE_CHECK = "sche_check"
 
 # 割り当てモード
-WORST_FIT = "worst_fit"
-LIST_ORDER = "list_order"
-ID_ORDER = "id_order"
-RANDOM_ORDER = "random_order"
+WORST_FIT = 1
+LIST_ORDER = 2
+ID_ORDER = 3
+RANDOM_ORDER = 4
+
+# プロセッサ内タスクソート
+SORT_PRIORITY = 1
+SORT_ID = 2
+SORT_UTIL = 3
 
 
 PROC_ID_SYN = "proc_id"

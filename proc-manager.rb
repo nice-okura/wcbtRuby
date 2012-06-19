@@ -4,7 +4,6 @@ PROCS = "procs"
 # プロセッサマネージャーの定義
 class ProcessorManager
   include Singleton
-  
   ###############################################################
   #
   # 以下 public
@@ -130,6 +129,16 @@ class ProcessorManager
     @@tm = tm
   end
 
+  # プロセッサ内のタスクのソート
+  def sort_tasks(mode)
+    @@proc_list.each{ |proc|
+      proc.sort_tasks(mode)
+    }
+  end
+  # proc_listアクセサ
+  def self.proc_list
+    return @@proc_list
+  end
   ###############################################################
   #
   # 以下 private
