@@ -104,6 +104,17 @@ class RequireManager
         
         @@require_array << Req.new(@@id, g, time, [])
       }
+    when "120620_2"
+      g_array = []
+      gcount = 0
+      while(1)
+        @@garray.each{ |g|
+          break if @@require_array.size == i
+          info[:group] = g
+          @@require_array << create_require_120620(info)
+        }
+        break if @@require_array.size == i
+      end
     else
       # それ以外
 

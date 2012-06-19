@@ -175,11 +175,11 @@ loop_count = 1000
 
 @manager = AllManager.new
 
-info = {:mode => "120620_2", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/5}
+info = {:mode => "120620_2", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/5, :assign_mode => ID_ORDER}
 @manager.all_data_clear
 
 # グループ1がlongでそれ以外がshortであるタスクセットを作る
 # リソース要求はタスク数分しかつくらない
 @manager.create_tasks(tasks, requires, groups, info)
-taskset = TaskSet.new(@manager.tm.get_task_array)
+taskset = TaskSet.new
 taskset.show_taskset

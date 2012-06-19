@@ -749,6 +749,16 @@ class GroupManager
     return group
   end
   
+  # 120620_2用
+  # はじめに生成されるグループのみLONG
+  def create_group_120620_2
+    @@group_id += 1
+    group = Group.new(@@group_id, @@kind)
+    @@kind = SHORT
+    return group
+  end
+
+  
   #
   # i個のグループを生成し，group_arrayとする
   #
@@ -757,7 +767,8 @@ class GroupManager
     data_clear
     garray = []
 
-    if info[:mode] == SCHE_CHECK
+    case info[:mode]
+    when SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #
@@ -778,6 +789,10 @@ class GroupManager
 
       @@group_array = garray
       #pp @@group_array
+    when "120620_2"
+      i.times{ 
+        @@group_array << create_group_120620_2
+      }
     else
       i.times{
         garray << create_group

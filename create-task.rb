@@ -5,12 +5,6 @@ class TaskManager
   # 120620_2用
   #
   def create_task_120620_2(task_count, a_extime=50)
-    #################
-    # タスクステータス #
-    #################
-    #
-    # 120620_2用
-    #
     @@task_id += 1
     proc = UNASSIGNED  # 未割り当て
     extime = a_extime
@@ -18,7 +12,6 @@ class TaskManager
     priority = @@task_id
     offset = 0
     req_list = RequireManager.get_reqlist_from_req_id([@@task_id])
-    p proc
     task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
     
     return task
@@ -76,7 +69,6 @@ class TaskManager
     }
     RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
     proc = (new_task_id.to_i%PROC_NUM)+1
-    #p task_id_array
     priority = new_task_id
     extime = a_extime
     period = (extime/(1.0/task_count))
