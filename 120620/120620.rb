@@ -35,6 +35,17 @@ def show_groups
 end
 
 #
+# 現在のリソースグループをハッシュにして返す
+#
+def get_groups
+  ret_hash = { }
+  @manager.using_group_array.each{ |g|
+    ret_hash[g.group] = g.kind
+  }
+  ret_hash
+end
+
+#
 # longグループ数を取得
 #
 def get_long_groups
@@ -58,7 +69,12 @@ $DEBUG = false
 #
 #############################
 
+#
+# 最悪応答時間が最も良くなる時のグループの分類を求める
+# @return [Array<String>]
+#
 def compute_wcrt
+  ret_hash = { }
   #pp @manager.using_group_array
   #
   # グループ数
@@ -123,13 +139,14 @@ def compute_wcrt
 
       #$COLOR_CHAR = false
       if long_count > 0
-        puts "long_count:#{long_count}"
-        puts "最悪応答時間:#{min_all_wcrt}"
-        taskset = TaskSet.new($task_list)
-        taskset.show_taskset
-        taskset.show_blocktime
-        show_groups
-        save_min
+        #puts "long_count:#{long_count}"
+        #puts "最悪応答時間:#{min_all_wcrt}"
+        #taskset = TaskSet.new($task_list)
+        #taskset.show_taskset
+        #taskset.show_blocktime
+        #show_groups
+        ret_hash = get_groups
+        #save_min
       end
       #$COLOR_CHAR = true
     end
@@ -142,22 +159,22 @@ def compute_wcrt
     #p "#{i}:#{istr}"
     change_groups(istr)
   }
-  return long_count
+  return ret_hash
 end
 
 #
 # main関数
 #
-tasks = 12
+tasks = 4
 requires = 20
-groups = 3
+groups = 2
 rcsl = 0.1
 extime = 80
 resouce_count_max = 1
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 1
+loop_count = 1000
 
 
 @manager = AllManager.new
@@ -167,7 +184,10 @@ pbar = ProgressBar.new("WCRTの計測", loop_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = {:mode => "120620", :extime => extime, :rcsl => rcsl}
+info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10}
+group1LongCount = 0
+otherLongCount = 0
+
 loop_count.times{
   @manager.all_data_clear
   @manager.create_tasks(tasks, requires, groups, info)
@@ -180,10 +200,16 @@ loop_count.times{
   #}
   pbar.inc  
   
-  compute_wcrt
-  #end
-
-  
+  g_hash = compute_wcrt
+  if g_hash[1] == LONG
+    group1LongCount += 1
+  elsif g_hash.value?(LONG)
+    otherLongCount += 1 
+  end
 }
+puts "■#{PROC_NUM}CPU #{tasks}tasks #{groups}groups rcsl long:0.1 short0.01"
+puts "Group1がlongなのは#{group1LongCount}個"
+puts "それ以外がlongなのは#{otherLongCount}個"
+puts "longがないのは#{loop_count - group1LongCount - otherLongCount}"
 save_min
 pbar.finish

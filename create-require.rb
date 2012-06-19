@@ -8,7 +8,7 @@ class RequireManager
     @@id += 1
     group = info[:group]
     # グループ1は長いリソースにする
-    time = group.group==1 ? info[:extime]*info[:rcsl]*3 : info[:extime]*info[:rcsl]/2
+    time = group.group==1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
     req = []
 
     return Req.new(@@id, group, time, req)
