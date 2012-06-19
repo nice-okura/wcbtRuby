@@ -75,7 +75,10 @@ class Processor
     #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
 
-
+  # プロセッサに割り当てられているタスクを削除
+  def remove_task
+    @task_list = []
+  end
   ###############################################################
   #
   # 以下 private

@@ -1,5 +1,28 @@
 class TaskManager
+
   private
+  #
+  # 120620_2用
+  #
+  def create_task_120620_2(task_count, a_extime=50)
+    #################
+    # タスクステータス #
+    #################
+    #
+    # 120620_2用
+    #
+    @@task_id += 1
+    proc = UNASSIGNED  # 未割り当て
+    extime = a_extime
+    period = (extime/(1.0/task_count))
+    priority = @@task_id
+    offset = 0
+    req_list = RequireManager.get_reqlist_from_req_id([@@task_id])
+    p proc
+    task = Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
+    
+    return task
+  end
   #
   # 120620用
   #

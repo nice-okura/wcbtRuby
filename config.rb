@@ -23,6 +23,14 @@ $DEBUGFlg = false
 
 JSON_FOLDER = "./json"
 SCHE_CHECK = "sche_check"
+
+# 割り当てモード
 WORST_FIT = "worst_fit"
+LIST_ORDER = "list_order"
+ID_ORDER = "id_order"
+RANDOM_ORDER = "random_order"
+
+
 PROC_ID_SYN = "proc_id"
 TASK_LIST_SYN = "task_list"
+UNASSIGNED = -1

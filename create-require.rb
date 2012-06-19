@@ -7,8 +7,8 @@ class RequireManager
   def create_require_120620(info = { })
     @@id += 1
     group = info[:group]
-    # グループ1は長いリソースにする
-    time = group.group==1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
+    # longは長いリソースにする
+    time = group.kind == LONG ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
     req = []
 
     return Req.new(@@id, group, time, req)
@@ -141,7 +141,7 @@ class RequireManager
             c = create_require(new_group, a_extime*rcsl)
           when "120613"
             c = create_require_120613(info)
-          when "120620"
+          when "120620", "120620_2"
             c = create_require_120620(info)
           else
             #

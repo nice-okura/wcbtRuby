@@ -180,36 +180,41 @@ loop_count = 1000
 @manager = AllManager.new
 
 
-pbar = ProgressBar.new("WCRTの計測", loop_count)
+pbar = ProgressBar.new("WCRTの計測", loop_count*2*5)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
 info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10}
-group1LongCount = 0
-otherLongCount = 0
+fp = File.open("log.txt", "w")
+[8, 12].each{ |tsk|
+  [2, 3, 4, 5, 6].each{ |grp|
+    group1LongCount = 0
+    otherLongCount = 0
+    loop_count.times{
+      @manager.all_data_clear
+      @manager.create_tasks(tsk, requires, grp, info)
+      #@manager.load_tasks("120613_8task_4CPU")
+      #
+      # クリティカルセクションの変更
+      #
+      #$task_list.each{|t|
+      #  t.req_list[0].time = t.extime * rcsl
+      #}
 
-loop_count.times{
-  @manager.all_data_clear
-  @manager.create_tasks(tasks, requires, groups, info)
-  #@manager.load_tasks("120613_8task_4CPU")
-  #
-  # クリティカルセクションの変更
-  #
-  #$task_list.each{|t|
-  #  t.req_list[0].time = t.extime * rcsl
-  #}
-  pbar.inc  
-  
-  g_hash = compute_wcrt
-  if g_hash[1] == LONG
-    group1LongCount += 1
-  elsif g_hash.value?(LONG)
-    otherLongCount += 1 
-  end
+      
+      g_hash = compute_wcrt
+      pbar.inc
+      if g_hash[1] == LONG
+        group1LongCount += 1
+      elsif g_hash.value?(LONG)
+        otherLongCount += 1 
+      end
+    }
+    fp.puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
+    fp.puts "Group1がlongなのは#{group1LongCount}個"
+    fp.puts "それ以外がlongなのは#{otherLongCount}個"
+    fp.puts "longがないのは#{loop_count - group1LongCount - otherLongCount}"
+  }
 }
-puts "■#{PROC_NUM}CPU #{tasks}tasks #{groups}groups rcsl long:0.1 short0.01"
-puts "Group1がlongなのは#{group1LongCount}個"
-puts "それ以外がlongなのは#{otherLongCount}個"
-puts "longがないのは#{loop_count - group1LongCount - otherLongCount}"
 save_min
 pbar.finish

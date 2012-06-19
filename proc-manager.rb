@@ -17,11 +17,23 @@ class ProcessorManager
   end
 
   # プロセッサにタスクを割当てる
+  # 呼び出される度にプロセッサを初期化する
   # @param task_list [Array<Task>] 割当てるタスクのリスト
   def assign_tasks(task_list, info={ })
+    init_all_proc # 全てのプロセッサのタスクを取り除く
+
     case info[:assign_mode]
     when WORST_FIT
       # WORST_FITで割当てる
+    when LIST_ORDER
+      # task_listの順に割り当てる
+      assign_list_order(task_list)
+    when ID_ORDER
+      # タスクIDの順で割り当てる
+      assign_id_order(task_list)
+    when RANDOM_ORDER
+      # ランダムに割り当てる
+      assign_random(task_list)
     else
       # ランダムに割当てる
       assign_random(task_list)
@@ -76,7 +88,6 @@ class ProcessorManager
       
       # プロセッサ毎の処理
       # @@proc_listに読み込んだタスクを追加
-      p procs[PROCS].size
       procs[PROCS].each{|prc|
         #p prc
         proc = Processor.new(prc)
@@ -133,6 +144,25 @@ class ProcessorManager
       assign_task(proc_id, t)
     }
   end
+  
+  # タスクをtask_listの順番にプロセッサに割り当てる
+  # task_listに入っている順番にプロセッサに配置(タスクIDは関係ない)
+  def assign_list_order(task_list)
+    proc_id = 0
+    task_list.each{ |t|
+      assign_task((proc_id%@@proc_list.size)+1, t)
+      proc_id += 1
+    }
+  end
+
+  # タスクをタスクIDの順にプロセッサに割り当てる
+  def assign_id_order(task_list)
+    proc_id = 0
+    task_list.each{ |t|
+      proc_id = ((t.task_id-1)%@@proc_list.size) + 1
+      assign_task(proc_id, t)
+    }
+  end
 
   # CPU使用率が一番低いプロセッサIDを返す
   # @return id [Fixnum] プロセッサID
@@ -164,5 +194,18 @@ class ProcessorManager
       return p if p.proc_id == proc_id
     }
     return nil
+  end
+  
+  # 全てのプロセッサの割り当てタスクを取り除く
+  def init_all_proc
+    @@proc_list.each{ |proc|
+      proc.remove_task
+    }
+  end
+  
+  # プロセッサに割り当てられているタスクを取り除く
+  # @param [Fixnum] プロセッサID
+  def init_proc(proc_id)
+    @@proc_list.select{ |p| p.proc_id == proc_id }[0].remove_task
   end
 end

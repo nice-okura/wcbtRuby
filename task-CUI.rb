@@ -58,6 +58,11 @@ class TaskSet
   def proc_list
     proc = []
     @task_list.each{|task|
+      # タスクが未割り当ての場合
+      if task.proc == UNASSIGNED
+        puts "タスク#{task.task_id}が未割り当てです"
+        exit
+      end
       proc << task.proc
     }
     proc.uniq!

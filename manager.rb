@@ -124,7 +124,9 @@ class AllManager
 
     # プロセッサの作成
     @pm.create_processor_list(info)
-    
+    # タスクの割り当て
+    @pm.assign_tasks(@tm.get_task_array, info)
+
     @using_group_array = get_using_group_array
     
     $task_list = @tm.get_task_array
@@ -374,6 +376,10 @@ class TaskManager
     when "120613", "120620"
       i.times{ 
         @@task_array << create_task_120613(i, info[:extime])
+      }
+    when "120620_2"
+      i.times{ 
+        @@task_array << create_task_120620_2(i, info[:extime])
       }
     else
       $stderr.puts "create_task_array:infoエラー"
@@ -696,6 +702,14 @@ class RequireManager
     return @@require_array
   end
   
+  #
+  # reuqireIDからリソース要求を得る
+  #
+  def self.get_require_from_id(id)
+    req = @@require_array.select{ |r| r.req_id == id}
+    return req[0] unless req == []
+    return nil
+  end
   #
   # 内部データのクリア
   #
