@@ -98,7 +98,7 @@ def compute_wcrt
   @manager.gm.get_group_array.each{|g|
     g.kind = SHORT
   }
-  taskset = TaskSet.new(@manager.tm.get_task_array)
+  taskset = TaskSet.new
   
   #
   # システム全体の最悪応答時間
@@ -142,7 +142,7 @@ def compute_wcrt
         #puts "long_count:#{long_count}"
         #puts "最悪応答時間:#{min_all_wcrt}"
         #taskset = TaskSet.new($task_list)
-        #taskset.show_taskset
+        taskset.show_taskset
         #taskset.show_blocktime
         #show_groups
         ret_hash = get_groups
@@ -165,7 +165,7 @@ end
 #
 # main関数
 #
-tasks = 4
+tasks = 8
 requires = 20
 groups = 2
 rcsl = 0.1
@@ -174,7 +174,7 @@ resouce_count_max = 1
 start_task_num = 8
 end_task_num = 16
 task_step_num = 4
-loop_count = 1000
+loop_count = 10
 
 
 @manager = AllManager.new
@@ -185,9 +185,9 @@ pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
 info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10}
-fp = File.open("log.txt", "w")
-[8, 12].each{ |tsk|
-  [2, 3, 4, 5, 6].each{ |grp|
+#fp = File.open("log.txt", "w")
+[8].each{ |tsk|
+  [5].each{ |grp|
     group1LongCount = 0
     otherLongCount = 0
     loop_count.times{
@@ -210,11 +210,11 @@ fp = File.open("log.txt", "w")
         otherLongCount += 1 
       end
     }
-    fp.puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
-    fp.puts "Group1がlongなのは#{group1LongCount}個"
-    fp.puts "それ以外がlongなのは#{otherLongCount}個"
-    fp.puts "longがないのは#{loop_count - group1LongCount - otherLongCount}"
+    #fp.puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
+    #fp.puts "Group1がlongなのは#{group1LongCount}個"
+    #fp.puts "それ以外がlongなのは#{otherLongCount}個"
+    #fp.puts "longがないのは#{loop_count - group1LongCount - otherLongCount}"
   }
 }
-save_min
+save_min(filename)
 pbar.finish
