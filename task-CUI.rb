@@ -125,8 +125,8 @@ class TaskSet
   # 以下のフォーマットでブロック時間等表示
   #
   def show_blocktime
-    @taskset_proc.each{|tasks|
-      tasks.each{|t|
+    ProcessorManager.proc_list.each{|proc|
+      proc.task_list.each{ |t|
         print "タスク#{t.task_id}"      
         print ["\tBB:", sprintf("%.1f", t.bb)].join
         print ["\tAB:", sprintf("%.1f", t.ab)].join

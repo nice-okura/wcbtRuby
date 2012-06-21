@@ -10,6 +10,24 @@ require "progressbar"
 
 FILENAME = "120620_2"
 
+# 配列クラスに組合せ
+class Array
+  def permutations(k=self.size)
+    return [[]] if k < 1
+    perm = []
+    self.each do |e|
+      x = self.dup
+      x.delete_at(x.index(e))
+      x.permutations(k-1).each do |p|
+        perm << ([e] + p)
+      end
+    end
+    perm
+  end
+end
+
+
+
 def save_min
   @manager.save_tasks(JSON_FOLDER + "/" + FILENAME)
 end
@@ -162,6 +180,15 @@ def compute_wcrt
   return ret_hash
 end
 
+# 要求IDの配列[1,2,3,4]を順番にタスクに割当てる関数
+def assign_require(req_id_list)
+  $task_list.sort!{ |a,b| a.task_id <=> b.task_id }
+  i = 0
+  $task_list.each{ |t|
+    t.req_list = [RequireManager.get_require_from_id(req_id_list[i])]
+    i += 1
+  }
+end
 #
 # main関数
 #
@@ -173,13 +200,32 @@ extime = 80
 loop_count = 1000
 
 
-@manager = AllManager.new
 
 info = {:mode => "120620_2", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10, :assign_mode => ID_ORDER}
+@manager = AllManager.new
 @manager.all_data_clear
 
 # グループ1がlongでそれ以外がshortであるタスクセットを作る
 # リソース要求はタスク数分しかつくらない
 @manager.create_tasks(tasks, requires, groups, info)
+
 taskset = TaskSet.new
-taskset.show_taskset
+ril = @manager.rm.get_require_array.collect{ |r| r.req_id}.permutations
+
+pbar = ProgressBar.new("WCRTの計測", ril.size)
+pbar.format_arguments = [:percentage, :bar, :stat]
+pbar.format = "%3d%% %s %s"
+
+
+best_wcrt = 100000000
+ril.each{ |rr|
+  assign_require(rr)
+  init_computing($task_list)
+  set_blocktime
+#  taskset.show_taskset
+  pbar.inc
+  w_t = @manager.pm.get_worst_wcrt
+  best_wcrt = w_t.wcrt if best_wcrt > w_t.wcrt
+  save_min
+}
+pbar.finish

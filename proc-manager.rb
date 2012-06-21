@@ -139,6 +139,19 @@ class ProcessorManager
   def self.proc_list
     return @@proc_list
   end
+  
+  # 全タスクで１番最悪応答時間が悪いタスクを返す
+  def get_worst_wcrt
+    wcrt = -1
+    worst_t = nil
+    @@proc_list.each{ |proc|
+      proc.task_list.each{ |t|
+        wcrt = t.wcrt if wcrt < t.wcrt
+        worst_t = t
+      }
+    }
+    return worst_t
+  end
   ###############################################################
   #
   # 以下 private

@@ -21,6 +21,12 @@ class Processor
     @task_list = []
 
     @util = 0.0
+    id = attr[PROC_ID_SYN] # IDは1から始まる
+    if id == nil || id == 0
+      raise "プロセッサIDが不正です．"
+    end
+    @proc_id = id
+    puts "プロセッサ#{@proc_id}作成"
 
     unless attr[TASK_LIST_SYN] == nil
       tlist = TaskManager.get_tasks(attr[TASK_LIST_SYN])
@@ -30,12 +36,7 @@ class Processor
       }
     end
 
-    id = attr[PROC_ID_SYN] # IDは1から始まる
-    if id == nil || id < 1 
-      puts "プロセッサコンストラクタ(#{__FILE__} : #{__LINE__}行目)\nプロセッサIDが不正です．"
-      exit
-    end
-    @proc_id = id
+
   end
   
   ###############################################################
@@ -48,10 +49,16 @@ class Processor
   # @param [Task] 割当てるタスク
   # @return 成功したらtrue
   def assign_task(task)
+    if @proc_id == nil || @proc_id == 0
+      raise "プロセッサIDが不正です．"
+    elsif task == nil
+      raise "taskがnilです.(Processor::assign_task)" if task == nil
+    end
     @task_list << task
 
     # プロセッサ番号設定
-    task.proc = proc_id
+#    p @proc_id
+    task.proc = @proc_id
     # 優先度設定
     task.priority = @task_list.size
 
