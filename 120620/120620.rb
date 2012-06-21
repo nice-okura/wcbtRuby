@@ -151,7 +151,7 @@ def compute_wcrt(loops)
         ret_hash = get_groups
         gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s === SHORT then "S" end}.join 
         filename = "T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
-        save_taskset(filename)
+        #save_taskset(filename)
       end
       #$COLOR_CHAR = true
     end
@@ -171,9 +171,8 @@ end
 # main関数
 #
 tasks = [8]
-
 groups = [2,3,4,5]
-rcsl = 0.1
+rcsl = 0.2
 extime = 80
 loop_count = 1000
 
@@ -185,8 +184,8 @@ pbar = ProgressBar.new("WCRTの計測", loop_count*tasks.size*groups.size)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10, :assign_mode => ID_ORDER}
-fp = File.open("log_2.txt", "w")
+info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => 0.01, :assign_mode => ID_ORDER}
+fp = File.open("log_2_long_rcsl#{rcsl}.txt", "w")
 tasks.each{ |tsk|
   requires = tsk
   groups.each{ |grp|
@@ -215,11 +214,13 @@ tasks.each{ |tsk|
         otherLongCount += 1 
       end
     }
-    fp.puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
-    fp.puts "Group1のみがlong：#{group1OnlyLongCount}個"
-    fp.puts "Group1とその他の何かがlong：#{group1AlsoLongCount}"
-    fp.puts "Group1以外がlong：#{otherLongCount}個"
-    fp.puts "longがないのは#{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
+    #fp.puts "#■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
+    fp.puts "#{grp} #{group1OnlyLongCount} #{group1AlsoLongCount} #{otherLongCount} #{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
+    puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
+    puts "Group1のみがlong：#{group1OnlyLongCount}個"
+    puts "Group1とその他の何かがlong：#{group1AlsoLongCount}"
+    puts "Group1以外がlong：#{otherLongCount}個"
+    puts "longがないのは#{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
   }
 }
 save_min

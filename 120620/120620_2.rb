@@ -175,7 +175,7 @@ loop_count = 1000
 
 @manager = AllManager.new
 
-info = {:mode => "120620_2", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/5, :assign_mode => ID_ORDER}
+info = {:mode => "120620_2", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10, :assign_mode => ID_ORDER}
 @manager.all_data_clear
 
 # グループ1がlongでそれ以外がshortであるタスクセットを作る
