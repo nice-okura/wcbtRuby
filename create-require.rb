@@ -7,8 +7,8 @@ class RequireManager
   def create_require_120620(info = { })
     @@id += 1
     group = info[:group]
-    # longは長いリソースにする
-    time = group.kind == LONG ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
+    # Group1は長くする
+    time = group.group == 1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
     req = []
 
     return Req.new(@@id, group, time, req)
@@ -104,9 +104,8 @@ class RequireManager
         
         @@require_array << Req.new(@@id, g, time, [])
       }
-    when "120620_2"
-      g_array = []
-      gcount = 0
+    when "120620_2", "120620"
+      
       while(1)
         @@garray.each{ |g|
           break if @@require_array.size == i
@@ -152,7 +151,7 @@ class RequireManager
             c = create_require(new_group, a_extime*rcsl)
           when "120613"
             c = create_require_120613(info)
-          when "120620", "120620_2"
+          when "120620"
             c = create_require_120620(info)
           else
             #

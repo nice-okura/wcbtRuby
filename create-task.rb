@@ -39,7 +39,7 @@ class TaskManager
     req_list = []
     
     gcount = @@garray.size
-    gnum = @@task_id%gcount + 1  # 使用するグループのID
+    gnum = (@@task_id-1)%gcount + 1  # 使用するグループのID
     new_garray = []
     #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
     @@rarray.each{|r|
@@ -68,7 +68,7 @@ class TaskManager
       req_time += req.time
     }
     RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
-    proc = (new_task_id.to_i%PROC_NUM)+1
+    proc = -1
     priority = new_task_id
     extime = a_extime
     period = (extime/(1.0/task_count))

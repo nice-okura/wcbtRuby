@@ -128,7 +128,6 @@ class AllManager
     @pm.assign_tasks(@tm.get_task_array, info)
 
     @using_group_array = get_using_group_array
-    
     $task_list = @tm.get_task_array
     
     if info[:mode] == SCHE_CHECK
@@ -373,7 +372,11 @@ class TaskManager
       i.times{
         @@task_array << create_task_sche_check(info[:extime])
       }
-    when "120613", "120620"
+    when "120620"
+      i.times{ 
+        @@task_array << create_task_120620(i, info[:extime])
+      }
+    when "120613"
       i.times{ 
         @@task_array << create_task_120613(i, info[:extime])
       }
@@ -406,7 +409,7 @@ class TaskManager
     
     #pp tasks_json
     begin
-      puts "Saving #{tasks_json["tasks"].size} tasks..."
+      #puts "Saving #{tasks_json["tasks"].size} tasks..."
       File.open(filename, "w"){|fp|
         fp.write JSON.pretty_generate(tasks_json)
       }

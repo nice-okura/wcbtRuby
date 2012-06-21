@@ -14,6 +14,10 @@ def save_min
   @manager.save_tasks(JSON_FOLDER + "/" + FILENAME)
 end
 
+def save_taskset(filename)
+  @manager.save_tasks(JSON_FOLDER + "/tasksets/" + filename)
+end
+
 #
 # グループを変更
 #
@@ -42,7 +46,7 @@ def get_groups
   @manager.using_group_array.each{ |g|
     ret_hash[g.group] = g.kind
   }
-  ret_hash
+  return ret_hash
 end
 
 #
@@ -73,8 +77,7 @@ $DEBUG = false
 # 最悪応答時間が最も良くなる時のグループの分類を求める
 # @return [Array<String>]
 #
-def compute_wcrt
-  ret_hash = { }
+def compute_wcrt(loops)
   #pp @manager.using_group_array
   #
   # グループ数
@@ -115,7 +118,7 @@ def compute_wcrt
   long_count = 0
   
   #$DEBUG = true
-  
+  ret_hash = get_groups
   group_times.times{
     wcrt_max_system = -1 # 適当な最小値
     
@@ -142,11 +145,13 @@ def compute_wcrt
         #puts "long_count:#{long_count}"
         #puts "最悪応答時間:#{min_all_wcrt}"
         #taskset = TaskSet.new($task_list)
-        taskset.show_taskset
+        #taskset.show_taskset
         #taskset.show_blocktime
         #show_groups
         ret_hash = get_groups
-        #save_min
+        gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s === SHORT then "S" end}.join 
+        filename = "T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
+        save_taskset(filename)
       end
       #$COLOR_CHAR = true
     end
@@ -165,56 +170,57 @@ end
 #
 # main関数
 #
-tasks = 8
-requires = 20
-groups = 2
+tasks = [8]
+
+groups = [2,3,4,5]
 rcsl = 0.1
 extime = 80
-resouce_count_max = 1
-start_task_num = 8
-end_task_num = 16
-task_step_num = 4
-loop_count = 10
+loop_count = 1000
 
 
 @manager = AllManager.new
 
 
-pbar = ProgressBar.new("WCRTの計測", loop_count*2*5)
+pbar = ProgressBar.new("WCRTの計測", loop_count*tasks.size*groups.size)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10}
-#fp = File.open("log.txt", "w")
-[8].each{ |tsk|
-  [5].each{ |grp|
-    group1LongCount = 0
+info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl/10, :assign_mode => ID_ORDER}
+fp = File.open("log_2.txt", "w")
+tasks.each{ |tsk|
+  requires = tsk
+  groups.each{ |grp|
+    group1OnlyLongCount = 0
+    group1AlsoLongCount = 0
     otherLongCount = 0
-    loop_count.times{
+    
+    loop_count.times{|i|
       @manager.all_data_clear
       @manager.create_tasks(tsk, requires, grp, info)
-      #@manager.load_tasks("120613_8task_4CPU")
-      #
-      # クリティカルセクションの変更
-      #
-      #$task_list.each{|t|
-      #  t.req_list[0].time = t.extime * rcsl
-      #}
-
-      
-      g_hash = compute_wcrt
+    
+      g_hash = compute_wcrt(i)
       pbar.inc
-      if g_hash[1] == LONG
-        group1LongCount += 1
-      elsif g_hash.value?(LONG)
+      group1Flg = g_hash[1] == LONG  # グループ1がlongかどうか
+      g_hash.delete(1)               #
+      shortFlg = g_hash.value?(LONG) # グループ1以外にlongリソースがあるかどうか．あればtrue
+
+      if group1Flg == true && shortFlg == false
+        # Group1のみがLongなもの
+        group1OnlyLongCount += 1
+      elsif group1Flg == true && shortFlg == true
+        # Group1もそれ以外の何かがlong
+        group1AlsoLongCount += 1
+      elsif group1Flg == false && shortFlg == true
+        # Group1以外がlong
         otherLongCount += 1 
       end
     }
-    #fp.puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
-    #fp.puts "Group1がlongなのは#{group1LongCount}個"
-    #fp.puts "それ以外がlongなのは#{otherLongCount}個"
-    #fp.puts "longがないのは#{loop_count - group1LongCount - otherLongCount}"
+    fp.puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
+    fp.puts "Group1のみがlong：#{group1OnlyLongCount}個"
+    fp.puts "Group1とその他の何かがlong：#{group1AlsoLongCount}"
+    fp.puts "Group1以外がlong：#{otherLongCount}個"
+    fp.puts "longがないのは#{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
   }
 }
-save_min(filename)
+save_min
 pbar.finish
