@@ -1,0 +1,40 @@
+■4CPU 8tasks 2groups rcsl long:0.1 short:0.01
+Group1がlongなのは195個
+それ以外がlongなのは6個
+longがないのは799
+■4CPU 8tasks 3groups rcsl long:0.1 short:0.01
+Group1がlongなのは237個
+それ以外がlongなのは61個
+longがないのは702
+■4CPU 8tasks 4groups rcsl long:0.1 short:0.01
+Group1がlongなのは221個
+それ以外がlongなのは89個
+longがないのは690
+■4CPU 8tasks 5groups rcsl long:0.1 short:0.01
+Group1がlongなのは0個
+それ以外がlongなのは361個
+longがないのは639
+■4CPU 8tasks 6groups rcsl long:0.1 short:0.01
+Group1がlongなのは0個
+それ以外がlongなのは351個
+longがないのは649
+■4CPU 12tasks 2groups rcsl long:0.1 short:0.01
+Group1がlongなのは186個
+それ以外がlongなのは69個
+longがないのは745
+■4CPU 12tasks 3groups rcsl long:0.1 short:0.01
+Group1がlongなのは360個
+それ以外がlongなのは251個
+longがないのは389
+■4CPU 12tasks 4groups rcsl long:0.1 short:0.01
+Group1がlongなのは461個
+それ以外がlongなのは337個
+longがないのは202
+■4CPU 12tasks 5groups rcsl long:0.1 short:0.01
+Group1がlongなのは464個
+それ以外がlongなのは445個
+longがないのは91
+■4CPU 12tasks 6groups rcsl long:0.1 short:0.01
+Group1がlongなのは448個
+それ以外がlongなのは529個
+longがないのは23
