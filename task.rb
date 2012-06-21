@@ -26,7 +26,6 @@ class Processor
       raise "プロセッサIDが不正です．"
     end
     @proc_id = id
-    puts "プロセッサ#{@proc_id}作成"
 
     unless attr[TASK_LIST_SYN] == nil
       tlist = TaskManager.get_tasks(attr[TASK_LIST_SYN])

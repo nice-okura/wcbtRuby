@@ -687,14 +687,14 @@ module WCBT
   def wcrt(job)
     pre_wcrt = job.extime + job.b
     n = 1
-    puts "job:#{job.task_id}:#{job.proc}"
+#    puts "job:#{job.task_id}:#{job.proc}"
     while(1)
       time = job.extime + job.b - job.db
       $calc_task.each{ |t|
         #pp t
         if t.priority < job.priority && t.proc == job.proc
           count = ((pre_wcrt/t.period).ceil)
-          puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
+ #         puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
           time += count*(t.extime + t.sb)
         end
       }

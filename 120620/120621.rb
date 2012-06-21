@@ -1,14 +1,14 @@
 #! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
-#= 120620ミーティング用
+#= 120621ミーティング用
 #
 $:.unshift(File.dirname(__FILE__))
 require "../task-CUI"
 require "../manager"
 require "progressbar"
 
-FILENAME = "120620"
+FILENAME = "120621"
 
 def save_min
   @manager.save_tasks(JSON_FOLDER + "/" + FILENAME)
@@ -150,8 +150,8 @@ def compute_wcrt(loops)
         #show_groups
         ret_hash = get_groups
         gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s === SHORT then "S" end}.join 
-        filename = "T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
-        #save_taskset(filename)
+        filename = "RCSL0.01_T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
+        save_taskset(filename)
       end
       #$COLOR_CHAR = true
     end
@@ -171,7 +171,7 @@ end
 # main関数
 #
 tasks = [8]
-groups = [2,3,4,5]
+groups = [4]
 rcsl = 0.1
 extime = 80
 loop_count = 1000
@@ -184,7 +184,7 @@ pbar = ProgressBar.new("WCRTの計測", loop_count*tasks.size*groups.size)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => 0.01, :assign_mode => ID_ORDER}
+info = {:mode => "120620", :extime => extime, :rcsl_l => 0.01, :rcsl_s => 0.01, :assign_mode => ID_ORDER}
 fp = File.open("log_2_long_rcsl#{rcsl}.txt", "w")
 tasks.each{ |tsk|
   requires = tsk
@@ -215,7 +215,7 @@ tasks.each{ |tsk|
       end
     }
     #fp.puts "#■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
-    fp.puts "#{grp} #{group1OnlyLongCount} #{group1AlsoLongCount} #{otherLongCount} #{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
+    #fp.puts "#{grp} #{group1OnlyLongCount} #{group1AlsoLongCount} #{otherLongCount} #{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
     puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
     puts "Group1のみがlong：#{group1OnlyLongCount}個"
     puts "Group1とその他の何かがlong：#{group1AlsoLongCount}"
