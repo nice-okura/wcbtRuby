@@ -170,7 +170,7 @@ end
 #
 # main関数
 #
-tasks = [8]
+tasks = [12]
 groups = [2,3,4,5]
 rcsl = 0.1
 extime = 80
@@ -185,7 +185,7 @@ pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
 info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => 0.01, :assign_mode => ID_ORDER}
-fp = File.open("log_2_long_rcsl#{rcsl}.txt", "w")
+fp = File.open("log_12tasks_long_rcsl#{rcsl}.txt", "w")
 tasks.each{ |tsk|
   requires = tsk
   groups.each{ |grp|
