@@ -33,8 +33,7 @@ require "proc-manager"
 #  proc: 完全ランダム
 #  period: extime以下でランダム
 #  extime: reqListの総時間以上で乱数
-#  priority: 完全ランダム
-#  offset: period以下でランダム
+#  priority: 完全ランダム#  offset: period以下でランダム
 #  reqList: createReqListで生成
 # Group(group, kind)
 #  group: 生成順にインクリメント
@@ -273,6 +272,147 @@ class AllManager
     }
     
     return new_garray
+  end
+
+
+  #
+  # グループを変更
+  #
+  def change_groups(str)
+    i = 0
+    str.each_byte{|c|
+      using_group_array[i].kind = c.chr=="0" ? SHORT : LONG
+      i += 1
+    }
+  end
+
+  #
+  # 現在のリソースグループ表示
+  #
+  def show_groups
+    using_group_array.each{|g|
+      print "#{g.kind[0].chr} "
+    }
+  end
+
+  #
+  # 現在のリソースグループをハッシュにして返す
+  #
+  def get_groups
+    ret_hash = { }
+    using_group_array.each{ |g|
+      ret_hash[g.group] = g.kind
+    }
+    return ret_hash
+  end
+
+  #
+  # longグループ数を取得
+  #
+  def get_long_groups
+    c = 0
+    using_group_array.each{|g|
+      #c += 1 if g.kind == LONG
+      if g.kind == LONG
+        c += 1
+        #puts LONG
+      end
+    }
+    return c
+  end
+  
+    #
+  # 最悪応答時間が最も良くなる時のグループの分類を求める
+  # @return [Array<String>]
+  #
+  def compute_wcrt(loops)
+    #pp using_group_array
+    #
+    # グループ数
+    #
+    group_count = using_group_array.size
+    
+    #
+    # グループのパターン数
+    #
+    group_times = 2**group_count
+    #p "#{group_times}times"
+    
+    #
+    # グループパターン数を２進数で記録
+    #
+    group_binary = group_times.to_s(2)
+    
+    #
+    # リソースを全てshortにする
+    #
+    gm.get_group_array.each{|g|
+      g.kind = SHORT
+    }
+    taskset = TaskSet.new
+    
+    #
+    # システム全体の最悪応答時間
+    #
+    min_all_wcrt = 10000000 # 適当な最大値
+    max_all_wcrt = -1       # 適当な最小値
+    
+    #
+    # システム全体の最悪応答時間が最も良くなる場合を探す
+    #
+    
+    i = 0
+    change_count = 0
+    long_count = 0
+    
+    #$DEBUG = true
+    ret_hash = get_groups
+    group_times.times{
+      wcrt_max_system = -1 # 適当な最小値
+      
+      $task_list.each{|t|
+        t.resetting
+      }
+      init_computing($task_list)
+      set_blocktime
+      
+      $task_list.each{|t|
+        wcrt = t.wcrt
+        wcrt_max_system = wcrt if wcrt_max_system < wcrt
+        #pbar.inc
+      }
+      
+      
+      if wcrt_max_system < min_all_wcrt
+        min_all_wcrt = wcrt_max_system
+        long_count = get_long_groups
+        change_count += 1
+
+        #$COLOR_CHAR = false
+        if long_count > 0
+          #puts "long_count:#{long_count}"
+          #puts "最悪応答時間:#{min_all_wcrt}"
+          #taskset = TaskSet.new($task_list)
+          #taskset.show_taskset
+          #taskset.show_blocktime
+          #show_groups
+          ret_hash = get_groups
+          gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s === SHORT then "S" end}.join 
+          filename = "#{Dir::pwd}/json/same_cs_tasksets/T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
+          save_tasks(filename)
+        end
+        #$COLOR_CHAR = true
+      end
+      #taskset = TaskSet.new($task_list)
+      #taskset.show_taskset
+      #show_groups
+      #puts wcrt_max_system
+      i += 1
+      istr = ("%010b" % [i])[10-group_count, group_count]
+      #p "#{i}:#{istr}"
+      change_groups(istr)
+    }
+    return ret_hash
   end
 end
 

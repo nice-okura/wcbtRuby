@@ -26,58 +26,6 @@ class Array
   end
 end
 
-
-
-def save_min
-  @manager.save_tasks(JSON_FOLDER + "/" + FILENAME)
-end
-
-#
-# グループを変更
-#
-def change_groups(str)
-  i = 0
-  str.each_byte{|c|
-    @manager.using_group_array[i].kind = c.chr=="0" ? SHORT : LONG
-    i += 1
-  }
-end
-
-#
-# 現在のリソースグループ表示
-#
-def show_groups
-  @manager.using_group_array.each{|g|
-    print "#{g.kind[0].chr} "
-  }
-end
-
-#
-# 現在のリソースグループをハッシュにして返す
-#
-def get_groups
-  ret_hash = { }
-  @manager.using_group_array.each{ |g|
-    ret_hash[g.group] = g.kind
-  }
-  ret_hash
-end
-
-#
-# longグループ数を取得
-#
-def get_long_groups
-  c = 0
-  @manager.using_group_array.each{|g|
-    #c += 1 if g.kind == LONG
-    if g.kind == LONG
-      c += 1
-      #puts LONG
-    end
-  }
-  return c
-end
-
 include WCBT
 $DEBUG = false
 
