@@ -1,3 +1,4 @@
+$:.unshift(File.dirname(__FILE__))
 require "manager"
 require "task-CUI"
 require "json"
@@ -14,12 +15,12 @@ FILENAME = ARGV[0]
 unless ARGV[4] == nil
   info = { :mode => ARGV[4].split(',')[0], :extime => ARGV[4].split(',')[1], :rcsl => ARGV[4].split(',')[2] }
 else
-  info = { }
+  info = { :mode => "0" }
 end
 p info
 @manager = AllManager.new
 @manager.create_tasks(ARGV[1].to_i, ARGV[2].to_i, ARGV[3].to_i, info)
 @manager.save_tasks("#{FILENAME}")
 
-taskset = TaskSet.new(@manager.tm.get_task_array)
+taskset = TaskSet.new
 taskset.show_taskset
