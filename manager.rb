@@ -211,8 +211,8 @@ class AllManager
     $task_list.each{ |t|
       t.resetting
     }
-    #init_computing
-    #set_blocktime
+    init_computing($task_list)
+    set_blocktime
     
   end 
 
@@ -673,6 +673,17 @@ class TaskManager
       task_list << self.get_task(id)
     }
     return task_list
+  end
+
+
+  # task_listの中から，最大周期を取得
+  def get_max_period
+    period = -1
+    @@task_array.each{ |t|
+      period = t.period if period < t.period
+    }
+
+    return period
   end
 end
 
