@@ -227,7 +227,7 @@ class TaskCUI
   def get_require_time_char(req)
     str = ""
     curTime = req.begintime
-    str += req.res.kind == LONG ? "G#{req.res.group.to_s}:".red : "G#{req.res.group.to_s}:".blue
+    str += req.res.kind == LONG ? "G#{req.res.group}:".red : "G#{req.res.group}:".blue
     
     reqtime = req.time
     req.reqs.each{|subreq|

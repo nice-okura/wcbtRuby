@@ -2,7 +2,6 @@ $:.unshift(File.dirname(__FILE__))
 require "manager"
 require "task-CUI"
 require "json"
-require "export_schesim"
 
 if(ARGV.size < 4)
   puts "引数が足りません．"
@@ -21,9 +20,6 @@ end
 p info
 @manager = AllManager.new
 @manager.create_tasks(ARGV[1].to_i, ARGV[2].to_i, ARGV[3].to_i, info)
-#@manager.save_tasks("#{FILENAME}")
+@manager.save_tasks("#{FILENAME}")
 taskset = TaskSet.new
 taskset.show_taskset
-
-ex = EXPORT_SCHESIM.new("hoge_schesim/hoge_schesim")
-ex.output(@manager)
