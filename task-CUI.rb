@@ -227,7 +227,7 @@ class TaskCUI
   def get_require_time_char(req)
     str = ""
     curTime = req.begintime
-    str += "G" + req.res.group.to_s + ":"
+    str += req.res.kind == LONG ? "G#{req.res.group.to_s}:".red : "G#{req.res.group.to_s}:".blue
     
     reqtime = req.time
     req.reqs.each{|subreq|
@@ -244,40 +244,7 @@ class TaskCUI
     reqtime.to_i.times{
       req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
     }
-=begin
-    subreqArray = req.reqs
-    
-    reqtime = req.time
-    if subreqArray.size > 0 then
-      # ネストしている場合
-      i = 0
-      while i < subreqArray.size 
-        # i番目のネスト
-        if curTime == subreqArray[i].begintime then
-          p i
-          str += "("
-          str += get_require_time_char(subreqArray[i])
-          str += ")"
-          curTime += subreqArray[i].time
-          reqtime -= subreqArray[i].time
-          i += 1
-        else
-          p "2"
-          req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
-          curTime += 1
-          reqtime -= 1
-        end
-      end
-      reqtime.times{
-        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR
-      }
-    else
-      # ネストしていない場合
-      reqtime.times{
-        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR
-      }
-    end
-=end
+
     return str
   end
 end

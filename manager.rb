@@ -81,15 +81,17 @@ class AllManager
       puts "ファイル名を指定して下さいよ" 
       return false
     end
-    return false unless @gm.load_group_data("#{name}_group.json")
-    return false unless @rm.load_require_data("#{name}_require.json")
-    return false unless @tm.load_task_data("#{name}_task.json")
-    return false unless @pm.load_processor_data("#{name}_proc.json") == 0
+    return false if @gm.load_group_data("#{name}_group.json") == false
+    return false if @rm.load_require_data("#{name}_require.json") == false
+    return false if @tm.load_task_data("#{name}_task.json") == false
+    return false if @pm.load_processor_data("#{name}_proc.json") == false
     @using_group_array = get_using_group_array
     $task_list = @tm.get_task_array
+#    pp ProcessorManager.proc_list[0].task_list[0]
     init_computing($task_list)
     set_blocktime
-    
+#    pp ProcessorManager.proc_list[0].task_list[0]
+
     return true
   end
  

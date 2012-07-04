@@ -65,7 +65,7 @@ class ProcessorManager
 
   # プロセッサの読み込み(JSON)
   # @param filename [String] ファイル名
-  # @return [Fixnum] 読み込んだプロセッサ数を返す．失敗したら0
+  # @return [Fixnum] 読み込んだプロセッサ数を返す．失敗したらfalse
   def load_processor_data(filename)
     json = ""
     file_type = File::extname(filename)
@@ -79,7 +79,7 @@ class ProcessorManager
         }
       rescue
         puts "processor file read error: #{filename} is not exist.\n"
-        return 0
+        return false
       end
       
       data_clear  # 元のデータを削除し，新しいデータを格納
