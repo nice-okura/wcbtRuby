@@ -159,7 +159,7 @@ class TaskCUI
   # タスク表示
   #
   def show_task_char
-    return print get_task_name + get_task_char + "\n"
+    return print get_task_name + get_task_char + " (p:#{@task.period})\n"
   end
   
   #

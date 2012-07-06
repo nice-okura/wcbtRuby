@@ -142,7 +142,8 @@ class EXPORT_SCHESIM
     }
 
     # 最後に計算時間が余っていれば表示
-    str += "\t\t exc(#{t.extime + t.offset - curTime} * @@share#{t.proc})\n"
+    time = t.extime + t.offset - curTime
+    str += "\t\t exc(#{time} * @@share#{t.proc})\n" if time != 0.0
   
 
     return str

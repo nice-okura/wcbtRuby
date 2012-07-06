@@ -1,7 +1,7 @@
 SHORT = "short"
 LONG = "long"
 
-PROC_NUM = 6 # 4 or 8
+PROC_NUM = 4 # 4 or 8
 REQ_EXE_MAX = 5
 REQ_EXE_MIN = 1
 TASK_EXE_MAX = 20
