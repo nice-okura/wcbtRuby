@@ -1,67 +1,11 @@
 class RequireManager
+
+  ################################################
   #
-  # ランダムにリソース要求を作成
-  # 120620ミーティング用
+  # public
+  public
   #
-  private
-  def create_require_120620(info = { })
-    @@id += 1
-    group = info[:group]
-    # Group1は長くする
-    time = group.group == 1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
-    req = []
-
-    return Req.new(@@id, group, time, req)
-  end
-
-  #
-  # ランダムにリソース要求を作成
-  # 120613ミーティング用
-  #
-  private
-  def create_require_120613(info = { })
-    @@id += 1
-    group = info[:group]
-    time = info[:extime]*(rand%info[:rcsl])
-    req = []
-
-    return Req.new(@@id, group, time, req)
-  end
-
-
-  #
-  # ランダムにリソース要求を作成
-  #
-  private
-  def create_require(a_group=nil, a_time=nil)
-    @@id += 1
-    if a_group == nil 
-      group = GroupManager.get_random_group
-    else
-      group = a_group
-    end
-    if a_time == nil
-      time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
-    else
-      time = a_time
-    end
-    
-    req = []
-    #p @@id
-    r = RequireManager.get_random_req
-    if r != nil && r.reqs.size == 0 && !(group.kind == SHORT && r.res.kind == LONG) && group.kind != r.res.kind
-      # ※2段ネストまで対応
-      if r.res != group && time > r.time && NEST_FLG
-        req << r.clone
-      end
-    end
-    
-    #p time
-    return Req.new(@@id, group, time, req)
-  end
-
-
-
+  ################################################
 
   ################################################
   #
@@ -69,7 +13,6 @@ class RequireManager
   # 作成したリソース要求の数を返す
   #
   ################################################
-  public
   def create_require_array(i, info={ })
     case info[:mode]
     when SCHE_CHECK
@@ -121,7 +64,7 @@ class RequireManager
       @@garray.each{|g|
         g_array << g
       }
-      
+
       new_group = nil
       until flg
         data_clear
@@ -156,7 +99,6 @@ class RequireManager
             #
             # リソース要求時間はランダム
             #
-            STDERR.puts "no"
             c = create_require(new_group)
           end
           garray << c.res.group
@@ -173,5 +115,112 @@ class RequireManager
     end
     return @@require_array.size
     
+  end
+
+  ################################################
+  #
+  # private
+  private
+  #
+  ################################################
+
+
+  #
+  # ランダムにリソース要求を作成
+  # 120620ミーティング用
+  #
+  def create_require_120620(info = { })
+    @@id += 1
+    group = info[:group]
+    # Group1は長くする
+    time = group.group == 1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
+    req = []
+
+    return Req.new(@@id, group, time, req)
+  end
+
+  #
+  # ランダムにリソース要求を作成
+  # 120613ミーティング用
+  #
+  def create_require_120613(info = { })
+    @@id += 1
+    group = info[:group]
+    time = info[:extime]*(rand%info[:rcsl])
+    req = []
+
+    return Req.new(@@id, group, time, req)
+  end
+
+
+  #
+  # ランダムにリソース要求を作成
+  #
+  def create_require(a_group=nil, a_time=nil)
+    @@id += 1
+    if a_group == nil 
+      group = GroupManager.get_random_group
+    else
+      group = a_group
+    end
+    if a_time == nil
+      time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
+    else
+      time = a_time
+    end
+    
+    req = []
+    #p @@id
+    r = RequireManager.get_random_req
+    if r != nil && r.reqs.size == 0 && !(group.kind == SHORT && r.res.kind == LONG) && group.kind != r.res.kind
+      # ※2段ネストまで対応
+      if r.res != group && time > r.time && NEST_FLG
+        req << r.clone
+      end
+    end
+    
+    #p time
+    return Req.new(@@id, group, time, req)
+  end
+  
+  ## 使用するリソースグループの配列を返す
+  # 未使用のリソースの存在を許さず，全てのリソースを含めた後はランダム
+  def get_use_group_array_semirandom(group_count, g_array)
+    count = 0
+    using_group_array = []
+    
+    g_array.each{ |g|
+      using_group_array << g
+      count += 1
+      return using_group_array if count == group_count
+    }
+    
+    # 残りはランダムで選択
+    (group_count-count).times{ 
+      RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
+      using_group_array << new_group
+    }
+    
+    return using_group_array
+  end
+
+  # 未使用のリソースの存在を許さず，すべてランダム
+  def get_use_group_array_random(group_count, g_array)
+    return get_use_group_array_semirandom(group_count, g_array).sort_by{ rand }
+  end
+
+
+  # 未使用のリソースの存在を許さず，全てのリソースを含めた後もg_arrayの順番通り
+  def get_use_group_array_order(group_count, g_array)
+    count = 0
+    using_group_array = []
+    
+    while(1)
+      g_array.each{ |g|
+        using_group_array << g
+        count += 1
+        return using_group_array if count == group_count
+      }
+    end
   end
 end
