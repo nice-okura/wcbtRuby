@@ -66,7 +66,6 @@ module WCBT
     $calc_task.each{|task|
       lreqs = []
       sreqs = []
-#      pp task
       task.req_list.each{|req|
         if req.outermost == true && req.res.kind == LONG
           lreqs << req

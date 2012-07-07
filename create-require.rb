@@ -116,7 +116,6 @@ class RequireManager
       end
     else
       # それ以外
-
       flg = false
       g_array = []  # 作るべきリソース要求のグループ
       @@garray.each{|g|
@@ -127,7 +126,6 @@ class RequireManager
       until flg
         data_clear
         garray = []
-        #puts "i:#{i}"
         
         i.times{|time|
           RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
@@ -158,6 +156,7 @@ class RequireManager
             #
             # リソース要求時間はランダム
             #
+            STDERR.puts "no"
             c = create_require(new_group)
           end
           garray << c.res.group
