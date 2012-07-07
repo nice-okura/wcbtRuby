@@ -14,6 +14,7 @@ class RequireManager
   #
   ################################################
   def create_require_array(i, info={ })
+    group_array = GroupManager.get_group_array
     case info[:mode]
     when SCHE_CHECK
       #
@@ -47,72 +48,44 @@ class RequireManager
         
         @@require_array << Req.new(@@id, g, time, [])
       }
-    when "120620_2", "120620"
-      
-      while(1)
-        @@garray.each{ |g|
-          break if @@require_array.size == i
+    when "120620_2", "120620"      
+      get_use_group_array_order(i, group_array).each{ 
           info[:group] = g
           @@require_array << create_require_120620(info)
-        }
-        break if @@require_array.size == i
-      end
-    else
-      # それ以外
-      flg = false
-      g_array = []  # 作るべきリソース要求のグループ
-      @@garray.each{|g|
-        g_array << g
       }
-
-      new_group = nil
-      until flg
-        data_clear
-        garray = []
-        
-        i.times{|time|
-          RUBY_VERSION == "1.9.3" ? new_group = g_array.sample : new_group = g_array.choice  # 作るべきリソース要求のグループがあればそれを指定．なければ指定しない
-          new_group = GroupManager.get_random_group if g_array == []
-          g_array.delete(new_group)
-          info[:group] = new_group
-          case info[:mode]
-          when "120405_3"
-            #
-            # new_group(long or short)で要求時間timeの要求を作成
-            #
-            a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
-            c = create_require(new_group, a_extime/(time+1.0))
-          when"120411"
-            #
-            # リソース要求時間は実行時間のrcsl比で決める
-            #
-            a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
-            rcsl = rand%0.3
-            #rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
-            c = create_require(new_group, a_extime*rcsl)
-          when "120613"
-            c = create_require_120613(info)
-          when "120620"
-            c = create_require_120620(info)
-          else
-            #
-            #
-            # リソース要求時間はランダム
-            #
-            c = create_require(new_group)
-          end
-          garray << c.res.group
-          @@require_array << c
-        }
-        #p garray
-
-        garray.uniq!
-        #p "@@garray:#{@@garray}"
-        # 全てのグループのリソース要求が作成されたか確認
-        #
-        flg = true if garray.size == @@garray.size || i <= @@garray.size
-      end
+    when "120405_3"
+      #
+      # new_group(long or short)で要求時間timeの要求を作成
+      #
+      a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
+      get_use_group_array_random(i, group_array).each{ |new_group|
+        c = create_require(new_group, a_extime/(time+1.0))
+      }
+    when"120411"
+      #
+      # リソース要求時間は実行時間のrcsl比で決める
+      #
+      a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
+      rcsl = rand%0.3
+      #rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f
+      get_use_group_array_random(i, group_array).each{ |new_group|
+        @@require_array << create_require(new_group, a_extime*rcsl)
+      }
+    when "120613"
+      get_use_group_array_random(i, group_array).each{ |new_group|
+        info[:group] = new_group
+        @@require_array << create_require_120613(info)
+      }
+    else
+      #
+      #
+      # リソース要求時間はランダム
+      #
+      get_use_group_array_random(i, group_array).each{ |new_group|
+        @@require_array << create_require(new_group)
+      }
     end
+    
     return @@require_array.size
     
   end

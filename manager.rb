@@ -122,11 +122,9 @@ class AllManager
     @gm.create_group_array(gcount, info)
     
     # リソース要求の作成
-    @rm.set_garray(@gm.get_group_array)
     @rm.create_require_array(rcount, info)
     
     # タスクの作成
-    @tm.set_array(@rm.get_require_array, @gm.get_group_array)
     @tm.create_task_array(tcount, info)
 
     # プロセッサの作成
@@ -242,7 +240,7 @@ class AllManager
     #
     # リソースを全てshortにする
     #
-    gm.get_group_array.each{|g|
+    GroupManager.get_group_array.each{|g|
       g.kind = SHORT
     }
     taskset = TaskSet.new
@@ -455,15 +453,6 @@ class TaskManager
     @@task_array = []
   end
 
-  #
-  # require_arrayとgroup_arrayをセットする
-  #
-  def set_array(rarray, garray)
-    @@rarray = rarray
-    @@garray = garray
-    return true
-  end
-  
   # shce_check用に，タスクに1~3個のshortリソース要求を割当てる
   def set_short_require(task)
     req_id_list = []
@@ -732,13 +721,6 @@ class RequireManager
   end 
  
   #
-  # group_arrayをセット
-  #
-  def set_garray(garray)
-    @@garray = garray
-  end
-    
-  #
   # ランダムにリソース要求を返す
   # 作成されている要求がなければ，nilを返す
   #
@@ -881,7 +863,7 @@ class RequireManager
   # require_arrayを返す
   # 
   public 
-  def get_require_array
+  def self.get_require_array
     return @@require_array
   end
   
@@ -1078,7 +1060,7 @@ class GroupManager
   # group_arrayを返す
   #
   public
-  def get_group_array
+  def self.get_group_array
     return @@group_array
   end
   

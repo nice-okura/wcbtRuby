@@ -92,7 +92,7 @@ class EXPORT_SCHESIM
   def output_app_desc_file(manager)
     File.open("#{@filename}.rb", 'w') { |f|
       f.print "class TASK\n"
-      f.print get_groups_str(manager.gm.get_group_array)
+      f.print get_groups_str(GroupManager.get_group_array)
       @info["cpu"].each do |cpu|
         cpu["core"].each do |core|
           core["application"].each do |app|

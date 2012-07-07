@@ -31,10 +31,10 @@ class TaskManager
     # 最大REQ_NUM回リソースを取得
     req_list = []
     
-    gcount = @@garray.size
+    gcount = GroupManager.get_group_array.size
     gnum = (@@task_id-1)%gcount + 1  # 使用するグループのID
     new_garray = []
-    @@rarray.each{|r|
+    RequireManager.get_require_array.each{|r|
       if r.res.group == gnum
         new_garray << r
       end
@@ -89,11 +89,11 @@ class TaskManager
     # 最大REQ_NUM回リソースを取得
     req_list = []
     
-    gcount = @@garray.size
+    gcount = GroupManager.get_group_array.size
     gnum = @@task_id%gcount + 1  # 使用するグループのID
     new_garray = []
     #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
-    @@rarray.each{|r|
+    RequireManager.get_require_array.each{|r|
       if r.res.group == gnum
         new_garray << r
       end
@@ -158,11 +158,11 @@ class TaskManager
     req_list = []
 
     unless rcsl == 0.0
-      gcount = @@garray.size
+      gcount = GroupManager.get_group_array.size
       gnum = @@task_id%gcount + 1  # 使用するグループのID
       new_garray = []
       #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
-      @@rarray.each{|r|
+      RequireManager.get_require_array.each{|r|
         if r.res.group == gnum
           new_garray << r
         end
@@ -257,11 +257,11 @@ class TaskManager
     # 最大REQ_NUM回リソースを取得
     req_list = []
     
-    gcount = @@garray.size
+    gcount = GroupManager.get_group_array.size
     gnum = @@task_id%gcount + 1  # 使用するグループのID
     new_garray = []
     #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
-    @@rarray.each{|r|
+    RequireManager.get_require_array.each{|r|
       if r.res.group == gnum
         new_garray << r
       end
