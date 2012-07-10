@@ -1,0 +1,88 @@
+{
+  "cpu": [
+    {
+      "id": 1,
+      "core": [
+        {
+          "id": 1,
+          "scheduling": "fp",
+          "application": [
+            {
+              "task": [
+                {
+                  "wcet": 21,
+                  "id": 1,
+                  "attr": "cyclic",
+                  "period": 830.0,
+                  "priority": 1,
+                  "offset": 0
+                },
+                {
+                  "wcet": 25,
+                  "id": 2,
+                  "attr": "cyclic",
+                  "period": 304.0,
+                  "priority": 2,
+                  "offset": 0
+                },
+                {
+                  "wcet": 43,
+                  "id": 3,
+                  "attr": "cyclic",
+                  "period": 1224.0,
+                  "priority": 3,
+                  "offset": 0
+                },
+                {
+                  "wcet": 60,
+                  "id": 4,
+                  "attr": "cyclic",
+                  "period": 1020.0,
+                  "priority": 4,
+                  "offset": 0
+                },
+                {
+                  "wcet": 69,
+                  "id": 5,
+                  "attr": "cyclic",
+                  "period": 1296.0,
+                  "priority": 5,
+                  "offset": 0
+                },
+                {
+                  "wcet": 71,
+                  "id": 6,
+                  "attr": "cyclic",
+                  "period": 146.0,
+                  "priority": 6,
+                  "offset": 0
+                },
+                {
+                  "wcet": 75,
+                  "id": 7,
+                  "attr": "cyclic",
+                  "period": 8542.0,
+                  "priority": 7,
+                  "offset": 0
+                },
+                {
+                  "wcet": 87,
+                  "id": 8,
+                  "attr": "cyclic",
+                  "period": 823.0,
+                  "priority": 8,
+                  "offset": 0
+                }
+              ],
+              "id": 1,
+              "pri": 1,
+              "period": 8542.0,
+              "scheduling": "fp",
+              "share": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

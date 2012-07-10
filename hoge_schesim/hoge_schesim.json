@@ -1,0 +1,167 @@
+{
+  "cpu": [
+    {
+      "core": [
+        {
+          "scheduling": "fp",
+          "id": 1,
+          "application": [
+            {
+              "task": [
+                {
+                  "attr": "cyclic",
+                  "id": 1,
+                  "period": 2133.0,
+                  "offset": 0,
+                  "wcet": 18,
+                  "priority": 1
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 2,
+                  "period": 764.0,
+                  "offset": 0,
+                  "wcet": 34,
+                  "priority": 2
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 3,
+                  "period": 571.0,
+                  "offset": 0,
+                  "wcet": 43,
+                  "priority": 3
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 4,
+                  "period": 302.0,
+                  "offset": 0,
+                  "wcet": 12,
+                  "priority": 1
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 5,
+                  "period": 310.0,
+                  "offset": 0,
+                  "wcet": 45,
+                  "priority": 4
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 6,
+                  "period": 2584.0,
+                  "offset": 0,
+                  "wcet": 54,
+                  "priority": 5
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 7,
+                  "period": 790.0,
+                  "offset": 0,
+                  "wcet": 24,
+                  "priority": 2
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 8,
+                  "period": 358.0,
+                  "offset": 0,
+                  "wcet": 27,
+                  "priority": 3
+                }
+              ],
+              "scheduling": "fp",
+              "id": 1,
+              "share": 1.0,
+              "period": 2584.0,
+              "pri": 1
+            }
+          ]
+        },
+        {
+          "scheduling": "fp",
+          "id": 2,
+          "application": [
+            {
+              "task": [
+                {
+                  "attr": "cyclic",
+                  "id": 1,
+                  "period": 2133.0,
+                  "offset": 0,
+                  "wcet": 18,
+                  "priority": 1
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 2,
+                  "period": 764.0,
+                  "offset": 0,
+                  "wcet": 34,
+                  "priority": 2
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 3,
+                  "period": 571.0,
+                  "offset": 0,
+                  "wcet": 43,
+                  "priority": 3
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 4,
+                  "period": 302.0,
+                  "offset": 0,
+                  "wcet": 12,
+                  "priority": 1
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 5,
+                  "period": 310.0,
+                  "offset": 0,
+                  "wcet": 45,
+                  "priority": 4
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 6,
+                  "period": 2584.0,
+                  "offset": 0,
+                  "wcet": 54,
+                  "priority": 5
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 7,
+                  "period": 790.0,
+                  "offset": 0,
+                  "wcet": 24,
+                  "priority": 2
+                },
+                {
+                  "attr": "cyclic",
+                  "id": 8,
+                  "period": 358.0,
+                  "offset": 0,
+                  "wcet": 27,
+                  "priority": 3
+                }
+              ],
+              "scheduling": "fp",
+              "id": 1,
+              "share": 1.0,
+              "period": 2584.0,
+              "pri": 1
+            }
+          ]
+        }
+      ],
+      "id": 1
+    }
+  ]
+}

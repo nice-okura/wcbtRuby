@@ -7,9 +7,9 @@ doc/*
 tags
 \#*#
 *.bak
-*.json
 *.dat
 *.png
 *.plt
-
+120628/json/*
+120620/json/*
 *.log

@@ -1,0 +1,12 @@
+{
+  "grps": [
+    {
+      "group": 1,
+      "kind": "short"
+    },
+    {
+      "group": 2,
+      "kind": "short"
+    }
+  ]
+}

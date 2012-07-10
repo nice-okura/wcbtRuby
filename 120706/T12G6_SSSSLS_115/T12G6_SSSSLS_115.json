@@ -1,0 +1,165 @@
+{
+  "cpu": [
+    {
+      "id": 1,
+      "core": [
+        {
+          "id": 1,
+          "application": [
+            {
+              "share": 1.0,
+              "id": 1,
+              "task": [
+                {
+                  "wcet": 82.4,
+                  "priority": 1,
+                  "id": 5,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 171.2,
+                  "priority": 2,
+                  "id": 1,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 241.6,
+                  "priority": 3,
+                  "id": 9,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                }
+              ],
+              "period": 1920.0,
+              "scheduling": "fp",
+              "pri": 1
+            }
+          ],
+          "scheduling": "fp"
+        },
+        {
+          "id": 2,
+          "application": [
+            {
+              "share": 1.0,
+              "id": 2,
+              "task": [
+                {
+                  "wcet": 89.6,
+                  "priority": 1,
+                  "id": 10,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 171.2,
+                  "priority": 2,
+                  "id": 2,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 248.8,
+                  "priority": 3,
+                  "id": 6,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                }
+              ],
+              "period": 1920.0,
+              "scheduling": "fp",
+              "pri": 1
+            }
+          ],
+          "scheduling": "fp"
+        },
+        {
+          "id": 3,
+          "application": [
+            {
+              "share": 1.0,
+              "id": 3,
+              "task": [
+                {
+                  "wcet": 81.6,
+                  "priority": 1,
+                  "id": 3,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 162.4,
+                  "priority": 2,
+                  "id": 7,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 242.4,
+                  "priority": 3,
+                  "id": 11,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                }
+              ],
+              "period": 1920.0,
+              "scheduling": "fp",
+              "pri": 1
+            }
+          ],
+          "scheduling": "fp"
+        },
+        {
+          "id": 4,
+          "application": [
+            {
+              "share": 1.0,
+              "id": 4,
+              "task": [
+                {
+                  "wcet": 88.8,
+                  "priority": 1,
+                  "id": 8,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 169.6,
+                  "priority": 2,
+                  "id": 4,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                },
+                {
+                  "wcet": 249.6,
+                  "priority": 3,
+                  "id": 12,
+                  "offset": 0,
+                  "attr": "cyclic",
+                  "period": 960.0
+                }
+              ],
+              "period": 1920.0,
+              "scheduling": "fp",
+              "pri": 1
+            }
+          ],
+          "scheduling": "fp"
+        }
+      ]
+    }
+  ]
+}
