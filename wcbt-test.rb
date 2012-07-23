@@ -1104,6 +1104,60 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, competing(t9.req_list[0], ProcessorManager.get_proc(2)).size)
     assert_equal(0, competing(t9.req_list[0], ProcessorManager.get_proc(3)).size)
     assert_equal(1, competing(t9.req_list[0], ProcessorManager.get_proc(4)).size)
+    
+    @manager.all_data_clear
+    @manager.load_tasks("testFolder/for_test_competing_2")
+
+    t1 = TaskManager.get_task(1)
+    t2 = TaskManager.get_task(2)
+    t3 = TaskManager.get_task(3)
+    t4 = TaskManager.get_task(4)
+    t5 = TaskManager.get_task(5)
+    t6 = TaskManager.get_task(6)
+    t7 = TaskManager.get_task(7)
+    t8 = TaskManager.get_task(8)
+    t9 = TaskManager.get_task(9)
+
+    assert_equal(1, competing(t1.req_list[0], ProcessorManager.get_proc(1)).size)
+    assert_equal(1, competing(t1.req_list[0], ProcessorManager.get_proc(2)).size)
+    assert_equal(1, competing(t1.req_list[0], ProcessorManager.get_proc(3)).size)
+    assert_equal(1, competing(t1.req_list[0], ProcessorManager.get_proc(4)).size)
+
+    assert_equal(1, competing(t1.req_list[1], ProcessorManager.get_proc(1)).size)
+    assert_equal(2, competing(t1.req_list[1], ProcessorManager.get_proc(2)).size)
+    assert_equal(1, competing(t1.req_list[1], ProcessorManager.get_proc(3)).size)
+    assert_equal(1, competing(t1.req_list[1], ProcessorManager.get_proc(4)).size)
+    
+    assert_equal(2, competing(t2.req_list[0], ProcessorManager.get_proc(1)).size)
+    assert_equal(1, competing(t2.req_list[0], ProcessorManager.get_proc(2)).size)
+    assert_equal(1, competing(t2.req_list[0], ProcessorManager.get_proc(3)).size)
+    assert_equal(1, competing(t2.req_list[0], ProcessorManager.get_proc(4)).size)
+
+    assert_equal(1, competing(t2.req_list[1], ProcessorManager.get_proc(1)).size)
+    assert_equal(0, competing(t2.req_list[1], ProcessorManager.get_proc(2)).size)
+    assert_equal(0, competing(t2.req_list[1], ProcessorManager.get_proc(3)).size)
+    assert_equal(0, competing(t2.req_list[1], ProcessorManager.get_proc(4)).size)
+    
+    assert_equal(0, competing(t3.req_list[0], ProcessorManager.get_proc(1)).size)
+    assert_equal(1, competing(t3.req_list[0], ProcessorManager.get_proc(2)).size)
+    assert_equal(0, competing(t3.req_list[0], ProcessorManager.get_proc(3)).size)
+    assert_equal(0, competing(t3.req_list[0], ProcessorManager.get_proc(4)).size)
+
+    assert_equal(1, competing(t3.req_list[1], ProcessorManager.get_proc(1)).size)
+    assert_equal(1, competing(t3.req_list[1], ProcessorManager.get_proc(2)).size)
+    assert_equal(1, competing(t3.req_list[1], ProcessorManager.get_proc(3)).size)
+    assert_equal(2, competing(t3.req_list[1], ProcessorManager.get_proc(4)).size)
+
+    assert_equal(2, competing(t4.req_list[0], ProcessorManager.get_proc(1)).size)
+    assert_equal(1, competing(t4.req_list[0], ProcessorManager.get_proc(2)).size)
+    assert_equal(1, competing(t4.req_list[0], ProcessorManager.get_proc(3)).size)
+    assert_equal(0, competing(t4.req_list[0], ProcessorManager.get_proc(4)).size)
+
+    assert_equal(0, competing(t4.req_list[1], ProcessorManager.get_proc(1)).size)
+    assert_equal(1, competing(t4.req_list[1], ProcessorManager.get_proc(2)).size)
+    assert_equal(1, competing(t4.req_list[1], ProcessorManager.get_proc(3)).size)
+    assert_equal(1, competing(t4.req_list[1], ProcessorManager.get_proc(4)).size)
+
   end
 end
  

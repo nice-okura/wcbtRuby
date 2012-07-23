@@ -56,14 +56,17 @@ opt.on('--mode [VAL]') {|v|
 opt.on('--extime [VAL]') {|v|
   info[:extime] = v.to_i
 }
+
 opt.on('--extime_range [VAL]') { |v|
   first = v.split("..")[0].to_i
   last = v.split("..")[1].to_i
   info[:extime_range] = first..last
 }
+
 opt.on('--rcsl [VAL]') {|v|
   info[:rcsl] = v.to_f
 }
+
 opt.on('--assign_mode [VAL]') {|v|
   case v.to_i
   when 1
