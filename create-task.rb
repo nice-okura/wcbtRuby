@@ -2,6 +2,13 @@ class TaskManager
 
   private
   #
+  # 手動
+  #
+  def create_task_manually(task_count, info)
+    
+  end
+  
+  #
   # 120620_2用
   #
   def create_task_120620_2(task_count, a_extime=50)
