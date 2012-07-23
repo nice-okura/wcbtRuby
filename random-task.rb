@@ -5,29 +5,7 @@ require "json"
 require "optparse"
 
 ## オプション一覧
-# --mode=<mode>
-#     モード指定
-#
-# --extime=<time>
-#     実行時間を指定
-#     未指定(nil)の場合はランダム
-#     TODO: 範囲指定可能にしたい
-#
-# --rcsl=<ratio>
-#     RCSL指定
-#     未指定(nil)の場合はランダム
-#
-# --assign_mode=<num>
-#     タスク割り当て方式
-#         1   WORST_FIT 割り当て(ProcessorManager::assign_tasks参照)
-#         2   LIST_ORDER 
-#         3   ID_ORDER
-#         4   RANDOM_ORDER
-#      未指定 RANDOM_ORDER
-#
-# --require_count=<count>
-#     タスク当たりのリソース要求数
-#     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数
+# show_help_message 参照
 #
 
 def show_help_message
@@ -43,7 +21,11 @@ def show_help_message
   puts " --extime=<time>"
   puts "     実行時間を指定"
   puts "     未指定(nil)の場合はランダム"
-  puts "     TODO: 範囲指定可能にしたい"
+  puts "     --extime_rangeが指定されていたら無視される"
+  puts ""
+  puts " --extime_range=<range>"
+  puts "     実行時間の範囲を指定"
+  puts "     Ex. --extime_range [20..100]"
   puts ""
   puts " --rcsl=<ratio>" 
   puts "     RCSL指定"
@@ -74,7 +56,11 @@ opt.on('--mode [VAL]') {|v|
 opt.on('--extime [VAL]') {|v|
   info[:extime] = v.to_i
 }
-
+opt.on('--extime_range [VAL]') { |v|
+  first = v.split("..")[0].to_i
+  last = v.split("..")[1].to_i
+  info[:extime_range] = first..last
+}
 opt.on('--rcsl [VAL]') {|v|
   info[:rcsl] = v.to_f
 }

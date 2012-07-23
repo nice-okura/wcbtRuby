@@ -34,10 +34,12 @@ class TaskManager
     end
 
     # タスク実行時間
-    if info[:extime] == nil
-      extime = req_time + rand(TASK_EXE_MAX - req_time)
-    else
+    if info[:extime_range] != nil
+      extime = info[:extime_range].first + rand(info[:extime_range].last - info[:extime_range].first)
+    elsif info[:extime] != nil
       extime = info[:extime]
+    else
+      extime = req_time + rand(TASK_EXE_MAX - req_time)
     end
 
 
