@@ -162,12 +162,12 @@ class AllManager
     # longリソース要求をするタスクのあるプロセッサに割当てる場合
     if opt[:long_same_proc] == true
       # longリソース要求をしているタスクかチェック
-      unless tsk.get_long_require_array.size == 0
+      unless tsk.long_require_array.size == 0
         # longリソースがある場合，
         # longリソース要求をするタスクのあるプロセッサに割当てる
         @pm.proc_list.each{ |p|
           p.task_list.each{ |t|
-            if t.get_long_require_array.size > 0
+            if t.long_require_array.size > 0
               #このプロセッサに割り当て
               p.assign_task(tsk)
             end

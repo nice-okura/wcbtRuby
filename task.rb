@@ -143,7 +143,8 @@ end
 #
 class Task
   attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b, :wcrt
-  attr_accessor :all_require
+  attr_reader :all_require, :short_require_array, :long_require_array
+  
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
     @proc = proc
@@ -285,9 +286,9 @@ class Task
   # 全てのグループロック要求の配列を取得
   # @req_listはネストしているものは含まれていない
   #
-  def get_all_require
-    return @all_require 
-  end
+  #def get_all_require
+  #  return @all_require 
+  #end
   
   #
   # longリソースの配列を返す
@@ -307,9 +308,9 @@ class Task
   # outermost なもののみ
   # ネストされているものは含まない
   #
-  def get_long_require_array
-    return @long_require_array
-  end
+  #def get_long_require_array
+  #  return @long_require_array
+  #end
   
   #
   # shortリソース要求の配列を返す
@@ -329,9 +330,9 @@ class Task
   # outermost なもののみ
   # ネストされているものは含まない
   #
-  def get_short_require_array
-    return @short_require_array
-  end
+  #def get_short_require_array
+  #  return @short_require_array
+  #end
 
   #
   # リソース要求のbegintimeを設定

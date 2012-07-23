@@ -232,32 +232,32 @@ class Test_wcbt < Test::Unit::TestCase
     $task_list = [task1, task2, task3]
     init_computing($task_list)
 
-    assert_equal(1, task1.get_long_require_array.size )
-    assert_equal(2, task2.get_long_require_array.size )
-    assert_equal(1, task3.get_long_require_array.size )
-    assert_equal(0, task1.get_short_require_array.size )
-    assert_equal(0, task2.get_short_require_array.size )
-    assert_equal(0, task3.get_short_require_array.size )
+    assert_equal(1, task1.long_require_array.size )
+    assert_equal(2, task2.long_require_array.size )
+    assert_equal(1, task3.long_require_array.size )
+    assert_equal(0, task1.short_require_array.size )
+    assert_equal(0, task2.short_require_array.size )
+    assert_equal(0, task3.short_require_array.size )
 
     $task_list = [task4, task5, task6]
     init_computing($task_list)
 
-    assert_equal(1, task4.get_long_require_array.size )
-    assert_equal(1, task5.get_long_require_array.size )
-    assert_equal(1, task6.get_long_require_array.size )
-    assert_equal(0, task4.get_short_require_array.size )
-    assert_equal(1, task5.get_short_require_array.size )
-    assert_equal(0, task6.get_short_require_array.size )
+    assert_equal(1, task4.long_require_array.size )
+    assert_equal(1, task5.long_require_array.size )
+    assert_equal(1, task6.long_require_array.size )
+    assert_equal(0, task4.short_require_array.size )
+    assert_equal(1, task5.short_require_array.size )
+    assert_equal(0, task6.short_require_array.size )
 
     $task_list = [task7, task8, task9]
     init_computing($task_list)
 
-    assert_equal(0, task7.get_long_require_array.size )
-    assert_equal(0, task8.get_long_require_array.size )
-    assert_equal(0, task9.get_long_require_array.size )
-    assert_equal(1, task7.get_short_require_array.size )
-    assert_equal(2, task8.get_short_require_array.size )
-    assert_equal(1, task9.get_short_require_array.size )
+    assert_equal(0, task7.long_require_array.size )
+    assert_equal(0, task8.long_require_array.size )
+    assert_equal(0, task9.long_require_array.size )
+    assert_equal(1, task7.short_require_array.size )
+    assert_equal(2, task8.short_require_array.size )
+    assert_equal(1, task9.short_require_array.size )
 
   end
   
