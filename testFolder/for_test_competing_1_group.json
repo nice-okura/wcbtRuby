@@ -11,6 +11,10 @@
     {
       "group": 3,
       "kind": "long"
+    },
+    {
+      "group": 4,
+      "kind": "short"
     }
   ]
 }

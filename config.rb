@@ -1,7 +1,7 @@
 SHORT = "short"
 LONG = "long"
 
-PROC_NUM = 3 # 4 or 8
+PROC_NUM = 4 # 4 or 8
 REQ_EXE_MAX = 5
 REQ_EXE_MIN = 1
 TASK_EXE_MAX = 20
@@ -23,6 +23,9 @@ $DEBUGFlg = false
 
 JSON_FOLDER = "./json"
 SCHE_CHECK = "sche_check"
+
+# タスク生成ルールを細かく設定する場合．create_task_arrayで使われる
+CREATE_MANUALLY  = "create_manually"
 
 # 割り当てモード
 WORST_FIT = 1

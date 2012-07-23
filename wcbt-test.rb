@@ -1049,7 +1049,16 @@ class Test_wcbt < Test::Unit::TestCase
   def test_competing
     @manager = AllManager.new
     @manager.load_tasks("testFolder/for_test_competing_1")
+    
+    t1 = TaskManager.get_task(1)
+    t2 = TaskManager.get_task(2)
+    t3 = TaskManager.get_task(3)
+    t4 = TaskManager.get_task(4)
+    t5 = TaskManager.get_task(5)
+    t6 = TaskManager.get_task(6)
 
+    assert_equal(1, competing(t1.req_list[0], ProcessorManager.get_proc(1)).size)
+    assert_equal(0, competing(t1.req_list[0], ProcessorManager.get_proc(2)).size)
   end
 end
  

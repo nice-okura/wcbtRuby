@@ -135,11 +135,19 @@ class ProcessorManager
       proc.sort_tasks(mode)
     }
   end
+
   # proc_listアクセサ
   def self.proc_list
     return @@proc_list
   end
-  
+
+  # 指定したIDのプロセッサを返す
+  def self.get_proc(id)
+    @@proc_list.each{ |proc|
+      return proc if proc.proc_id == id
+    }
+  end
+
   # 全タスクで１番最悪応答時間が悪いタスクを返す
   def get_worst_wcrt
     wcrt = -1

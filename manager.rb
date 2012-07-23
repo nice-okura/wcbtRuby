@@ -541,6 +541,11 @@ class TaskManager
       i.times{ 
         @@task_array << create_task_120620_2(i, info[:extime])
       }
+    # リソースやタスクのの割り当てを手動で設定
+    when CREATE_MANUALLY
+      i.times{ 
+        @@task_array << create_task_manually(i, info)
+      }
     else
       $stderr.puts "create_task_array:infoエラー"
       raise
