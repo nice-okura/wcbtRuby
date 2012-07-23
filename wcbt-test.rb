@@ -1159,5 +1159,12 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(1, competing(t4.req_list[1], ProcessorManager.get_proc(4)).size)
 
   end
+  
+  def test_sbr
+    @manager = AllManager.new
+    @manager.load_tasks("testFolder/for_test_competing_1")
+    
+    
+  end
 end
  

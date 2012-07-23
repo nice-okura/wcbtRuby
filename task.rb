@@ -441,7 +441,7 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost, :nested
+  attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost, :nested, :inflated_spin_time
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
     @res = res
@@ -449,6 +449,7 @@ class Req
     @begintime = begintime
     @reqs = reqs
     @outermost = outermost
+    @inflated_spin_time = 0     # SB_not_tight で計算されるSBによるspin時間
     @nested = false # ネスト"されている"場合 true
     
     # outermost のアクセス時間timeが最大でないといけない

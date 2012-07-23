@@ -42,6 +42,10 @@ def show_help_message
   puts " --require_count=<num>" 
   puts "     タスク当たりのリソース要求数"
   puts "     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数"
+  puts ""
+  puts " --nest=<bool>"
+  puts "     TODO: ネストもつくっときたい"
+
 end
 
 

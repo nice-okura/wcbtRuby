@@ -265,7 +265,13 @@ module WCBT
   # shortリソース要求毎の最大ブロック時間
   # ABを計算する前に用いる
   def sbr(req)
+    block_time = 0
+    ProcessorManager.proc_list.each{ |proc|
+      reqs_time_array = competing(req, proc).select{ |r| r.time}
+      block_time += req_time_array.max
+    }
     
+    return block_time
   end
   
   # プロセッサp内の，reqと競合するリソース要求
@@ -282,7 +288,7 @@ module WCBT
     return req_list
   end
 
-
+  
   def ndbp(job, proc)
     if job.proc == proc
       return 0
@@ -540,9 +546,14 @@ module WCBT
 
   #
   # SBより悲観的な最大ShortBlocking
-  #
+  # Appendix A.5
   def SB_not_tight(job)
-    
+    block_time = 0
+    job.req_list.each{ |req|
+      block_time += sbr(req)
+    }
+
+    return block_time
   end
 
   def DB(task)
