@@ -440,6 +440,18 @@ class AllManager
       }
   end
 
+
+  # 既存のタスクからマネージャーを作成
+  def set_tasks(tasks)
+    TaskManager.task_array = tasks
+    tasks.each{ |task|
+      @rm.req
+      task.req_list.each{ |req|
+      
+      }
+    }
+  end
+
 end
 
 #
@@ -719,7 +731,7 @@ end
 #
 class RequireManager
   include Singleton
-    
+
   def initialize
     @@id = 0
     @@require_array = []
@@ -872,6 +884,10 @@ class RequireManager
     return @@require_array
   end
   
+  def self.set_require_array(reqs)
+    @@require_array = reqs
+  end
+
   #
   # reuqireIDからリソース要求を得る
   #

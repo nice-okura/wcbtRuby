@@ -449,7 +449,7 @@ class Req
     @begintime = begintime
     @reqs = reqs
     @outermost = outermost
-    @inflated_spin_time = 0     # SB_not_tight で計算されるSBによるspin時間
+    @inflated_spin_time = 0     # SB_not_tight で計算されるSBによるspin時間．ABを計算する際に必要となる.
     @nested = false # ネスト"されている"場合 true
     
     # outermost のアクセス時間timeが最大でないといけない

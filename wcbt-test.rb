@@ -11,6 +11,8 @@ require "manager"
 class Test_wcbt < Test::Unit::TestCase
   include WCBT
   def setup
+    @manager = AllManager.new
+    @manager.all_data_clear
     #
     # Groupクラス定義
     # Group.new(group, kind)

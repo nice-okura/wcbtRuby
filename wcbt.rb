@@ -13,6 +13,7 @@
 require "rubygems"
 require "term/ansicolor"
 require "config"
+
 #require "ruby-prof"
 
 $calc_task = [] # WCBTモジュールで使用するタスク
@@ -100,7 +101,7 @@ module WCBT
       #
       # proc_listの計算
       #      
-      proc << task.proc      
+      #proc << task.proc      
 
       #
       # wclx, wcsxの計算
@@ -145,9 +146,9 @@ module WCBT
     #
     # proc_list設定
     #
-    proc.uniq!
-    proc.sort!    
-    $proc_list = proc
+    #proc.uniq!
+    #proc.sort!    
+    #$proc_list = proc
 
     #
     # 上記の計算をした後でしか計算できないもの
@@ -190,6 +191,7 @@ module WCBT
     #
     # partitionの計算
     #
+=begin
     $proc_list.each{ |proc|
       proc_task_list = []
       $calc_task.each{|task|
@@ -197,7 +199,7 @@ module WCBT
       }
       $proc_task_list[proc] = proc_task_list
     }
-
+=end
 
   end
   ###########################################
@@ -243,12 +245,19 @@ module WCBT
     return $NARR[job.task_id]
   end
   
+  # procはproc_id(Fixnum)
   def partition(proc)
-    return $proc_task_list[proc]
+    if proc.class != Fixnum
+      p proc.class
+      raise
+    end
+    return ProcessorManager.get_proc(proc).task_list
+    #return $proc_task_list[proc]
   end
   
+  # ProcessorのidのArrayを返す
   def procList
-    return $proc_list
+    return ProcessorManager.proc_list.collect{ |p| p.proc_id }
   end
 
   
@@ -353,9 +362,10 @@ module WCBT
     str = ""
     if task == nil || job == nil
       return 0
-      elsif task.proc  == job.proc 
+    elsif task.proc  == job.proc 
       return 0
     end
+    p task.class unless task.class == Task
     tuples = wclx(task, job)
     tuples.each{|t|
       str += t.prints
