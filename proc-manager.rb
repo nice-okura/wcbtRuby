@@ -105,7 +105,7 @@ class ProcessorManager
   # @param info [Hash] オプション
   # 個数はPROC_NUM
   def create_processor_list(info={ })
-    1.upto(PROC_NUM){ |id|
+    1.upto(info[:proc_num]){ |id|
       @@proc_list << Processor.new({ PROC_ID_SYN => id })
     }
     return @@proc_list.size
