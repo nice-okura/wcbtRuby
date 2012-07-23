@@ -13,9 +13,9 @@
     },
     {
       "priority": 2,
-      "extime": 9,
+      "extime": 8,
       "task_id": 2,
-      "proc": 1,
+      "proc": 2,
       "period": 100.0,
       "req_id_list": [
         1
@@ -26,10 +26,10 @@
       "priority": 3,
       "extime": 5.5,
       "task_id": 3,
-      "proc": 2,
+      "proc": 1,
       "period": 100.0,
       "req_id_list": [
-        3
+        2
       ],
       "offset": 2
     }

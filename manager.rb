@@ -204,7 +204,7 @@ class AllManager
     new_garray = []
     
     @tm.get_task_array.each{|t|
-      t.get_all_require.each{|r|
+      t.all_require.each{|r|
         new_garray << r.res unless new_garray.include?(r.res) 
       }
     }
@@ -651,7 +651,7 @@ class TaskManager
   def self.get_all_require
     req_array = []
     @@task_array.each{|tsk|
-      req_array += tsk.get_all_require
+      req_array += tsk.all_require
     }
     return req_array
   end

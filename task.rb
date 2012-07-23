@@ -143,6 +143,7 @@ end
 #
 class Task
   attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b, :wcrt
+  attr_accessor :all_require
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
     @proc = proc
