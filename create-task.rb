@@ -10,7 +10,6 @@ class TaskManager
     # プロセッサ未割り当て
     proc = UNASSIGNED
 
-
     # リソース要求
     req_list = []
     req_time = 0

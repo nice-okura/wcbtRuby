@@ -15,6 +15,22 @@
     {
       "group": 4,
       "kind": "short"
+    },
+    {
+      "group": 5,
+      "kind": "long"
+    },
+    {
+      "group": 6,
+      "kind": "short"
+    },
+    {
+      "group": 7,
+      "kind": "long"
+    },
+    {
+      "group": 8,
+      "kind": "short"
     }
   ]
 }
