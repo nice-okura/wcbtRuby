@@ -5,7 +5,56 @@ class TaskManager
   # 手動
   #
   def create_task_manually(task_count, info)
+    @@task_id += 1
+
+    # プロセッサ未割り当て
+    proc = UNASSIGNED
+
+
+    # リソース要求
+    req_list = []
+    req_time = 0
+    if info[:require_count] == nil
+      REQ_NUM.times{
+        if rand(2) == 1
+          r = RequireManager.get_random_req
+          unless r == nil
+            req_list << r 
+            req_time += r.time
+          end
+        end
+      }
+    else
+      info[:require_count].times{ 
+        r = RequireManager.get_random_req
+        unless r == nil
+          req_list << r 
+          req_time += r.time
+        end
+      }
+    end
+
+    # タスク実行時間
+    if info[:extime] == nil
+      extime = req_time + rand(TASK_EXE_MAX - req_time)
+    else
+      extime = info[:extime]
+    end
+
+
+    # 周期
+    period = (extime/(1.0/task_count))
+
+
+    # 優先度
+    priority = @@task_id
+
+
+    # offset
+    offset = 0
     
+
+    return Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
   end
   
   #

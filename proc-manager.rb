@@ -147,7 +147,6 @@ class ProcessorManager
       return proc if proc.proc_id == id
     }
   end
-
   # 全タスクで１番最悪応答時間が悪いタスクを返す
   def get_worst_wcrt
     wcrt = -1

@@ -5,26 +5,32 @@ require "json"
 require "optparse"
 
 ## オプション一覧
-# --extime time        
-#   実行時間を指定
-#   未指定(nil)の場合はランダム
-#   TODO: 範囲指定可能にしたい
+# --mode=<mode>
+#     モード指定
 #
-# --rcsl ratio
-#   RCSL指定
-#   未指定(nil)の場合はランダム
+# --extime=<time>
+#     実行時間を指定
+#     未指定(nil)の場合はランダム
+#     TODO: 範囲指定可能にしたい
 #
-# --assign_mode num   
-#  タスク割り当て方式
-#    num=1   WORST_FIT 割り当て(ProcessorManager::assign_tasks参照)
-#        2   LIST_ORDER 
-#        3   ID_ORDER
-#        4   RANDOM_ORDER
+# --rcsl=<ratio>
+#     RCSL指定
+#     未指定(nil)の場合はランダム
 #
-# --require_count count  
-#  タスク当たりのリソース要求数
-#  未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数
-
+# --assign_mode=<num>
+#     タスク割り当て方式
+#         1   WORST_FIT 割り当て(ProcessorManager::assign_tasks参照)
+#         2   LIST_ORDER 
+#         3   ID_ORDER
+#         4   RANDOM_ORDER
+#
+# --require_count=<count>
+#     タスク当たりのリソース要求数
+#     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数
+#
+# --proc_num=<count>
+#     プロセッサ数
+#     未指定の場合はPROC_NUM
 
 
 opt = OptionParser.new
@@ -37,6 +43,9 @@ if(ARGV.size < 5)
   puts ""
 #  puts "info:カンマ区切り情報 \n Ex. 120411,50,0.3"
   puts "[オプション一覧]"
+  puts " --mode=<mode>"
+  puts "     モード指定"
+  puts ""
   puts " --extime=<time>"
   puts "     実行時間を指定"
   puts "     未指定(nil)の場合はランダム"
@@ -56,6 +65,10 @@ if(ARGV.size < 5)
   puts " --require_count=<num>" 
   puts "     タスク当たりのリソース要求数"
   puts "     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数"
+  puts ""
+  puts " --proc_num=<count>"
+  puts "     プロセッサ数"
+  puts "     未指定の場合はPROC_NUM"
   exit
 end
 
