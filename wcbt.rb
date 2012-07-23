@@ -81,7 +81,7 @@ module WCBT
       #
       lr = []
       sr = []
-      task.get_all_require.each{|req|
+      task.all_require.each{|req|
         if req.res.kind == LONG && req.outermost == true
           lr << req
         elsif req.res.kind == SHORT && req.outermost == true
@@ -261,8 +261,28 @@ module WCBT
   def abr(job)
     return $abr[job.task_id]
   end
+
+  # shortリソース要求毎の最大ブロック時間
+  # ABを計算する前に用いる
+  def sbr(req)
+    
+  end
   
-  
+  # プロセッサp内の，reqと競合するリソース要求
+  def competing(req, proc)
+    req_list = []
+    
+    proc.task_list.each{ |tsk|
+      tsk.req_list.each{ |r|
+        next if r == req  # reqと同じなら除外
+        req_list << r if req.res.group == r.res.group
+      }
+    }
+
+    return req_list
+  end
+
+
   def ndbp(job, proc)
     if job.proc == proc
       return 0
@@ -489,8 +509,8 @@ module WCBT
     #RubyProf.start
     if job == nil
       return 0
-    elsif job.get_long_require_array.size == 0
-      p_debug("\tget_long_require_array.size == 0")
+    elsif job.long_require_array.size == 0
+      p_debug("\tlong_require_array.size == 0")
       return 0
     end
     return rbl(job) + rbs(job)
@@ -503,7 +523,7 @@ module WCBT
   def SB(job)
     if job == nil
       return 0
-    elsif job.get_short_require_array.size == 0
+    elsif job.short_require_array.size == 0
       return 0
     end
     g = []
@@ -517,7 +537,14 @@ module WCBT
     }
     time
   end
-  
+
+  #
+  # SBより悲観的な最大ShortBlocking
+  #
+  def SB_not_tight(job)
+    
+  end
+
   def DB(task)
     time = 0
     $calc_task.each{|tas|

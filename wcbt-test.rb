@@ -207,13 +207,13 @@ class Test_wcbt < Test::Unit::TestCase
     task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
     $task_list = [task1, task2, task3]
     init_computing($task_list)
-    assert(task1.get_all_require[0].outermost == true)
-    assert(task1.get_all_require[1].outermost == true)
-    assert(task2.get_all_require[0].outermost == true)
-    assert(task2.get_all_require[1].outermost == true)
-    assert(task2.get_all_require[2].outermost == true)
-    assert(task3.get_all_require[0].outermost == true)
-    assert(task3.get_all_require[1].outermost == true)    
+    assert(task1.all_require[0].outermost == true)
+    assert(task1.all_require[1].outermost == true)
+    assert(task2.all_require[0].outermost == true)
+    assert(task2.all_require[1].outermost == true)
+    assert(task2.all_require[2].outermost == true)
+    assert(task3.all_require[0].outermost == true)
+    assert(task3.all_require[1].outermost == true)    
   end
   
   def test_getLongShortResArray
@@ -261,7 +261,7 @@ class Test_wcbt < Test::Unit::TestCase
 
   end
   
-  def test_get_all_require
+  def test_all_require
     task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
     task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
     task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
@@ -275,17 +275,17 @@ class Test_wcbt < Test::Unit::TestCase
     task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
     
     
-    assert_equal(2, task1.get_all_require.size )
-    assert_equal(3, task2.get_all_require.size )
-    assert_equal(2, task3.get_all_require.size )
+    assert_equal(2, task1.all_require.size )
+    assert_equal(3, task2.all_require.size )
+    assert_equal(2, task3.all_require.size )
     
-    assert_equal(2, task4.get_all_require.size )
-    assert_equal(3, task5.get_all_require.size )
-    assert_equal(2, task6.get_all_require.size )
+    assert_equal(2, task4.all_require.size )
+    assert_equal(3, task5.all_require.size )
+    assert_equal(2, task6.all_require.size )
     
-    assert_equal(2, task7.get_all_require.size )
-    assert_equal(3, task8.get_all_require.size )
-    assert_equal(2, task9.get_all_require.size )
+    assert_equal(2, task7.all_require.size )
+    assert_equal(3, task8.all_require.size )
+    assert_equal(2, task9.all_require.size )
   end
 
   def test_bbt
@@ -358,12 +358,12 @@ class Test_wcbt < Test::Unit::TestCase
   def test_BB2  
     ###
     @manager = AllManager.new
-    @manager.load_tasks("120613")
+    @manager.load_tasks("testFolder/120613")
 
     #ts = TaskSet.new(@manager.tm.get_task_array)
     #ts.show_taskset
-    t2 = @manager.tm.get_task(2)
-    t6 = @manager.tm.get_task(6)
+    t2 = TaskManager.get_task(2)
+    t6 = TaskManager.get_task(6)
 
     assert_equal(4, BB(t2))
     
@@ -921,19 +921,19 @@ class Test_wcbt < Test::Unit::TestCase
 
   def test_120430_fortest
     @manager = AllManager.new
-    @manager.load_tasks("120430_fortest")
+    @manager.load_tasks("testFolder/120430_fortest")
     
     #ts = TaskSet.new(@manager.tm.get_task_array)
     #ts.show_taskset
 
-    t1 = @manager.tm.get_task(1)
-    t2 = @manager.tm.get_task(2)
-    t3 = @manager.tm.get_task(3)
-    t4 = @manager.tm.get_task(4)
-    t5 = @manager.tm.get_task(5)
-    t6 = @manager.tm.get_task(6)
-    t7 = @manager.tm.get_task(7)
-    t8 = @manager.tm.get_task(8)
+    t1 = TaskManager.get_task(1)
+    t2 = TaskManager.get_task(2)
+    t3 = TaskManager.get_task(3)
+    t4 = TaskManager.get_task(4)
+    t5 = TaskManager.get_task(5)
+    t6 = TaskManager.get_task(6)
+    t7 = TaskManager.get_task(7)
+    t8 = TaskManager.get_task(8)
     
     assert_equal(2, wclx(t2, t1).size)
     assert_equal(4, wclx(t3, t1).size)
@@ -1002,32 +1002,32 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(2, bbt(t6, t7))
     assert_equal(0, bbt(t8, t7))
 
-    assert_equal(0, t1.bb)
-    assert_equal(4, t2.bb)
-    assert_equal(0, t3.bb)
+    assert_equal(4, t1.bb)
+    assert_equal(0, t2.bb)
+    assert_equal(4, t3.bb)
     assert_equal(4, t4.bb)
     assert_equal(0, t5.bb)
-    assert_equal(4, t6.bb)
-    assert_equal(2, t7.bb)
-    assert_equal(2, t8.bb)
+    assert_equal(0, t6.bb)
+    assert_equal(0, t7.bb)
+    assert_equal(0, t8.bb)
   end
   
   def test_120502
     @manager = AllManager.new
-    @manager.load_tasks("120502_fortest")
+    @manager.load_tasks("testFolder/120502_fortest")
   
-    t1 = @manager.tm.get_task(1)
-    t2 = @manager.tm.get_task(2)
-    t3 = @manager.tm.get_task(3)
-    t4 = @manager.tm.get_task(4)
-    t5 = @manager.tm.get_task(5)
-    t6 = @manager.tm.get_task(6)
+    t1 = TaskManager.get_task(1)
+    t2 = TaskManager.get_task(2)
+    t3 = TaskManager.get_task(3)
+    t4 = TaskManager.get_task(4)
+    t5 = TaskManager.get_task(5)
+    t6 = TaskManager.get_task(6)
 
     assert_equal(0, ndbt(t1, t2))
     assert_equal(0, ndbp(t2, 2))
     assert_equal(2, ndbp(t4, 2))
     assert_equal(0, ndbp(t6, 2))
-
+    
     assert_equal(0, rbl(t2))
     assert_equal(0, rbs(t2))
     assert_equal(8, rbl(t4))
@@ -1039,10 +1039,17 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(4, bbt(t3, t1))
     assert_equal(2, abr(t2).size)
     assert_equal(2, AB(t2))
-    assert_equal(4, AB(t4))
+    assert_equal(0, AB(t4))
     assert_equal(0, AB(t6))
     
-   end
+  end
+  
+  
 
+  def test_competing
+    @manager = AllManager.new
+    @manager.load_tasks("testFolder/for_test_competing_1")
+
+  end
 end
  
