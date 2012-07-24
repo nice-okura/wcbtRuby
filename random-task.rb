@@ -43,8 +43,8 @@ def show_help_message
   puts "     タスク当たりのリソース要求数"
   puts "     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数"
   puts ""
-  puts " --nest=<bool>"
-  puts "     TODO: ネストもつくっときたい"
+  puts " --nest"
+  puts "     ネストさせたい場合に指定する"
 
 end
 
@@ -88,6 +88,10 @@ opt.on('--assign_mode [VAL]') {|v|
 
 opt.on('--require_count [VAL]') {|v|
   info[:require_count] = v.to_i
+}
+
+opt.on('--nest') { |v|
+  info[:nest] = true
 }
 opt.parse!(ARGV)
 

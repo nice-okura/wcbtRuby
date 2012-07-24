@@ -76,6 +76,11 @@ class RequireManager
         info[:group] = new_group
         @@require_array << create_require_120613(info)
       }
+    when CREATE_MANUALLY
+      get_use_group_array_random(i, group_array).each{ |new_group|
+        info[:group] = new_group
+        @@require_array << create_require_manually(info)
+      }
     else
       #
       #
@@ -97,6 +102,41 @@ class RequireManager
   #
   ################################################
 
+  #
+  # 手動
+  #
+  def create_require_manually(info)
+    @@id += 1
+    
+    # リソース要求時間
+    if info[:rcsl] != nil
+      time = -1  # タスクに割り当てる時にリソース要求時間は決めるので，いまは-1にしておく
+    elsif info[:require_range] != nil
+      time = info[:require_range].first + rand(info[:require_range].last - info[:require_range].first)
+    elsif info[:require_time] != nil
+      time = info[:require_time]
+    else
+      time = REQ_EXE_MIN + rand(REQ_EXE_MAX - REQ_EXE_MIN)
+    end
+
+    # グループ
+    group = info[:group]
+    group = GroupManager.get_random_group if group == nil
+
+    # ネスト
+    req = []
+    r = RequireManager.get_random_req
+    if r != nil && r.reqs.size == 0 && !(group.kind == SHORT && r.res.kind == LONG) && group.kind != r.res.kind
+      # ※2段ネストまで対応
+      if r.res != group && time > r.time && info[:nest] == true
+        req << r.clone
+      end
+    end
+
+
+
+    return Req.new(@@id, group, time, req)
+  end
 
   #
   # ランダムにリソース要求を作成
@@ -155,6 +195,9 @@ class RequireManager
     #p time
     return Req.new(@@id, group, time, req)
   end
+
+
+
   
   ## 使用するリソースグループの配列を返す
   # 未使用のリソースの存在を許さず，全てのリソースを含めた後はランダム
