@@ -423,10 +423,10 @@ module WCBT
     end
     begin
       k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
-      rescue => e
+    rescue => e
       p e
       puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
-      exit
+      raise
     end
     1.upto(k){|n|
       task.req_list.each{|req|
@@ -649,7 +649,7 @@ module WCBT
   #
   public
   def set_blocktime
-    puts "set_blocktime"
+    #puts "set_blocktime"
     $calc_task.each{|t|
       #puts "SET_BLOCKTIME:タスク#{t.task_id}"
       t.bb = BB(t)
