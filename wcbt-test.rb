@@ -301,28 +301,44 @@ class Test_wcbt < Test::Unit::TestCase
   end
 
   def test_ndbtg
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert_equal(1, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 1) )
+    set_taskset("#{TEST_FOLDER}for_test_LB")
+    assert_equal(2, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 1) )
     assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 2) )
     assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 3) )
     assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 4) )
-    
-    assert_equal(1, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 5) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 6) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 7) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 8) )
+
+    assert_equal(2, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 1) )
     assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 2) )
     assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 3) )
     assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 4) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 5) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 6) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 7) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 8) )
 
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(1, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 1) )
-    assert_equal(0, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 2) )
-    assert_equal(0, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 3) )
-    assert_equal(0, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 4) )
+    assert_equal(1, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 4) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 5) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 6) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 7) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(2), 8) )
+
+    assert_equal(2, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 4) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 5) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 6) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 7) )
+    assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 8) )
+
     
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 1) )
-    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 2) )
-    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 3) )
-    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 4) )
   end
     
   def test_ndbt
@@ -647,11 +663,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(12, SB(TaskManager.get_task(3)) )
     assert_equal(12, SB(TaskManager.get_task(4)) )
   end
-  
-  def test_B2
-    set_taskset("#{TEST_FOLDER}for_test_sbgp")
-    assert_equal(7, B(TaskManager.get_task(1)))
-  end
+ 
   
   def test_120430_fortest
     @manager = AllManager.new

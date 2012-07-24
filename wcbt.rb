@@ -333,6 +333,7 @@ module WCBT
     WCLR(task).each{|req|
       b += 1 if req.res.group == group
     }
+    b *= ((job.period.to_f/task.period.to_f).ceil.to_i + 1)
     p_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
     return [a, b].min
   end
@@ -478,7 +479,8 @@ module WCBT
       time += tuples[num].req.time
     }
     p_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
-    time
+
+    return time
   end
   
   
