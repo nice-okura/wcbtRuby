@@ -27,6 +27,10 @@ def show_help_message
   puts "     実行時間の範囲を指定"
   puts "     Ex. --extime_range 20..100"
   puts ""
+  puts " --require_range=<range>"
+  puts "     リソース要求時間の範囲を指定"
+  puts "     Ex. --require_range 2..8"
+  puts ""
   puts " --rcsl=<ratio>" 
   puts "     RCSL指定"
   puts "     未指定(nil)の場合はランダム"
@@ -93,6 +97,13 @@ opt.on('--require_count [VAL]') {|v|
 opt.on('--nest') { |v|
   info[:nest] = true
 }
+
+opt.on('--require_range [VAL]') { |v|
+  first = v.split("..")[0].to_i
+  last = v.split("..")[1].to_i
+  info[:require_range] = first..last
+}
+
 opt.parse!(ARGV)
 
 
