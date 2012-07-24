@@ -1,0 +1,38 @@
+{
+  "tasks": [
+    {
+      "task_id": 7,
+      "proc": 1,
+      "period": 10.0,
+      "priority": 1,
+      "extime": 6,
+      "req_id_list": [
+        10
+      ],
+      "offset": 0
+    },
+    {
+      "task_id": 8,
+      "proc": 1,
+      "period": 10.0,
+      "priority": 2,
+      "extime": 6,
+      "req_id_list": [
+        10,
+	4
+      ],
+      "offset": 0
+    },
+    {
+      "task_id": 9,
+      "proc": 3,
+      "period": 10.0,
+      "priority": 3,
+      "extime": 6,
+      "req_id_list": [
+        16
+      ],
+      "offset": 0
+    }
+  ]
+}

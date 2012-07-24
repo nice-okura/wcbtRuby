@@ -621,7 +621,7 @@ class TaskManager
 
       data_clear
       tasks = (JSON.parser.new(json)).parse()
-      puts "Loding #{tasks["tasks"].size} tasks..."
+      print_debug "Loding #{tasks["tasks"].size} tasks..."
       return tasks
     else
       puts "application file read error: #{filename} is not JSON file.\n"
