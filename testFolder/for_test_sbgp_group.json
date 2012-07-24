@@ -5,11 +5,11 @@
       "group": 1
     },
     {
-      "kind": "long",
+      "kind": "short",
       "group": 2
     },
     {
-      "kind": "short",
+      "kind": "long",
       "group": 3
     },
     {
@@ -17,8 +17,20 @@
       "group": 4
     },
     {
-      "kind": "short",
+      "kind": "long",
       "group": 5
+    },
+    {
+      "kind": "short",
+      "group": 6
+    },
+    {
+      "kind": "long",
+      "group": 7
+    },
+    {
+      "kind": "short",
+      "group": 8
     }
   ]
 }

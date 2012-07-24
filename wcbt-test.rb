@@ -81,23 +81,25 @@ class Test_wcbt < Test::Unit::TestCase
     # wcbt = WCBT.new
     
   end 
-  
+
+=begin
   def test_init_computing
     task1 = Task.new(1, 1, 60, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 60, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 60, 10, 3, 0, [@req12_LongLong2])
+    = Task.new(2, 1, 60, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
+    TaskManager.get_task(3) = Task.new(3, 2, 60, 10, 3, 0, [@req12_LongLong2])
 
-    $task_list = [task1, task2, task3]
+    $task_list = [task1, TaskManager.get_task(2), TaskManager.get_task(3)]
     init_computing($task_list)
 
     assert_equal(3, $WCLR.size) # タスク数
     assert_equal(1, WCLR(task1).size)
-    assert_equal(2, WCLR(task2).size)
-    assert_equal(1, WCLR(task3).size)
+    assert_equal(2, WCLR(TaskManager.get_task(2)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(3)).size)
     
     assert_equal(0, $WCSR.size)
   end
-  
+=end
+
   def test_WCLRWCLR
     set_taskset("#{TEST_FOLDER}wcbt-test_1")
 
@@ -161,139 +163,92 @@ class Test_wcbt < Test::Unit::TestCase
   
   def test_checkOutermost
     set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert(task1.all_require[0].outermost == true)
-    assert(task1.all_require[1].outermost == true)
-    assert(task2.all_require[0].outermost == true)
-    assert(task2.all_require[1].outermost == true)
-    assert(task2.all_require[2].outermost == true)
-    assert(task3.all_require[0].outermost == true)
-    assert(task3.all_require[1].outermost == true)    
+    assert(TaskManager.get_task(1).all_require[0].outermost == true)
+    assert(TaskManager.get_task(1).all_require[1].outermost == true)
+    assert(TaskManager.get_task(2).all_require[0].outermost == true)
+    assert(TaskManager.get_task(2).all_require[1].outermost == true)
+    assert(TaskManager.get_task(2).all_require[2].outermost == true)
+    assert(TaskManager.get_task(3).all_require[0].outermost == true)
+    assert(TaskManager.get_task(3).all_require[1].outermost == true)    
   end
   
   def test_getLongShortResArray
     set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert_equal(1, task1.long_require_array.size )
-    assert_equal(2, task2.long_require_array.size )
-    assert_equal(1, task3.long_require_array.size )
-    assert_equal(0, task1.short_require_array.size )
-    assert_equal(0, task2.short_require_array.size )
-    assert_equal(0, task3.short_require_array.size )
+    assert_equal(1, TaskManager.get_task(1).long_require_array.size )
+    assert_equal(2, TaskManager.get_task(2).long_require_array.size )
+    assert_equal(1, TaskManager.get_task(3).long_require_array.size )
+    assert_equal(0, TaskManager.get_task(1).short_require_array.size )
+    assert_equal(0, TaskManager.get_task(2).short_require_array.size )
+    assert_equal(0, TaskManager.get_task(3).short_require_array.size )
 
     set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(1, task4.long_require_array.size )
-    assert_equal(1, task5.long_require_array.size )
-    assert_equal(1, task6.long_require_array.size )
-    assert_equal(0, task4.short_require_array.size )
-    assert_equal(1, task5.short_require_array.size )
-    assert_equal(0, task6.short_require_array.size )
+    assert_equal(1, TaskManager.get_task(4).long_require_array.size )
+    assert_equal(1, TaskManager.get_task(5).long_require_array.size )
+    assert_equal(1, TaskManager.get_task(6).long_require_array.size )
+    assert_equal(0, TaskManager.get_task(4).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(5).short_require_array.size )
+    assert_equal(0, TaskManager.get_task(6).short_require_array.size )
 
     set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(0, task7.long_require_array.size )
-    assert_equal(0, task8.long_require_array.size )
-    assert_equal(0, task9.long_require_array.size )
-    assert_equal(1, task7.short_require_array.size )
-    assert_equal(2, task8.short_require_array.size )
-    assert_equal(1, task9.short_require_array.size )
+    assert_equal(0, TaskManager.get_task(7).long_require_array.size )
+    assert_equal(0, TaskManager.get_task(8).long_require_array.size )
+    assert_equal(0, TaskManager.get_task(9).long_require_array.size )
+    assert_equal(1, TaskManager.get_task(7).short_require_array.size )
+    assert_equal(2, TaskManager.get_task(8).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(9).short_require_array.size )
 
   end
   
   def test_all_require
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(2, TaskManager.get_task(1).all_require.size )
+    assert_equal(3, TaskManager.get_task(2).all_require.size )
+    assert_equal(2, TaskManager.get_task(3).all_require.size )
     
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(2, TaskManager.get_task(4).all_require.size )
+    assert_equal(3, TaskManager.get_task(5).all_require.size )
+    assert_equal(2, TaskManager.get_task(6).all_require.size )
     
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    
-    
-    assert_equal(2, task1.all_require.size )
-    assert_equal(3, task2.all_require.size )
-    assert_equal(2, task3.all_require.size )
-    
-    assert_equal(2, task4.all_require.size )
-    assert_equal(3, task5.all_require.size )
-    assert_equal(2, task6.all_require.size )
-    
-    assert_equal(2, task7.all_require.size )
-    assert_equal(3, task8.all_require.size )
-    assert_equal(2, task9.all_require.size )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(2, TaskManager.get_task(7).all_require.size )
+    assert_equal(3, TaskManager.get_task(8).all_require.size )
+    assert_equal(2, TaskManager.get_task(9).all_require.size )
   end
 
   def test_bbt
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
-    
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    #    pp wclx(task1, task1)
-    assert_equal(9, bbt(task2, task1) )
-    assert_equal(4, bbt(task3, task1) )  
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(9, bbt(TaskManager.get_task(2), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(3), TaskManager.get_task(1)) )  
 
-    $task_list = [task4, task5, task6]
-    init_computing($task_list)
-
-    assert_equal(8, bbt(task5, task4) )    
-    assert_equal(4, bbt(task6, task4) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(8, bbt(TaskManager.get_task(5), TaskManager.get_task(4)) )    
+    assert_equal(4, bbt(TaskManager.get_task(6), TaskManager.get_task(4)) )
     
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-
-    assert_equal(0, bbt(task8, task7) )
-    assert_equal(0, bbt(task9, task7) )    
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, bbt(TaskManager.get_task(8), TaskManager.get_task(7)) )
+    assert_equal(0, bbt(TaskManager.get_task(9), TaskManager.get_task(7)) )    
 
   end
   
   def test_BB
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
-    
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    assert_equal(9, BB(task1) )
-    assert_equal(0, BB(task2) )
-    assert_equal(0, BB(task3) )
-    
-    $task_list = [task4, task5, task6]
-    init_computing($task_list)
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(9, BB(TaskManager.get_task(1)) )
+    assert_equal(0, BB(TaskManager.get_task(2)) )
+    assert_equal(0, BB(TaskManager.get_task(3)) )
 
-    assert_equal(8, BB(task4) )
-    assert_equal(0, BB(task5) )
-    assert_equal(0, BB(task6) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(8, BB(TaskManager.get_task(4)) )
+    assert_equal(0, BB(TaskManager.get_task(5)) )
+    assert_equal(0, BB(TaskManager.get_task(6)) )
     
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-    
-    assert_equal(0, BB(task7) )
-    assert_equal(0, BB(task8) )
-    assert_equal(0, BB(task9) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, BB(TaskManager.get_task(7)) )
+    assert_equal(0, BB(TaskManager.get_task(8)) )
+    assert_equal(0, BB(TaskManager.get_task(9)) )
   end
   
   def test_BB2  
-    ###
-    @manager = AllManager.new
     @manager.load_tasks("testFolder/120613")
 
     #ts = TaskSet.new(@manager.tm.get_task_array)
@@ -306,265 +261,113 @@ class Test_wcbt < Test::Unit::TestCase
   end
 
   def test_abr
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
-    
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    assert_equal(0, abr(task1).size )
-    assert_equal(0, abr(task2).size )
-    assert_equal(0, abr(task3).size )
-    $task_list = [task4, task5, task6]
-    
-    init_computing($task_list)
-    
-    assert_equal(2, abr(task4).size )
-    assert_equal(0, abr(task5).size )
-    assert_equal(0, abr(task6).size )
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-    #taskset = TaskSet.new($task_list)
-    #taskset.show_taskset
-    
-    assert_equal(4, abr(task7).size )
-    assert_equal(0, abr(task8).size )
-    assert_equal(0, abr(task9).size )
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(0, abr(TaskManager.get_task(1)).size )
+    assert_equal(0, abr(TaskManager.get_task(2)).size )
+    assert_equal(0, abr(TaskManager.get_task(3)).size )
+
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(2, abr(TaskManager.get_task(4)).size )
+    assert_equal(0, abr(TaskManager.get_task(5)).size )
+    assert_equal(0, abr(TaskManager.get_task(6)).size )
+
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(4, abr(TaskManager.get_task(7)).size )
+    assert_equal(0, abr(TaskManager.get_task(8)).size )
+    assert_equal(0, abr(TaskManager.get_task(9)).size )
   end
   
   def test_procList
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
     assert(procList == [1,2])
   end
 
   def test_AB
-    task1 = Task.new(1, 1, 600, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 600, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 600, 10, 3, 0, [@req12_LongLong2])
-    
-    task4 = Task.new(4, 1, 600, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 600, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 600, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 600, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 600, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 600, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    assert_equal(0, AB(task1))
-    assert_equal(0, AB(task2))
-    assert_equal(0, AB(task3))
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(0, AB(TaskManager.get_task(1)))
+    assert_equal(0, AB(TaskManager.get_task(2)))
+    assert_equal(0, AB(TaskManager.get_task(3)))
 
-    $task_list = [task4, task5, task6]
-    #taskset = TaskSet.new($task_list)
-    #taskset.show_taskset
-    init_computing($task_list)
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(2, AB(TaskManager.get_task(4)))
+    assert_equal(0, AB(TaskManager.get_task(5)))
+    assert_equal(0, AB(TaskManager.get_task(6)))
     
-    assert_equal(2, AB(task4))
-    assert_equal(0, AB(task5))
-    assert_equal(0, AB(task6))
-    
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-    
-    assert_equal(4, AB(task7))
-    assert_equal(0, AB(task8))
-    assert_equal(0, AB(task9))
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(4, AB(TaskManager.get_task(7)))
+    assert_equal(0, AB(TaskManager.get_task(8)))
+    assert_equal(0, AB(TaskManager.get_task(9)))
     #p "end_test_AB"
-  end
-    
-  def test_partition
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
-    
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    
-    assert_equal(2, partition(1).size )
-    assert_equal(1, partition(2).size )
   end
 
   def test_ndbtg
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(1, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(2), TaskManager.get_task(1), 4) )
     
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    
-    assert_equal(1, ndbtg(task2, task1, 1) )
-    assert_equal(0, ndbtg(task2, task1, 2) )
-    assert_equal(0, ndbtg(task2, task1, 3) )
-    assert_equal(0, ndbtg(task2, task1, 4) )
-    
-    assert_equal(1, ndbtg(task3, task1, 1) )
-    assert_equal(0, ndbtg(task3, task1, 2) )
-    assert_equal(0, ndbtg(task3, task1, 3) )
-    assert_equal(0, ndbtg(task3, task1, 4) )
-    
-    $task_list = [task4, task5, task6]
-    init_computing($task_list)
+    assert_equal(1, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(3), TaskManager.get_task(1), 4) )
 
-    assert_equal(1, ndbtg(task6, task4, 1) )
-    assert_equal(0, ndbtg(task6, task4, 2) )
-    assert_equal(0, ndbtg(task6, task4, 3) )
-    assert_equal(0, ndbtg(task6, task4, 4) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(1, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(6), TaskManager.get_task(4), 4) )
     
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-
-    assert_equal(0, ndbtg(task9, task7, 1) )
-    assert_equal(0, ndbtg(task9, task7, 2) )
-    assert_equal(0, ndbtg(task9, task7, 3) )
-    assert_equal(0, ndbtg(task9, task7, 4) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(9), TaskManager.get_task(7), 4) )
   end
     
   def test_ndbt
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
-    
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
-    
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-    
-    assert_equal(1, ndbt(task2, task1) )
-    assert_equal(1, ndbt(task3, task1) )
-    
-    $task_list = [task4, task5, task6]
-    init_computing($task_list)
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(1, ndbt(TaskManager.get_task(2), TaskManager.get_task(1)) )
+    assert_equal(1, ndbt(TaskManager.get_task(3), TaskManager.get_task(1)) )
 
-    assert_equal(1, ndbt(task6, task4) )
-    
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-    
-    assert_equal(0, ndbt(task9, task7) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(1, ndbt(TaskManager.get_task(6), TaskManager.get_task(4)) )
+
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, ndbt(TaskManager.get_task(9), TaskManager.get_task(7)) )
   end 
   
   def test_ndbp
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_1")
-    init_computing(@manager.tm.get_task_array)
-    task1 = TaskManager.get_task(1)
-    task2 = TaskManager.get_task(2)
-    task3 = TaskManager.get_task(3)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(1, ndbp(task1, 2) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(1, ndbp(TaskManager.get_task(1), 2) )
 
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_2")
-    init_computing(@manager.tm.get_task_array)
-    task4 = TaskManager.get_task(4)
-    task5 = TaskManager.get_task(5)
-    task6 = TaskManager.get_task(6)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(1, ndbp(task4, 2) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(1, ndbp(TaskManager.get_task(4), 2) )
 
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_3")
-    init_computing(@manager.tm.get_task_array)
-    task7 = TaskManager.get_task(7)
-    task8 = TaskManager.get_task(8)
-    task9 = TaskManager.get_task(9)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(0, ndbp(task7, 2) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, ndbp(TaskManager.get_task(7), 2) )
   end
   
   def test_rblt
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_1")
-    init_computing(@manager.tm.get_task_array)
-    task1 = TaskManager.get_task(1)
-    task2 = TaskManager.get_task(2)
-    task3 = TaskManager.get_task(3)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(2, rblt(task3, task1) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(2, rblt(TaskManager.get_task(3), TaskManager.get_task(1)) )
 
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_2")
-    init_computing(@manager.tm.get_task_array)
-    task4 = TaskManager.get_task(4)
-    task5 = TaskManager.get_task(5)
-    task6 = TaskManager.get_task(6)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(2, rblt(task6, task4) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(2, rblt(TaskManager.get_task(6), TaskManager.get_task(4)) )
 
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_3")
-    init_computing(@manager.tm.get_task_array)
-    task7 = TaskManager.get_task(7)
-    task8 = TaskManager.get_task(8)
-    task9 = TaskManager.get_task(9)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(0, rblt(task9, task7) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, rblt(TaskManager.get_task(9), TaskManager.get_task(7)) )
   end
   
-  def test_rblp
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_1")
-    init_computing(@manager.tm.get_task_array)
-    task1 = TaskManager.get_task(1)
-    task2 = TaskManager.get_task(2)
-    task3 = TaskManager.get_task(3)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(2, rblp(task1, 2) )
+  def test_rbl
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(2, rblp(TaskManager.get_task(1), 2) )
 
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_2")
-    init_computing(@manager.tm.get_task_array)
-    task4 = TaskManager.get_task(4)
-    task5 = TaskManager.get_task(5)
-    task6 = TaskManager.get_task(6)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(2, rblp(task4, 2) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(2, rblp(TaskManager.get_task(4), 2) )
 
-    @manager.all_data_clear
-    @manager.load_tasks("#{TEST_FOLDER}wcbt-test_3")
-    init_computing(@manager.tm.get_task_array)
-    task7 = TaskManager.get_task(7)
-    task8 = TaskManager.get_task(8)
-    task9 = TaskManager.get_task(9)
-    init_computing(@manager.tm.get_task_array)
-    assert_equal(0, rblp(task7, 2) )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(0, rblp(TaskManager.get_task(7), 2) )
   end
   
   def test_rbl
@@ -578,272 +381,55 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, rbl(TaskManager.get_task(7)))
 
   end
-
-
   
   def test_wcsp
-    task1 = Task.new(1, 1, 6, 10, 1, 0, [@req6_LongLong4])
-    task2 = Task.new(2, 1, 6, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 0, [@req12_LongLong2])
+    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    assert_equal(0, wcsp(TaskManager.get_task(1), 2).size )
     
-    task4 = Task.new(4, 1, 6, 10, 1, 0, [@req8_LongShort4])
-    task5 = Task.new(5, 1, 6, 10, 2, 0, [@req8_LongShort4, @req4_Short1])
-    task6 = Task.new(6, 2, 6, 10, 3, 0, [@req14_LongShort2])
+    set_taskset("#{TEST_FOLDER}wcbt-test_2")
+    assert_equal(0, wcsp(TaskManager.get_task(4), 2).size )
     
-    task7 = Task.new(7, 1, 6, 10, 1, 0, [@req10_ShortShort4])
-    task8 = Task.new(8, 1, 6, 10, 2, 0, [@req10_ShortShort4, @req4_Short1])
-    task9 = Task.new(9, 2, 6, 10, 3, 0, [@req16_ShortShort2])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    assert_equal(0, wcsp(task1, 2).size )
-    
-    $task_list = [task4, task5, task6]
-    init_computing($task_list)
-
-    assert_equal(0, wcsp(task4, 2).size )
-    
-    $task_list = [task7, task8, task9]
-    init_computing($task_list)
-
-    assert_equal(2, wcsp(task7, 2).size )
+    set_taskset("#{TEST_FOLDER}wcbt-test_3")
+    assert_equal(2, wcsp(TaskManager.get_task(7), 2).size )
   end
   
   def test_rbspLB
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-      req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-      req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-      req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req1])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    assert(rbl(task1)==12)
-    assert(rbs(task1)==10)
+    set_taskset("#{TEST_FOLDER}for_test_sbgp")
+    assert(rbl(TaskManager.get_task(1))==12)
+    assert(rbs(TaskManager.get_task(1))==10)
   end
   
   def test_wcsxg
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-    req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-    req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-    req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req3])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    assert_equal(0, wcsxg(task2, task1, 3).size )
-    assert_equal(0, wcsxg(task2, task1, 4).size )
-    assert_equal(3, wcsxg(task3, task1, 3).size )
-    assert_equal(3, wcsxg(task3, task1, 4).size )
+    set_taskset("#{TEST_FOLDER}for_test_sbgp")
+    assert_equal(0, wcsxg(TaskManager.get_task(2), TaskManager.get_task(1), 3).size )
+    assert_equal(0, wcsxg(TaskManager.get_task(2), TaskManager.get_task(1), 4).size )
+    assert_equal(3, wcsxg(TaskManager.get_task(3), TaskManager.get_task(1), 3).size )
+    assert_equal(3, wcsxg(TaskManager.get_task(3), TaskManager.get_task(1), 4).size )
   end
   
   def test_wcspg
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-    req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-    req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-    req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req3])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    assert_equal(3, wcspg(task1, 2, 3).size )
-    assert_equal(3, wcspg(task1, 2, 4).size )
+    set_taskset("#{TEST_FOLDER}for_test_sbgp")
+    assert_equal(3, wcspg(TaskManager.get_task(1), 2, 3).size )
+    assert_equal(3, wcspg(TaskManager.get_task(1), 2, 4).size )
   end
   
   def test_sbgp
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-    req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-    req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-    req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req3])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    assert_equal(5, sbgp(task1, 3, 2) )
-    assert_equal(2, sbgp(task1, 4, 2) ) 
+    set_taskset("#{TEST_FOLDER}for_test_sbgp")
+    assert_equal(5, sbgp(TaskManager.get_task(1), 3, 2) )
+    assert_equal(2, sbgp(TaskManager.get_task(1), 4, 2) ) 
   end
   
   def test_sbgSB
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-    req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-    req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-    req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req3])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    assert_equal(5, sbg(task1, 3) )
-    assert_equal(7, SB(task1) )
-  end
-  
-  def test_DB
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-    req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-    req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-    req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req3])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-
-    #p B(task1)
-  end
-  
-  def test_B
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    long3 = Group.new(3, LONG)
-    
-    req1 = Req.new(1, long3, 1, [])
-    req2 = Req.new(2, long1, 2, [])
-    req3 = Req.new(3, long2, 2, [])
-    req4 = Req.new(4, long3, 2, [])
-    
-    task1 =Task.new(1, 1, 12, 1, 1, 0, [req1])
-    task2 =Task.new(2, 1, 12, 3, 2, 0, [req2])
-    task3 =Task.new(3, 1, 12, 3, 3, 0, [req3])
-    task4 =Task.new(4, 2, 6, 2, 4, 0, [req3])
-    task5 =Task.new(5, 3, 12, 10, 5, 0, [req4, req4])
-    $task_list = [task1, task2, task3, task4, task5]
-    init_computing($task_list)
-    
-    assert_equal(10, B(task1))
+    set_taskset("#{TEST_FOLDER}for_test_sbgp")
+    assert_equal(5, sbg(TaskManager.get_task(1), 3) )
+    assert_equal(7, SB(TaskManager.get_task(1)) )
   end
   
   def test_B2
-    long1 = Group.new(1, LONG)
-    long2 = Group.new(2, LONG)
-    short1 = Group.new(3, SHORT)
-    short2 = Group.new(4, SHORT)
-    short3 = Group.new(5, SHORT)
-    
-    # Req.new(reqId, res, time, reqs)
-    req2 = Req.new(2, long2, 2, [])
-    req1 = Req.new(1, long1, 4, [req2])
-    req1_2 = Req.new(7, long1, 2, [])
-    
-    req4 = Req.new(4, short2, 2, [])
-    req3 = Req.new(3, short1, 5, [req4])
-    
-    req6 = Req.new(6, short3, 1, [])
-    req5 = Req.new(5, short1, 3, [req6])
-    
-    task1 = Task.new(1, 1, 20, 10, 1, 0, [req3])
-    task2 = Task.new(2, 2, 15, 10, 2, 0, [req1])
-    task3 = Task.new(3, 2, 15, 10, 3, 0, [req1_2, req3, req4])
-    $task_list = [task1, task2, task3]
-    init_computing($task_list)
-#    ts = TaskSet.new($task_list)
-#    ts.show_taskset
-    assert_equal(7, B(task1))
+    set_taskset("#{TEST_FOLDER}for_test_sbgp")
+    assert_equal(7, B(TaskManager.get_task(1)))
   end
   
-  def test_beginTime
-    task1 = Task.new(1, 1, 6, 20, 1, 2, [@req6_LongLong4, @req1_Long1, @req6_LongLong4.clone, @req12_LongLong2.clone, @req4_Short1.clone])
-    task2 = Task.new(2, 1, 6, 10, 2, 2, [@req6_LongLong4, @req1_Long1])
-    task3 = Task.new(3, 2, 6, 10, 3, 2, [@req12_LongLong2])
-    
-    #pp task1
-    tc = TaskCUI.new(task1)
-    #tc.show_task_char
-  end
-  
-  def test_lowest_priority_task(proc)
-    gm = GroupManager.instance
-    rm = RequireManager.instance
-    tm = TaskManager.instance
-    
-  end
-
   def test_120430_fortest
     @manager = AllManager.new
     @manager.load_tasks("testFolder/120430_fortest")

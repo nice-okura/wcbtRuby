@@ -25,7 +25,7 @@ def show_help_message
   puts ""
   puts " --extime_range=<range>"
   puts "     実行時間の範囲を指定"
-  puts "     Ex. --extime_range [20..100]"
+  puts "     Ex. --extime_range 20..100"
   puts ""
   puts " --rcsl=<ratio>" 
   puts "     RCSL指定"
