@@ -180,7 +180,7 @@ module WCBT
         #tuples.each{|t|
         #  str += t.prints
         #}
-        min = [tuples.size, narr(job) + 1].min
+        min = [tuples.size, narr(job)].min
         0.upto(min-1){|num|
           len += tuples[num].req.time
         }
@@ -517,11 +517,11 @@ module WCBT
       
     time = 0
     tuples = abr(job)
-    min = [tuples.size, narr(job) + 1].min
+    min = [tuples.size, narr(job)].min
     0.upto(min-1){|num|
       time += tuples[num].req.time
     }
-    p_debug("ABmin = min(#{tuples.size}, #{narr(job)+1})")
+    p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
     return time
   end
   
