@@ -21,7 +21,7 @@
       "group": 5
     },
     {
-      "kind": "short",
+      "kind": "long",
       "group": 6
     },
     {
@@ -29,7 +29,7 @@
       "group": 7
     },
     {
-      "kind": "long",
+      "kind": "short",
       "group": 8
     }
   ]

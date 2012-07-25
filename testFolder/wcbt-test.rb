@@ -101,56 +101,77 @@ class Test_wcbt < Test::Unit::TestCase
 =end
 
   def test_WCLRWCLR
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    set_taskset("#{TEST_FOLDER}for_many_test")
 
-    assert_equal(1, WCLR(TaskManager.get_task(1)).size)
-    assert_equal(4, WCLR(TaskManager.get_task(1))[0].time)
+    assert_equal(3, WCLR(TaskManager.get_task(1)).size)
     assert_equal(2, WCLR(TaskManager.get_task(2)).size)
-    assert_equal(4, WCLR(TaskManager.get_task(2))[0].time)
-    assert_equal(1, WCLR(TaskManager.get_task(2))[1].time)
-    assert_equal(1, WCLR(TaskManager.get_task(3)).size)
-    assert_equal(2, WCLR(TaskManager.get_task(3))[0].time)
+    assert_equal(3, WCLR(TaskManager.get_task(3)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(4)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(5)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(6)).size)
+    assert_equal(0, WCLR(TaskManager.get_task(7)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(8)).size)
+    assert_equal(4, WCLR(TaskManager.get_task(9)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(10)).size)
+    assert_equal(3, WCLR(TaskManager.get_task(11)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(12)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(13)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(14)).size)
+    assert_equal(3, WCLR(TaskManager.get_task(15)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(16)).size)
     
-    assert_equal(0, WCSR(TaskManager.get_task(1)).size)
-    assert_equal(0, WCSR(TaskManager.get_task(2)).size)
-    assert_equal(0, WCSR(TaskManager.get_task(3)).size)
-
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-
+    assert_equal(0, WCLR(TaskManager.get_task(1)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(2)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(3)).size)
     assert_equal(1, WCLR(TaskManager.get_task(4)).size)
     assert_equal(1, WCLR(TaskManager.get_task(5)).size)
-    assert_equal(1, WCLR(TaskManager.get_task(6)).size)
-    assert_equal(0, WCSR(TaskManager.get_task(4)).size)
-    assert_equal(1, WCSR(TaskManager.get_task(5)).size)
-    assert_equal(0, WCSR(TaskManager.get_task(6)).size)
-    
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(0, WCLR(TaskManager.get_task(7)).size)
-    assert_equal(0, WCLR(TaskManager.get_task(8)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(6)).size)
+    assert_equal(3, WCLR(TaskManager.get_task(7)).size)
+    assert_equal(3, WCLR(TaskManager.get_task(8)).size)
     assert_equal(0, WCLR(TaskManager.get_task(9)).size)
-    assert_equal(1, WCSR(TaskManager.get_task(7)).size)
-    assert_equal(2, WCSR(TaskManager.get_task(8)).size)
-    assert_equal(1, WCSR(TaskManager.get_task(9)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(10)).size)
+    assert_equal(0, WCLR(TaskManager.get_task(11)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(12)).size)
+    assert_equal(2, WCLR(TaskManager.get_task(13)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(14)).size)
+    assert_equal(0, WCLR(TaskManager.get_task(15)).size)
+    assert_equal(1, WCLR(TaskManager.get_task(16)).size)
+
   end
   
   def test_wclxwcsx
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert(wclx(TaskManager.get_task(2), TaskManager.get_task(1)).size == 4)
-    assert(wclx(TaskManager.get_task(3), TaskManager.get_task(1)).size == 2)
-    assert(wcsx(TaskManager.get_task(2), TaskManager.get_task(1)).size == 0)
-    assert(wcsx(TaskManager.get_task(3), TaskManager.get_task(1)).size == 0)
+    set_taskset("#{TEST_FOLDER}for_many_test")
+    assert_equal(8 ,wclx(TaskManager.get_task(2), TaskManager.get_task(1)).size)
+    assert_equal(9 ,wclx(TaskManager.get_task(3), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wclx(TaskManager.get_task(4), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wclx(TaskManager.get_task(5), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wclx(TaskManager.get_task(6), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wclx(TaskManager.get_task(7), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wclx(TaskManager.get_task(8), TaskManager.get_task(1)).size)
+    assert_equal(8 ,wclx(TaskManager.get_task(9), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wclx(TaskManager.get_task(10), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wclx(TaskManager.get_task(11), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wclx(TaskManager.get_task(12), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wclx(TaskManager.get_task(13), TaskManager.get_task(1)).size)
+    assert_equal(4 ,wclx(TaskManager.get_task(14), TaskManager.get_task(1)).size)
+    assert_equal(9 ,wclx(TaskManager.get_task(15), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wclx(TaskManager.get_task(16), TaskManager.get_task(1)).size)
 
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(2, wclx(TaskManager.get_task(5), TaskManager.get_task(4)).size)
-    assert_equal(2, wclx(TaskManager.get_task(6), TaskManager.get_task(4)).size)
-    assert_equal(2, wcsx(TaskManager.get_task(5), TaskManager.get_task(4)).size)
-    assert_equal(0, wcsx(TaskManager.get_task(6), TaskManager.get_task(4)).size)
-
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(0, wclx(TaskManager.get_task(8), TaskManager.get_task(7)).size)
-    assert_equal(0, wclx(TaskManager.get_task(9), TaskManager.get_task(7)).size)
-    assert_equal(4, wcsx(TaskManager.get_task(8), TaskManager.get_task(7)).size)
-    assert_equal(2, wcsx(TaskManager.get_task(9), TaskManager.get_task(7)).size)
+    assert_equal(4 ,wcsx(TaskManager.get_task(2), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(3), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(4), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(5), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(6), TaskManager.get_task(1)).size)
+    assert_equal(9 ,wcsx(TaskManager.get_task(7), TaskManager.get_task(1)).size)
+    assert_equal(9 ,wcsx(TaskManager.get_task(8), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wcsx(TaskManager.get_task(9), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(10), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wcsx(TaskManager.get_task(11), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(12), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(13), TaskManager.get_task(1)).size)
+    assert_equal(2 ,wcsx(TaskManager.get_task(14), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wcsx(TaskManager.get_task(15), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(16), TaskManager.get_task(1)).size)
 
   end
     
@@ -173,29 +194,29 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_getLongShortResArray
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert_equal(1, TaskManager.get_task(1).long_require_array.size )
+    # ネストはカウントしない
+    set_taskset("#{TEST_FOLDER}for_many_test")
+
+    assert_equal(3, TaskManager.get_task(1).long_require_array.size )
     assert_equal(2, TaskManager.get_task(2).long_require_array.size )
-    assert_equal(1, TaskManager.get_task(3).long_require_array.size )
-    assert_equal(0, TaskManager.get_task(1).short_require_array.size )
-    assert_equal(0, TaskManager.get_task(2).short_require_array.size )
-    assert_equal(0, TaskManager.get_task(3).short_require_array.size )
-
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(1, TaskManager.get_task(4).long_require_array.size )
-    assert_equal(1, TaskManager.get_task(5).long_require_array.size )
+    assert_equal(2, TaskManager.get_task(3).long_require_array.size ) 
+    assert_equal(2, TaskManager.get_task(4).long_require_array.size )
+    assert_equal(2, TaskManager.get_task(5).long_require_array.size )
     assert_equal(1, TaskManager.get_task(6).long_require_array.size )
-    assert_equal(0, TaskManager.get_task(4).short_require_array.size )
-    assert_equal(1, TaskManager.get_task(5).short_require_array.size )
-    assert_equal(0, TaskManager.get_task(6).short_require_array.size )
-
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
     assert_equal(0, TaskManager.get_task(7).long_require_array.size )
-    assert_equal(0, TaskManager.get_task(8).long_require_array.size )
-    assert_equal(0, TaskManager.get_task(9).long_require_array.size )
-    assert_equal(1, TaskManager.get_task(7).short_require_array.size )
-    assert_equal(2, TaskManager.get_task(8).short_require_array.size )
-    assert_equal(1, TaskManager.get_task(9).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(8).long_require_array.size )
+
+    assert_equal(0, TaskManager.get_task(1).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(2).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(3).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(4).short_require_array.size )
+    assert_equal(1, TaskManager.get_task(5).short_require_array.size )
+    assert_equal(2, TaskManager.get_task(6).short_require_array.size )
+    assert_equal(3, TaskManager.get_task(7).short_require_array.size )
+    assert_equal(3, TaskManager.get_task(8).short_require_array.size )
+
+
+    
 
   end
   
@@ -337,6 +358,20 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 6) )
     assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 7) )
     assert_equal(0, ndbtg(TaskManager.get_task(5), TaskManager.get_task(3), 8) )
+
+    # ネストしている場合のテスト
+    set_taskset("#{TEST_FOLDER}for_test_LB_nest")
+    #    p    LR(TaskManager.get_task(1))
+    #pp WCLR(TaskManager.get_task(7))
+    assert_equal(0, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 1) )
+    assert_equal(0, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 2) )
+    assert_equal(0, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 3) )
+    assert_equal(0, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 4) )
+    assert_equal(1, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 5) )
+    assert_equal(0, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 6) )
+    assert_equal(0, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 7) )
+    assert_equal(1, ndbtg(TaskManager.get_task(7), TaskManager.get_task(1), 8) )
+
   end
     
   def test_ndbt
@@ -437,6 +472,25 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(3, ndbt(TaskManager.get_task(15), TaskManager.get_task(5)) )
     assert_equal(1, ndbt(TaskManager.get_task(16), TaskManager.get_task(5)) )
 
+    
+    # ネストしている場合のテスト
+    set_taskset "#{TEST_FOLDER}for_test_LB_nest"
+    assert_equal(1, ndbt(TaskManager.get_task(1), TaskManager.get_task(2)) )
+    assert_equal(1, ndbt(TaskManager.get_task(3), TaskManager.get_task(2)) )
+    assert_equal(0, ndbt(TaskManager.get_task(4), TaskManager.get_task(2)) )
+    assert_equal(2, ndbt(TaskManager.get_task(5), TaskManager.get_task(2)) )
+    assert_equal(2, ndbt(TaskManager.get_task(6), TaskManager.get_task(2)) )
+    assert_equal(0, ndbt(TaskManager.get_task(7), TaskManager.get_task(2)) )
+    assert_equal(0, ndbt(TaskManager.get_task(8), TaskManager.get_task(2)) )
+    assert_equal(0, ndbt(TaskManager.get_task(9), TaskManager.get_task(2)) )
+    assert_equal(2, ndbt(TaskManager.get_task(10), TaskManager.get_task(2)) )
+    assert_equal(0, ndbt(TaskManager.get_task(11), TaskManager.get_task(2)) )
+    assert_equal(3, ndbt(TaskManager.get_task(12), TaskManager.get_task(2)) )
+    assert_equal(1, ndbt(TaskManager.get_task(13), TaskManager.get_task(2)) )
+    assert_equal(2, ndbt(TaskManager.get_task(14), TaskManager.get_task(2)) )
+    assert_equal(1, ndbt(TaskManager.get_task(15), TaskManager.get_task(2)) )
+    assert_equal(2, ndbt(TaskManager.get_task(16), TaskManager.get_task(2)) )
+    
   end 
   
   def test_ndbp

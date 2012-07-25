@@ -67,9 +67,12 @@ module WCBT
     $calc_task.each{|task|
       lreqs = []
       sreqs = []
-      task.req_list.each{|req|
+
+      # ネストしているリソース要求も含める
+      # task.req_list.each{|req|
+      task.all_require.each{|req|
         if req.outermost == true && req.res.kind == LONG
-          lreqs << req
+          lreqs << req            
         elsif req.outermost == true && req.res.kind == SHORT
           sreqs << req
         end
@@ -541,7 +544,7 @@ module WCBT
   def SB(job)
     if job == nil
       return 0
-    elsif job.short_require_array.size == 0
+    elsif job.short_require_array_nest.size == 0
       return 0
     end
     g = []
