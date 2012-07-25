@@ -520,6 +520,7 @@ class Test_wcbt < Test::Unit::TestCase
   
   def test_ndbp
     set_taskset("#{TEST_FOLDER}for_test_LB_nest")
+    
     assert_equal(2, ndbp(TaskManager.get_task(1), 2) )
     assert_equal(2, ndbp(TaskManager.get_task(1), 3) )
     assert_equal(0, ndbp(TaskManager.get_task(1), 4) )
@@ -532,17 +533,66 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(4, ndbp(TaskManager.get_task(4), 1) )
     assert_equal(2, ndbp(TaskManager.get_task(4), 2) )
     assert_equal(4, ndbp(TaskManager.get_task(4), 3) )
+    
+    assert_equal(2, ndbp(TaskManager.get_task(5), 2) )
+    assert_equal(3, ndbp(TaskManager.get_task(5), 3) )
+    assert_equal(3, ndbp(TaskManager.get_task(5), 4) )
+    assert_equal(0, ndbp(TaskManager.get_task(6), 1) )
+    assert_equal(2, ndbp(TaskManager.get_task(6), 3) )
+    assert_equal(2, ndbp(TaskManager.get_task(6), 4) )
+    assert_equal(4, ndbp(TaskManager.get_task(7), 1) )
+    assert_equal(2, ndbp(TaskManager.get_task(7), 2) )
+    assert_equal(0, ndbp(TaskManager.get_task(7), 4) )
+    assert_equal(2, ndbp(TaskManager.get_task(8), 1) )
+    assert_equal(2, ndbp(TaskManager.get_task(8), 2) )
+    assert_equal(3, ndbp(TaskManager.get_task(8), 3) )
+    
+    assert_equal(0, ndbp(TaskManager.get_task(9), 2) )
+    assert_equal(0, ndbp(TaskManager.get_task(9), 3) )
+    assert_equal(0, ndbp(TaskManager.get_task(9), 4) )
+    assert_equal(6, ndbp(TaskManager.get_task(10), 1) )
+    assert_equal(5, ndbp(TaskManager.get_task(10), 3) )
+    assert_equal(5, ndbp(TaskManager.get_task(10), 4) )
+    assert_equal(2, ndbp(TaskManager.get_task(11), 1) )
+    assert_equal(5, ndbp(TaskManager.get_task(11), 2) )
+    assert_equal(7, ndbp(TaskManager.get_task(11), 4) )
+    assert_equal(0, ndbp(TaskManager.get_task(12), 1) )
+    assert_equal(3, ndbp(TaskManager.get_task(12), 2) )
+    assert_equal(3, ndbp(TaskManager.get_task(12), 3) )
+    
+    assert_equal(2, ndbp(TaskManager.get_task(13), 2) )
+    assert_equal(3, ndbp(TaskManager.get_task(13), 3) )
+    assert_equal(3, ndbp(TaskManager.get_task(13), 4) )
+    assert_equal(0, ndbp(TaskManager.get_task(14), 1) )
+    assert_equal(2, ndbp(TaskManager.get_task(14), 3) )
+    assert_equal(2, ndbp(TaskManager.get_task(14), 4) )
+    assert_equal(4, ndbp(TaskManager.get_task(15), 1) )
+    assert_equal(2, ndbp(TaskManager.get_task(15), 2) )
+    assert_equal(6, ndbp(TaskManager.get_task(15), 4) )
+    assert_equal(2, ndbp(TaskManager.get_task(16), 1) )
+    assert_equal(5, ndbp(TaskManager.get_task(16), 2) )
+    assert_equal(6, ndbp(TaskManager.get_task(16), 3) )
+    
   end
   
   def test_rblt
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    set_taskset("#{TEST_FOLDER}for_test_LB_nest")
+    assert_equal(2, rblt(TaskManager.get_task(2), TaskManager.get_task(1)) )
     assert_equal(2, rblt(TaskManager.get_task(3), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(4), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(5), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(6), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(7), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(8), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(9), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(10), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(11), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(12), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(13), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(14), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(15), TaskManager.get_task(1)) )
+    assert_equal(2, rblt(TaskManager.get_task(16), TaskManager.get_task(1)) )
 
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(2, rblt(TaskManager.get_task(6), TaskManager.get_task(4)) )
-
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(0, rblt(TaskManager.get_task(9), TaskManager.get_task(7)) )
   end
   
   def test_rbl
