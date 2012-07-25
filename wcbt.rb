@@ -98,7 +98,7 @@ module WCBT
       #
       # narrの計算
       #
-      $NARR[task.task_id] = task.get_long_require_array_nest.size
+      $NARR[task.task_id] = task.long_require_array.size + 1
 
 
       #
@@ -544,7 +544,7 @@ module WCBT
   def SB(job)
     if job == nil
       return 0
-    elsif job.short_require_array_nest.size == 0
+    elsif job.short_require_array.size == 0
       return 0
     end
     g = []

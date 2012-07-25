@@ -197,10 +197,10 @@ class Task
     #
     # shortリソース要求の配列を返す
     # outermost なもののみ
-    # ネストされているものは含まない
+    # ネストされているものも含む
     #
     @short_require_array = []
-    @req_list.each{|req|
+    @all_require.each{|req|
       if req.res.kind == SHORT && req.outermost == true
         @short_require_array << req
       end
@@ -209,11 +209,11 @@ class Task
     #
     # longリソースの配列を返す
     # outermostなもののみ
-    # ネストされているものは含まない
+    # ネストされているものも含む
     #
     @long_require_array = []
     
-    @req_list.each{|req|
+    @all_require.each{|req|
       if req.res.kind == LONG && req.outermost == true
         @long_require_array << req
       end
@@ -295,13 +295,13 @@ class Task
   # outermostなもののみ
   # ネストされているものも含む
   #
-  def get_long_require_array_nest
-    rlist = []
-    @all_require.each{ |req|
-      rlist << req if req.res.kind == LONG && req.outermost == true
-    }
-    return rlist
-  end
+  #def get_long_require_array_nest
+  #  rlist = []
+  #  @all_require.each{ |req|
+  #    rlist << req if req.res.kind == LONG && req.outermost == true
+  #  }
+  #  return rlist
+  #end
 
   #
   # longリソース要求の配列を返す

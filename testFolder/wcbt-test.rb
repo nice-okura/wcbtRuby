@@ -199,7 +199,7 @@ class Test_wcbt < Test::Unit::TestCase
 
     assert_equal(3, TaskManager.get_task(1).long_require_array.size )
     assert_equal(2, TaskManager.get_task(2).long_require_array.size )
-    assert_equal(2, TaskManager.get_task(3).long_require_array.size ) 
+    assert_equal(3, TaskManager.get_task(3).long_require_array.size ) 
     assert_equal(2, TaskManager.get_task(4).long_require_array.size )
     assert_equal(2, TaskManager.get_task(5).long_require_array.size )
     assert_equal(1, TaskManager.get_task(6).long_require_array.size )
@@ -214,41 +214,68 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(2, TaskManager.get_task(6).short_require_array.size )
     assert_equal(3, TaskManager.get_task(7).short_require_array.size )
     assert_equal(3, TaskManager.get_task(8).short_require_array.size )
-
-
-    
-
   end
   
   def test_all_require
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert_equal(2, TaskManager.get_task(1).all_require.size )
+    set_taskset("#{TEST_FOLDER}for_many_test")
+    assert_equal(3, TaskManager.get_task(1).all_require.size )
     assert_equal(3, TaskManager.get_task(2).all_require.size )
-    assert_equal(2, TaskManager.get_task(3).all_require.size )
-    
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(2, TaskManager.get_task(4).all_require.size )
+    assert_equal(4, TaskManager.get_task(3).all_require.size )
+    assert_equal(3, TaskManager.get_task(4).all_require.size )
     assert_equal(3, TaskManager.get_task(5).all_require.size )
-    assert_equal(2, TaskManager.get_task(6).all_require.size )
-    
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(2, TaskManager.get_task(7).all_require.size )
-    assert_equal(3, TaskManager.get_task(8).all_require.size )
-    assert_equal(2, TaskManager.get_task(9).all_require.size )
+    assert_equal(3, TaskManager.get_task(6).all_require.size )
+    assert_equal(3, TaskManager.get_task(7).all_require.size )
+    assert_equal(4, TaskManager.get_task(8).all_require.size )
+    assert_equal(4, TaskManager.get_task(9).all_require.size )
+    assert_equal(3, TaskManager.get_task(10).all_require.size )
+    assert_equal(3, TaskManager.get_task(11).all_require.size )
+    assert_equal(4, TaskManager.get_task(12).all_require.size )
+    assert_equal(3, TaskManager.get_task(13).all_require.size )
+    assert_equal(3, TaskManager.get_task(14).all_require.size )
+    assert_equal(3, TaskManager.get_task(15).all_require.size )
+    assert_equal(3, TaskManager.get_task(16).all_require.size )
+  end
+
+  def test_narr
+    set_taskset("#{TEST_FOLDER}for_many_test")
+    assert_equal(4, narr(TaskManager.get_task(1)))
+    assert_equal(3, narr(TaskManager.get_task(2)))
+    assert_equal(4, narr(TaskManager.get_task(3)))
+    assert_equal(3, narr(TaskManager.get_task(4)))
+    assert_equal(3, narr(TaskManager.get_task(5)))
+    assert_equal(2, narr(TaskManager.get_task(6)))
+    assert_equal(1, narr(TaskManager.get_task(7)))
+    assert_equal(2, narr(TaskManager.get_task(8)))
+    assert_equal(5, narr(TaskManager.get_task(9)))
+    assert_equal(2, narr(TaskManager.get_task(10)))
+    assert_equal(4, narr(TaskManager.get_task(11)))
+    assert_equal(3, narr(TaskManager.get_task(12)))
+    assert_equal(2, narr(TaskManager.get_task(13)))
+    assert_equal(3, narr(TaskManager.get_task(14)))
+    assert_equal(4, narr(TaskManager.get_task(15)))
+    assert_equal(3, narr(TaskManager.get_task(16)))
+                
   end
 
   def test_bbt
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
+    set_taskset("#{TEST_FOLDER}for_many_test")
     assert_equal(9, bbt(TaskManager.get_task(2), TaskManager.get_task(1)) )
     assert_equal(4, bbt(TaskManager.get_task(3), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(4), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(5), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(6), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(7), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(8), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(9), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(10), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(11), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(12), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(13), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(14), TaskManager.get_task(1)) )
+    assert_equal(4, bbt(TaskManager.get_task(15), TaskManager.get_task(1)) )  
+    assert_equal(9, bbt(TaskManager.get_task(16), TaskManager.get_task(1)) )
 
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(8, bbt(TaskManager.get_task(5), TaskManager.get_task(4)) )    
-    assert_equal(4, bbt(TaskManager.get_task(6), TaskManager.get_task(4)) )
-    
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(0, bbt(TaskManager.get_task(8), TaskManager.get_task(7)) )
-    assert_equal(0, bbt(TaskManager.get_task(9), TaskManager.get_task(7)) )    
+
 
   end
   
