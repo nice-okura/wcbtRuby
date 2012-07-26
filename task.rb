@@ -462,7 +462,7 @@ class Req
       #exit
     end
     reqs.each{|r|
-      r.nested unless r == []
+      r.nested = true unless r == []
     }
   end
   

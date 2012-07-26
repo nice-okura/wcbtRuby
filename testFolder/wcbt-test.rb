@@ -106,15 +106,33 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(3 ,wcsx(TaskManager.get_task(5), TaskManager.get_task(1)).size)
     assert_equal(6 ,wcsx(TaskManager.get_task(6), TaskManager.get_task(1)).size)
     assert_equal(9 ,wcsx(TaskManager.get_task(7), TaskManager.get_task(1)).size)
-    assert_equal(9 ,wcsx(TaskManager.get_task(8), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(8), TaskManager.get_task(1)).size)
     assert_equal(0 ,wcsx(TaskManager.get_task(9), TaskManager.get_task(1)).size)
     assert_equal(6 ,wcsx(TaskManager.get_task(10), TaskManager.get_task(1)).size)
     assert_equal(0 ,wcsx(TaskManager.get_task(11), TaskManager.get_task(1)).size)
-    assert_equal(6 ,wcsx(TaskManager.get_task(12), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(12), TaskManager.get_task(1)).size)
     assert_equal(6 ,wcsx(TaskManager.get_task(13), TaskManager.get_task(1)).size)
     assert_equal(2 ,wcsx(TaskManager.get_task(14), TaskManager.get_task(1)).size)
     assert_equal(0 ,wcsx(TaskManager.get_task(15), TaskManager.get_task(1)).size)
     assert_equal(3 ,wcsx(TaskManager.get_task(16), TaskManager.get_task(1)).size)
+
+    set_taskset("#{TEST_FOLDER}for_test_LB_nest")
+    assert_equal(6 ,wcsx(TaskManager.get_task(2), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(3), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(4), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(5), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(6), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(7), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(8), TaskManager.get_task(1)).size)
+    assert_equal(9 ,wcsx(TaskManager.get_task(9), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wcsx(TaskManager.get_task(10), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wcsx(TaskManager.get_task(11), TaskManager.get_task(1)).size)
+    assert_equal(2 ,wcsx(TaskManager.get_task(12), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(13), TaskManager.get_task(1)).size)
+    assert_equal(6 ,wcsx(TaskManager.get_task(14), TaskManager.get_task(1)).size)
+    assert_equal(3 ,wcsx(TaskManager.get_task(15), TaskManager.get_task(1)).size)
+    assert_equal(0 ,wcsx(TaskManager.get_task(16), TaskManager.get_task(1)).size)
+    
 
   end
     
@@ -603,9 +621,11 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_wcsp
-    set_taskset("#{TEST_FOLDER}for_test_SB_nest")
-    assert_equal(0, wcsp(TaskManager.get_task(1), 2).size )
-
+    set_taskset("#{TEST_FOLDER}for_test_LB_nest")
+    assert_equal(18, wcsp(TaskManager.get_task(1), 2).size )
+    assert_equal(12, wcsp(TaskManager.get_task(1), 3).size )
+    assert_equal(8, wcsp(TaskManager.get_task(1), 4).size )
+    
   end
   
   def test_wcsxg
