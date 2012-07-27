@@ -276,26 +276,31 @@ module WCBT
 
   # shortリソース要求毎の最大ブロック時間
   # ABを計算する前に用いる
-  def sbr(req)
+  def sbr(req, processor)
     block_time = 0
-    ProcessorManager.proc_list.each{ |proc|
-      reqs_time_array = competing(req, proc).select{ |r| r.time}
-      block_time += req_time_array.max
-    }
+    
+    # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせる
+    ProcessorManager.proc_list.each do |proc|
+      next if processor == proc.proc_id
+      reqs_time_array = competing(req, proc).collect{ |r| r.time }
+      #puts "\t#{reqs_time_array}"
+      block_time += reqs_time_array.max unless reqs_time_array == []
+    end
     
     return block_time
   end
   
-  # プロセッサp内の，reqと競合するリソース要求
+  # プロセッサp内の，reqと競合するリソース要求の集合
+  # なければ [] を返す
   def competing(req, proc)
     req_list = []
     
-    proc.task_list.each{ |tsk|
-      tsk.req_list.each{ |r|
+    proc.task_list.each do |tsk|
+      tsk.req_list.each do |r|
         next if r == req  # reqと同じなら除外
         req_list << r if req.res.group == r.res.group
-      }
-    }
+      end
+    end
 
     return req_list
   end
@@ -390,7 +395,7 @@ module WCBT
     partition(proc).each{|task|
       tuples += wcsx(task, job)
     }
-    tuples
+    return tuples
   end
   
   def rbs(job)
@@ -564,9 +569,16 @@ module WCBT
   # Appendix A.5
   def SB_not_tight(job)
     block_time = 0
-    job.req_list.each{ |req|
-      block_time += sbr(req)
-    }
+
+    job.short_require_array.each do |req|
+      # spin_block時間の計算
+      inflate_time = sbr(req, job.proc)
+      
+      # 各要求にspin_block時間を加える
+      req.add_inflated_spintime(inflate_time)
+      ##puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
+      block_time += inflate_time
+    end
 
     return block_time
   end
@@ -656,12 +668,15 @@ module WCBT
   def set_blocktime
     #puts "set_blocktime"
     $calc_task.each{|t|
-      #puts "SET_BLOCKTIME:タスク#{t.task_id}"
-      t.bb = BB(t)
-      t.ab = AB(t)
       t.sb = SB(t)
-      t.lb = LB(t)
-      t.db = DB(t)
+      SB_not_tight(t)
+
+
+      #t.bb = BB(t)
+      #t.ab = AB(t)
+      #t.sb = SB(t)
+      #t.lb = LB(t)
+      #t.db = DB(t)
       t.b = t.bb + t.ab + t.sb + t.lb + t.db
     }
     # 最悪応答時間の計算

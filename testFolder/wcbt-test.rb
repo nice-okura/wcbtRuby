@@ -1119,8 +1119,18 @@ class Test_wcbt < Test::Unit::TestCase
   
   def test_sbr
     @manager = AllManager.new
-    @manager.load_tasks("#{TEST_FOLDER}for_test_competing_1")
-    
+    @manager.load_tasks("#{TEST_FOLDER}for_test_competing_2")
+
+    assert_equal(10, TaskManager.get_task(1).req_list[0].inflated_spintime)
+    assert_equal(4, TaskManager.get_task(1).req_list[1].inflated_spintime)
+    assert_equal(5, TaskManager.get_task(2).req_list[0].inflated_spintime)
+    assert_equal(0, TaskManager.get_task(2).req_list[1].inflated_spintime)
+    assert_equal(2, TaskManager.get_task(3).req_list[0].inflated_spintime)
+    assert_equal(0, TaskManager.get_task(3).req_list[1].inflated_spintime)
+    assert_equal(9, TaskManager.get_task(4).req_list[0].inflated_spintime)
+    assert_equal(2, TaskManager.get_task(4).req_list[1].inflated_spintime)
+    assert_equal(0, TaskManager.get_task(5).req_list[0].inflated_spintime)
+    assert_equal(0, TaskManager.get_task(5).req_list[1].inflated_spintime)
     
   end
 end
