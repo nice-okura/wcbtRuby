@@ -512,7 +512,8 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
-      time += tuples[num].req.time
+      p "#{tuples[num].req.req_id} : #{tuples[num].req.inflated_spintime}"
+      time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
     return time
@@ -542,13 +543,9 @@ module WCBT
     end
     g = []
     time = 0
-    SR(job).each do |req|
-      g << req.res.group
-    end
+    SR(job).each { |req| g << req.res.group }
     g.uniq!
-    g.each do |group|
-      time += sbg(job, group)
-    end
+    g.each { |group|  time += sbg(job, group) }
     time
   end
 
@@ -565,7 +562,7 @@ module WCBT
       # 各要求にspin_block時間を加える
       req.add_inflated_spintime(inflate_time)
 
-      ##puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
+      puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
       block_time += inflate_time
     end
 
@@ -582,9 +579,9 @@ module WCBT
     time 
   end
   
-  def B(job)
-    return BB(job) + AB(job) + LB(job) + SB(job) + DB(job)
-  end
+  #def B(job)
+  #  return BB(job) + AB(job) + LB(job) + SB(job) + DB(job)
+  #end
   
 #############################
 #
@@ -654,16 +651,25 @@ module WCBT
   public
   def set_blocktime
     #puts "set_blocktime"
+    $calc_task.each{ |t| t.sb = SB(t) }
+    $calc_task.each{ |t| SB_not_tight(t) }
+    $calc_task.each{ |t| t.ab = AB(t) }
+    $calc_task.each{ |t| t.bb = BB(t) }
+    $calc_task.each{ |t| t.lb = LB(t) }
+    $calc_task.each{ |t| t.db = DB(t) }
+    $calc_task.each{ |t| t.b = t.bb + t.ab + t.sb + t.lb + t.db }
+=begin
     $calc_task.each do |t|
       t.sb = SB(t)
       SB_not_tight(t)
-      t.bb = BB(t)
+      
       t.ab = AB(t)
-      t.sb = SB(t)
-      t.lb = LB(t)
-      t.db = DB(t)
+      #t.bb = BB(t)
+      #t.lb = LB(t)
+      #t.db = DB(t)
       t.b = t.bb + t.ab + t.sb + t.lb + t.db
     end
+=end
     # 最悪応答時間の計算
     $calc_task.each do |t|
       t.wcrt = wcrt(t)

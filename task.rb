@@ -342,16 +342,14 @@ class Task
     #
     # set_begintimeする必要があるかチェック
     #
-    req_list.each{|req|
-      if req.begintime != 0
-        return false
-      end
-    }
+    req_list.each do |req|
+      return false if req.begintime != 0
+    end
     
     req_time = 0
-    req_list.each{|req|
+    req_list.each do |req|
       req_time += req.time
-    }
+    end
     #
     # リソース要求A,B,Cがあるとして，要求時間が 10, 20, 30 とし，タスクの実行時間は 80 とする
     # リソース要求A, B, Cの間(この場合は4箇所)に余った 80-60 = 20 を適当に割り振る
@@ -441,8 +439,8 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_reader :req_id, :time, :outermost, :inflated_spintime
-  attr_accessor :res, :begintime, :reqs, :nested
+  attr_reader :req_id, :time, :outermost, :inflated_spintime, :res, :reqs
+  attr_accessor :nested, :begintime
 
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
@@ -469,15 +467,19 @@ class Req
       #exit
     end
   end
-  
+
+  # spintimeを付加したリソース要求時間
+  def get_time_inflated
+    return @time + @inflated_spintime
+  end
+
   #
   # Object.clone オーバーライド
+  # ネストしているリソース要求の参照もcloneする
   #
   def clone
     newreqs = []
-    @reqs.each do |r|
-      newreqs << r.clone
-    end
+    @reqs.each { |r| newreqs << r.clone }
     Req.new(@req_id, @res, @time, newreqs)
   end
   
@@ -487,9 +489,7 @@ class Req
   # 
   def out_alldata
     reqss = []
-    @reqs.each do |r|
-      reqss << r.req_id
-    end
+    @reqs.each { |r| reqss << r.req_id }
 
     #p @begintime
     return {
