@@ -497,9 +497,9 @@ module WCBT
   def BB(job)
     return 0 if job == nil
     time = 0
-    $calc_task.each do |tas|
-      if tas.proc == job.proc && tas.priority > job.priority
-        time += bbt(tas, job)
+    $calc_task.each do |tsk|
+      if tsk.proc == job.proc && tsk.priority > job.priority
+        time += bbt(tsk, job)
       end
     end
     return time
@@ -512,7 +512,6 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
-      p "#{tuples[num].req.req_id} : #{tuples[num].req.inflated_spintime}"
       time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
@@ -562,7 +561,7 @@ module WCBT
       # 各要求にspin_block時間を加える
       req.add_inflated_spintime(inflate_time)
 
-      puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
+      ## puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
       block_time += inflate_time
     end
 

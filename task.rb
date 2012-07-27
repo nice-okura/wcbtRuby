@@ -439,7 +439,7 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_reader :req_id, :time, :outermost, :inflated_spintime, :res, :reqs
+  attr_reader :req_id, :outermost, :inflated_spintime, :res, :reqs, :time
   attr_accessor :nested, :begintime
 
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
@@ -454,11 +454,14 @@ class Req
     
     # outermost のアクセス時間timeが最大でないといけない
     nesttime = 0
-    reqs.each do |req|
+    @reqs.each do |req|
       nesttime += req.time
       
       # ネストしているリソース要求のnestedフラグをたてる
       req.nested = true unless req == []
+      
+      # ネストしているリソース要求のインスタンス変数に親リソース要求の参照を持たせる
+      req.instance_variable_set(:@outer_req, self)
     end
 
     if @time < nesttime
@@ -502,9 +505,18 @@ class Req
     }
   end
 
+  
   # sbrで計算したspin_block時間を加える
   def add_inflated_spintime(time)
     @inflated_spintime += time
+    outer_req = instance_variable_get(:@outer_req)
+    outer_req.change_require_time(time) unless outer_req == nil
+  end
+
+  protected
+  # リソース要求の時間を変更する
+  def change_require_time(time)
+    @time = time
   end
 end
 
