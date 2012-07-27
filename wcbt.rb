@@ -64,19 +64,19 @@ module WCBT
     
     proc = [] # proc_list用プロセッサ配列
     
-    $calc_task.each{|task|
+    $calc_task.each do|task|
       lreqs = []
       sreqs = []
 
       # ネストしているリソース要求も含める
       # task.req_list.each{|req|
-      task.all_require.each{|req|
+      task.all_require.each do |req|
         if req.outermost == true && req.res.kind == LONG
           lreqs << req            
         elsif req.outermost == true && req.res.kind == SHORT
           sreqs << req
         end
-      }
+      end
       $WCLR[task.task_id] = lreqs unless lreqs == []
       $WCSR[task.task_id] = sreqs unless sreqs == []
       
@@ -85,13 +85,13 @@ module WCBT
       #
       lr = []
       sr = []
-      task.all_require.each{|req|
+      task.all_require.each do |req|
         if req.res.kind == LONG && req.outermost == true
           lr << req
         elsif req.res.kind == SHORT && req.outermost == true
           sr << req
         end
-      }
+      end
       $LR[task.task_id] = lr unless lr == []
       $SR[task.task_id] = sr unless sr == []
       
@@ -109,13 +109,12 @@ module WCBT
       #
       # wclx, wcsxの計算
       #
-      $calc_task.each{|job|
+      $calc_task.each do |job|
         tuplesl = []
         tupless = []
         
-        if task == nil || job == nil
-          return []
-        end
+        return [] if task == nil || job == nil
+
         begin
           k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
         rescue => e
@@ -123,28 +122,26 @@ module WCBT
           puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
           exit
         end
-        1.upto(k){|n|
-          WCLR(task).each{|req|
+
+        1.upto(k) do |n|
+          WCLR(task).each do |req|
             if req.res.kind == LONG
               tuplesl << ReqTuple.new(req, n)
             end
-          }
-          WCSR(task).each{|req|
+          end
+          WCSR(task).each do |req|
             if req.res.kind == SHORT && req.nested == false
               tupless << ReqTuple.new(req, n)
             end
-          }
-        }
-        tuplesl.sort!{|a, b|
-          (-1) * (a.req.time <=> b.req.time)
-        }
-        tupless.sort!{|a, b|
-          (-1) * (a.req.time <=> b.req.time)
-        }
+          end
+        end
+
+        tuplesl.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
+        tupless.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
         $wclx[[task.task_id, job.task_id]] = tuplesl
         $wcsx[[task.task_id, job.task_id]] = tupless
-      }
-    }
+      end
+    end
     
     #
     # proc_list設定
@@ -156,10 +153,10 @@ module WCBT
     #
     # 上記の計算をした後でしか計算できないもの
     #
-    $calc_task.each{ |job|
+    $calc_task.each do |job|
       tuple_abr = []
       tuples_abr = []
-      $calc_task.each{ |task|
+      $calc_task.each do |task|
         #
         # abrの計算
         #
@@ -181,14 +178,14 @@ module WCBT
         #  str += t.prints
         #}
         min = [tuples.size, narr(job)].min
-        0.upto(min-1){|num|
+        0.upto(min-1) do |num|
           len += tuples[num].req.time
-        }
+        end
         $bbt[[task.task_id, job.task_id]] = len
 
-      }
+      end
       $abr[job.task_id] = tuples_abr
-    }
+    end
 
     
     #
@@ -307,13 +304,12 @@ module WCBT
 
   
   def ndbp(job, proc)
-    if job.proc == proc
-      return 0
-    end
+    return 0 if job.proc == proc
+
     count = 0
-    partition(proc).each{|task|
+    partition(proc).each do |task|
       count += ndbt(task, job)
-    }
+    end
     p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
@@ -321,13 +317,13 @@ module WCBT
   def ndbt(task, job)
     count = 0
     g = []
-    LR(job).each{|req|
+    LR(job).each do |req|
       g << req.res.group
-    }
+    end
     g.uniq!
-    g.each{|group|
+    g.each do |group|
       count += ndbtg(task, job, group)
-    }
+    end
     p_debug("\tndbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{count}")
     return count
   end
@@ -335,12 +331,12 @@ module WCBT
   def ndbtg(task, job, group)
     a = 0
     b = 0
-    LR(job).each{|req|
+    LR(job).each do |req|
       a += 1 if req.res.group == group
-    }
-    WCLR(task).each{|req|
+    end
+    WCLR(task).each do |req|
       b += 1 if req.res.group == group
-    }
+    end
     b *= ((job.period.to_f/task.period.to_f).ceil.to_i + 1)
     p_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
     return [a, b].min
@@ -348,20 +344,18 @@ module WCBT
   
   def rbl(job)
     time = 0
-    procList.each{|proc|
-      if job.proc != proc
-        time += rblp(job, proc)
-      end
-    }
+    procList.each do |proc|
+       time += rblp(job, proc) if job.proc != proc
+    end
     p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
     return time 
   end
   
   def rblp(job, proc)
     count = 0
-    partition(proc).each{|task|
+    partition(proc).each do |task|
       count += rblt(task, job)
-    }
+    end
     p_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
@@ -371,18 +365,23 @@ module WCBT
     str = ""
     if task == nil || job == nil
       return 0
-    elsif task.proc  == job.proc 
+    elsif task.proc == job.proc 
       return 0
     end
-    p task.class unless task.class == Task
+    
+    unless task.class == Task
+      p task.class
+    end
+    #p task.class unless task.class == Task
     tuples = wclx(task, job)
-    tuples.each{|t|
+    tuples.each do |t|
       str += t.prints
-    }
+    end
+    
     min = [ndbp(job, task.proc), tuples.size].min
-    0.upto(min-1){|num|
+    0.upto(min-1) do |num|
       time += tuples[num].req.time
-    }
+    end
     p_debug("      tuples = #{str}")
     p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
     p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
@@ -392,34 +391,30 @@ module WCBT
   
   def wcsp(job, proc)
     tuples = []
-    partition(proc).each{|task|
+    partition(proc).each do |task|
       tuples += wcsx(task, job)
-    }
+    end
     return tuples
   end
   
   def rbs(job)
     time = 0
-    procList.each{|proc|
-      if job.proc != proc
-        time += rbsp(job, proc)
-      end
-    }
+    procList.each do |proc|
+      time += rbsp(job, proc) if job.proc != proc
+    end
     p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
   def rbsp(job, proc)
     time = 0
-    if job == nil
-      return 0
-    end
+    return 0 if job == nil
     str = ""
     tuples = wcsp(job, proc)
     min = [ndbp(job, proc), wcsp(job, proc).size].min
-    0.upto(min-1){|num|
+    0.upto(min-1) do |num|
       time += tuples[num].req.time
-    }
+    end
     p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
     return time
   end
@@ -427,9 +422,8 @@ module WCBT
   
   def wcsxg(task, job, group)
     tuples = []
-    if task == nil || job == nil 
-      return []
-    end
+    return [] if task == nil || job == nil 
+
     begin
       k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
     rescue => e
@@ -437,24 +431,22 @@ module WCBT
       puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
       raise
     end
-    1.upto(k){|n|
-      task.req_list.each{|req|
+    1.upto(k) do |n|
+      task.req_list.each do |req|
         if req.res.kind == SHORT && req.res.group == group
           tuples << ReqTuple.new(req, n)
         end
-      }
-    }
-    tuples.sort!{|a, b|
-      (-1) * (a.req.time <=> b.req.time)
-    }
-    tuples
+      end
+    end
+    tuples.sort!{ |a, b| (-1) * (a.req.time <=> b.req.time) }
+    return tuples
   end
   
   def wcspg(job, proc, group)
     tuples = []
-    partition(proc).each{|task|
+    partition(proc).each do |task|
       tuples += wcsxg(task, job, group)
-    }
+    end
     tuples.sort!{|a, b|
       (-1) * (a.req.time <=> b.req.time)
     }
@@ -464,11 +456,11 @@ module WCBT
   def sbg(job, group)
     time = 0
     # p procList
-    procList.each{|proc|
+    procList.each do |proc|
       if job.proc != proc
         time += sbgp(job, group, proc)
       end
-    }
+    end
     p_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
     return time
   end 
@@ -476,16 +468,16 @@ module WCBT
   def sbgp(job, group, proc)
     time = 0
     b = 0
-    SR(job).each{|req|
+    SR(job).each do |req|
       if req.res.group == group
         b += 1
       end
-    }
+    end
     tuples = wcspg(job, proc, group)
     min = [b, tuples.size].min
-    0.upto(min-1){|num|
+    0.upto(min-1) do |num|
       time += tuples[num].req.time
-    }
+    end
     p_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
 
     return time
@@ -505,27 +497,23 @@ module WCBT
   def BB(job)
     return 0 if job == nil
     time = 0
-    $calc_task.each{|tas|
+    $calc_task.each do |tas|
       if tas.proc == job.proc && tas.priority > job.priority
         time += bbt(tas, job)
       end
-    }
+    end
     return time
   end
   
   def AB(job)
-    #p job.task_id
-    if job == nil
-      return 0
-    end
+    return 0 if job == nil
 
-      
     time = 0
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
-    0.upto(min-1){|num|
+    0.upto(min-1) do |num|
       time += tuples[num].req.time
-    }
+    end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
     return time
   end
@@ -554,13 +542,13 @@ module WCBT
     end
     g = []
     time = 0
-    SR(job).each{|req|
+    SR(job).each do |req|
       g << req.res.group
-    }
+    end
     g.uniq!
-    g.each{|group|
+    g.each do |group|
       time += sbg(job, group)
-    }
+    end
     time
   end
 
@@ -576,6 +564,7 @@ module WCBT
       
       # 各要求にspin_block時間を加える
       req.add_inflated_spintime(inflate_time)
+
       ##puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
       block_time += inflate_time
     end
@@ -585,11 +574,11 @@ module WCBT
 
   def DB(task)
     time = 0
-    $calc_task.each{|tas|
+    $calc_task.each do |tas|
       if tas.proc == task.proc && tas.priority < task.priority
         time += [tas.extime, lbt(tas)].min
       end
-    }
+    end
     time 
   end
   
@@ -609,31 +598,29 @@ module WCBT
   def lowest_priority_task(proc)
     pri = 0 # 最高優先度
     tsk = []
-    $calc_task.each{|t|
+    $calc_task.each do |t|
       if t.proc == proc
-        if pri < t.priority
-          pri = t.priority
-        end
+        pri = t.priority if pri < t.priority
       end
-    }
-    $calc_task.each{|t|
+    end
+    $calc_task.each do |t|
         if pri == t.priority && t.proc == proc
           tsk << t
         end
-    }
+    end
     return tsk
   end
   
   
   def get_extime_high_priority(task)
     time = 0
-    $calc_task.each{|t|
+    $calc_task.each do |t|
       sb = t.sb
       if t.proc == task.proc && t.priority < task.priority
         time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
         #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
       end
-    }
+    end
     #puts ""
     return time
   end
@@ -642,7 +629,7 @@ module WCBT
   # 以下のフォーマットでブロック時間等表示
   #
   def show_blocktime
-    $calc_task.each{|t|
+    $calc_task.each do |t|
       print "タスク#{t.task_id}"      
       print ["\tBB:", sprintf("%.3f", t.bb)].join
       print ["\tAB:", sprintf("%.3f", t.ab)].join
@@ -658,7 +645,7 @@ module WCBT
       else
         puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}"
       end
-    }
+    end
   end
 
   #
@@ -667,22 +654,20 @@ module WCBT
   public
   def set_blocktime
     #puts "set_blocktime"
-    $calc_task.each{|t|
+    $calc_task.each do |t|
       t.sb = SB(t)
       SB_not_tight(t)
-
-
-      #t.bb = BB(t)
-      #t.ab = AB(t)
-      #t.sb = SB(t)
-      #t.lb = LB(t)
-      #t.db = DB(t)
+      t.bb = BB(t)
+      t.ab = AB(t)
+      t.sb = SB(t)
+      t.lb = LB(t)
+      t.db = DB(t)
       t.b = t.bb + t.ab + t.sb + t.lb + t.db
-    }
+    end
     # 最悪応答時間の計算
-    $calc_task.each{ |t|
+    $calc_task.each do |t|
       t.wcrt = wcrt(t)
-    }
+    end
   end
   
   #
@@ -691,7 +676,7 @@ module WCBT
   #
   private
   def show_blocktime_120409
-    $calc_task.each{|task|
+    $calc_task.each do |task|
       #RubyProf.start
 
       set_blocktime(task)
@@ -699,23 +684,23 @@ module WCBT
       #result = RubyProf.stop
       #printer = RubyProf::FlatPrinter.new(result)
       #printer.print(STDOUT)
-    }
+    end
 
     #
     # CPU使用率を表示
     #
     
     uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each{|p|
+    procList.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
-      partition(p).each{|t|
+      partition(p).each do |t|
         #puts "#{(t.extime+t.sb.to_f)/t.period}"
         u += (t.extime + t.b - t.lb)/t.period
-      }
+      end
       #puts "CPU#{p}使用率:#{u}"
       uabj -= u
-    }
+    end
     #puts "uabj:#{uabj}"
     return uabj
   end
@@ -725,25 +710,25 @@ module WCBT
   # 120409_2用
   #
   def show_blocktime_120409_2
-    $calc_task.each{|task|
+    $calc_task.each do |task|
       set_blocktime(task)
-    }
+    end
     
     #
     # CPU使用率を表示
     #
     
     uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each{|p|
+    procList.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
-      partition(p).each{|t|
+      partition(p).each do |t|
         #puts "#{(t.extime+t.sb.to_f)/t.period}"
         u += (t.extime + t.b - t.lb)/t.period
-      }
+      end
       #puts "CPU#{p}使用率:#{u}"
       uabj -= u
-    }
+    end
     #puts "uabj:#{uabj}"
     return uabj
   end
@@ -758,14 +743,14 @@ module WCBT
 #    puts "job:#{job.task_id}:#{job.proc}"
     while(1)
       time = job.extime + job.b - job.db
-      $calc_task.each{ |t|
+      $calc_task.each do |t|
         #pp t
         if t.priority < job.priority && t.proc == job.proc
           count = ((pre_wcrt/t.period).ceil)
  #         puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
           time += count*(t.extime + t.sb)
         end
-      }
+      end
       #p time
       if time == pre_wcrt
         break

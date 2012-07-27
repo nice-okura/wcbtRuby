@@ -441,7 +441,9 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_accessor :req_id, :res, :time, :begintime, :reqs, :outermost, :nested, :inflated_spintime
+  attr_reader :req_id, :time, :outermost, :inflated_spintime
+  attr_accessor :res, :begintime, :reqs, :nested
+
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
     @res = res
@@ -454,16 +456,18 @@ class Req
     
     # outermost のアクセス時間timeが最大でないといけない
     nesttime = 0
-    reqs.each{|req|
+    reqs.each do |req|
       nesttime += req.time
-    }
-    if @time < nesttime then
-      # print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
+      
+      # ネストしているリソース要求のnestedフラグをたてる
+      req.nested = true unless req == []
+    end
+
+    if @time < nesttime
+      print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
+      raise
       #exit
     end
-    reqs.each{|r|
-      r.nested = true unless r == []
-    }
   end
   
   #
@@ -471,9 +475,9 @@ class Req
   #
   def clone
     newreqs = []
-    @reqs.each{|r|
+    @reqs.each do |r|
       newreqs << r.clone
-    }
+    end
     Req.new(@req_id, @res, @time, newreqs)
   end
   
@@ -483,9 +487,10 @@ class Req
   # 
   def out_alldata
     reqss = []
-    @reqs.each{|r|
+    @reqs.each do |r|
       reqss << r.req_id
-    }
+    end
+
     #p @begintime
     return {
       "req_id"=>@req_id, 
