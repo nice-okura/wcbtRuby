@@ -252,20 +252,23 @@ class Test_wcbt < Test::Unit::TestCase
   end
   
   def test_abr
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert_equal(0, abr(TaskManager.get_task(1)).size )
-    assert_equal(0, abr(TaskManager.get_task(2)).size )
-    assert_equal(0, abr(TaskManager.get_task(3)).size )
+    set_taskset("#{TEST_FOLDER}for_many_test")
+    assert_equal(9, abr(TaskManager.get_task(1)).size )
+    assert_equal(10, abr(TaskManager.get_task(2)).size )
+    assert_equal(9, abr(TaskManager.get_task(3)).size )
+    assert_equal(8, abr(TaskManager.get_task(4)).size )
+    assert_equal(4, abr(TaskManager.get_task(5)).size )
+    assert_equal(8, abr(TaskManager.get_task(6)).size )
+    assert_equal(0, abr(TaskManager.get_task(7)).size )
+    assert_equal(6, abr(TaskManager.get_task(8)).size )
+    assert_equal(6, abr(TaskManager.get_task(9)).size )
+    assert_equal(2, abr(TaskManager.get_task(10)).size )
+    assert_equal(0, abr(TaskManager.get_task(11)).size )
+    assert_equal(3, abr(TaskManager.get_task(12)).size )
+    assert_equal(0, abr(TaskManager.get_task(13)).size )
+    assert_equal(0, abr(TaskManager.get_task(14)).size )
 
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(2, abr(TaskManager.get_task(4)).size )
-    assert_equal(0, abr(TaskManager.get_task(5)).size )
-    assert_equal(0, abr(TaskManager.get_task(6)).size )
-
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(4, abr(TaskManager.get_task(7)).size )
-    assert_equal(0, abr(TaskManager.get_task(8)).size )
-    assert_equal(0, abr(TaskManager.get_task(9)).size )
+    
   end
   
   def test_procList
@@ -274,21 +277,24 @@ class Test_wcbt < Test::Unit::TestCase
   end
 
   def test_AB
-    set_taskset("#{TEST_FOLDER}wcbt-test_1")
-    assert_equal(0, AB(TaskManager.get_task(1)))
-    assert_equal(0, AB(TaskManager.get_task(2)))
-    assert_equal(0, AB(TaskManager.get_task(3)))
+    set_taskset("#{TEST_FOLDER}for_many_test")
+    assert_equal(30, AB(TaskManager.get_task(1)))
+    assert_equal(32, AB(TaskManager.get_task(2)))
+    assert_equal(18, AB(TaskManager.get_task(3)))
+    assert_equal(26, AB(TaskManager.get_task(4)))
+    assert_equal(AB(TaskManager.get_task(5)))
+    assert_equal(AB(TaskManager.get_task(6)))
+    assert_equal(AB(TaskManager.get_task(7)))
+    assert_equal(AB(TaskManager.get_task(8)))
+    assert_equal(AB(TaskManager.get_task(9)))
+    assert_equal(AB(TaskManager.get_task(10)))
+    assert_equal(AB(TaskManager.get_task(11)))
+    assert_equal(AB(TaskManager.get_task(12)))
+    assert_equal(AB(TaskManager.get_task(13)))
+    assert_equal(AB(TaskManager.get_task(14)))
+    assert_equal(AB(TaskManager.get_task(15)))
+    assert_equal(AB(TaskManager.get_task(16)))
 
-    set_taskset("#{TEST_FOLDER}wcbt-test_2")
-    assert_equal(2, AB(TaskManager.get_task(4)))
-    assert_equal(0, AB(TaskManager.get_task(5)))
-    assert_equal(0, AB(TaskManager.get_task(6)))
-    
-    set_taskset("#{TEST_FOLDER}wcbt-test_3")
-    assert_equal(4, AB(TaskManager.get_task(7)))
-    assert_equal(0, AB(TaskManager.get_task(8)))
-    assert_equal(0, AB(TaskManager.get_task(9)))
-    #p "end_test_AB"
   end
 
   def test_ndbtg
@@ -995,7 +1001,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, bbt(t6, t4))
     assert_equal(4, bbt(t3, t1))
     assert_equal(2, abr(t2).size)
-    assert_equal(2, AB(t2))
+    assert_equal(4, AB(t2))
     assert_equal(0, AB(t4))
     assert_equal(0, AB(t6))
     
@@ -1132,6 +1138,14 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, TaskManager.get_task(5).req_list[0].inflated_spintime)
     assert_equal(0, TaskManager.get_task(5).req_list[1].inflated_spintime)
     
+  end
+
+  def test_inflated_short_req_nested
+    # ネストしたshort requireがinflateすると，outerなlongリソースもinflateする
+    @manager = AllManager.new
+    @manager.load_tasks("#{TEST_FOLDER}for_test_LB_nest")
+
+    assert_equal(TaskManager.get_task(4).req_list[1].inflated_spintime, TaskManager.get_task(4).req_list[1].reqs[0].inflated_spintime)
   end
 end
  

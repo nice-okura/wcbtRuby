@@ -179,7 +179,9 @@ module WCBT
         #}
         min = [tuples.size, narr(job)].min
         0.upto(min-1) do |num|
-          len += tuples[num].req.time
+          #p tuples[num].req.inflated_spintime
+          len += tuples[num].req.get_time_inflated
+          #len += tuples[num].req.time
         end
         $bbt[[task.task_id, job.task_id]] = len
 
@@ -515,6 +517,7 @@ module WCBT
       time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
+
     return time
   end
   

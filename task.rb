@@ -510,7 +510,8 @@ class Req
   def add_inflated_spintime(time)
     @inflated_spintime += time
     outer_req = instance_variable_get(:@outer_req)
-    outer_req.change_require_time(time) unless outer_req == nil
+    #outer_req.change_require_time(time) unless outer_req == nil
+    outer_req.add_inflated_spintime(time) unless outer_req == nil
   end
 
   protected
