@@ -616,10 +616,10 @@ class Test_wcbt < Test::Unit::TestCase
   
   def test_rbsp
     set_taskset("#{TEST_FOLDER}for_test_LB_nest")
-    assert_equal(0, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(1)).size)
-    assert_equal(2, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(2)).size)
-    assert_equal(2, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(3)).size)
-    assert_equal(0, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(4)).size)
+    assert_equal(0, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(1)))
+    assert_equal(8+8, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(2)))
+    assert_equal(7+7, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(3)))
+    assert_equal(0, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(4)))
   end
   
   def test_wcsp

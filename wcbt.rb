@@ -136,8 +136,8 @@ module WCBT
           end
         end
 
-        tuplesl.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
-        tupless.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
+        tuplesl.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+        tupless.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
         $wclx[[task.task_id, job.task_id]] = tuplesl
         $wcsx[[task.task_id, job.task_id]] = tupless
       end
@@ -420,6 +420,7 @@ module WCBT
     partition(proc).each do |task|
       tuples += wcsx(task, job)
     end
+    tuples.sort!{|a, b| -1*(a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
   end
   
@@ -435,10 +436,14 @@ module WCBT
   def rbsp(job, proc)
     time = 0
     return 0 if job == nil
-    str = ""
+    
     tuples = wcsp(job, proc)
     min = [ndbp(job, proc), wcsp(job, proc).size].min
+    
+    return 0 if min == 0
+    
     0.upto(min-1) do |num|
+      tuples[num].prints
       time += tuples[num].req.get_time_inflated
     end
     p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
@@ -464,7 +469,7 @@ module WCBT
         end
       end
     end
-    tuples.sort!{ |a, b| (-1) * (a.req.time <=> b.req.time) }
+    #tuples.sort!{ |a, b| (-1) * (a.req.get_time_ <=> b.req.time) }
     return tuples
   end
   
@@ -474,9 +479,7 @@ module WCBT
     partition(proc).each do |task|
       tuples += wcsxg(task, job, group)
     end
-    tuples.sort!{|a, b|
-      (-1) * (a.req.time <=> b.req.time)
-    }
+    tuples.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
   end
   
