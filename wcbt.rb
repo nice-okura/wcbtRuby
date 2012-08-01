@@ -315,7 +315,7 @@ module WCBT
     req_list = []
     
     proc.task_list.each do |tsk|
-      tsk.req_list.each do |r|
+      tsk.all_require.each do |r|
         next if r == req  # reqと同じなら除外
         req_list << r if req.res.group == r.res.group
       end
