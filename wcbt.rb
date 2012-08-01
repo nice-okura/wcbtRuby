@@ -9,10 +9,10 @@
 #
 #
 # 最大ブロック時間計算用モジュール
-#$:.unshift(File.dirname(__FILE__))
+$:.unshift(File.dirname(__FILE__))
 require "rubygems"
 require "term/ansicolor"
-require "config"
+require "./config"
 
 #require "ruby-prof"
 
@@ -32,10 +32,10 @@ $SR = Hash.new
 $NARR = Hash.new
 $wclx = Hash.new
 $wcsx = Hash.new
-$bbt = Hash.new
-$abr = Hash.new
-$proc_list = Hash.new
-$proc_task_list = Hash.new
+#$bbt = Hash.new
+#$abr = Hash.new
+#$proc_list = Hash.new
+#$proc_task_list = Hash.new
 
 module WCBT
   def p_debug(str)
@@ -55,10 +55,10 @@ module WCBT
     $NARR.clear
     $wclx.clear
     $wcsx.clear
-    $bbt.clear
-    $abr.clear
-    $proc_list.clear
-    $proc_task_list.clear 
+    #$bbt.clear
+    #$abr.clear
+    #$proc_list.clear
+    #$proc_task_list.clear 
 
     #puts "INIT_COMPUTING"
     
@@ -104,7 +104,7 @@ module WCBT
       #
       # proc_listの計算
       #      
-      #proc << task.proc      
+      #proc << task.proc
 
       #
       # wclx, wcsxの計算
@@ -153,6 +153,7 @@ module WCBT
     #
     # 上記の計算をした後でしか計算できないもの
     #
+=begin
     $calc_task.each do |job|
       tuple_abr = []
       tuples_abr = []
@@ -188,7 +189,7 @@ module WCBT
       end
       $abr[job.task_id] = tuples_abr
     end
-
+=end
     
     #
     # partitionの計算
@@ -266,11 +267,29 @@ module WCBT
   ##############################
   
   def bbt(task, job)
-    return $bbt[[task.task_id, job.task_id]]
+    len = 0
+    tuples = wclx(task, job)
+    min = [tuples.size, narr(job)].min
+    0.upto(min-1) do |num|
+      len += tuples[num].req.get_time_inflated
+    end
+    return len
+    #return $bbt[[task.task_id, job.task_id]]
   end
   
   def abr(job)
-    return $abr[job.task_id]
+    return [] if job == nil
+    tuples = []
+    
+    $calc_task.each do |task|
+       next if task == nil
+       if task.proc == job.proc && task.priority > job.priority
+         tuple = wcsx(task, job)
+         tuples += tuple unless tuple == []
+       end
+    end
+    return tuples
+    #return $abr[job.task_id]
   end
 
   # shortリソース要求毎の最大ブロック時間
@@ -278,7 +297,8 @@ module WCBT
   def sbr(req, processor)
     block_time = 0
     
-    # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせる
+    # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせ
+    
     ProcessorManager.proc_list.each do |proc|
       next if processor == proc.proc_id
       reqs_time_array = competing(req, proc).collect{ |r| r.time }
