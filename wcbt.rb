@@ -248,19 +248,16 @@ module WCBT
     return $NARR[job.task_id]
   end
   
-  # procはproc_id(Fixnum)
+  # procはProcessor
   def partition(proc)
-    if proc.class != Fixnum
-      p proc.class
-      raise
-    end
-    return ProcessorManager.get_proc(proc).task_list
+    raise unless proc.class == Processor
+    return proc.task_list
     #return $proc_task_list[proc]
   end
   
-  # ProcessorのidのArrayを返す
-  def procList
-    return ProcessorManager.proc_list.collect{ |p| p.proc_id }
+  # ProcessorのArrayを返す
+  def proc_list
+    return ProcessorManager.proc_list
   end
 
   
@@ -296,12 +293,13 @@ module WCBT
   # shortリソース要求毎の最大ブロック時間
   # ABを計算する前に用いる
   def sbr(req, processor)
+    raise unless processor.class == Processor
     block_time = 0
     
     # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせ
     
     ProcessorManager.proc_list.each do |proc|
-      next if processor == proc.proc_id
+      next if processor == proc
       reqs_time_array = competing(req, proc).collect{ |r| r.time }
       #puts "\t#{reqs_time_array}"
       block_time += reqs_time_array.max unless reqs_time_array == []
@@ -313,6 +311,7 @@ module WCBT
   # プロセッサp内の，reqと競合するリソース要求の集合
   # なければ [] を返す
   def competing(req, proc)
+    raise unless proc.class == Processor
     req_list = []
     
     proc.task_list.each do |tsk|
@@ -327,6 +326,7 @@ module WCBT
 
   
   def ndbp(job, proc)
+    raise unless proc.class == Processor
     return 0 if job.proc == proc
 
     count = 0
@@ -367,7 +367,7 @@ module WCBT
   
   def rbl(job)
     time = 0
-    procList.each do |proc|
+    proc_list.each do |proc|
        time += rblp(job, proc) if job.proc != proc
     end
     p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
@@ -375,6 +375,7 @@ module WCBT
   end
   
   def rblp(job, proc)
+    raise unless proc.class == Processor
     count = 0
     partition(proc).each do |task|
       count += rblt(task, job)
@@ -388,12 +389,13 @@ module WCBT
     str = ""
     if task == nil || job == nil
       return 0
-    elsif task.proc == job.proc 
+    elsif task.proc == job.proc
       return 0
     end
     
     unless task.class == Task
       p task.class
+      raise
     end
     #p task.class unless task.class == Task
     tuples = wclx(task, job)
@@ -406,7 +408,7 @@ module WCBT
       time += tuples[num].req.time
     end
     p_debug("      tuples = #{str}")
-    p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    #p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
     p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end
@@ -414,6 +416,7 @@ module WCBT
   
   def wcsp(job, proc)
     tuples = []
+    raise unless proc.class == Processor
     partition(proc).each do |task|
       tuples += wcsx(task, job)
     end
@@ -422,7 +425,7 @@ module WCBT
   
   def rbs(job)
     time = 0
-    procList.each do |proc|
+    proc_list.each do |proc|
       time += rbsp(job, proc) if job.proc != proc
     end
     p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
@@ -436,7 +439,7 @@ module WCBT
     tuples = wcsp(job, proc)
     min = [ndbp(job, proc), wcsp(job, proc).size].min
     0.upto(min-1) do |num|
-      time += tuples[num].req.time
+      time += tuples[num].req.get_time_inflated
     end
     p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
     return time
@@ -466,6 +469,7 @@ module WCBT
   end
   
   def wcspg(job, proc, group)
+    raise unless proc.class == Processor
     tuples = []
     partition(proc).each do |task|
       tuples += wcsxg(task, job, group)
@@ -478,8 +482,8 @@ module WCBT
   
   def sbg(job, group)
     time = 0
-    # p procList
-    procList.each do |proc|
+    # p proc_list
+    proc_list.each do |proc|
       if job.proc != proc
         time += sbgp(job, group, proc)
       end
@@ -489,6 +493,7 @@ module WCBT
   end 
   
   def sbgp(job, group, proc)
+    raise unless proc.class == Processor
     time = 0
     b = 0
     SR(job).each do |req|
@@ -616,6 +621,7 @@ module WCBT
   #
   private
   def lowest_priority_task(proc)
+    raise unless proc.class == Processor
     pri = 0 # 最高優先度
     tsk = []
     $calc_task.each do |t|
@@ -720,7 +726,7 @@ module WCBT
     #
     
     uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each do |p|
+    proc_list.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
       partition(p).each do |t|
@@ -748,7 +754,7 @@ module WCBT
     #
     
     uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each do |p|
+    proc_list.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
       partition(p).each do |t|
@@ -769,7 +775,7 @@ module WCBT
   def wcrt(job)
     pre_wcrt = job.extime + job.b
     n = 1
-#    puts "job:#{job.task_id}:#{job.proc}"
+#    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     while(1)
       time = job.extime + job.b - job.db
       $calc_task.each do |t|

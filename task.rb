@@ -55,7 +55,7 @@ class Processor
 
     # プロセッサ番号設定
 #    p @proc_id
-    task.proc = @proc_id
+    task.proc = self
     # 優先度設定
     task.priority = @task_list.size
 
@@ -102,6 +102,19 @@ class Processor
     puts "Processor#{@proc_id}"
     puts "\tタスク: #{@task_list.each{ |t| print t.task_id }}"
   end
+  
+  # 比較演算子
+  def ==(proc)
+    raise unless proc.class == Processor
+    return true if @proc_id == proc.proc_id
+    return false
+  end
+  
+  def !=(proc)
+    return false if self == proc
+    return true
+  end
+  
   ###############################################################
   #
   # 以下 private
@@ -151,7 +164,9 @@ class Task
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
-    @proc = proc
+    if proc.class == Fixnum
+      @proc = ProcessorManager.get_proc(proc)
+    else raise; end
     @period = period.to_f
     @extime = extime  # リソース要求時間(CS)も含めた時間
     @priority = priority.to_i
