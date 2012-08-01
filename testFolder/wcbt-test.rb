@@ -255,6 +255,7 @@ class Test_wcbt < Test::Unit::TestCase
     set_taskset("#{TEST_FOLDER}for_many_test")
     assert_equal(9, abr(TaskManager.get_task(1)).size)
     assert_equal(10, abr(TaskManager.get_task(2)).size)
+    #abr(TaskManager.get_task(2)).each{|tuple| puts tuple.prints}
     assert_equal(9, abr(TaskManager.get_task(3)).size)
     assert_equal(8, abr(TaskManager.get_task(4)).size)
     assert_equal(4, abr(TaskManager.get_task(5)).size)
@@ -278,10 +279,10 @@ class Test_wcbt < Test::Unit::TestCase
 
   def test_AB
     set_taskset("#{TEST_FOLDER}for_many_test")
-    assert_equal(30, AB(TaskManager.get_task(1)))
-    assert_equal(32, AB(TaskManager.get_task(2)))
-    assert_equal(18, AB(TaskManager.get_task(3)))
-    assert_equal(26, AB(TaskManager.get_task(4)))
+    assert_equal(16+16+16+10, AB(TaskManager.get_task(1)))
+    assert_equal(16+16+10, AB(TaskManager.get_task(2)))
+    assert_equal(16+16+16+2, AB(TaskManager.get_task(3)))
+    assert_equal(16+16+16, AB(TaskManager.get_task(4)))
   end
 
   def test_ndbtg
@@ -1150,10 +1151,37 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, TaskManager.get_task(5).req_list[0].inflated_spintime)
     assert_equal(12, TaskManager.get_task(5).req_list[1].inflated_spintime)
     assert_equal(0, TaskManager.get_task(9).req_list[0].inflated_spintime)
-    assert_equal(4, TaskManager.get_task(13).req_list[0].inflated_spintime)
+    assert_equal(6, TaskManager.get_task(13).req_list[0].inflated_spintime)
     assert_equal(0, TaskManager.get_task(13).req_list[1].inflated_spintime)
-    assert_equal(4, TaskManager.get_task(13).req_list[2].inflated_spintime)
+    assert_equal(6, TaskManager.get_task(13).req_list[2].inflated_spintime)
     
+    assert_equal(3, TaskManager.get_task(5).req_list[0].get_time_inflated)
+    assert_equal(16, TaskManager.get_task(5).req_list[1].get_time_inflated)
+    assert_equal(2, TaskManager.get_task(9).req_list[0].get_time_inflated)
+    assert_equal(8, TaskManager.get_task(13).req_list[0].get_time_inflated)
+    assert_equal(4, TaskManager.get_task(13).req_list[1].get_time_inflated)
+    assert_equal(10, TaskManager.get_task(13).req_list[2].get_time_inflated)
+    
+    assert_equal(2+6, TaskManager.get_task(2).req_list[1].get_time_inflated)
+    assert_equal(4+6, TaskManager.get_task(6).req_list[0].get_time_inflated)
+    assert_equal(2+6, TaskManager.get_task(6).req_list[2].get_time_inflated)
+    assert_equal(4+12, TaskManager.get_task(10).req_list[0].get_time_inflated)
+    assert_equal(4+6, TaskManager.get_task(10).req_list[1].get_time_inflated)
+    assert_equal(2+6, TaskManager.get_task(14).req_list[0].get_time_inflated)
+    
+    assert_equal(1+1, TaskManager.get_task(3).req_list[1].get_time_inflated)
+    assert_equal(4+12, TaskManager.get_task(7).req_list[0].get_time_inflated)
+    assert_equal(1+1, TaskManager.get_task(7).req_list[1].get_time_inflated)
+    assert_equal(1+1, TaskManager.get_task(7).req_list[2].get_time_inflated)
+    
+    assert_equal(4+12, TaskManager.get_task(4).req_list[1].get_time_inflated)
+    assert_equal(1+1, TaskManager.get_task(8).req_list[0].get_time_inflated)
+    assert_equal(2+8, TaskManager.get_task(8).req_list[1].reqs[0].get_time_inflated)
+    assert_equal(4+12, TaskManager.get_task(8).req_list[2].get_time_inflated)
+    assert_equal(4+12, TaskManager.get_task(12).req_list[1].get_time_inflated)
+    assert_equal(2+8, TaskManager.get_task(12).req_list[2].reqs[0].get_time_inflated)
+    assert_equal(4+12, TaskManager.get_task(16).req_list[2].get_time_inflated)
+
   end
 
   def test_inflated_short_req_nested

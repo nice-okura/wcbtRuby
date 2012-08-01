@@ -522,6 +522,6 @@ class ReqTuple
   
   public
   def prints
-    return "<#{@req.req_id}(#{@req.time}), #{@k}>"
+    return "<#{@req.req_id}(#{@req.get_time_inflated}), #{@k}>"
   end
 end

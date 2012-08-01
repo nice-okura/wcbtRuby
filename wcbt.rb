@@ -288,6 +288,7 @@ module WCBT
          tuples += tuple unless tuple == []
        end
     end
+    tuples.sort!{ |a, b| -1 * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
     #return $abr[job.task_id]
   end
