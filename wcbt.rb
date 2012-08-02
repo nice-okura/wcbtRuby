@@ -285,7 +285,8 @@ module WCBT
     return [] if job == nil
     tuples = []
     
-    $calc_task.each do |task|
+    job.proc.task_list.each do |task|
+    #$calc_task.each do |task|
        next if task == nil
        if task.proc == job.proc && task.priority > job.priority
          tuple = wcsx(task, job)
