@@ -625,9 +625,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, rbsp(TaskManager.get_task(2), ProcessorManager.get_proc(4)))
 
     assert_equal(0, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(1)))
-
     assert_equal(8+8+6, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(2)))
-
     assert_equal(0, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(3)))
     assert_equal(7+7+7+7, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(4)))
 
@@ -635,6 +633,15 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(8+8, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(2)))
     assert_equal(8+8+8+7, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(3)))
     assert_equal(0, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(4)))
+
+  end
+  
+  def test_rbs
+    set_taskset("#{TEST_FOLDER}for_test_LB_nest")
+    assert_equal(32, rbs(TaskManager.get_task(1)))
+    assert_equal(0, rbs(TaskManager.get_task(2)))
+    assert_equal(0+22+0+28, rbs(TaskManager.get_task(3)))
+    assert_equal(32+16+31+0, rbs(TaskManager.get_task(4)))
 
   end
   
