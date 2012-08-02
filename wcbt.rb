@@ -611,7 +611,7 @@ module WCBT
 
   def DB(task)
     time = 0
-    $calc_task.each do |tas|
+    task.proc.task_list.each do |tas|
       if tas.proc == task.proc && tas.priority < task.priority
         time += [tas.extime, lbt(tas)].min
       end
@@ -636,12 +636,12 @@ module WCBT
     raise unless proc.class == Processor
     pri = 0 # 最高優先度
     tsk = []
-    $calc_task.each do |t|
+    proc.task_list.each do |t|
       if t.proc == proc
         pri = t.priority if pri < t.priority
       end
     end
-    $calc_task.each do |t|
+    proc.task_list.each do |t|
       if pri == t.priority && t.proc == proc
         tsk << t
       end
@@ -652,7 +652,7 @@ module WCBT
   
   def get_extime_high_priority(task)
     time = 0
-    $calc_task.each do |t|
+    task.proc.task_list.each do |t|
       sb = t.sb
       if t.proc == task.proc && t.priority < task.priority
         time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
@@ -790,7 +790,7 @@ module WCBT
 #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     while(1)
       time = job.extime + job.b# - job.db
-      ProcessorManager.get_proc(job.proc.proc_id).task_list.each do |t|
+      job.proc.task_list.each do |t|
 
 #      $calc_task.each do |t|
         #pp t
