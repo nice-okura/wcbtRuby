@@ -110,10 +110,10 @@ class Processor
     return false
   end
   
-  def !=(proc)
-    return false if self == proc
-    return true
-  end
+  #def !=(proc)
+  #  return false if self == proc
+  #  return true
+  #end
   
   ###############################################################
   #

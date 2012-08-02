@@ -6,7 +6,7 @@ require "./task"
 require "test/unit"
 require "pp"
 require "./task-CUI"
-require "manager"
+require "./manager"
 
 TEST_FOLDER = "./testFolder/"
 class Test_wcbt < Test::Unit::TestCase
