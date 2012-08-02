@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift(File.dirname(__FILE__))
 require "pp"
-require "./config"
+#require "./config"
 require "./wcbt"
 require "rubygems" unless RUBY_VERSION == "1.9.3"
 require "term/ansicolor"
@@ -14,7 +14,7 @@ end
 if $COLOR_CHAR == true
   OFFSET_CHAR = " "       # offset : " "
   LONG_CHAR = "L".red     # long要求 : "L"
-  SHORT_CHAR = "S".yellow   # short要求 : "S"
+  SHORT_CHAR = "S".blue   # short要求 : "S"
   CALC_CHAR = "-"         # ただの計算 : "-"
 else
   OFFSET_CHAR = " "       # offset : " "
@@ -227,7 +227,7 @@ class TaskCUI
   def get_require_time_char(req)
     str = ""
     curTime = req.begintime
-    str += req.res.kind == LONG ? "G#{req.res.group}:".red : "G#{req.res.group}:".yellow
+    str += req.res.kind == LONG ? "G#{req.res.group}:".red : "G#{req.res.group}:".blue
     
     reqtime = req.time
     req.reqs.each{|subreq|

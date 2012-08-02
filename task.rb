@@ -180,7 +180,7 @@ class Task
     @sb = 0.0
     @lb = 0.0
     @db = 0.0
-    check_outermost
+    #check_outermost
     check_over_extime
     set_begin_time
     resetting
@@ -215,11 +215,11 @@ class Task
     # outermost なもののみ
     # ネストされているものも含む
     @short_require_array = []
-    @all_require.each{|req|
+    @all_require.each do |req|
       if req.res.kind == SHORT && req.outermost == true
         @short_require_array << req
       end
-    }
+    end
     
     # longリソースの配列を返す
     # outermostなもののみ
@@ -283,7 +283,7 @@ class Task
     end
     return {
       "task_id"=>@task_id, 
-      "proc"=>@proc, 
+      "proc"=>@proc.proc_id, 
       "period"=>@period, 
       "extime"=>@extime, 
       "priority"=>@priority,
@@ -443,8 +443,8 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_reader :req_id, :outermost, :inflated_spintime, :res, :reqs, :time
-  attr_accessor :nested, :begintime
+  attr_reader :outermost, :inflated_spintime, :res, :reqs, :time
+  attr_accessor :req_id, :nested, :begintime
 
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
@@ -537,6 +537,6 @@ class ReqTuple
   
   public
   def prints
-    return "<#{@req.req_id}(#{@req.get_time_inflated}), #{@k}>"
+    return "<G#{@req.res.group}(#{@req.get_time_inflated}), #{@k}>"
   end
 end

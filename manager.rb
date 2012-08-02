@@ -20,7 +20,6 @@ require "json"      # JSON
 require "wcbt"      # 最大ブロック時間計算モジュール
 require "task"      # タスク等のクラス
 require "singleton" # singletonモジュール
-require "config"    # コンフィグファイル
 require "create-task"
 require "create-require"
 require "proc-manager"

@@ -22,9 +22,7 @@ class String
   include Term::ANSIColor
 end
 
-#
 # WCLRなど
-#
 $WCLR = Hash.new
 $WCSR = Hash.new
 $LR = Hash.new 
@@ -42,9 +40,7 @@ module WCBT
     puts("\t" + str) if $DEBUGFlg == true
   end
   
-  #
   # 予め計算しておく
-  #
   def init_computing(tasks)
     $calc_task = tasks
 
@@ -405,10 +401,11 @@ module WCBT
     
     min = [ndbp(job, task.proc), tuples.size].min
     0.upto(min-1) do |num|
-      time += tuples[num].req.time
+      p_debug("#{tuples[num].prints}: #{tuples[num].req.get_time_inflated}")
+      time +=  tuples[num].req.get_time_inflated
     end
     p_debug("      tuples = #{str}")
-    #p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
     p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end

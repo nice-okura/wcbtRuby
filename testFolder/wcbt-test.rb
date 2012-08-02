@@ -552,12 +552,12 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(8, rblt(TaskManager.get_task(7), TaskManager.get_task(1)))
     assert_equal(0, rblt(TaskManager.get_task(8), TaskManager.get_task(1)))
     assert_equal(0, rblt(TaskManager.get_task(9), TaskManager.get_task(1)))
-    assert_equal(8, rblt(TaskManager.get_task(10), TaskManager.get_task(1)))
-    assert_equal(8, rblt(TaskManager.get_task(11), TaskManager.get_task(1)))
+    assert_equal(16, rblt(TaskManager.get_task(10), TaskManager.get_task(1)))
+    assert_equal(16, rblt(TaskManager.get_task(11), TaskManager.get_task(1)))
     assert_equal(0, rblt(TaskManager.get_task(12), TaskManager.get_task(1)))
     assert_equal(0, rblt(TaskManager.get_task(13), TaskManager.get_task(1)))
     assert_equal(4, rblt(TaskManager.get_task(14), TaskManager.get_task(1)))
-    assert_equal(6, rblt(TaskManager.get_task(15), TaskManager.get_task(1)))
+    assert_equal(6+5*2, rblt(TaskManager.get_task(15), TaskManager.get_task(1)))
     assert_equal(0, rblt(TaskManager.get_task(16), TaskManager.get_task(1)))
 
     assert_equal(0, rblt(TaskManager.get_task(1), TaskManager.get_task(2)))
@@ -578,19 +578,32 @@ class Test_wcbt < Test::Unit::TestCase
 
     assert_equal(0, rblt(TaskManager.get_task(1), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(2), TaskManager.get_task(3)))
-    assert_equal(11, rblt(TaskManager.get_task(4), TaskManager.get_task(3)))
+    assert_equal(9+9+9+8, rblt(TaskManager.get_task(4), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(5), TaskManager.get_task(3)))
     assert_equal(3, rblt(TaskManager.get_task(6), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(7), TaskManager.get_task(3)))
     assert_equal(6, rblt(TaskManager.get_task(8), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(9), TaskManager.get_task(3)))
-    assert_equal(11, rblt(TaskManager.get_task(10), TaskManager.get_task(3)))
+    assert_equal(8+8+4, rblt(TaskManager.get_task(10), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(11), TaskManager.get_task(3)))
     assert_equal(10, rblt(TaskManager.get_task(12), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(13), TaskManager.get_task(3)))
     assert_equal(4, rblt(TaskManager.get_task(14), TaskManager.get_task(3)))
     assert_equal(0, rblt(TaskManager.get_task(15), TaskManager.get_task(3)))
     assert_equal(8, rblt(TaskManager.get_task(16), TaskManager.get_task(3)))
+  end
+
+  def test_simple_rblt
+    set_taskset("#{TEST_FOLDER}for_test_simple_rbl_nest")
+    
+    p rbl(TaskManager.get_task(1))
+    $DEBUGFlg = true    
+    p rblp(TaskManager.get_task(1), ProcessorManager.get_proc(2))
+    
+#    assert_equal(0, rblt(TaskManager.get_task(2), TaskManager.get_task(1)))
+
+    $DEBUGFlg = false
+
   end
   
   def test_rblp
