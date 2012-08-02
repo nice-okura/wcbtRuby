@@ -536,7 +536,7 @@ class ReqTuple
   end
   
   public
-  def prints
+  def to_str
     return "<G#{@req.res.group}(#{@req.get_time_inflated}), #{@k}>"
   end
 end

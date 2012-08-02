@@ -593,46 +593,49 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(8, rblt(TaskManager.get_task(16), TaskManager.get_task(3)))
   end
 
-  def test_simple_rblt
-    set_taskset("#{TEST_FOLDER}for_test_simple_rbl_nest")
-    
-    p rbl(TaskManager.get_task(1))
-    $DEBUGFlg = true    
-    p rblp(TaskManager.get_task(1), ProcessorManager.get_proc(2))
-    
-#    assert_equal(0, rblt(TaskManager.get_task(2), TaskManager.get_task(1)))
-
-    $DEBUGFlg = false
-
-  end
-  
   def test_rblp
     set_taskset("#{TEST_FOLDER}for_test_LB_nest")
-    assert_equal(14, rblp(TaskManager.get_task(1), ProcessorManager.get_proc(2)))
-    assert_equal(26, rblp(TaskManager.get_task(1), ProcessorManager.get_proc(3)))
+    assert_equal(0+2+16+4, rblp(TaskManager.get_task(1), ProcessorManager.get_proc(2)))
+    assert_equal(4+8+16+16, rblp(TaskManager.get_task(1), ProcessorManager.get_proc(3)))
     assert_equal(0, rblp(TaskManager.get_task(1), ProcessorManager.get_proc(4)))
     assert_equal(0, rblp(TaskManager.get_task(2), ProcessorManager.get_proc(1)))
     assert_equal(0, rblp(TaskManager.get_task(2), ProcessorManager.get_proc(3)))
     assert_equal(0, rblp(TaskManager.get_task(2), ProcessorManager.get_proc(4)))
     assert_equal(0, rblp(TaskManager.get_task(3), ProcessorManager.get_proc(1)))
-    assert_equal(18, rblp(TaskManager.get_task(3), ProcessorManager.get_proc(2)))
-    assert_equal(35, rblp(TaskManager.get_task(3), ProcessorManager.get_proc(4)))
+    assert_equal(0+3+20+4, rblp(TaskManager.get_task(3), ProcessorManager.get_proc(2)))
+    assert_equal(35+6+10+8, rblp(TaskManager.get_task(3), ProcessorManager.get_proc(4)))
   end
   
   def test_rbl
     set_taskset("#{TEST_FOLDER}for_test_LB_nest")
-    assert_equal(40, rbl(TaskManager.get_task(1)))
+    assert_equal(22+44+0, rbl(TaskManager.get_task(1)))
     assert_equal(0, rbl(TaskManager.get_task(2)))
-    assert_equal(53, rbl(TaskManager.get_task(3)))
-    assert_equal(89, rbl(TaskManager.get_task(4)))
+    assert_equal(27+59, rbl(TaskManager.get_task(3)))
   end
   
   def test_rbsp
     set_taskset("#{TEST_FOLDER}for_test_LB_nest")
     assert_equal(0, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(1)))
     assert_equal(8+8, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(2)))
-    assert_equal(7+7, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(3)))
+    assert_equal(8+8, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(3)))
     assert_equal(0, rbsp(TaskManager.get_task(1), ProcessorManager.get_proc(4)))
+    assert_equal(0, rbsp(TaskManager.get_task(2), ProcessorManager.get_proc(1)))
+    assert_equal(0, rbsp(TaskManager.get_task(2), ProcessorManager.get_proc(2)))
+    assert_equal(0, rbsp(TaskManager.get_task(2), ProcessorManager.get_proc(3)))
+    assert_equal(0, rbsp(TaskManager.get_task(2), ProcessorManager.get_proc(4)))
+
+    assert_equal(0, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(1)))
+
+    assert_equal(8+8+6, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(2)))
+
+    assert_equal(0, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(3)))
+    assert_equal(7+7+7+7, rbsp(TaskManager.get_task(3), ProcessorManager.get_proc(4)))
+
+    assert_equal(8+8+8+8, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(1)))
+    assert_equal(8+8, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(2)))
+    assert_equal(8+8+8+7, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(3)))
+    assert_equal(0, rbsp(TaskManager.get_task(4), ProcessorManager.get_proc(4)))
+
   end
   
   def test_wcsp

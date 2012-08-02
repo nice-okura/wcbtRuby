@@ -22,6 +22,17 @@ class String
   include Term::ANSIColor
 end
 
+class Object
+  def debug
+    $DEBUGFlg = true
+    begin
+      yield
+    ensure
+      $DEBUGFlg = false
+    end
+  end
+end
+
 # WCLRなど
 $WCLR = Hash.new
 $WCSR = Hash.new
@@ -172,7 +183,7 @@ module WCBT
         tuples = wclx(task, job)
         str = ""
         #tuples.each{|t|
-        #  str += t.prints
+        #  str += t.to_str
         #}
         min = [tuples.size, narr(job)].min
         0.upto(min-1) do |num|
@@ -396,12 +407,12 @@ module WCBT
     #p task.class unless task.class == Task
     tuples = wclx(task, job)
     tuples.each do |t|
-      str += t.prints
+      str += t.to_str
     end
     
     min = [ndbp(job, task.proc), tuples.size].min
     0.upto(min-1) do |num|
-      p_debug("#{tuples[num].prints}: #{tuples[num].req.get_time_inflated}")
+      p_debug("#{tuples[num].to_str}: #{tuples[num].req.get_time_inflated}")
       time +=  tuples[num].req.get_time_inflated
     end
     p_debug("      tuples = #{str}")
@@ -438,9 +449,9 @@ module WCBT
     min = [ndbp(job, proc), wcsp(job, proc).size].min
     
     return 0 if min == 0
-    
+    tuples.each{ |t| p_debug(t.to_str); }
     0.upto(min-1) do |num|
-      tuples[num].prints
+      p_debug(tuples[num].to_str)
       time += tuples[num].req.get_time_inflated
     end
     p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
