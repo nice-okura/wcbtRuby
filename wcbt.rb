@@ -537,7 +537,7 @@ module WCBT
   def BB(job)
     return 0 if job == nil
     time = 0
-    $calc_task.each do |tsk|
+    job.proc.task_list.each do |tsk|
       if tsk.proc == job.proc && tsk.priority > job.priority
         time += bbt(tsk, job)
       end
