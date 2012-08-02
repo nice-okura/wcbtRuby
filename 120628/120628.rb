@@ -8,11 +8,11 @@
 #  そのタスクはプロセッサの最高優先度であるきがするので確かめる．
 #
 $:.unshift(File.dirname(__FILE__))
-require "../task-CUI"
-require "../manager"
-require "progressbar"
-require "util"
+require "./task-CUI"
+require "./manager"
+require "./util"
 
+require "progressbar"
 include UTIL
 FILENAME = "120628"
 
@@ -22,11 +22,11 @@ $DEBUG = false
 #
 # main関数
 #
-tasks = [12]
+tasks = [4]
 groups = [4]
-rcsls = [0.1]
+rcsls = [0.9]
 extime = 80
-loop_count = 100
+loop_count = 10
 
 @manager = AllManager.new
 
@@ -34,13 +34,13 @@ pbar = ProgressBar.new("WCRTの計測", loop_count*tasks.size*groups.size*rcsls.
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
-tasks.each{ |tsk|
-  rcsls.each{ |rcsl|
-    info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl, :assign_mode => ID_ORDER}
-    fp = File.open("log_#{tsk}tasks_#{rcsl}.txt", "w")
+tasks.each do |tsk|
+  rcsls.each do |rcsl|
+    info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => 0.01, :assign_mode => ID_ORDER, :proc_num => 4}
+    fp = File.open("./120803_log_#{tsk}tasks_#{rcsl}.txt", "w")
     
     requires = tsk
-    groups.each{ |grp|
+    groups.each do |grp|
       group1OnlyLongCount = 0
       group1Highest_Only = 0
       group1AlsoLongCount = 0
@@ -49,7 +49,7 @@ tasks.each{ |tsk|
       group1Highest_Other = 0
       group1Highest_None = 0
       
-      loop_count.times{|i|
+      loop_count.times do |i|
         @manager.all_data_clear
         @manager.create_tasks(tsk, requires, grp, info)
         
@@ -77,7 +77,7 @@ tasks.each{ |tsk|
         else
           group1Highest_None += 1 if check_highest_priority(@manager.tm.get_task_array) == true
         end
-      }
+      end
       #fp.puts "#■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
       fp.puts "#{grp} #{group1OnlyLongCount} #{group1AlsoLongCount} #{otherLongCount} #{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}"
       puts "■#{PROC_NUM}CPU #{tsk}tasks #{grp}groups rcsl long:#{info[:rcsl_l]} short:#{info[:rcsl_s]}"
@@ -85,7 +85,7 @@ tasks.each{ |tsk|
       puts "Group1とその他の何かがlong：#{group1AlsoLongCount}(内，全て最高優先度なのは#{group1Highest_Also}個)"
       puts "Group1以外がlong：#{otherLongCount}個(内，全て最高優先度なのは#{group1Highest_Other}個)"
       puts "longがないのは#{loop_count - group1OnlyLongCount - group1AlsoLongCount - otherLongCount}(内，全て最高優先度なのは#{group1Highest_None}個)"
-    }
-  }
-}
+    end
+  end
+end
 pbar.finish

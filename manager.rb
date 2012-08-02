@@ -260,21 +260,20 @@ class AllManager
     
     #$DEBUG = true
     ret_hash = get_groups
-    group_times.times{
+    group_times.times do
       wcrt_max_system = -1 # 適当な最小値
       
-      $task_list.each{|t|
+      $task_list.each do |t|
         t.resetting
-      }
+      end
       init_computing($task_list)
       set_blocktime
       
-      $task_list.each{|t|
+      $task_list.each do |t|
         wcrt = t.wcrt
         wcrt_max_system = wcrt if wcrt_max_system < wcrt
         #pbar.inc
-      }
-      
+      end      
       
       if wcrt_max_system < min_all_wcrt
         min_all_wcrt = wcrt_max_system
@@ -290,13 +289,13 @@ class AllManager
           #taskset.show_blocktime
           #show_groups
           ret_hash = get_groups
-          gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s === SHORT then "S" end}.join 
-          filename = "#{Dir::pwd}/json/same_cs_tasksets/T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
-          save_tasks(filename)
+          gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s == SHORT then "S" end}.join 
+          filename = "../120803/json/same_cs_tasksets/T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
+          #save_tasks(filename)
         end
         #$COLOR_CHAR = true
       end
-      #taskset = TaskSet.new($task_list)
+      #taskset = TaskSet.new
       #taskset.show_taskset
       #show_groups
       #puts wcrt_max_system
@@ -304,7 +303,7 @@ class AllManager
       istr = ("%010b" % [i])[10-group_count, group_count]
       #p "#{i}:#{istr}"
       change_groups(istr)
-    }
+    end
     return ret_hash
   end
 

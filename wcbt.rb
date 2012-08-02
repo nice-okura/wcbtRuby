@@ -788,8 +788,10 @@ module WCBT
     n = 1
 #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     while(1)
-      time = job.extime + job.b - job.db
-      $calc_task.each do |t|
+      time = job.extime + job.b# - job.db
+      ProcessorManager.get_proc(job.proc.proc_id).task_list.each do |t|
+
+#      $calc_task.each do |t|
         #pp t
         if t.priority < job.priority && t.proc == job.proc
           count = ((pre_wcrt/t.period).ceil)

@@ -49,10 +49,10 @@ class RequireManager
         @@require_array << Req.new(@@id, g, time, [])
       }
     when "120620_2", "120620"      
-      get_use_group_array_order(i, group_array).each{ 
+      get_use_group_array_order(i, group_array).each do |g|
           info[:group] = g
           @@require_array << create_require_120620(info)
-      }
+      end
     when "120405_3"
       #
       # new_group(long or short)で要求時間timeの要求を作成
