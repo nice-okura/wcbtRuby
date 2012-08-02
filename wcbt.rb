@@ -603,9 +603,9 @@ module WCBT
       end
     end
     $calc_task.each do |t|
-        if pri == t.priority && t.proc == proc
-          tsk << t
-        end
+      if pri == t.priority && t.proc == proc
+        tsk << t
+      end
     end
     return tsk
   end
