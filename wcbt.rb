@@ -9,10 +9,10 @@
 #
 #
 # 最大ブロック時間計算用モジュール
-#$:.unshift(File.dirname(__FILE__))
+$:.unshift(File.dirname(__FILE__))
 require "rubygems"
 require "term/ansicolor"
-require "config"
+require "./config"
 
 #require "ruby-prof"
 
@@ -32,10 +32,10 @@ $SR = Hash.new
 $NARR = Hash.new
 $wclx = Hash.new
 $wcsx = Hash.new
-$bbt = Hash.new
-$abr = Hash.new
-$proc_list = Hash.new
-$proc_task_list = Hash.new
+#$bbt = Hash.new
+#$abr = Hash.new
+#$proc_list = Hash.new
+#$proc_task_list = Hash.new
 
 module WCBT
   def p_debug(str)
@@ -55,10 +55,10 @@ module WCBT
     $NARR.clear
     $wclx.clear
     $wcsx.clear
-    $bbt.clear
-    $abr.clear
-    $proc_list.clear
-    $proc_task_list.clear 
+    #$bbt.clear
+    #$abr.clear
+    #$proc_list.clear
+    #$proc_task_list.clear 
 
     #puts "INIT_COMPUTING"
     
@@ -104,7 +104,7 @@ module WCBT
       #
       # proc_listの計算
       #      
-      #proc << task.proc      
+      #proc << task.proc
 
       #
       # wclx, wcsxの計算
@@ -136,8 +136,8 @@ module WCBT
           end
         end
 
-        tuplesl.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
-        tupless.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
+        tuplesl.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+        tupless.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
         $wclx[[task.task_id, job.task_id]] = tuplesl
         $wcsx[[task.task_id, job.task_id]] = tupless
       end
@@ -153,6 +153,7 @@ module WCBT
     #
     # 上記の計算をした後でしか計算できないもの
     #
+=begin
     $calc_task.each do |job|
       tuple_abr = []
       tuples_abr = []
@@ -188,7 +189,7 @@ module WCBT
       end
       $abr[job.task_id] = tuples_abr
     end
-
+=end
     
     #
     # partitionの計算
@@ -247,40 +248,58 @@ module WCBT
     return $NARR[job.task_id]
   end
   
-  # procはproc_id(Fixnum)
+  # procはProcessor
   def partition(proc)
-    if proc.class != Fixnum
-      p proc.class
-      raise
-    end
-    return ProcessorManager.get_proc(proc).task_list
+    raise unless proc.class == Processor
+    return proc.task_list
     #return $proc_task_list[proc]
   end
   
-  # ProcessorのidのArrayを返す
-  def procList
-    return ProcessorManager.proc_list.collect{ |p| p.proc_id }
+  # ProcessorのArrayを返す
+  def proc_list
+    return ProcessorManager.proc_list
   end
 
   
   ##############################
   
   def bbt(task, job)
-    return $bbt[[task.task_id, job.task_id]]
+    len = 0
+    tuples = wclx(task, job)
+    min = [tuples.size, narr(job)].min
+    0.upto(min-1) do |num|
+      len += tuples[num].req.get_time_inflated
+    end
+    return len
+    #return $bbt[[task.task_id, job.task_id]]
   end
   
   def abr(job)
-    return $abr[job.task_id]
+    return [] if job == nil
+    tuples = []
+    
+    $calc_task.each do |task|
+       next if task == nil
+       if task.proc == job.proc && task.priority > job.priority
+         tuple = wcsx(task, job)
+         tuples += tuple unless tuple == []
+       end
+    end
+    tuples.sort!{ |a, b| -1 * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+    return tuples
+    #return $abr[job.task_id]
   end
 
   # shortリソース要求毎の最大ブロック時間
   # ABを計算する前に用いる
   def sbr(req, processor)
+    raise unless processor.class == Processor
     block_time = 0
     
-    # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせる
+    # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせ
+    
     ProcessorManager.proc_list.each do |proc|
-      next if processor == proc.proc_id
+      next if processor == proc
       reqs_time_array = competing(req, proc).collect{ |r| r.time }
       #puts "\t#{reqs_time_array}"
       block_time += reqs_time_array.max unless reqs_time_array == []
@@ -292,10 +311,11 @@ module WCBT
   # プロセッサp内の，reqと競合するリソース要求の集合
   # なければ [] を返す
   def competing(req, proc)
+    raise unless proc.class == Processor
     req_list = []
     
     proc.task_list.each do |tsk|
-      tsk.req_list.each do |r|
+      tsk.all_require.each do |r|
         next if r == req  # reqと同じなら除外
         req_list << r if req.res.group == r.res.group
       end
@@ -306,6 +326,7 @@ module WCBT
 
   
   def ndbp(job, proc)
+    raise unless proc.class == Processor
     return 0 if job.proc == proc
 
     count = 0
@@ -346,7 +367,7 @@ module WCBT
   
   def rbl(job)
     time = 0
-    procList.each do |proc|
+    proc_list.each do |proc|
        time += rblp(job, proc) if job.proc != proc
     end
     p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
@@ -354,6 +375,7 @@ module WCBT
   end
   
   def rblp(job, proc)
+    raise unless proc.class == Processor
     count = 0
     partition(proc).each do |task|
       count += rblt(task, job)
@@ -367,12 +389,13 @@ module WCBT
     str = ""
     if task == nil || job == nil
       return 0
-    elsif task.proc == job.proc 
+    elsif task.proc == job.proc
       return 0
     end
     
     unless task.class == Task
       p task.class
+      raise
     end
     #p task.class unless task.class == Task
     tuples = wclx(task, job)
@@ -385,7 +408,7 @@ module WCBT
       time += tuples[num].req.time
     end
     p_debug("      tuples = #{str}")
-    p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    #p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
     p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end
@@ -393,15 +416,17 @@ module WCBT
   
   def wcsp(job, proc)
     tuples = []
+    raise unless proc.class == Processor
     partition(proc).each do |task|
       tuples += wcsx(task, job)
     end
+    tuples.sort!{|a, b| -1*(a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
   end
   
   def rbs(job)
     time = 0
-    procList.each do |proc|
+    proc_list.each do |proc|
       time += rbsp(job, proc) if job.proc != proc
     end
     p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
@@ -411,11 +436,15 @@ module WCBT
   def rbsp(job, proc)
     time = 0
     return 0 if job == nil
-    str = ""
+    
     tuples = wcsp(job, proc)
     min = [ndbp(job, proc), wcsp(job, proc).size].min
+    
+    return 0 if min == 0
+    
     0.upto(min-1) do |num|
-      time += tuples[num].req.time
+      tuples[num].prints
+      time += tuples[num].req.get_time_inflated
     end
     p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
     return time
@@ -440,25 +469,24 @@ module WCBT
         end
       end
     end
-    tuples.sort!{ |a, b| (-1) * (a.req.time <=> b.req.time) }
+    #tuples.sort!{ |a, b| (-1) * (a.req.get_time_ <=> b.req.time) }
     return tuples
   end
   
   def wcspg(job, proc, group)
+    raise unless proc.class == Processor
     tuples = []
     partition(proc).each do |task|
       tuples += wcsxg(task, job, group)
     end
-    tuples.sort!{|a, b|
-      (-1) * (a.req.time <=> b.req.time)
-    }
+    tuples.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
   end
   
   def sbg(job, group)
     time = 0
-    # p procList
-    procList.each do |proc|
+    # p proc_list
+    proc_list.each do |proc|
       if job.proc != proc
         time += sbgp(job, group, proc)
       end
@@ -468,6 +496,7 @@ module WCBT
   end 
   
   def sbgp(job, group, proc)
+    raise unless proc.class == Processor
     time = 0
     b = 0
     SR(job).each do |req|
@@ -595,6 +624,7 @@ module WCBT
   #
   private
   def lowest_priority_task(proc)
+    raise unless proc.class == Processor
     pri = 0 # 最高優先度
     tsk = []
     $calc_task.each do |t|
@@ -699,7 +729,7 @@ module WCBT
     #
     
     uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each do |p|
+    proc_list.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
       partition(p).each do |t|
@@ -727,7 +757,7 @@ module WCBT
     #
     
     uabj = PROC_NUM # utilization_available_to_background_jobs
-    procList.each do |p|
+    proc_list.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
       partition(p).each do |t|
@@ -748,7 +778,7 @@ module WCBT
   def wcrt(job)
     pre_wcrt = job.extime + job.b
     n = 1
-#    puts "job:#{job.task_id}:#{job.proc}"
+#    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     while(1)
       time = job.extime + job.b - job.db
       $calc_task.each do |t|

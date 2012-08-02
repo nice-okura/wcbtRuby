@@ -34,8 +34,6 @@ class Processor
         assign_task(t)
       }
     end
-
-
   end
   
   ###############################################################
@@ -57,7 +55,7 @@ class Processor
 
     # プロセッサ番号設定
 #    p @proc_id
-    task.proc = @proc_id
+    task.proc = self
     # 優先度設定
     task.priority = @task_list.size
 
@@ -98,6 +96,25 @@ class Processor
   def remove_task
     @task_list = []
   end
+  
+  # Processorクラスを整形して表示
+  def print
+    puts "Processor#{@proc_id}"
+    puts "\tタスク: #{@task_list.each{ |t| print t.task_id }}"
+  end
+  
+  # 比較演算子
+  def ==(proc)
+    raise unless proc.class == Processor
+    return true if @proc_id == proc.proc_id
+    return false
+  end
+  
+  def !=(proc)
+    return false if self == proc
+    return true
+  end
+  
   ###############################################################
   #
   # 以下 private
@@ -108,32 +125,32 @@ class Processor
   private
   def calc_util
     util = 0.0
-    @task_list.each{ |t|
+    @task_list.each do |t|
       util += t.extime/t.period
-    }
+    end
 
     return util
   end
 
   # タスクをIDの降順で並べる
   def sort_by_task_id
-    @task_list.sort!{ |a, b|
+    @task_list.sort! do |a, b|
       a.task_id <=> b.task_id
-    }
+    end
   end
   
   # タスク使用率の降順で並べる
   def sort_by_task_util
-    @task_list.sort!{ |a, b|
+    @task_list.sort! do |a, b|
       a.extime/a.period <=> b.extime/b.period
-    }
+    end
   end
 
   # タスク優先度の降順で並べる
   def sort_by_task_pri
-    @task_list.sort!{ |a, b|
+    @task_list.sort! do |a, b|
       a.priority <=> b.priority
-    }
+    end
   end
   
 end
@@ -142,19 +159,21 @@ end
 # タスククラス
 #
 class Task
-  attr_accessor :task_id, :proc, :period, :extime, :priority, :offset, :req_list, :reqtime, :bb, :ab, :sb, :lb, :db, :b, :wcrt
-  attr_reader :all_require, :short_require_array, :long_require_array
+  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :wcrt, :proc, :priority
+  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :extime, :offset, :reqtime
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
-    @proc = proc
+    if proc.class == Fixnum
+      @proc = ProcessorManager.get_proc(proc)
+    else raise; end
     @period = period.to_f
-    @extime = extime
+    @extime = extime  # リソース要求時間(CS)も含めた時間
     @priority = priority.to_i
     @offset = offset.to_i
     @req_list = reqarray
     @reqtime = get_require_time
-    @wcrt = 0
+    @wcrt = 0.0
     @b = 0.0
     @bb = 0.0
     @ab = 0.0
@@ -168,37 +187,33 @@ class Task
   end
   
   def resetting
-    #
     # all_requireを事前に求めておく
-    #
     @all_require = []
     
-    @req_list.each{|req|
+    @req_list.each do |req|
       @all_require << req
       if req.reqs != nil
-        req.reqs.each{|req2|
+        req.reqs.each do |req2|
           # 同じリソースのネストは不可能
           # req1.res == req2.res はダメ
-          #if req2.res == req.res then 
-          #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
-          #puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
-          #exit # 強制終了
-          #end
+          if req2.res == req.res
+            #puts "req" + req.req_id.to_s + "とreq" + req2.req_id.to_s + ":\n"
+            puts "同じリソース(res" + req.res.group.to_s + ")はネストできません．"
+            raise
+          end
           # グループが異なるときに別要求としてreq_listに追加
           # 同じグループならグループロックを1回取得するだけで良いから
           # 同グループなら別要求としては扱わない．
           if req2.res.group != req.res.group
             @all_require << req2
           end
-        }
+        end
       end
-    }
+    end
 
-    #
     # shortリソース要求の配列を返す
     # outermost なもののみ
     # ネストされているものも含む
-    #
     @short_require_array = []
     @all_require.each{|req|
       if req.res.kind == SHORT && req.outermost == true
@@ -206,18 +221,16 @@ class Task
       end
     }
     
-    #
     # longリソースの配列を返す
     # outermostなもののみ
     # ネストされているものも含む
-    #
     @long_require_array = []
     
-    @all_require.each{|req|
+    @all_require.each do |req|
       if req.res.kind == LONG && req.outermost == true
         @long_require_array << req
       end
-    }
+    end
   end
   
   def get_resource_count
@@ -228,13 +241,13 @@ class Task
   # outermostでない要求を探索して設定
   #
   def check_outermost
-    req_list.each{|req|
-      req.reqs.each{|req2|
+    req_list.each do |req|
+      req.reqs.each do |req2|
         if req2.res.group == req.res.group
           req2.outermost = false
         end
-      }
-    }
+      end
+    end
   end
   
   #
@@ -242,9 +255,7 @@ class Task
   #
   def get_require_time
     time = 0
-    req_list.each{|req|
-      time += req.time
-    }
+    req_list.each{ |req| time += req.time }
     return time
   end
   
@@ -256,8 +267,8 @@ class Task
     time = @reqtime
     
     if @extime < time
-      #puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
-      #exit
+      puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
+      raise
     end
   end
   
@@ -267,9 +278,9 @@ class Task
   # 
   def out_alldata
     req_list = []
-    @req_list.each{|req|
+    @req_list.each do |req| 
       req_list << req.req_id
-    }
+    end
     return {
       "task_id"=>@task_id, 
       "proc"=>@proc, 
@@ -339,39 +350,32 @@ class Task
   #
   private
   def set_begin_time
-    #
+    
     # set_begintimeする必要があるかチェック
-    #
-    req_list.each do |req|
+    @req_list.each do |req|
       return false if req.begintime != 0
     end
     
     req_time = 0
-    req_list.each do |req|
+    @req_list.each do |req|
       req_time += req.time
     end
-    #
+    
     # リソース要求A,B,Cがあるとして，要求時間が 10, 20, 30 とし，タスクの実行時間は 80 とする
     # リソース要求A, B, Cの間(この場合は4箇所)に余った 80-60 = 20 を適当に割り振る
-    #
     non_req_time = extime - req_time
-    #puts "non_req_time:" + non_req_time.to_s
     
-    #
     # 初めはA, B, Cの開始時間を0(offset), 10, 30 として，適当に残りの時間を割り振る
-    #
     first_begin_time = offset
-    req_list.each{|req|
+    @req_list.each do |req|
       #puts "first_begin_time:" + first_begin_time.to_s 
       req.begintime = first_begin_time
       first_begin_time += req.time
-    }
+    end
     
-    #
     # A, B, Cの間にnon_req_timeを割り振る -> A, B, Cの開始時間を適当に遅らせる
-    #
     plus_time = 0
-    req_list.each{|req|
+    @req_list.each do |req|
       #puts "non_req_time:" + non_req_time.to_s
       begin
       random = rand(non_req_time.to_i)
@@ -385,16 +389,15 @@ class Task
       #puts "Req" + req.req_id.to_s + " beginTime:" + plus_time.to_s
       non_req_time -= random
       
-      #
       # ネストしている場合は，今のところreq.begintimeと同じ
       # ※2段ネストのみ対応
-      #
       nest_begin_time = req.begintime
-      req.reqs.each{|nestreq|
+      req.reqs.each do |nestreq|
         nestreq.begintime = nest_begin_time
         nest_begin_time += nestreq.time
-      }
-    }
+      end
+    end
+    
     # おわり
     return true
   end
@@ -426,6 +429,7 @@ class Group
   # グループのデータを返す
   # JSON外部出力用
   # 
+  public
   def out_alldata
     return {
       "group"=>@group, 
@@ -533,6 +537,6 @@ class ReqTuple
   
   public
   def prints
-    return "<#{@req.req_id}(#{@req.time}), #{@k}>"
+    return "<#{@req.req_id}(#{@req.get_time_inflated}), #{@k}>"
   end
 end
