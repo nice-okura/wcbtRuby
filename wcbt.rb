@@ -337,7 +337,7 @@ module WCBT
     return 0 if job.proc == proc
 
     count = 0
-    partition(proc).each do |task|
+    proc.task_list.each do |task|
       count += ndbt(task, job)
     end
     p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
@@ -384,7 +384,7 @@ module WCBT
   def rblp(job, proc)
     raise unless proc.class == Processor
     count = 0
-    partition(proc).each do |task|
+    proc.task_list.each do |task|
       count += rblt(task, job)
     end
     p_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
@@ -425,7 +425,7 @@ module WCBT
   def wcsp(job, proc)
     tuples = []
     raise unless proc.class == Processor
-    partition(proc).each do |task|
+    proc.task_list.each do |task|
       tuples += wcsx(task, job)
     end
     tuples.sort!{|a, b| -1*(a.req.get_time_inflated <=> b.req.get_time_inflated) }
@@ -484,7 +484,7 @@ module WCBT
   def wcspg(job, proc, group)
     raise unless proc.class == Processor
     tuples = []
-    partition(proc).each do |task|
+    proc.task_list.each do |task|
       tuples += wcsxg(task, job, group)
     end
     tuples.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
@@ -740,7 +740,7 @@ module WCBT
     proc_list.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
-      partition(p).each do |t|
+      p.task_list.each do |t|
         #puts "#{(t.extime+t.sb.to_f)/t.period}"
         u += (t.extime + t.b - t.lb)/t.period
       end
@@ -768,7 +768,7 @@ module WCBT
     proc_list.each do |p|
       u = 0
       #      puts "#{partition(p).size}"
-      partition(p).each do |t|
+      p.task_list.each do |t|
         #puts "#{(t.extime+t.sb.to_f)/t.period}"
         u += (t.extime + t.b - t.lb)/t.period
       end
