@@ -159,8 +159,8 @@ end
 # タスククラス
 #
 class Task
-  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :wcrt, :proc, :priority
-  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :extime, :offset, :reqtime
+  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :wcrt, :proc, :priority, :extime
+  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :offset, :reqtime
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
@@ -516,13 +516,41 @@ class Req
     outer_req = instance_variable_get(:@outer_req)
     #outer_req.change_require_time(time) unless outer_req == nil
     outer_req.add_inflated_spintime(time) unless outer_req == nil
+
+    # このリソース要求を行うタスクの実行時間も伸ばす
+    # (ネストしていない場合のみ)
+    if @nested == false
+      loop_break = false
+      ProcessorManager.proc_list.each do |proc|
+        proc.task_list.each do |task|
+          task.req_list.each do |req|
+            if req.req_id == @req_id
+              task.extime += time
+              loop_break = true 
+            
+              puts ("T#{task.task_id}:R#{req.req_id}(G:#{req.res.group}) == R#{@req_id}")
+              loop_break = true 
+            end
+          end
+          break if loop_break == true
+        end
+        break if loop_break == true
+      end
+    end
   end
 
+  def ==(req)
+    return true if req.req_id == @req_id
+    return false
+  end
+  
   protected
   # リソース要求の時間を変更する
   def change_require_time(time)
     @time = time
   end
+
+  
 end
 
 #
