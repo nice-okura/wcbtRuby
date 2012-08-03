@@ -517,6 +517,7 @@ class Req
     #outer_req.change_require_time(time) unless outer_req == nil
     outer_req.add_inflated_spintime(time) unless outer_req == nil
 
+=begin
     # このリソース要求を行うタスクの実行時間も伸ばす
     # (ネストしていない場合のみ)
     if @nested == false
@@ -537,13 +538,9 @@ class Req
         break if loop_break == true
       end
     end
+=end
   end
 
-  def ==(req)
-    return true if req.req_id == @req_id
-    return false
-  end
-  
   protected
   # リソース要求の時間を変更する
   def change_require_time(time)
