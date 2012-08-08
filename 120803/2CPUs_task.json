@@ -1,0 +1,48 @@
+{
+  "tasks": [
+    {
+      "priority": 1,
+      "proc": 1,
+      "task_id": 1,
+      "offset": 0,
+      "req_id_list": [
+        9
+      ],
+      "period": 80.0,
+      "extime": 20
+    },
+    {
+      "priority": 1,
+      "proc": 2,
+      "task_id": 2,
+      "offset": 0,
+      "req_id_list": [
+        10
+      ],
+      "period": 80.0,
+      "extime": 20
+    },
+    {
+      "priority": 2,
+      "proc": 1,
+      "task_id": 3,
+      "offset": 0,
+      "req_id_list": [
+        11
+      ],
+      "period": 80.0,
+      "extime": 20
+    },
+    {
+      "priority": 2,
+      "proc": 2,
+      "task_id": 4,
+      "offset": 0,
+      "req_id_list": [
+        12
+      ],
+      "period": 80.0,
+      "extime": 20
+    }
+  ]
+}
