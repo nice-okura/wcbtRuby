@@ -159,8 +159,8 @@ end
 # タスククラス
 #
 class Task
-  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :wcrt, :proc, :priority, :extime
-  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :offset, :reqtime
+  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :wcrt, :proc, :priority, :extime, :offset
+  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i

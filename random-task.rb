@@ -61,7 +61,11 @@ info = { }
 
 # オプション解析
 opt.on('--mode [VAL]') {|v|
-  info[:mode] = v
+  if(v == "c")
+    info[:mode] = "create_manually"
+  else
+    info[:mode] = v
+  end
 }
 
 opt.on('--extime [VAL]') {|v|

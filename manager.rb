@@ -70,12 +70,14 @@ class AllManager
   #
   # 初期化
   #
-  def initialize
+  def initialize(filename="")
     #puts "AllManager_initialize"
     @tm = TaskManager.instance
     @rm = RequireManager.instance
     @gm = GroupManager.instance
     @pm = ProcessorManager.instance
+    load_tasks(filename) unless filename == ""
+ 
   end
 
   #
