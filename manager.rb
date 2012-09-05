@@ -553,6 +553,7 @@ class TaskManager
       i.times{ 
         @@task_array << create_task_120620_2(i, info[:extime])
       }
+
     # リソースやタスクのの割り当てを手動で設定
     when CREATE_MANUALLY
       i.times{ 
@@ -563,11 +564,25 @@ class TaskManager
       raise
       exit
     end
+
+    # 周期の短い順に優先度を割り当てる
+    assign_priority_by_period(@@task_array)
     
     #@@task_array = tarray
     return @@task_array.size
   end
   
+  # 周期の短い順に優先度を割り当てる
+  # @param: <Array> タスクセット
+  private 
+  def assign_priority_by_period(tasks)
+    tasks.sort!{ |a, b| a.period <=> b.period }
+    tasks.each_with_index do |task, i| 
+      task.priority = i
+    end
+    
+  end
+
   #
   # タスクの保存(JSON)
   # 保存したタスクの数を返す．失敗したらfalse
@@ -737,10 +752,8 @@ class RequireManager
     @@require_array = []
   end 
  
-  #
-  # ランダムにリソース要求を返す
-  # 作成されている要求がなければ，nilを返す
-  #
+  # @return ランダムにリソース要求を返す
+  #         作成されている要求がなければ，nilを返す
   def self.get_random_req
     @@id += 1
     ra = []
@@ -752,10 +765,10 @@ class RequireManager
       
       #pp ra
       ra.req_id = @@id
-      ra.reqs.each{|r|
+      ra.reqs.each do |r|
         @@id += 1
         r.req_id = @@id
-      }
+      end
     end
     return ra
   end
