@@ -14,7 +14,7 @@ class TaskManager
     req_list = []
     req_time = 0
     if info[:require_count] == nil
-      REQ_NUM.times{
+      REQ_NUM.times do
         if rand(2) == 1
           r = RequireManager.get_random_req
           unless r == nil
@@ -22,15 +22,15 @@ class TaskManager
             req_time += r.time
           end
         end
-      }
+      end
     else
-      info[:require_count].times{ 
+      info[:require_count].times do
         r = RequireManager.get_random_req
         unless r == nil
           req_list << r 
           req_time += r.time
         end
-      }
+      end
     end
 
     # タスク実行時間

@@ -132,7 +132,7 @@ class EXPORT_SCHESIM
       calc_time = 0.0
       calc_time = req.begintime - curTime # 現在時刻から次のリソース要求の時間までが計算時間
       
-      str += "\t\t exc(#{calc_time} * @@share#{t.proc})\n"
+      str += "\t\t exc(#{calc_time} * @@share#{t.proc.proc_id})\n"
 
       curTime += calc_time                # 現在時刻を進める
 
@@ -143,7 +143,7 @@ class EXPORT_SCHESIM
 
     # 最後に計算時間が余っていれば表示
     time = t.extime + t.offset - curTime
-    str += "\t\t exc(#{time} * @@share#{t.proc})\n" if time != 0.0
+    str += "\t\t exc(#{time} * @@share#{t.proc.proc_id})\n" if time != 0.0
   
 
     return str
