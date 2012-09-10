@@ -1,0 +1,44 @@
+{
+  "reqs": [
+    {
+      "req_id": 1,
+      "group": 1,
+      "outermost": true,
+      "req_id_list": [
+
+      ],
+      "time": 1,
+      "begintime": 0
+    },
+    {
+      "req_id": 2,
+      "group": 1,
+      "outermost": true,
+      "req_id_list": [
+
+      ],
+      "time": 2,
+      "begintime": 1
+    },
+    {
+      "req_id": 3,
+      "group": 2,
+      "outermost": true,
+      "req_id_list": [
+
+      ],
+      "time": 2,
+      "begintime": 1
+    },
+    {
+      "req_id": 4,
+      "group": 1,
+      "outermost": true,
+      "req_id_list": [
+
+      ],
+      "time": 2,
+      "begintime": 2
+    }
+  ]
+}
