@@ -18,20 +18,20 @@ def show_help_message
   puts ""
 #  puts "info:カンマ区切り情報 \n Ex. 120411,50,0.3"
   puts "[オプション一覧]"
-  puts " --mode <mode>"
+  puts " -m, --mode <mode>"
   puts "     モード指定"
   puts "     create_manually: 手動でタスク生成"
   puts ""
-  puts " --extime <time>"
+  puts " -e, --extime <time>"
   puts "     実行時間を指定"
   puts "     未指定(nil)の場合はランダム"
   puts "     --extime_rangeが指定されていたら無視される"
   puts ""
-  puts " --extime_range <range>"
+  puts " -E, --extime_range <range>"
   puts "     実行時間の範囲を指定"
   puts "     Ex. --extime_range 20..100"
   puts ""
-  puts " --require_range <range>"
+  puts " -R, --require_range <range>"
   puts "     リソース要求時間の範囲を指定"
   puts "     Ex. --require_range 2..8"
   puts ""
@@ -39,7 +39,7 @@ def show_help_message
   puts "     RCSL指定"
   puts "     未指定(nil)の場合はランダム"
   puts ""
-  puts " --assign_mode <num>"
+  puts " -a, --assign_mode <num>"
   puts "     タスク割り当て方針"
   puts "         1   WORST_FIT 割り当て(ProcessorManager::assign_tasks参照)"
   puts "         2   LIST_ORDER"
@@ -47,7 +47,7 @@ def show_help_message
   puts "         4   RANDOM_ORDER"
   puts "      未指定 RANDOM_ORDER"
   puts ""
-  puts " --require_count <num>" 
+  puts " -c, --require_count <num>" 
   puts "     タスク当たりのリソース要求数"
   puts "     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数"
   puts ""
@@ -61,7 +61,7 @@ opt = OptionParser.new
 info = { }
 
 # オプション解析
-opt.on('--mode [VAL]') {|v|
+opt.on('-m [VAL]', '--mode [VAL]') {|v|
   if(v == "c")
     info[:mode] = "create_manually"
   else
@@ -69,11 +69,11 @@ opt.on('--mode [VAL]') {|v|
   end
 }
 
-opt.on('--extime [VAL]') {|v|
+opt.on('-e [VAL]', '--extime [VAL]') {|v|
   info[:extime] = v.to_i
 }
 
-opt.on('--extime_range [VAL]') { |v|
+opt.on('-e [VAL]', '--extime_range [VAL]') { |v|
   first = v.split("..")[0].to_i
   last = v.split("..")[1].to_i
   info[:extime_range] = first..last
@@ -83,7 +83,7 @@ opt.on('--rcsl [VAL]') {|v|
   info[:rcsl] = v.to_f
 }
 
-opt.on('--assign_mode [VAL]') {|v|
+opt.on('-a [VAL]', '--assign_mode [VAL]') {|v|
   case v.to_i
   when 1
     info[:assign_mode] = WORST_FIT
@@ -98,7 +98,7 @@ opt.on('--assign_mode [VAL]') {|v|
   end
 }
 
-opt.on('--require_count [VAL]') {|v|
+opt.on('-c [VAL]', '--require_count [VAL]') {|v|
   info[:require_count] = v.to_i
 }
 
@@ -106,7 +106,7 @@ opt.on('--nest') { |v|
   info[:nest] = true
 }
 
-opt.on('--require_range [VAL]') { |v|
+opt.on('-R [VAL]', '--require_range [VAL]') { |v|
   first = v.split("..")[0].to_i
   last = v.split("..")[1].to_i
   info[:require_range] = first..last

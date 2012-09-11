@@ -134,6 +134,7 @@ class TaskSet
         print ["\tLB:", sprintf("%.1f", t.lb)].join
         print ["\tDB:", sprintf("%.1f", t.db)].join
         print ["\tB:", sprintf("%.1f", t.b)].join
+        print "(#{t.extime})"
         print "\n"
         #pri = get_extime_high_priority(t) 
         

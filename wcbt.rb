@@ -787,7 +787,7 @@ module WCBT
   def wcrt(job)
     pre_wcrt = job.extime + job.b
     n = 1
-#    puts "job:#{job.task_id}:#{job.proc.proc_id}"
+    #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     while(1)
       time = job.extime + job.b# - job.db
       job.proc.task_list.each do |t|

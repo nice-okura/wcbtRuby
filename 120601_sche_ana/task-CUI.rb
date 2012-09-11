@@ -101,20 +101,13 @@ class TaskSet
   def show_blocktime
     @taskset_proc.each{|tasks|
       tasks.each{|t|
-        print "タスク#{t.task_id}"      
+        print "タスク#{t.task_id}"
         print ["\tBW:", sprintf("%.1f", t.bw)].join
         print ["\tNPB:", sprintf("%.1f", t.npb)].join
         print ["\tDB:", sprintf("%.1f", t.db)].join
         print ["\tB:", sprintf("%.1f", t.b)].join
+        print "(#{t.extime})"
         print "\n"
-        #        pri = get_extime_high_priority(t) 
-=begin        
-        if t.period < t.wcrt
-          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.wcrt)}".red
-        else
-          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
-        end
-=end
       }
     }
   end
