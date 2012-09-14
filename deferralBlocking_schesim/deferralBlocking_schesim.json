@@ -1,0 +1,63 @@
+{
+  "cpu": [
+    {
+      "core": [
+        {
+          "application": [
+            {
+              "period": 80.0,
+              "share": 1.0,
+              "scheduling": "fp",
+              "task": [
+                {
+                  "offset": 0,
+                  "period": 6.0,
+                  "wcet": 7,
+                  "id": 1,
+                  "attr": "cyclic",
+                  "priority": 1
+                },
+                {
+                  "offset": 0,
+                  "period": 9.0,
+                  "wcet": 9,
+                  "id": 2,
+                  "attr": "cyclic",
+                  "priority": 2
+                }
+              ],
+              "id": 1,
+              "pri": 1
+            }
+          ],
+          "scheduling": "fp",
+          "id": 1
+        },
+        {
+          "application": [
+            {
+              "period": 80.0,
+              "share": 1.0,
+              "scheduling": "fp",
+              "task": [
+                {
+                  "offset": 0,
+                  "period": 20.0,
+                  "wcet": 12,
+                  "id": 3,
+                  "attr": "cyclic",
+                  "priority": 1
+                }
+              ],
+              "id": 2,
+              "pri": 1
+            }
+          ],
+          "scheduling": "fp",
+          "id": 2
+        }
+      ],
+      "id": 1
+    }
+  ]
+}

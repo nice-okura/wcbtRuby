@@ -287,7 +287,7 @@ module WCBT
     
     job.proc.task_list.each do |task|
     #$calc_task.each do |task|
-       next if task == nil
+       next if task == nil || task == []
        if task.proc == job.proc && task.priority > job.priority
          tuple = wcsx(task, job)
          tuples += tuple unless tuple == []
@@ -546,7 +546,7 @@ module WCBT
   end
   
   def AB(job)
-    return 0 if job == nil
+    return 0 if job == nil || job == []
 
     time = 0
     tuples = abr(job)
@@ -613,7 +613,7 @@ module WCBT
     time = 0
     task.proc.task_list.each do |tas|
       if tas.proc == task.proc && tas.priority < task.priority
-        time += [tas.extime, lbt(tas)].min
+        time += [tas.extime+tas.get_inflated_time, lbt(tas)].min
       end
     end
     time 

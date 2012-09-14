@@ -170,7 +170,7 @@ class Task
     @period = period.to_f
     @extime = extime  # リソース要求時間(CS)も含めた時間
     @priority = priority.to_i
-    @offset = offset.to_i
+    @offset = offset.to_f
     @req_list = reqarray
     @reqtime = get_require_time
     @wcrt = 0.0
@@ -258,7 +258,19 @@ class Task
     req_list.each{ |req| time += req.time }
     return time
   end
-  
+
+  # inflateした総spin時間を求める
+  # DBで使用する
+  def get_inflated_time
+    time = 0
+    @req_list.each do |req|
+      if req.res.group == SHORT
+        time += req.inflated_spintime
+      end
+    end
+    
+    return time
+  end
   #
   # リソース要求時間が
   # タスクの実行時間を超えていないかチェック

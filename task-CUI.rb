@@ -216,7 +216,7 @@ class TaskCUI
   #
   def get_task_offset_char
     str = ""
-    @task.offset.times{
+    @task.offset.to_i.times{
       str += OFFSET_CHAR
     }
     return str

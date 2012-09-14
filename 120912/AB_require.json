@@ -1,0 +1,64 @@
+{
+  "reqs": [
+    {
+      "group": 1,
+      "begintime": 6.5,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "time": 1.5,
+      "req_id": 1
+    },
+    {
+      "group": 2,
+      "begintime": 1.5,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "time": 2,
+      "req_id": 2
+    },
+    {
+      "group": 2,
+      "begintime": 4,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "time": 1,
+      "req_id": 3
+    },
+    {
+      "group": 2,
+      "begintime": 0,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "time": 2.5,
+      "req_id": 4
+    },
+    {
+      "group": 2,
+      "begintime": 8.5,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "time": 2.5,
+      "req_id": 5
+    },
+    {
+      "group": 1,
+      "begintime": 7,
+      "req_id_list": [
+
+      ],
+      "outermost": true,
+      "time": 2.5,
+      "req_id": 6
+    }
+  ]
+}

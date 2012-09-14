@@ -93,7 +93,13 @@ class AllManager
     return false if @tm.load_task_data("#{name}_task.json") == false
     return false if @pm.load_processor_data("#{name}_proc.json") == false
     @using_group_array = get_using_group_array
-    $task_list = @tm.get_task_array
+    $task_list = []
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |task|
+        $task_list << task
+      end
+    end
+    # $task_list = @tm.get_task_array
     init_computing($task_list)
     set_blocktime
 
