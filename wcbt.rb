@@ -305,7 +305,6 @@ module WCBT
     block_time = 0
     
     # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせ
-    
     ProcessorManager.proc_list.each do |proc|
       next if processor == proc
       reqs_time_array = competing(req, proc).collect{ |r| r.time }
@@ -605,7 +604,7 @@ module WCBT
       ## puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
       block_time += inflate_time
     end
-
+    job.extime += block_time
     return block_time
   end
 

@@ -11,16 +11,17 @@ class String
   include Term::ANSIColor
 end
 
+
+OFFSET_CHAR = " "       # offset : " "
+CALC_CHAR = "-"         # ただの計算 : "-"
+INFLATE_CHAR = "*"      # inflateした時間 : "*"
+
 if $COLOR_CHAR == true
-  OFFSET_CHAR = " "       # offset : " "
   LONG_CHAR = "L".red     # long要求 : "L"
   SHORT_CHAR = "S".blue   # short要求 : "S"
-  CALC_CHAR = "-"         # ただの計算 : "-"
 else
-  OFFSET_CHAR = " "       # offset : " "
   LONG_CHAR = "L"         # long要求 : "L"
   SHORT_CHAR = "S"        # short要求 : "S"
-  CALC_CHAR = "-"         # ただの計算 : "-"
 end
 
 class TaskSet 
@@ -242,6 +243,15 @@ class TaskCUI
       str += ")"
       reqtime -= subreq.time
     }
+    
+    # inflate time 表示
+    if req.reqs == []
+
+      req.inflated_spintime.times{ 
+        str += INFLATE_CHAR
+      }
+      reqtime - req.inflated_spintime
+    end    
     reqtime.to_i.times{
       req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
     }

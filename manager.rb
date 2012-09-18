@@ -135,10 +135,10 @@ class AllManager
     @tm.create_task_array(tcount, info)
 
     # プロセッサの作成
-    @pm.create_processor_list(info)
+    @pm.create_processor_list(info) unless info[:mode] == SCHE_CHECK
 
     # タスクの割り当て
-    @pm.assign_tasks(@tm.get_task_array, info)
+    @pm.assign_tasks(@tm.get_task_array, info) unless info[:mode] == SCHE_CHECK
 
     # システムで使用するリソースグループ
     @using_group_array = get_using_group_array
@@ -155,9 +155,8 @@ class AllManager
     $task_list.each{ |t|
       t.resetting
     }
-    init_computing($task_list)
-    set_blocktime
-    
+    init_computing($task_list) unless info[:mode] == SCHE_CHECK
+    set_blocktime unless info[:mode] == SCHE_CHECK
   end 
 
 
@@ -401,14 +400,16 @@ class AllManager
             # shortの場合は |Rn| = R/3
             time = r.time/3
             # shortグループの中からランダムに選択する
-            g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
-            g_id2 = rand(SHORT_GRP_COUNT) + 1 
+            group_a = (1..SHORT_GRP_COUNT).to_a
+            group_a.delete(r.res.group)
+            g_id1 = group_a.sample  # shortグループのIDは1-30
+            g_id2 = group_a.sample
           elsif r.res.kind == LONG
             # longの場合は |Rn| = 3 (from 論文．意味がわからない)
             time = 3.0
             # longグループの中からランダムに選択する
-            g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
-            g_id2 = rand(2) + 1 + 30 
+            g_id1 = r.res.group==31 ? 32 : 31 # longグループのIDは31-32
+            g_id2 = r.res.group==31 ? 32 : 31
           end
           g1 = GroupManager.get_group_from_group_id(g_id1)
           g2 = GroupManager.get_group_from_group_id(g_id2)
@@ -427,12 +428,14 @@ class AllManager
             # shortの場合は |Rn| = R/3
             time = r.time/3
             # shortグループの中からランダムに選択する
-            g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+            group_a = (1..SHORT_GRP_COUNT).to_a
+            group_a.delete(r.res.group)
+            g_id1 = group_a.sample  # shortグループのIDは1-30
           elsif r.res.kind == LONG
             # longの場合は |Rn| = 3 (from 論文．意味がわからない)
             time = 3.0
             # longグループの中からランダムに選択する
-            g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+            g_id1 = r.res.group==31 ? 32 : 31 # longグループのIDは31-32
           end
           g1 = GroupManager.get_group_from_group_id(g_id1)
           req = []
