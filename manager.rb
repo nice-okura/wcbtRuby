@@ -367,7 +367,6 @@ class AllManager
     return c
   end
 
-
   # スケジューラビリティ解析用のリソース要求割り当て
   def assign_requires_for_sche_check(info)
     # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる

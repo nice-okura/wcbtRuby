@@ -38,3 +38,9 @@ taskset = TaskSet.new
 taskset.show_taskset
 
 
+#
+# スケジューラビリティ解析ループ
+#
+0.step(f_max, 0,01) do |f|
+  
+end

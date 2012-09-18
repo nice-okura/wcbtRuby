@@ -305,6 +305,15 @@ class Task
     #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
   
+  # デバッグ用
+  def to_s
+    puts "ID: #{task_id}"
+    puts "extime: #{@extime}"
+    puts "priority: #{@priority}"
+    puts "period: #{@period}"
+    puts "wcrt: #{@wcrt}"
+    puts "Task<#{@object_id}>"
+  end
   #
   # 全てのグループロック要求の配列を取得
   # @req_listはネストしているものは含まれていない

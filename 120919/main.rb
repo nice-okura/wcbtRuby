@@ -112,7 +112,7 @@ proc_num = 4
 taskset_count = 10  # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
-f_max = 0.5         # nesting factor
+f_max = 0.1         # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
@@ -123,7 +123,7 @@ pbar.format = "%3d%% %s %s"
 
 
 # スケジューラビリティ解析ループ
-0.0.step(f_max, 0.1) do |f|
+0.0.step(f_max, 0.01) do |f|
   taskcount_ave = 0.0  # 割り当てられたタスクの平均
   taskset_count.times do |i|
     @manager = AllManager.new
@@ -152,18 +152,22 @@ pbar.format = "%3d%% %s %s"
       set_blocktime
       
       sche = 0
+      non_schedulable_flg = false
       1.upto(proc_num) do |p_id|
-        sche += p_schedulability(p_id, id+1)
+        #sche += p_schedulability(p_id, id+1)
+        next if p_schedulability(p_id, id+1) < 1
+        non_schedulable_flg = true
       end
 
-      if sche < system_util_max
+#      if sche < system_util_max
+      if non_schedulable_flg == false
         # 設定したシステム使用率を超えていない場合，タスク割り当てできたとする
         tasks += 1
       else
         break
       end
     end
-    @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{i}")
+    #@manager.save_tasks("#{JSON_FOLDER}/sche_check_#{i}")
     taskcount_ave += tasks
     pbar.inc 
   end
