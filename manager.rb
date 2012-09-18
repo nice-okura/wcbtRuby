@@ -148,7 +148,7 @@ class AllManager
     
     # A Flexible.. のスケジューラビリティ解析の場合
     if info[:mode] == SCHE_CHECK
-      assign_requires_for_sche_check
+      assign_requires_for_sche_check(info)
     end
     
     # 全タスクの設定しなおし
@@ -369,81 +369,81 @@ class AllManager
   end
 
 
-    # スケジューラビリティ解析用のリソース要求割り当て
-  def assign_requires_for_sche_check
+  # スケジューラビリティ解析用のリソース要求割り当て
+  def assign_requires_for_sche_check(info)
     # ランダムに選ばれた2~4個のタスクにlongリソース要求を割当てる
-      tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
-      task_count = 2 + rand(3) # 2~4の乱数
-      0.upto(task_count-1){ |i|
-        @tm.set_long_require(tmplist[i])
-        tmplist[i].resetting
-      }
+    tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
+    task_count = 2 + rand(3) # 2~4の乱数
+    0.upto(task_count-1){ |i|
+      @tm.set_long_require(tmplist[i])
+      tmplist[i].resetting
+    }
 
-      #=begin
-      f = info[:f] # nesting_factor
-      # ネストした要求を生成して割り当て
-      f_one = 2.0*f*(1.0-f) * 10000            # 1つネストする確率
-      f_two = f*f * 10000                      # 2つネストする確率
-      
-      #puts "ネストつくりまーす.f_one#{f_one} f_two#{f_two}"
-      id = 100                                 # ネストするリソース要求IDは100番以降とする
-      # 全リソース要求に対して
-      # 上記の確率でネストさせる
-      $task_list.each{ |t|
-        t.req_list.each{ |r|
-          prob = rand(10001) + 1 # 1~10000の乱数
-          #          print "#{prob} "
-          reqs = []
-          # fの確率でネスト作成
-          if prob < f_two
-            # 2つのネストしたリソース要求
-            if r.res.kind == SHORT
-              # shortの場合は |Rn| = R/3
-              time = r.time/3
-              # shortグループの中からランダムに選択する
-              g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
-              g_id2 = rand(SHORT_GRP_COUNT) + 1 
-            elsif r.res.kind == LONG
-              # longの場合は |Rn| = 3 (from 論文．意味がわからない)
-              time = 3.0
-              # longグループの中からランダムに選択する
-              g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
-              g_id2 = rand(2) + 1 + 30 
-            end
-            g1 = GroupManager.get_group_from_group_id(g_id1)
-            g2 = GroupManager.get_group_from_group_id(g_id2)
-            req = []
-            id += 1
-            req1 = Req.new(id, g1, time, req)
-            id += 1
-            req2 = Req.new(id, g2, time, req)
-            @rm.add_require(req1)
-            @rm.add_require(req2)
-            reqs << req1
-            reqs << req2
-          elsif prob < f_one
-            # 1つのネストしたリソース要求
-            if r.res.kind == SHORT
-              # shortの場合は |Rn| = R/3
-              time = r.time/3
-              # shortグループの中からランダムに選択する
-              g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
-            elsif r.res.kind == LONG
-              # longの場合は |Rn| = 3 (from 論文．意味がわからない)
-              time = 3.0
-              # longグループの中からランダムに選択する
-              g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
-            end
-            g1 = GroupManager.get_group_from_group_id(g_id1)
-            req = []
-            id += 1
-            req1 = Req.new(id, g1, time, req)
-            @rm.add_require(req1)
-            reqs << req1
+    #=begin
+    f = info[:f] # nesting_factor
+    # ネストした要求を生成して割り当て
+    f_one = 2.0*f*(1.0-f) * 10000            # 1つネストする確率
+    f_two = f*f * 10000                      # 2つネストする確率
+    
+    #puts "ネストつくりまーす.f_one#{f_one} f_two#{f_two}"
+    id = 100                                 # ネストするリソース要求IDは100番以降とする
+    # 全リソース要求に対して
+    # 上記の確率でネストさせる
+    $task_list.each{ |t|
+      t.req_list.each{ |r|
+        prob = rand(10001) + 1 # 1~10000の乱数
+        #          print "#{prob} "
+        reqs = []
+        # fの確率でネスト作成
+        if prob < f_two
+          # 2つのネストしたリソース要求
+          if r.res.kind == SHORT
+            # shortの場合は |Rn| = R/3
+            time = r.time/3
+            # shortグループの中からランダムに選択する
+            g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+            g_id2 = rand(SHORT_GRP_COUNT) + 1 
+          elsif r.res.kind == LONG
+            # longの場合は |Rn| = 3 (from 論文．意味がわからない)
+            time = 3.0
+            # longグループの中からランダムに選択する
+            g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+            g_id2 = rand(2) + 1 + 30 
           end
-          r.reqs = reqs
-        }
+          g1 = GroupManager.get_group_from_group_id(g_id1)
+          g2 = GroupManager.get_group_from_group_id(g_id2)
+          req = []
+          id += 1
+          req1 = Req.new(id, g1, time, req)
+          id += 1
+          req2 = Req.new(id, g2, time, req)
+          @rm.add_require(req1)
+          @rm.add_require(req2)
+          reqs << req1
+          reqs << req2
+        elsif prob < f_one
+          # 1つのネストしたリソース要求
+          if r.res.kind == SHORT
+            # shortの場合は |Rn| = R/3
+            time = r.time/3
+            # shortグループの中からランダムに選択する
+            g_id1 = rand(SHORT_GRP_COUNT) + 1  # shortグループのIDは1-30
+          elsif r.res.kind == LONG
+            # longの場合は |Rn| = 3 (from 論文．意味がわからない)
+            time = 3.0
+            # longグループの中からランダムに選択する
+            g_id1 = rand(2) + 1 + 30 # longグループのIDは31-32
+          end
+          g1 = GroupManager.get_group_from_group_id(g_id1)
+          req = []
+          id += 1
+          req1 = Req.new(id, g1, time, req)
+          @rm.add_require(req1)
+          reqs << req1
+        end
+        r.reqs = reqs
       }
+    }
   end
 
 
@@ -545,7 +545,7 @@ class TaskManager
       # スケジューラビリティ解析用
       #
       i.times{
-        @@task_array << create_task_sche_check(info[:extime])
+        @@task_array << create_task_sche_check(info[:umax])
       }
     when "120620"
       i.times{ 

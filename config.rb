@@ -22,10 +22,10 @@ $COLOR_CHAR = true
 $DEBUGFlg = false
 
 JSON_FOLDER = "./json"
-SCHE_CHECK = "sche_check"
 
 # タスク生成ルールを細かく設定する場合．create_task_arrayで使われる
 CREATE_MANUALLY  = "create_manually"
+SCHE_CHECK = "sche_check"
 
 # 割り当てモード
 WORST_FIT = 1

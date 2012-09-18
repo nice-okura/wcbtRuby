@@ -455,8 +455,8 @@ end
 # リソース要求クラス
 #
 class Req
-  attr_reader :outermost, :inflated_spintime, :res, :reqs, :time
-  attr_accessor :req_id, :nested, :begintime
+  attr_reader :outermost, :inflated_spintime, :res, :time
+  attr_accessor :req_id, :nested, :reqs, :begintime
 
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
