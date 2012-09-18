@@ -48,6 +48,7 @@ class ProcessorManager
     case info[:assign_mode]
     when WORST_FIT
       # WORST_FITで割当てる
+      assign_worstfit_cpu_util(task_list)
     when LIST_ORDER
       # task_listの順に割り当てる
       assign_list_order(task_list)

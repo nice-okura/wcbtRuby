@@ -234,7 +234,7 @@ class TaskCUI
     reqtime = req.time
     req.reqs.each{|subreq|
       rt = subreq.begintime - curTime
-      rt.times{
+      rt.to_i.times{
         req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
       }
       reqtime -= rt
@@ -246,8 +246,7 @@ class TaskCUI
     
     # inflate time 表示
     if req.reqs == []
-
-      req.inflated_spintime.times{ 
+      req.inflated_spintime.to_i.times{ 
         str += INFLATE_CHAR
       }
       reqtime - req.inflated_spintime

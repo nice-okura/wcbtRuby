@@ -33,7 +33,7 @@ def assign_task_worstfit(idx)
   unless tsk.long_require_array.size == 0
     # longリソースがある場合，
     # longリソース要求をするタスクのあるプロセッサに割当てる
-    @proc_list.each do |p|
+    ProcessorManager.proc_list.each do |p|
       p.task_list.each do |t|
         if t.long_require_array.size > 0
           #このプロセッサに割り当て
@@ -44,7 +44,7 @@ def assign_task_worstfit(idx)
   else 
 #=end
     proc_id = lowest_util_proc_id
-    @proc_list[proc_id - 1].assign_task(tsk)
+    ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
   end
 end
 
@@ -53,7 +53,7 @@ end
 def lowest_util_proc_id
   u = 10.0
   id = 0
-  @proc_list.each do |p|
+  ProcessorManager.proc_list.each do |p|
     if p.util < u
       u = p.util 
       id = p.proc_id
@@ -66,7 +66,7 @@ end
 
 # 各プロセッサの使用率と割当てられているタスク数を表示
 def show_proc_info
-  @proc_list.each do |p|
+  ProcessorManager.proc_list.each do |p|
     puts "PE#{p.proc_id}(#{p.util}):#{p.task_list.size}tasks"
   end
 end
@@ -78,7 +78,7 @@ end
 # @return [Fixnum]
 #
 def p_schedulability(k, i)
-  tlist = @proc_list[k-1].task_list
+  tlist = ProcessorManager.get_proc(k).task_list
   return 0.0 if tlist.size == 0
   max = [i, tlist.size].min
   c = 0
@@ -98,7 +98,7 @@ end
 #
 def get_using_tasks
   tasks = []
-  @proc_list.each do |p|
+  ProcessorManager.proc_list.each do |p|
     tasks += p.task_list
   end
   
@@ -109,9 +109,10 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 500  # 使用するタスクセット数
-umax = 0.1          # タスク使用率の最大値
-f_max = 0.1         # nesting factor
+taskset_count = 10  # 使用するタスクセット数
+task_count = 20     # タスクセット当たりのタスク数
+umax = 0.3          # タスク使用率の最大値
+f_max = 0.5         # nesting factor
 system_util_max = PROC_NUM/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
@@ -122,35 +123,30 @@ pbar.format = "%3d%% %s %s"
 
 
 # スケジューラビリティ解析ループ
-0.step(f_max, 0.01) do |f|
+0.0.step(f_max, 0.1) do |f|
   taskcount_ave = 0.0  # 割り当てられたタスクの平均
-  taskset_count.times do
+  taskset_count.times do |i|
     @manager = AllManager.new
     @manager.all_data_clear
     
-    @proc_list = []
-
-    # プロセッサクラス作成
-    1.upto(proc_num) do |id|
-      @proc_list << Processor.new(PROC_ID_SYN => id) 
-    end
-
     info =  { }
     info[:mode] = SCHE_CHECK
     info[:f] = f
     info[:umax] = umax
-    @manager.create_tasks(20, 30, 10, info)
+    info[:proc_num] = proc_num
+    @manager.create_tasks(task_count, 30, 10, info)
     # タスクリストを使用率の降順でソート
     sort_tasklist_by_utilization
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
-    #@manager.save_tasks("#{JSON_FOLDER}/sche_check")
+
 
 
     # タスクworstfitで割り当て
-    task_count = 0  # 割当てることのできたタスク数
-    1.upto(@manager.tm.get_task_array.size) do |id|
-      assign_task_worstfit(id-1) # プロセッサにタスク割り当て
+    tasks = 0  # 割当てることのできたタスク数
+    1.upto(task_count) do |id|
+      # assign_task_worstfit(id-1) # プロセッサにタスク割り当て
+      @manager.pm.add_tasks([TaskManager.get_task(id)], {:assign_mode => WORST_FIT})
       
       init_computing(get_using_tasks)
       set_blocktime
@@ -162,19 +158,19 @@ pbar.format = "%3d%% %s %s"
 
       if sche < system_util_max
         # 設定したシステム使用率を超えていない場合，タスク割り当てできたとする
-        task_count += 1
+        tasks += 1
       else
         break
       end
     end
-
-    taskcount_ave += task_count
+    @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{i}")
+    taskcount_ave += tasks
     pbar.inc 
   end
   
   taskcount_ave /= taskset_count
   
-  output_str << (taskcount_ave/TASK_NUM)*100
+  output_str << (taskcount_ave/task_count)*100
 end
 #taskset = TaskSet.new($task_list)
 #taskset.show_taskset

@@ -133,9 +133,9 @@ class AllManager
     
     # タスクの作成
     @tm.create_task_array(tcount, info)
-
+    
     # プロセッサの作成
-    @pm.create_processor_list(info) unless info[:mode] == SCHE_CHECK
+    @pm.create_processor_list(info)
 
     # タスクの割り当て
     @pm.assign_tasks(@tm.get_task_array, info) unless info[:mode] == SCHE_CHECK
@@ -602,9 +602,11 @@ class TaskManager
     tasks_json = {
       "tasks" => []
     }
-    @@task_array.each{|task|
-      tasks_json["tasks"] << task.out_alldata
-    }
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |task|
+        tasks_json["tasks"] << task.out_alldata
+      end
+    end
     
     #pp tasks_json
     begin
