@@ -109,7 +109,7 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 10  # 使用するタスクセット数
+taskset_count = 100  # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
