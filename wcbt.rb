@@ -788,6 +788,7 @@ module WCBT
     n = 1
     #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     count = 0
+    pre_array = [pre_wcrt]
     while(1)
       time = job.extime + job.b# - job.db
       job.proc.task_list.each do |t|
@@ -808,7 +809,7 @@ module WCBT
           time += count*(t.extime + t.sb)
         end
       end
-      if time == pre_wcrt
+      if time.round(2) == pre_wcrt.round(2) || n > 10
         break
       else
         pre_wcrt = time

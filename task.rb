@@ -239,17 +239,17 @@ class Task
 
   # 有効数字2桁で実行時間を代入
   def set_extime(extime)
-    @extime = format('%.2f', extime).to_f
+    @extime = extime.round(2)
   end
 
   # 有効数字2桁で実行時間を代入
   def set_period(period)
-    @period = format('%.2f', period).to_f
+    @period = period.round(2)
   end
 
   # 有効数字2桁で実行時間を代入
   def set_wcrt(wcrt)
-    @wcrt = format('%.2f', wcrt).to_f
+    @wcrt = wcrt.round(2)
   end
 
   
