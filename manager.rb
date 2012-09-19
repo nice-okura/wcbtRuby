@@ -714,6 +714,16 @@ class TaskManager
   def get_task_array
     return @@task_array
   end
+
+  #
+  # @@task_arrayのソートを行う
+  #
+  # タスク使用率の降順にソート
+  def sort_tasklist_by_util
+    @@task_array.sort do |a, b|
+      -1 * (a.extime/a.period <=> b.extime/b.period)
+    end
+  end
   
   # 指定したタスクIDのタスクを返す
   def self.get_task(id)
@@ -722,6 +732,12 @@ class TaskManager
       return t if t.task_id == id
     }
     return nil
+  end
+  
+  # 指定したインデックスのタスクを返す
+  # (@@task_array配列のインデックス)
+  def get_task_by_index(idx)
+    return @@task_array[idx]
   end
   
   # 指定したタスクIDリストのタスクのリストを返す

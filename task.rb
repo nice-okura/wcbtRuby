@@ -159,18 +159,18 @@ end
 # タスククラス
 #
 class Task
-  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :wcrt, :proc, :priority, :extime, :offset
-  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime
+  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :proc, :priority, :offset
+  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime, :extime, :wcrt
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
     if proc.class == Fixnum
       @proc = ProcessorManager.get_proc(proc)
     else raise; end
-    @period = period.to_f
-    @extime = extime  # リソース要求時間(CS)も含めた時間
+    set_period(period)
+    set_extime(extime) # CS時間も含めた時間
     @priority = priority.to_i
-    @offset = offset.to_f
+    @offset = format('%.2f', offset).to_f
     @req_list = reqarray
     @reqtime = get_require_time
     @wcrt = 0.0
@@ -236,7 +236,24 @@ class Task
   def get_resource_count
     @req_list.size
   end
+
+  # 有効数字2桁で実行時間を代入
+  def set_extime(extime)
+    @extime = format('%.2f', extime).to_f
+  end
+
+  # 有効数字2桁で実行時間を代入
+  def set_period(period)
+    @period = format('%.2f', period).to_f
+  end
+
+  # 有効数字2桁で実行時間を代入
+  def set_wcrt(wcrt)
+    @wcrt = format('%.2f', wcrt).to_f
+  end
+
   
+
   #
   # outermostでない要求を探索して設定
   #
@@ -312,7 +329,9 @@ class Task
     puts "priority: #{@priority}"
     puts "period: #{@period}"
     puts "wcrt: #{@wcrt}"
-    puts "Task<#{@object_id}>"
+    puts "B: #{@b}"
+    puts "Task<#{self.object_id}>"
+    puts ""
   end
   #
   # 全てのグループロック要求の配列を取得
@@ -351,9 +370,9 @@ class Task
   #
   def get_short_require_array_nest
     rlist = []
-    @all_require.each{ |req|
+    @all_require.each do |req|
       rlist << req if req.res.kind == SHORT && req.outermost == true
-    }
+    end
     return rlist
   end
 
@@ -384,7 +403,7 @@ class Task
     
     # リソース要求A,B,Cがあるとして，要求時間が 10, 20, 30 とし，タスクの実行時間は 80 とする
     # リソース要求A, B, Cの間(この場合は4箇所)に余った 80-60 = 20 を適当に割り振る
-    non_req_time = extime - req_time
+    non_req_time = @extime - req_time
     
     # 初めはA, B, Cの開始時間を0(offset), 10, 30 として，適当に残りの時間を割り振る
     first_begin_time = offset
@@ -568,7 +587,6 @@ class Req
   def change_require_time(time)
     @time = time
   end
-
   
 end
 

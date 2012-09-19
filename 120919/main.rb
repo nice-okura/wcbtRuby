@@ -19,7 +19,7 @@ include WCBT
 
 # タスクを使用率の降順に並び替え
 def sort_tasklist_by_utilization
-  $task_list.sort do |a, b|
+  TaskManager.get_task_array.sort do |a, b|
     -1 * (a.extime/a.period <=> b.extime/b.period)
   end
 end
@@ -27,7 +27,7 @@ end
 # 指定したインデックスのtasklListのタスクをworst-fitでプロセッサに割り当て
 # @param idx 
 def assign_task_worstfit(idx)
-  tsk = $task_list[idx]
+  tsk = TaskManager.get_task_array[idx]
 #=begin
   # longリソース要求をしているタスクかチェック
   unless tsk.long_require_array.size == 0
@@ -136,7 +136,7 @@ pbar.format = "%3d%% %s %s"
     info[:proc_num] = proc_num
     @manager.create_tasks(task_count, 30, 10, info)
     # タスクリストを使用率の降順でソート
-    sort_tasklist_by_utilization
+    @manager.tm.sort_tasklist_by_util
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
 
@@ -146,13 +146,13 @@ pbar.format = "%3d%% %s %s"
     tasks = 0  # 割当てることのできたタスク数
     1.upto(task_count) do |id|
       # assign_task_worstfit(id-1) # プロセッサにタスク割り当て
-      @manager.pm.add_tasks([TaskManager.get_task(id)], {:assign_mode => WORST_FIT})
+      add_task = @manager.tm.get_task_by_index(id-1)
+      @manager.pm.add_tasks([add_task], {:assign_mode => WORST_FIT})
       
       init_computing(get_using_tasks)
       set_blocktime
       
-      sche = 0
-      non_schedulable_flg = false
+      non_schedulable_flg = false # スケジューラブルでなかった場合立てるフラグ
       1.upto(proc_num) do |p_id|
         #sche += p_schedulability(p_id, id+1)
         next if p_schedulability(p_id, id+1) < 1

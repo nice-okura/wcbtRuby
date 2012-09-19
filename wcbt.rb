@@ -604,7 +604,7 @@ module WCBT
       ## puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
       block_time += inflate_time
     end
-    job.extime += block_time
+    job.set_extime(job.extime + block_time)
     return block_time
   end
 
@@ -712,7 +712,7 @@ module WCBT
 =end
     # 最悪応答時間の計算
     $calc_task.each do |t|
-      t.wcrt = wcrt(t)
+      t.set_wcrt(wcrt(t))
     end
   end
   
@@ -787,25 +787,27 @@ module WCBT
     pre_wcrt = job.extime + job.b
     n = 1
     #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
+    count = 0
     while(1)
       time = job.extime + job.b# - job.db
       job.proc.task_list.each do |t|
-
-#      $calc_task.each do |t|
-        #pp t
         if t.priority < job.priority && t.proc == job.proc
           begin
             count = ((pre_wcrt/t.period).ceil)
           rescue
             t.to_s
             job.to_s
+            p job.b
+            p pre_wcrt
+            p count
+            p time
+            p n
             raise FloatDomainError
           end
- #         puts "\t task#{t.task_id}:#{count}*#{t.extime+t.b-t.lb}"
+
           time += count*(t.extime + t.sb)
         end
       end
-      #p time
       if time == pre_wcrt
         break
       else
