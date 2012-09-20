@@ -171,6 +171,7 @@ class ProcessorManager
     @@proc_list.each do |proc|
       return proc if proc.proc_id == id
     end
+    return UNASSIGNED # なければ未割当
   end
   
   # 全タスクで１番最悪応答時間が悪いタスクを返す

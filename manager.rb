@@ -162,8 +162,8 @@ class AllManager
 
   # 指定したIDのtask_listのタスクをworst-fitでプロセッサに割り当て
   # @param idx 
-  def assign_task_worstfit(id, opt={ })
-    tsk = TaskManager.get_task(id)
+  def assign_task_worstfit(idx, opt={ })
+    tsk = TaskManager.get_task_by_index(idx)
     
     # longリソース要求をするタスクのあるプロセッサに割当てる場合
     if opt[:long_same_proc] == true
@@ -171,7 +171,7 @@ class AllManager
       unless tsk.long_require_array.size == 0
         # longリソースがある場合，
         # longリソース要求をするタスクのあるプロセッサに割当てる
-        @pm.proc_list.each{ |p|
+        ProcessorManager.proc_list.each{ |p|
           p.task_list.each{ |t|
             if t.long_require_array.size > 0
               #このプロセッサに割り当て
@@ -181,12 +181,12 @@ class AllManager
         }
       else 
         proc_id = lowest_util_proc_id
-        @pm.proc_list[proc_id - 1].assign_task(tsk)
+        ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
       end
     else
       # 通常時
       proc_id = lowest_util_proc_id
-      @pm.proc_list[proc_id - 1].assign_task(tsk)
+      ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
     end
   end
   
@@ -373,6 +373,7 @@ class AllManager
     tmplist = $task_list.sort_by{ rand } # タスクをランダムに並び替える
     task_count = 2 + rand(3) # 2~4の乱数
     0.upto(task_count-1){ |i|
+      break if tmplist.size <= i
       @tm.set_long_require(tmplist[i])
       tmplist[i].resetting
     }
@@ -547,11 +548,11 @@ class TaskManager
       #
       # スケジューラビリティ解析用
       #
-      max_util = 0
+      max_util = 0.0
       i.times{
         t = create_task_sche_check(info[:umax])
         max_util += t.extime/t.period
-        break max_util > 2.0
+        break if max_util > 2.0
         @@task_array << t
       }
     when "120620"
@@ -591,7 +592,7 @@ class TaskManager
   def assign_priority_by_period(tasks)
     tasks.sort!{ |a, b| a.period <=> b.period }
     tasks.each_with_index do |task, i| 
-      task.priority = i
+      task.set_priority(i)
     end
     
   end
@@ -695,7 +696,7 @@ class TaskManager
   # 全タスクで使われているリソース要求の配列を返す
   #
   public
-  def get_all_require
+  def self.get_all_require
     req_array = []
     @@task_array.each{|tsk|
       req_array += tsk.all_require
@@ -731,7 +732,7 @@ class TaskManager
   end
   
   # 指定したタスクIDのタスクを返す
-  def get_task(id)
+  def self.get_task(id)
     id = id.to_i
     @@task_array.each{ |t|
       return t if t.task_id == id
@@ -741,14 +742,14 @@ class TaskManager
   
   # 指定したインデックスのタスクを返す
   # (@@task_array配列のインデックス)
-  def get_task_by_index(idx)
+  def self.get_task_by_index(idx)
     return @@task_array[idx]
   end
   
   # 指定したタスクIDリストのタスクのリストを返す
   # @param task_id_list [Array<Fixnum>] タスクIDリスト
   # @return task_list [Array<Task>] タスクリスト
-  def get_tasks(task_id_list)
+  def self.get_tasks(task_id_list)
     task_list = []
     task_id_list.each{ |id|
       task_list << get_task(id)

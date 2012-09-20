@@ -22,12 +22,14 @@ class String
 end
 
 module WCBT
+  def init_computing(tasks)
+    $calc_task = tasks
+  end
+  
   #
   # ブロック時間を計算し，格納
   #
-  def set_blocktime(tasks)
-    $calc_task = tasks
-
+  def set_blocktime
     $calc_task.each{ |t|
       t.bw = BW(t)
       t.npb = NPB(t)

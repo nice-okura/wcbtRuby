@@ -31,7 +31,7 @@ class TaskSet
   # @param [Array<Task>] タスクリスト
   # @param [ProcessorManager] プロセッサマネージャー
   def initialize()
-
+    
   end
 =begin
   # 旧仕様のコンストラクタ
@@ -126,8 +126,8 @@ class TaskSet
   # 以下のフォーマットでブロック時間等表示
   #
   def show_blocktime
-    ProcessorManager.proc_list.each{|proc|
-      proc.task_list.each{ |t|
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |t|
         print "タスク#{t.task_id}"      
         print ["\tBB:", sprintf("%.1f", t.bb)].join
         print ["\tAB:", sprintf("%.1f", t.ab)].join
@@ -144,8 +144,31 @@ class TaskSet
         else
           puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
         end
-      }
-    }
+      end
+    end
+  end
+
+  #
+  # 以下のフォーマットでブロック時間等表示
+  #
+  def show_blocktime_edf
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |t|
+        print "タスク#{t.task_id}"
+        print ["\tBW:", sprintf("%.1f", t.bw)].join
+        print ["\tNPB:", sprintf("%.1f", t.npb)].join
+        print ["\tDB:", sprintf("%.1f", t.db)].join
+        print ["\tB:", sprintf("%.1f", t.b)].join
+        print "(#{t.extime})"
+        print "\n"
+
+        if t.period < t.wcrt
+          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.wcrt)}".red
+        else
+          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
+        end
+      end
+    end
   end
 end
 

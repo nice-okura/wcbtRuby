@@ -277,7 +277,7 @@ class TaskManager
     util = umax - (rand%umax) # タスクの使用率は[0, umax] 
 
     @@task_id += 1
-    proc = -1                 # 未割り当ては-1
+    proc = UNASSIGNED                 # 未割り当ては-1
     #p task_id_array
     #priority = new_task_id # EDFなのでpriorityは後から決めるしかない
     extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
