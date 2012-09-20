@@ -12,7 +12,7 @@
 $:.unshift(File.dirname(__FILE__))
 require "rubygems"
 require "term/ansicolor"
-require "config"
+require "./config"
 #require "ruby-prof"
 
 $calc_task = [] # WCBTモジュールで使用するタスク
@@ -102,7 +102,7 @@ module WCBT
   #
   def np(job)
     nplist = []
-    job.get_short_require_array.each{ |req|
+    job.short_require_array.each{ |req|
       nplist << (spin(job, req) + req.time)
     }
     nplist = [0] if nplist = []
@@ -174,7 +174,7 @@ module WCBT
   # 
   #
   def L(t)
-    return t.get_long_require_array
+    return t.long_require_array
   end
   
   #
@@ -227,7 +227,7 @@ module WCBT
   #
   def BW(t)
     bw = 0
-    t.get_short_require_array.each{ |req|
+    t.get_short_require_array_nest.each{ |req|
       bw += spin(t, req)
     }
     
@@ -250,6 +250,7 @@ module WCBT
     blist = [0] if blist == []
     alist = [0] if alist == []
     npb = blist.max + L(t).size*alist.max
+
     return npb
   end
   

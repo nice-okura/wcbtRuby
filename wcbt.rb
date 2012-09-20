@@ -615,7 +615,7 @@ module WCBT
         time += [tas.extime+tas.get_inflated_time, lbt(tas)].min
       end
     end
-    time 
+    return time 
   end
   
   #def B(job)

@@ -3,7 +3,7 @@
 $:.unshift(File.dirname(__FILE__))
 require "pp"
 #require "./config"
-require "./wcbt"
+#require "./wcbt"
 require "rubygems" unless RUBY_VERSION == "1.9.3"
 require "term/ansicolor"
 
