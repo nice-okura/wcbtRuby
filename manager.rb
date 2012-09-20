@@ -468,9 +468,10 @@ end
 class TaskManager
   include Singleton
   
+  attr_reader :task_array
   def initialize
-    @@task_id = 0
-    @@task_array = []
+    @task_id = 0
+    @task_array = []
   end
 
   # shce_check用に，タスクに1~3個のshortリソース要求を割当てる
@@ -510,7 +511,7 @@ class TaskManager
       #
       i.times{
         #tarray << create_task
-        @@task_array << create_task
+        @task_array << create_task
       }
       #
       # rcslを考慮したタスク実行時間を作成．
@@ -523,7 +524,7 @@ class TaskManager
         $stderr.puts "create_task_array:[#{__LINE__}行目]rcslが設定されていません"
       else
         i.times{
-          @@task_array << create_task_120405(i, info[:rcsl])
+          @task_array << create_task_120405(i, info[:rcsl])
         }
       end
       
@@ -535,11 +536,11 @@ class TaskManager
     when "120405_3", "120411"
       if info[:extime].to_i == 0
         i.times{
-          @@task_array << create_task_120405_3(i)
+          @task_array << create_task_120405_3(i)
         }
       else
         i.times{
-          @@task_array << create_task_120405_3(i, info[:extime])
+          @task_array << create_task_120405_3(i, info[:extime])
         }
       end
     when SCHE_CHECK
@@ -547,25 +548,25 @@ class TaskManager
       # スケジューラビリティ解析用
       #
       i.times{
-        @@task_array << create_task_sche_check(info[:umax])
+        @task_array << create_task_sche_check(info[:umax])
       }
     when "120620"
       i.times{ 
-        @@task_array << create_task_120620(i, info[:extime])
+        @task_array << create_task_120620(i, info[:extime])
       }
     when "120613"
       i.times{ 
-        @@task_array << create_task_120613(i, info[:extime])
+        @task_array << create_task_120613(i, info[:extime])
       }
     when "120620_2"
       i.times{ 
-        @@task_array << create_task_120620_2(i, info[:extime])
+        @task_array << create_task_120620_2(i, info[:extime])
       }
 
     # リソースやタスクのの割り当てを手動で設定
     when CREATE_MANUALLY
       i.times{ 
-        @@task_array << create_task_manually(i, info)
+        @task_array << create_task_manually(i, info)
       }
     else
       $stderr.puts "create_task_array:infoエラー"
@@ -574,10 +575,10 @@ class TaskManager
     end
 
     # 周期の短い順に優先度を割り当てる
-    assign_priority_by_period(@@task_array)
+    assign_priority_by_period(@task_array)
     
-    #@@task_array = tarray
-    return @@task_array.size
+    #@task_array = tarray
+    return @task_array.size
   end
   
   # 周期の短い順に優先度を割り当てる
@@ -666,7 +667,7 @@ class TaskManager
     return false if tasks == []
     #
     # タスク毎の処理
-    # @@task_arrayに読み込んだタスクを追加
+    # @task_arrayに読み込んだタスクを追加
     #
     tasks["tasks"].each{|tsk|
       #p "req_id_list:#{tsk["req_id_list"]}"
@@ -681,18 +682,18 @@ class TaskManager
                    tsk["offset"], 
                    reqarray
                    )
-      @@task_array << t
+      @task_array << t
     }
-    return @@task_array.size
+    return @task_array.size
   end
   
   #
   # 全タスクで使われているリソース要求の配列を返す
   #
   public
-  def self.get_all_require
+  def get_all_require
     req_array = []
-    @@task_array.each{|tsk|
+    @task_array.each{|tsk|
       req_array += tsk.all_require
     }
     return req_array
@@ -703,8 +704,8 @@ class TaskManager
   #
   public
   def data_clear
-    @@task_id = 0
-    @@task_array = []
+    @task_id = 0
+    @task_array = []
   end
   
   #
@@ -712,41 +713,41 @@ class TaskManager
   #
   public
   def get_task_array
-    return @@task_array
+    return @task_array
   end
 
   #
-  # @@task_arrayのソートを行う
+  # @task_arrayのソートを行う
   #
   # タスク使用率の降順にソート
   def sort_tasklist_by_util
-    @@task_array.sort do |a, b|
+    @task_array.sort do |a, b|
       -1 * (a.extime/a.period <=> b.extime/b.period)
     end
   end
   
   # 指定したタスクIDのタスクを返す
-  def self.get_task(id)
+  def get_task(id)
     id = id.to_i
-    @@task_array.each{ |t|
+    @task_array.each{ |t|
       return t if t.task_id == id
     }
     return nil
   end
   
   # 指定したインデックスのタスクを返す
-  # (@@task_array配列のインデックス)
+  # (@task_array配列のインデックス)
   def get_task_by_index(idx)
-    return @@task_array[idx]
+    return @task_array[idx]
   end
   
   # 指定したタスクIDリストのタスクのリストを返す
   # @param task_id_list [Array<Fixnum>] タスクIDリスト
   # @return task_list [Array<Task>] タスクリスト
-  def self.get_tasks(task_id_list)
+  def get_tasks(task_id_list)
     task_list = []
     task_id_list.each{ |id|
-      task_list << self.get_task(id)
+      task_list << get_task(id)
     }
     return task_list
   end
@@ -755,7 +756,7 @@ class TaskManager
   # task_listの中から，最大周期を取得
   def get_max_period
     period = -1
-    @@task_array.each{ |t|
+    @task_array.each{ |t|
       period = t.period if period < t.period
     }
 

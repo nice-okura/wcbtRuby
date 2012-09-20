@@ -99,7 +99,7 @@ class EXPORT_SCHESIM
             f.print "\t @@share" + app["id"].to_s + " = " + app["share"].to_s + "\n"
             app["task"].each do |tsk|
               f.print "\t def task" + tsk["id"].to_s + "\n"
-              f.print get_task_str(TaskManager.get_task(tsk["id"]))
+              f.print get_task_str(manager.tm.get_task(tsk["id"]))
               #f.print "\t\t exc(" + tsk["wcet"].to_s + " * @@share" + app["id"].to_s + ")\n"
               f.print "\t end\n"
             end
