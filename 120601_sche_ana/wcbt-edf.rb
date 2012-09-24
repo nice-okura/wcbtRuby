@@ -30,12 +30,16 @@ module WCBT
   # ブロック時間を計算し，格納
   #
   def set_blocktime
-    $calc_task.each{ |t|
+    $calc_task.each do |t|
       t.bw = BW(t)
       t.npb = NPB(t)
       t.db = DB(t)
       t.b = t.bw + t.npb + t.db
-    }
+      
+      t.set_wcrt(wcrt(t))
+    end
+
+ 
   end
 
 
@@ -279,5 +283,45 @@ module WCBT
 
     return tlist 
   end
-  
+
+    #
+  # 最悪応答時間
+  #
+  private
+  def wcrt(job)
+    pre_wcrt = job.extime + job.b
+    n = 1
+    #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
+    count = 0
+    pre_array = [pre_wcrt]
+    while(1)
+      time = job.extime + job.b# - job.db
+      job.proc.task_list.each do |t|
+        if t.priority < job.priority && t.proc == job.proc
+          begin
+            count = ((pre_wcrt/t.period).ceil)
+          rescue
+            t.to_s
+            job.to_s
+            p job.b
+            p pre_wcrt
+            p count
+            p time
+            p n
+            raise FloatDomainError
+          end
+
+          time += count*(t.extime + t.bw)
+        end
+      end
+      if time.round(2) == pre_wcrt.round(2) || n > 10
+        break
+      else
+        pre_wcrt = time
+        n += 1
+      end
+    end
+    return time
+  end
 end
+
