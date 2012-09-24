@@ -10,7 +10,7 @@
 #== Usage:
 #
 #=== 
-#$:.unshift(File.dirname(__FILE__))
+$:.unshift(File.dirname(__FILE__))
 require './manager'
 require 'progressbar'
 require './task-CUI'
@@ -28,7 +28,7 @@ end
 # @param idx 
 def assign_task_worstfit(idx)
   tsk = @manager.tm.get_task_by_index(idx)
-=begin
+#=begin
   # longリソース要求をしているタスクかチェック
   unless tsk.long_require_array.size == 0
     # longリソースがある場合，
@@ -42,10 +42,10 @@ def assign_task_worstfit(idx)
       end
     end
   else 
-=end
+#=end
     proc_id = lowest_util_proc_id
     ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
-  #end
+  end
 end
 
 
@@ -85,10 +85,11 @@ def p_schedulability(k, i)
 
   0.upto(max-1) do |j|
     t = tlist[j]
+#    p t.b
     c += (t.extime + t.bw)/t.period
   end
   tsk = tlist[-1] # 最後に追加されたタスク
-
+  
   return ((tsk.b - tsk.bw)/tsk.period + c)
 end
 
@@ -109,7 +110,7 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 5  # 使用するタスクセット数
+taskset_count = 50  # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
@@ -117,7 +118,7 @@ system_util_max = proc_num/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
 # プログレスバー
-pbar = ProgressBar.new("スケジューラビリティ解析", ((f_max/0.01).to_i+1))
+pbar = ProgressBar.new("スケジューラビリティ解析", (taskset_count*(f_max/0.01).to_i+1))
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
@@ -127,7 +128,9 @@ pbar.format = "%3d%% %s %s"
 0.0.step(f_max, 0.01) do |f|
   tasksets = 0  # 割当てることのできたタスクセット数
   taskset_count_ave = 0.0  # 割り当てられたタスクセットの平均
+  taskset_non = 0.0        # 割り当てられなかったタスクセット
   taskset_count.times do |i|
+
     @manager.all_data_clear
     
     info =  { }
@@ -139,15 +142,15 @@ pbar.format = "%3d%% %s %s"
 
     # タスクリストを使用率の降順でソート
     @manager.tm.sort_tasklist_by_util
-
+    #puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
 
     # タスクworstfitで割り当て
-
     1.upto(@manager.tm.get_task_array.size) do |id|
       @manager.assign_task_worstfit(id-1) # プロセッサにタスク割り当て
     end
+
     #add_task = @manager.tm.get_task_by_index(id-1)
     # @manager.pm.add_tasks([add_task], {:assign_mode => WORST_FIT})
     
@@ -157,28 +160,33 @@ pbar.format = "%3d%% %s %s"
     non_schedulable_flg = false # スケジューラブルでなかった場合立てるフラグ
     1.upto(proc_num) do |p_id|
       #sche += p_schedulability(p_id, id+1)
-      next if p_schedulability(p_id, @manager.tm.get_task_array.size) < 1
-      non_schedulable_flg = true
+      sche = p_schedulability(p_id, @manager.tm.get_task_array.size)
+      #puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
+      if sche < 1
+        next
+      else
+        non_schedulable_flg = true
+        break
+      end
     end
 
     #      if sche < system_util_max
     if non_schedulable_flg == false
       # 設定したシステム使用率を超えていない場合，タスク割り当てできたとする
       taskset_count_ave += 1
-    else
-      break
     end
-
+    pbar.inc 
   end
-  @manager.save_tasks("#{JSON_FOLDER}/sche_check_edf_#{umax}")
+  @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}_nest")
+  #puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
-  pbar.inc 
+
 end
 taskset = TaskSet.new
 taskset.show_taskset
 
-filename = "#{taskset_count}taskset_umax#{umax}.dat"
+filename = "#{taskset_count}taskset_umax#{umax}_edf.dat"
 File.open(filename, "w") do |fp|
   f = 0.0 
   output_str.each do |str|

@@ -9,22 +9,32 @@ class String
   include Term::ANSIColor
 end
 
+
+OFFSET_CHAR = " "       # offset : " "
+CALC_CHAR = "-"         # ただの計算 : "-"
+INFLATE_CHAR = "*"      # inflateした時間 : "*"
+
 if $COLOR_CHAR == true
-  OFFSET_CHAR = " "       # offset : " "
   LONG_CHAR = "L".red     # long要求 : "L"
   SHORT_CHAR = "S".blue   # short要求 : "S"
-  CALC_CHAR = "-"         # ただの計算 : "-"
 else
-  OFFSET_CHAR = " "       # offset : " "
   LONG_CHAR = "L"         # long要求 : "L"
   SHORT_CHAR = "S"        # short要求 : "S"
-  CALC_CHAR = "-"         # ただの計算 : "-"
 end
 
 class TaskSet 
   attr_accessor :task_list
-
+  
+  # コンストラクタ
+  # @param [Array<Task>] タスクリスト
+  # @param [ProcessorManager] プロセッサマネージャー
+  def initialize()
+    
+  end
+=begin
+  # 旧仕様のコンストラクタ
   def initialize(task_list)
+    puts "旧仕様TaskSetのinitializeを呼び出しました."
     @task_list = task_list
     @taskset_proc = []
     
@@ -49,13 +59,18 @@ class TaskSet
       }
     }
   end
-  
+=end
   #
   # システム全体のプロセッサのリスト
   #
   def proc_list
     proc = []
     @task_list.each{|task|
+      # タスクが未割り当ての場合
+      if task.proc == UNASSIGNED
+        puts "タスク#{task.task_id}が未割り当てです"
+        exit
+      end
       proc << task.proc
     }
     proc.uniq!
@@ -80,8 +95,20 @@ class TaskSet
     @taskset_proc.push(task_array)
     #p @task_list.size
   end
-  
+ 
+  # ProcessorManagerからプロセッサ情報を得てタスクを表示させる
   def show_taskset
+    ProcessorManager.proc_list.each{ |proc|
+      puts "[プロセッサ#{proc.proc_id}]"
+      proc.task_list.each{ |t|
+        tc = TaskCUI.new(t)
+        tc.show_task_char
+      }
+    }
+  end
+
+  # 旧仕様のshow_taskset
+  def show_taskset_old
     proc_num = 1
     @taskset_proc.each{|tasks|
       puts "[プロセッサ#{proc_num}]"
@@ -97,8 +124,34 @@ class TaskSet
   # 以下のフォーマットでブロック時間等表示
   #
   def show_blocktime
-    @taskset_proc.each{|tasks|
-      tasks.each{|t|
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |t|
+        print "タスク#{t.task_id}"      
+        print ["\tBB:", sprintf("%.1f", t.bb)].join
+        print ["\tAB:", sprintf("%.1f", t.ab)].join
+        print ["\tSB:", sprintf("%.1f", t.sb)].join
+        print ["\tLB:", sprintf("%.1f", t.lb)].join
+        print ["\tDB:", sprintf("%.1f", t.db)].join
+        print ["\tB:", sprintf("%.1f", t.b)].join
+        print "(#{t.extime})"
+        print "\n"
+        #pri = get_extime_high_priority(t) 
+        
+        if t.period < t.wcrt
+          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.wcrt)}".red
+        else
+          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
+        end
+      end
+    end
+  end
+
+  #
+  # 以下のフォーマットでブロック時間等表示
+  #
+  def show_blocktime_edf
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |t|
         print "タスク#{t.task_id}"
         print ["\tBW:", sprintf("%.1f", t.bw)].join
         print ["\tNPB:", sprintf("%.1f", t.npb)].join
@@ -106,8 +159,14 @@ class TaskSet
         print ["\tB:", sprintf("%.1f", t.b)].join
         print "(#{t.extime})"
         print "\n"
-      }
-    }
+
+        if t.period < t.wcrt
+          puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.1f", t.wcrt)}".red
+        else
+          puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
+        end
+      end
+    end
   end
 end
 
@@ -123,7 +182,7 @@ class TaskCUI
   # タスク表示
   #
   def show_task_char
-    return print get_task_name + get_task_char + "\n"
+    return print get_task_name + get_task_char + " (p:#{@task.period})\n"
   end
   
   #
@@ -179,7 +238,7 @@ class TaskCUI
   #
   def get_task_offset_char
     str = ""
-    @task.offset.times{
+    @task.offset.to_i.times{
       str += OFFSET_CHAR
     }
     return str
@@ -191,12 +250,12 @@ class TaskCUI
   def get_require_time_char(req)
     str = ""
     curTime = req.begintime
-    str += "G" + req.res.group.to_s + ":"
+    str += req.res.kind == LONG ? "G#{req.res.group}:".red : "G#{req.res.group}:".blue
     
     reqtime = req.time
     req.reqs.each{|subreq|
       rt = subreq.begintime - curTime
-      rt.times{
+      rt.to_i.times{
         req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
       }
       reqtime -= rt
@@ -205,43 +264,18 @@ class TaskCUI
       str += ")"
       reqtime -= subreq.time
     }
+    
+    # inflate time 表示
+    if req.reqs == []
+      req.inflated_spintime.to_i.times{ 
+        str += INFLATE_CHAR
+      }
+      reqtime - req.inflated_spintime
+    end    
     reqtime.to_i.times{
       req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
     }
-=begin
-    subreqArray = req.reqs
-    
-    reqtime = req.time
-    if subreqArray.size > 0 then
-      # ネストしている場合
-      i = 0
-      while i < subreqArray.size 
-        # i番目のネスト
-        if curTime == subreqArray[i].begintime then
-          p i
-          str += "("
-          str += get_require_time_char(subreqArray[i])
-          str += ")"
-          curTime += subreqArray[i].time
-          reqtime -= subreqArray[i].time
-          i += 1
-        else
-          p "2"
-          req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR 
-          curTime += 1
-          reqtime -= 1
-        end
-      end
-      reqtime.times{
-        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR
-      }
-    else
-      # ネストしていない場合
-      reqtime.times{
-        req.res.kind == LONG ? str += LONG_CHAR : str += SHORT_CHAR
-      }
-    end
-=end
+
     return str
   end
 end

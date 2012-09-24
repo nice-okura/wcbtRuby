@@ -110,7 +110,7 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 500  # 使用するタスクセット数
+taskset_count = 50  # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
@@ -177,7 +177,7 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("#{JSON_FOLDER}/sche_check_edf_#{umax}")
+  @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}")
   puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100

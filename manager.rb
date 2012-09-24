@@ -392,7 +392,7 @@ class AllManager
     # 上記の確率でネストさせる
     $task_list.each{ |t|
       t.req_list.each{ |r|
-        prob = rand(10001) + 1 # 1~10000の乱数
+        prob = rand(1001) + 1 # 1~10000の乱数
         #          print "#{prob} "
         reqs = []
         # fの確率でネスト作成
@@ -554,7 +554,7 @@ class TaskManager
       i.times do |num|
         t = create_task_sche_check(info[:umax], num+1)
         max_util += t.extime/t.period
-        #break if max_util > 2.0
+        break if max_util > 2.0
         @@task_array << t
       end
     when "120620"
