@@ -113,11 +113,11 @@ taskset_count = 500  # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
-system_util_max = PROC_NUM/2.0 # システム使用率の最大値
+system_util_max = proc_num/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
 # プログレスバー
-pbar = ProgressBar.new("スケジューラビリティ解析", taskset_count*((f_max/0.01).to_i+1))
+pbar = ProgressBar.new("スケジューラビリティ解析", ((f_max/0.01).to_i+1))
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
@@ -125,9 +125,9 @@ pbar.format = "%3d%% %s %s"
 
 # スケジューラビリティ解析ループ
 0.0.step(f_max, 0.01) do |f|
-  taskcount_ave = 0.0  # 割り当てられたタスクの平均
+  tasksets = 0  # 割当てることのできたタスクセット数
+  taskset_count_ave = 0.0  # 割り当てられたタスクセットの平均
   taskset_count.times do |i|
-
     @manager.all_data_clear
     
     info =  { }
@@ -136,49 +136,47 @@ pbar.format = "%3d%% %s %s"
     info[:umax] = umax
     info[:proc_num] = proc_num
     @manager.create_tasks(task_count, 30, 10, info)
+
     # タスクリストを使用率の降順でソート
     @manager.tm.sort_tasklist_by_util
+
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
 
-
-
     # タスクworstfitで割り当て
-    tasks = 0  # 割当てることのできたタスク数
-    1.upto(task_count) do |id|
-      assign_task_worstfit(id-1) # プロセッサにタスク割り当て
-      #add_task = @manager.tm.get_task_by_index(id-1)
-      # @manager.pm.add_tasks([add_task], {:assign_mode => WORST_FIT})
-      
-      init_computing(get_using_tasks)
-      set_blocktime
-      
-      non_schedulable_flg = false # スケジューラブルでなかった場合立てるフラグ
-      1.upto(proc_num) do |p_id|
-        #sche += p_schedulability(p_id, id+1)
-        next if p_schedulability(p_id, id+1) < 1
-        non_schedulable_flg = true
-      end
 
-#      if sche < system_util_max
-      if non_schedulable_flg == false
-        # 設定したシステム使用率を超えていない場合，タスク割り当てできたとする
-        tasks += 1
-      else
-        break
-      end
+    1.upto(@manager.tm.get_task_array.size) do |id|
+      @manager.assign_task_worstfit(id-1) # プロセッサにタスク割り当て
     end
-    #@manager.save_tasks("#{JSON_FOLDER}/sche_check_#{i}")
-    taskcount_ave += tasks
-    pbar.inc 
+    #add_task = @manager.tm.get_task_by_index(id-1)
+    # @manager.pm.add_tasks([add_task], {:assign_mode => WORST_FIT})
+    
+    init_computing(@manager.tm.get_task_array)
+    set_blocktime
+    
+    non_schedulable_flg = false # スケジューラブルでなかった場合立てるフラグ
+    1.upto(proc_num) do |p_id|
+      #sche += p_schedulability(p_id, id+1)
+      next if p_schedulability(p_id, @manager.tm.get_task_array.size) < 1
+      non_schedulable_flg = true
+    end
+
+    #      if sche < system_util_max
+    if non_schedulable_flg == false
+      # 設定したシステム使用率を超えていない場合，タスク割り当てできたとする
+      taskset_count_ave += 1
+    else
+      break
+    end
+
   end
-  
-  taskcount_ave /= taskset_count
-  
-  output_str << (taskcount_ave/task_count)*100
+  @manager.save_tasks("#{JSON_FOLDER}/sche_check_edf_#{umax}")
+  taskset_count_ave /= taskset_count  
+  output_str << taskset_count_ave*100
+  pbar.inc 
 end
-#taskset = TaskSet.new($task_list)
-#taskset.show_taskset
+taskset = TaskSet.new
+taskset.show_taskset
 
 filename = "#{taskset_count}taskset_umax#{umax}.dat"
 File.open(filename, "w") do |fp|
