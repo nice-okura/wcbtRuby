@@ -17,10 +17,10 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-#require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
-require "./wcbt"      # 最大ブロック時間計算モジュール
-#require "./120601_sche_ana/task"      # タスク等のクラス
-require "./task"      # タスク等のクラス
+require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
+#require "./wcbt"      # 最大ブロック時間計算モジュール
+require "./120601_sche_ana/task"      # タスク等のクラス
+#require "./task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "./create-task"
 require "./create-require"
@@ -154,9 +154,9 @@ class AllManager
     end
     
     # 全タスクの設定しなおし
-    $task_list.each{ |t|
+    $task_list.each do |t|
       t.resetting
-    }
+    end
     init_computing($task_list) unless info[:mode] == SCHE_CHECK
     set_blocktime unless info[:mode] == SCHE_CHECK
   end 
@@ -173,14 +173,14 @@ class AllManager
       unless tsk.long_require_array.size == 0
         # longリソースがある場合，
         # longリソース要求をするタスクのあるプロセッサに割当てる
-        ProcessorManager.proc_list.each{ |p|
-          p.task_list.each{ |t|
+        ProcessorManager.proc_list.each do |p|
+          p.task_list.each do |t|
             if t.long_require_array.size > 0
               #このプロセッサに割り当て
               p.assign_task(tsk)
             end
-          }
-        }
+          end
+        end
       else 
         proc_id = lowest_util_proc_id
         ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
