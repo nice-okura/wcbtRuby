@@ -55,9 +55,9 @@ class Processor
 
     # プロセッサ番号設定
 #    p @proc_id
-    task.proc = self
+    task.set_proc(self)
     # 優先度設定
-    task.priority = @task_list.size
+    task.set_priority(@task_list.size)
 
     # プロセッサ使用率計算
     @util = calc_util
@@ -159,13 +159,13 @@ end
 # タスククラス
 #
 class Task
-  attr_accessor :req_list, :bb, :ab, :sb, :lb, :db, :b, :proc, :priority, :offset
-  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime, :extime, :wcrt
+  attr_accessor :req_list, :b, :bb, :ab, :sb, :lb, :db, :offset
+  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime, :extime, :wcrt, :proc, :priority
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
     if proc.class == Fixnum
-      @proc = ProcessorManager.get_proc(proc)
+      set_proc(ProcessorManager.get_proc(proc))
     else raise; end
     set_period(period)
     set_extime(extime) # CS時間も含めた時間
@@ -252,8 +252,22 @@ class Task
     @wcrt = wcrt.round(2)
   end
 
-  
+  # プロセッサを設定
+  def set_proc(proc)
+    begin 
+      raise unless proc.class == Processor
+      @proc = proc
+    rescue
+      @proc = nil
+      #pp caller
+    end
+  end
 
+  # 優先度設定
+  def set_priority(priority)
+    @priority = priority
+  end
+  
   #
   # outermostでない要求を探索して設定
   #
@@ -324,10 +338,12 @@ class Task
   
   # デバッグ用
   def to_s
+    puts "#{caller[0]}"
     puts "ID: #{task_id}"
     puts "extime: #{@extime}"
     puts "priority: #{@priority}"
     puts "period: #{@period}"
+    puts "proc: #{proc.proc_id}"
     puts "wcrt: #{@wcrt}"
     puts "B: #{@b}"
     puts "Task<#{self.object_id}>"
@@ -448,7 +464,7 @@ end
 # Resource(group)
 #
 class Resource
-  attr_accessor :res_id, :group
+  attr_reader :res_id, :group
   def initialize(res_id, group)
     @res_id = res_id
     @group = group

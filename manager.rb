@@ -17,8 +17,10 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
-require "./120601_sche_ana/task"      # タスク等のクラス
+#require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
+require "./wcbt"      # 最大ブロック時間計算モジュール
+#require "./120601_sche_ana/task"      # タスク等のクラス
+require "./task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "./create-task"
 require "./create-require"
