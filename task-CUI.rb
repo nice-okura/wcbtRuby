@@ -100,13 +100,14 @@ class TaskSet
  
   # ProcessorManagerからプロセッサ情報を得てタスクを表示させる
   def show_taskset
-    ProcessorManager.proc_list.each{ |proc|
+    p "EE"
+    ProcessorManager.proc_list.each do |proc|
       puts "[プロセッサ#{proc.proc_id}]"
-      proc.task_list.each{ |t|
+      proc.task_list.each do |t|
         tc = TaskCUI.new(t)
         tc.show_task_char
-      }
-    }
+      end
+    end
   end
 
   # 旧仕様のshow_taskset

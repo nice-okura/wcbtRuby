@@ -277,17 +277,17 @@ class TaskManager
     task_count = 20
 
     # タスクの最大使用率
-    d = umax/task_count.to_f
-    util = d*i
-    #util = umax - (rand%umax) # タスクの使用率は(0, umax] 
+    #d = umax/task_count.to_f
+    #util = d*i
+    util = umax - (rand%umax) # タスクの使用率は(0, umax] 
     
     
     @@task_id += 1
     proc = UNASSIGNED                 # 未割り当ては-1
     #p task_id_array
     #priority = new_task_id # EDFなのでpriorityは後から決めるしかない
-    extime = 50.0 + (450.0/task_count.to_f)*i
-    #extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
+    #extime = 50.0 + (450.0/task_count.to_f)*i
+    extime = 50.0 + rand(450.0) # 実行時間は[50, 500]
     period = extime/util
     offset = 0 #rand(10)
     req_list = []
