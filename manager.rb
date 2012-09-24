@@ -551,12 +551,12 @@ class TaskManager
       # スケジューラビリティ解析用
       #
       max_util = 0.0
-      i.times{
-        t = create_task_sche_check(info[:umax])
+      i.times do |num|
+        t = create_task_sche_check(info[:umax], num+1)
         max_util += t.extime/t.period
-        break if max_util > 2.0
+        #break if max_util > 2.0
         @@task_array << t
-      }
+      end
     when "120620"
       i.times{ 
         @@task_array << create_task_120620(i, info[:extime])
@@ -731,6 +731,16 @@ class TaskManager
     @@task_array.sort do |a, b|
       -1 * (a.extime/a.period <=> b.extime/b.period)
     end
+  end
+
+  # 総タスク使用率を求める
+  def get_alltask_util
+    util = 0.0
+    @@task_array.each do |t|
+      util += t.extime/t.period
+    end
+    
+    return util
   end
   
   # 指定したタスクIDのタスクを返す
