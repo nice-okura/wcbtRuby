@@ -171,7 +171,7 @@ class Task
     set_extime(extime) # CS時間も含めた時間
     @priority = priority.to_i
     @offset = format('%.2f', offset).to_f
-    @req_list = reqarray
+    set_reqlist(reqarray)
     @reqtime = get_require_time
     @wcrt = 0.0
     @b = 0.0
@@ -267,6 +267,12 @@ class Task
   def set_priority(priority)
     @priority = priority
   end
+
+  # リソース要求設定
+  def set_reqlist(reqarray)
+    raise unless reqarray.class == Array
+    @req_list = reqarray
+  end
   
   #
   # outermostでない要求を探索して設定
@@ -302,10 +308,9 @@ class Task
     
     return time
   end
-  #
+  
   # リソース要求時間が
   # タスクの実行時間を超えていないかチェック
-  #
   def check_over_extime
     time = @reqtime
     
@@ -313,6 +318,14 @@ class Task
       puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
       raise
     end
+  end
+  
+  # 最大応答時間がデッドラインを満たすかチェック
+  # true: 満たす
+  # false: 満たさない
+  def check_schedulable
+    return true if @period > @wcrt
+    return false
   end
   
   #
@@ -504,7 +517,7 @@ class Req
 
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
-    @res = res
+    set_resource(res)
     @time = time
     @begintime = begintime
     @reqs = reqs
@@ -536,6 +549,12 @@ class Req
     return @time + @inflated_spintime
   end
 
+  # リソースsetter
+  def set_resource(res)
+    raise IllegalClass unless res.class == Group
+    @res = res
+  end
+  
   #
   # Object.clone オーバーライド
   # ネストしているリソース要求の参照もcloneする

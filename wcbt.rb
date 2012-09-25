@@ -10,6 +10,7 @@
 #
 # 最大ブロック時間計算用モジュール
 $:.unshift(File.dirname(__FILE__))
+require "myexception"
 require "rubygems"
 require "term/ansicolor"
 require "./config"

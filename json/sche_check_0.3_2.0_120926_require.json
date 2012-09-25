@@ -1,0 +1,274 @@
+{
+  "reqs": [
+    {
+      "req_id": 70,
+      "group": 10,
+      "time": 6.684300539142681,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 53,
+      "group": 23,
+      "time": 8.966772426987827,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 31,
+      "group": 1,
+      "time": 2.9273593148646504,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 74,
+      "group": 14,
+      "time": 10.838829699553736,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 17,
+      "group": 17,
+      "time": 2.84056418603935,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 4,
+      "group": 4,
+      "time": 12.823382469595849,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 54,
+      "group": 24,
+      "time": 4.83962546339973,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 49,
+      "group": 19,
+      "time": 4.805677229838329,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 79,
+      "group": 19,
+      "time": 12.980645191110476,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 19,
+      "group": 19,
+      "time": 10.823917218953088,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 84,
+      "group": 24,
+      "time": 12.667791111310061,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 45,
+      "group": 15,
+      "time": 8.982193078126357,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 90,
+      "group": 30,
+      "time": 10.602489588613047,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 13,
+      "group": 13,
+      "time": 10.62359588201425,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 32,
+      "group": 2,
+      "time": 4.643102912619595,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 25,
+      "group": 25,
+      "time": 12.70199275357283,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 31,
+      "group": 1,
+      "time": 2.9273593148646504,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 46,
+      "group": 16,
+      "time": 6.905687431574792,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 20,
+      "group": 20,
+      "time": 6.973904720154317,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 48,
+      "group": 18,
+      "time": 8.754197903882131,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 85,
+      "group": 25,
+      "time": 4.709491588005002,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 82,
+      "group": 22,
+      "time": 8.832696987058572,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 3,
+      "group": 3,
+      "time": 12.690973685337577,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 80,
+      "group": 20,
+      "time": 12.966313544388369,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 81,
+      "group": 21,
+      "time": 12.714446968668275,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 57,
+      "group": 27,
+      "time": 6.821460331797002,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    },
+    {
+      "req_id": 37,
+      "group": 7,
+      "time": 10.643180938049197,
+      "req_id_list": [
+
+      ],
+      "begintime": 0,
+      "outermost": true
+    }
+  ]
+}

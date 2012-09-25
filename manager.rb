@@ -17,10 +17,10 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
-#require "./wcbt"      # 最大ブロック時間計算モジュール
-require "./120601_sche_ana/task"      # タスク等のクラス
-#require "./task"      # タスク等のクラス
+#require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
+require "./wcbt"      # 最大ブロック時間計算モジュール
+#require "./120601_sche_ana/task"      # タスク等のクラス
+require "./task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "./create-task"
 require "./create-require"
@@ -122,7 +122,26 @@ class AllManager
     return false unless @pm.save_processor_data("#{name}_proc.json") == 0
     return true
   end
+  
+  # スケジューラビリティ用タスクセット生成
+  # プロセッサに割り当てはしない
+  public
+  def create_taskset(task_count, info={})
+    # リソースグループの作成
+    @gm.create_group_array(gcount, info)
+    
+    # リソース要求の作成
+    @rm.create_require_array(rcount, info)
+    
+    # タスクの作成
+    @tm.create_task_array(tcount, info)
+    
+    # プロセッサの作成
+    @pm.create_processor_list(info)
+  end
+  
 
+  
   #
   # タスクセット生成
   #
@@ -499,10 +518,9 @@ class TaskManager
     task.req_list = RequireManager.get_reqlist_from_req_id([req_id])
   end
   
-  #
+
   # タスクの配列生成
   # 生成したタスクの数を返す
-  #
   public
   def create_task_array(i, info={ })
     #tarray = []
@@ -553,17 +571,22 @@ class TaskManager
       #
       max_util = 0.0
       i.times do |num|
-        t = create_task_sche_check(info[:umax], num+1)
+        t = create_task_sche_check(info[:umax])
         max_util += t.extime/t.period
-        #break if max_util > 2.0
+        break if max_util > 2.0
         @@task_array << t
       end
     when MY_SCHE_CHECK
       # 自分で考えたP-SP FMLPスケジューラビリティ解析
-      
-      
-      
-      
+      # Real-time synchronization on multiprocessors: To block or not to block, to suspend or spin?
+      # を参考にした．
+      max_util = 0.0
+      i.times do |num|
+        t = create_task_sche_check(info[:umax])
+        max_util += t.extime/t.period
+        break if max_util > info[:proc_num]*0.5
+        @@task_array << t
+      end 
     when "120620"
       i.times{ 
         @@task_array << create_task_120620(i, info[:extime])
@@ -789,9 +812,6 @@ class TaskManager
 end
 
 #########################################################################
-#########################################################################
-
-
 #
 # リソース要求マネージャーの定義
 #
@@ -972,8 +992,6 @@ class RequireManager
 end
 
 #########################################################################
-#########################################################################
-
 #
 # グループマネージャークラスの定義
 #
@@ -1018,7 +1036,7 @@ class GroupManager
     garray = []
 
     case info[:mode]
-    when SCHE_CHECK
+    when SCHE_CHECK, MY_SCHE_CHECK
       #
       # スケジューラビリティ解析用
       #
@@ -1129,29 +1147,21 @@ class GroupManager
     return @@group_array.size
   end
   
-  #
   # group_idからグループのオブジェクトの参照を返す
-  #
   public
   def self.get_group_from_group_id(group_id)
-    @@group_array.each{|g|
-      if g.group == group_id
-        return g
-      end
-    }
+    @@group_array.each do |g|
+      return g if g.group == group_id
+    end
   end
   
-  #
   # group_arrayを返す
-  #
   public
   def self.get_group_array
     return @@group_array
   end
   
-  #
   # グループをランダムに返す
-  #
   def self.get_random_group
     if @@group_array.size == 0
       puts "グループが生成されていません．"
@@ -1160,9 +1170,7 @@ class GroupManager
     return RUBY_VERSION == "1.9.3" ? @@group_array.sample : @@group_array.choice
   end
   
-  #
   # 内部データのクリア
-  #
   public
   def data_clear
     @@group_id = 0

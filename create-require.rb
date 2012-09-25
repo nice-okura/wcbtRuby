@@ -48,6 +48,39 @@ class RequireManager
         
         @@require_array << Req.new(@@id, g, time, [])
       }
+    when MY_SCHE_CHECK
+      f = info[:f] # nesting_factor
+
+      # shortリソース要求作成
+      i_max = SHORT_GRP_COUNT*3
+      0.upto(i_max-1) do |i|
+        @@id += 1
+        g = GroupManager.get_group_from_group_id(i%SHORT_GRP_COUNT+1)
+        time = 1.3 + rand(6) + rand%0.2 # 1.3 + [0, 5] + [0.0, 0.2)
+        #time = 1.3 + d*i # [1.3, 6.5]
+        
+        # RCSL比によってCS時間を変える
+        time *= info[:rcsl]
+        
+        @@require_array << Req.new(@@id, g, time, [])
+      end
+      
+      # longリソース要求作成
+      # それぞれのlongリソース要求に対し，2〜4個のこのリソースアクセスしている異なったタスクを選択する．
+      # なので，予め2(longリソース個数)*4(longリソース要求する最大タスク数)=8 のリソース要求を作成しておく
+
+      0.upto(LONG_REQ_COUNT-1) do |i|
+        @@id += 1
+        g_id = 30 + i%2+1
+        g = GroupManager.get_group_from_group_id(g_id)
+        
+        time = 20 + rand(11)
+        
+        # RCSL比によってCS時間を変える
+        time *= info[:rcsl]
+        time = time.round(2)
+        @@require_array << Req.new(@@id, g, time, [])
+      end
     when "120620_2", "120620"      
       get_use_group_array_order(i, group_array).each do |g|
           info[:group] = g
@@ -62,9 +95,7 @@ class RequireManager
         c = create_require(new_group, a_extime/(time+1.0))
       }
     when"120411"
-      #
       # リソース要求時間は実行時間のrcsl比で決める
-      #
       a_extime = info[:extime].to_i == 0 ? 50 : info[:extime].to_i
       rcsl = rand%0.3
       #rcsl = info[2].to_f == 0.0 ? 0.3 : info[2].to_f

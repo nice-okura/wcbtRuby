@@ -261,11 +261,8 @@ class TaskManager
     return task
   end
   
-  #
-  # ランダムタスク生成
-  # 
   private
-  def create_task_sche_check(umax, i)
+  def create_task_sche_check(umax)
     #################
     # タスクステータス #
     #################
@@ -300,7 +297,7 @@ class TaskManager
     task.resetting
     return task
   end
-
+  
   private
   def create_task_120405_3(task_count, a_extime=50)
     #################
