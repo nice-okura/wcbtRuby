@@ -17,26 +17,26 @@ require './task-CUI'
 
 include WCBT
 
-# 繧ｿ繧ｹ繧ｯ繧剃ｽｿ逕ｨ邇髯埼↓荳ｦ縺ｳ譖ｿ縺
+# タスクを使用率の降順に並び替え
 def sort_tasklist_by_utilization
   @manager.tm.get_task_array.sort do |a, b|
     -1 * (a.extime/a.period <=> b.extime/b.period)
   end
 end
 
-# 謖ｮ壹＠縺溘う繝ｳ繝ャ繧ｯ繧ｹ縺ｮtasklList縺ｮ繧ｿ繧ｹ繧ｯ繧蜘orst-fit縺ｧ繝励Ο繧ｻ繝し縺ｫ蜑ｲ繧雁ｽ薙※
+# 指定したインデックスのtasklListのタスクをworst-fitでプロセッサに割り当て
 # @param idx 
 def assign_task_worstfit(idx)
   tsk = @manager.tm.get_task_by_index(idx)
 #=begin
-  # long繝ｪ繧ｽ繝ｼ繧ｹ隕∵ｱゅｒ縺励※縺ｋ繧ｿ繧ｹ繧ｯ縺九メ繧ｧ繝け
+  # longリソース要求をしているタスクかチェック
   unless tsk.long_require_array.size == 0
-    # long繝ｪ繧ｽ繝ｼ繧ｹ縺後≠繧句ｴ蜷茨ｼ
-    # long繝ｪ繧ｽ繝ｼ繧ｹ隕∵ｱゅｒ縺吶ｋ繧ｿ繧ｹ繧ｯ縺ｮ縺ゅｋ繝励Ο繧ｻ繝し縺ｫ蜑ｲ蠖薙※繧
+    # longリソースがある場合，
+    # longリソース要求をするタスクのあるプロセッサに割当てる
     ProcessorManager.proc_list.each do |p|
       p.task_list.each do |t|
         if t.long_require_array.size > 0
-          #縺薙繝励Ο繧ｻ繝し縺ｫ蜑ｲ繧雁ｽ薙※
+          #このプロセッサに割り当て
           p.assign_task(tsk)
         end
       end
@@ -49,7 +49,7 @@ def assign_task_worstfit(idx)
 end
 
 
-# CPU菴ｿ逕ｨ邇′荳逡ｪ菴弱＞繝励Ο繧ｻ繝しID繧定ｿ斐☆
+# CPU使用率が一番低いプロセッサIDを返す
 def lowest_util_proc_id
   u = 10.0
   id = 0
@@ -64,7 +64,7 @@ def lowest_util_proc_id
 end
 
 
-# 蜷繝ｭ繧ｻ繝し縺ｮ菴ｿ逕ｨ邇→蜑ｲ蠖薙※繧峨ｌ縺ｦ縺ｋ繧ｿ繧ｹ繧ｯ謨ｰ繧定｡ｨ遉ｺ
+# 各プロセッサの使用率と割当てられているタスク数を表示
 def show_proc_info
   ProcessorManager.proc_list.each do |p|
     puts "PE#{p.proc_id}(#{p.util}):#{p.task_list.size}tasks"
@@ -73,8 +73,8 @@ end
 
 
 #
-# 繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｩ繝薙Μ繝ぅ繝√ぉ繝け(FMLP-P)
-# @param[Fixnum, Fixnum] k : 繝励Ο繧ｻ繝しID景 : 蜑ｲ蠖薙※繧九ち繧ｹ繧ｯ謨ｰ
+# スケジューラビリティチェック(FMLP-P)
+# @param[Fixnum, Fixnum] k : プロセッサID，i : 割当てるタスク数
 # @return [Fixnum]
 #
 def p_schedulability(k, i)
@@ -88,14 +88,14 @@ def p_schedulability(k, i)
 #    p t.b
     c += (t.extime + t.bw)/t.period
   end
-  tsk = tlist[-1] # 譛蠕後↓霑ｽ蜉縺輔ｌ縺溘ち繧ｹ繧ｯ
+  tsk = tlist[-1] # 最後に追加されたタスク
   
   return ((tsk.b - tsk.bw)/tsk.period + c)
 end
 
 
 #
-# 迴ｾ蝨ｨ蜑ｲ繧雁ｽ薙※繧峨ｌ縺ｦ縺ｋ繧ｿ繧ｹ繧ｯ繝ｪ繧ｹ繝医ｒ霑斐☆
+# 現在割り当てられているタスクリストを返す
 #
 def get_using_tasks
   tasks = []
@@ -110,25 +110,25 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 50  # 菴ｿ逕ｨ縺吶ｋ繧ｿ繧ｹ繧ｯ繧ｻ繝ヨ謨ｰ
-task_count = 20     # 繧ｿ繧ｹ繧ｯ繧ｻ繝ヨ蠖薙◆繧翫繧ｿ繧ｹ繧ｯ謨ｰ
-umax = 0.3          # 繧ｿ繧ｹ繧ｯ菴ｿ逕ｨ邇譛螟ｧ蛟､
+taskset_count = 50  # 使用するタスクセット数
+task_count = 20     # タスクセット当たりのタスク数
+umax = 0.3          # タスク使用率の最大値
 f_max = 0.1         # nesting factor
-system_util_max = proc_num/2.0 # 繧ｷ繧ｹ繝Β菴ｿ逕ｨ邇譛螟ｧ蛟､
-output_str = []     # 繝繧ｿ蜃ｺ蜉帷畑
+system_util_max = proc_num/2.0 # システム使用率の最大値
+output_str = []     # データ出力用
 
-# 繝励Ο繧ｰ繝ｬ繧ｹ繝舌
-pbar = ProgressBar.new("繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｩ繝薙Μ繝ぅ隗｣譫, (taskset_count*(f_max/0.01).to_i+1))
+# プログレスバー
+pbar = ProgressBar.new("スケジューラビリティ解析", (taskset_count*(f_max/0.01).to_i+1))
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
 @manager = AllManager.new
 
-# 繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｩ繝薙Μ繝ぅ隗｣譫舌Ν繝ｼ繝
+# スケジューラビリティ解析ループ
 0.0.step(f_max, 0.01) do |f|
-  tasksets = 0  # 蜑ｲ蠖薙※繧九％縺ｨ縺ｮ縺ｧ縺阪◆繧ｿ繧ｹ繧ｯ繧ｻ繝ヨ謨ｰ
-  taskset_count_ave = 0.0  # 蜑ｲ繧雁ｽ薙※繧峨ｌ縺溘ち繧ｹ繧ｯ繧ｻ繝ヨ縺ｮ蟷ｳ蝮
-  taskset_non = 0.0        # 蜑ｲ繧雁ｽ薙※繧峨ｌ縺ｪ縺九▲縺溘ち繧ｹ繧ｯ繧ｻ繝ヨ
+  tasksets = 0  # 割当てることのできたタスクセット数
+  taskset_count_ave = 0.0  # 割り当てられたタスクセットの平均
+  taskset_non = 0.0        # 割り当てられなかったタスクセット
   taskset_count.times do |i|
 
     @manager.all_data_clear
@@ -140,15 +140,15 @@ pbar.format = "%3d%% %s %s"
     info[:proc_num] = proc_num
     @manager.create_tasks(task_count, 30, 10, info)
 
-    # 繧ｿ繧ｹ繧ｯ繝ｪ繧ｹ繝医ｒ菴ｿ逕ｨ邇髯埼〒繧ｽ繝ｼ繝
+    # タスクリストを使用率の降順でソート
     @manager.tm.sort_tasklist_by_util
-    #puts "#{@manager.tm.get_task_array.size}繧ｿ繧ｹ繧ｯ:(#{@manager.tm.get_alltask_util.round(2)})"
+    #puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
 
-    # 繧ｿ繧ｹ繧ｯworstfit縺ｧ蜑ｲ繧雁ｽ薙※
+    # タスクworstfitで割り当て
     1.upto(@manager.tm.get_task_array.size) do |id|
-      @manager.assign_task_worstfit(id-1) # 繝励Ο繧ｻ繝し縺ｫ繧ｿ繧ｹ繧ｯ蜑ｲ繧雁ｽ薙※
+      @manager.assign_task_worstfit(id-1) # プロセッサにタスク割り当て
     end
 
     #add_task = @manager.tm.get_task_by_index(id-1)
@@ -157,11 +157,11 @@ pbar.format = "%3d%% %s %s"
     init_computing(@manager.tm.get_task_array)
     set_blocktime
     
-    non_schedulable_flg = false # 繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｩ繝悶Ν縺ｧ縺ｪ縺九▲縺溷ｴ蜷育ｫ九※繧九ヵ繝ｩ繧ｰ
+    non_schedulable_flg = false # スケジューラブルでなかった場合立てるフラグ
     1.upto(proc_num) do |p_id|
       #sche += p_schedulability(p_id, id+1)
       sche = p_schedulability(p_id, @manager.tm.get_task_array.size)
-      #puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}繧ｿ繧ｹ繧ｯ:#{sche.round(2)}"
+      #puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
       if sche < 1
         next
       else
@@ -172,7 +172,7 @@ pbar.format = "%3d%% %s %s"
 
     #      if sche < system_util_max
     if non_schedulable_flg == false
-      # 險ｭ螳壹＠縺溘す繧ｹ繝Β菴ｿ逕ｨ邇ｒ雜∴縺ｦ縺↑縺ｴ蜷茨ｼ後ち繧ｹ繧ｯ蜑ｲ繧雁ｽ薙※縺ｧ縺阪◆縺ｨ縺吶ｋ
+      # 設定したシステム使用率を超えていない場合，タスク割り当てできたとする
       taskset_count_ave += 1
     end
     pbar.inc 
@@ -194,7 +194,7 @@ File.open(filename, "w") do |fp|
     f += 0.01
   end
 end
-puts "#{filename}縺ｫ菫晏ｭ假ｼ
+puts "#{filename}に保存．"
 pbar.finish
 #show_proc_info
 #pp @proc_list
