@@ -79,7 +79,7 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 5  # 使用するタスクセット数
+taskset_count = 500 # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3            # タスク使用率の最大値
 rcsl_max = 2.0      # nesting factor
@@ -144,7 +144,7 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}_#{rcsl}_120926")
+  @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}_#{rcsl}_120926_preemptive_spin")
   #puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
@@ -153,7 +153,7 @@ end
 #taskset = TaskSet.new
 #taskset.show_taskset
 
-filename = "./120926/wcrt_analysis_#{taskset_count}taskset_#{umax}.dat"
+filename = "./120926/wcrt_analysis_#{taskset_count}taskset_#{umax}_preemptive_spin.dat"
 File.open(filename, "w") do |fp|
   rcsl = 1.0 
   output_str.each do |str|

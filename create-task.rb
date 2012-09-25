@@ -219,11 +219,11 @@ class TaskManager
       gnum = @@task_id%gcount + 1  # 使用するグループのID
       new_garray = []
       #p "task_id:#{@@task_id} gcount:#{gcount} gnum:#{gnum}"
-      RequireManager.get_require_array.each{|r|
+      RequireManager.get_require_array.each do|r|
         if r.res.group == gnum
           new_garray << r
         end
-      }
+      end
       REQ_NUM.times{ 
         loop do
           RUBY_VERSION == "1.9.3" ? r = new_garray.sample : r = new_garray.choice
