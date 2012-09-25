@@ -664,9 +664,7 @@ module WCBT
     return time
   end
   
-  #
   # 以下のフォーマットでブロック時間等表示
-  #
   def show_blocktime
     $calc_task.each do |t|
       print "タスク#{t.task_id}"      
@@ -677,21 +675,19 @@ module WCBT
       print ["\tDB:", sprintf("%.3f", t.db)].join
       print ["\tB:", sprintf("%.3f", t.b)].join
       print "\n"
-      pri = get_extime_high_priority(t) 
-      #puts "\t最悪応答時間：実行時間#{t.extime} + 最大ブロック時間#{sprintf("%.3f", t.b)} + プリエンプト時間#{sprintf("%.3f", pri)} = #{sprintf("%.3f", t.extime + t.b + pri)}"
-      if t.period < t.extime + t.b + pri
-        puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}".red
+
+      if t.period < t.wcrt
+        puts "\t\t周期#{t.period}<最悪応答時間#{sprintf("%.3f", t.wcrt)}".red
       else
-        puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.extime + t.b + pri)}"
+        puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.wcrt)}"
       end
     end
   end
 
-  #
-  # タスクにブロック時間情報を格納
-  #
+  # タスクのブロック時間を計算
   public
   def set_blocktime
+    # 各タスクのブロック時間を計算
     #puts "set_blocktime"
     $calc_task.each{ |t| t.sb = SB(t) }
     $calc_task.each{ |t| SB_not_tight(t) }
@@ -700,28 +696,15 @@ module WCBT
     $calc_task.each{ |t| t.lb = LB(t) }
     $calc_task.each{ |t| t.db = DB(t) }
     $calc_task.each{ |t| t.b = t.bb + t.ab + t.sb + t.lb + t.db }
-=begin
-    $calc_task.each do |t|
-      t.sb = SB(t)
-      SB_not_tight(t)
-      
-      t.ab = AB(t)
-      #t.bb = BB(t)
-      #t.lb = LB(t)
-      #t.db = DB(t)
-      t.b = t.bb + t.ab + t.sb + t.lb + t.db
-    end
-=end
+
     # 最悪応答時間の計算
     $calc_task.each do |t|
       t.set_wcrt(wcrt(t))
     end
   end
   
-  #
   # 以下のフォーマットでブロック時間等表示
   # 120409用
-  #
   private
   def show_blocktime_120409
     $calc_task.each do |task|
