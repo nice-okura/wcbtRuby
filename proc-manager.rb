@@ -264,9 +264,9 @@ class ProcessorManager
   
   # 全てのプロセッサの割り当てタスクを取り除く
   def init_all_proc
-    @@proc_list.each{ |proc|
+    @@proc_list.each do |proc|
       proc.remove_task
-    }
+    end
   end
   
   # プロセッサに割り当てられているタスクを取り除く
