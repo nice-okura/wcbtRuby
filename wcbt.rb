@@ -72,7 +72,7 @@ module WCBT
     
     proc = [] # proc_list用プロセッサ配列
     
-    $calc_task.each do|task|
+    $calc_task.each do |task|
       lreqs = []
       sreqs = []
 
@@ -552,7 +552,8 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
-      time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
+      time += tuples[num].req.time # spinをpreemptiveにした場合
+      # time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
 
