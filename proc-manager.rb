@@ -87,7 +87,14 @@ class ProcessorManager
     end
     return proc_json[PROCS].size
   end
-
+  
+  # 全てのプロセッサの割り当てタスクを取り除く
+  def init_all_proc
+    @@proc_list.each do |proc|
+      proc.remove_task
+    end
+  end
+  
   # プロセッサの読み込み(JSON)
   # @param filename [String] ファイル名
   # @return [Fixnum] 読み込んだプロセッサ数を返す．失敗したらfalse
@@ -262,13 +269,7 @@ class ProcessorManager
     return nil
   end
   
-  # 全てのプロセッサの割り当てタスクを取り除く
-  def init_all_proc
-    @@proc_list.each do |proc|
-      proc.remove_task
-    end
-  end
-  
+ 
   # プロセッサに割り当てられているタスクを取り除く
   # @param [Fixnum] プロセッサID
   def init_proc(proc_id)

@@ -17,10 +17,10 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-#require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
-require "./wcbt"      # 最大ブロック時間計算モジュール
-#require "./120601_sche_ana/task"      # タスク等のクラス
-require "./task"      # タスク等のクラス
+require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
+#require "./wcbt"      # 最大ブロック時間計算モジュール
+require "./120601_sche_ana/task"      # タスク等のクラス
+#require "./task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "./create-task"
 require "./create-require"
@@ -140,7 +140,7 @@ class AllManager
     @pm.create_processor_list(info)
 
     # タスクの割り当て
-    @pm.assign_tasks(@tm.get_task_array, info) #unless info[:mode] == SCHE_CHECK
+    @pm.assign_tasks(@tm.get_task_array, info) unless info[:mode] == SCHE_CHECK
 
     # システムで使用するリソースグループ
     @using_group_array = get_using_group_array
@@ -150,7 +150,7 @@ class AllManager
     
     # A Flexible.. のスケジューラビリティ解析の場合
     if info[:mode] == SCHE_CHECK
-      @pm.init_all_proc # プロセッサ初期化
+      #@pm.init_all_proc # プロセッサ初期化
       assign_requires_for_sche_check(info)
     end
     
@@ -558,6 +558,12 @@ class TaskManager
         #break if max_util > 2.0
         @@task_array << t
       end
+    when MY_SCHE_CHECK
+      # 自分で考えたP-SP FMLPスケジューラビリティ解析
+      
+      
+      
+      
     when "120620"
       i.times{ 
         @@task_array << create_task_120620(i, info[:extime])
