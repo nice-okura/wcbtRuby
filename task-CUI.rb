@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 $:.unshift(File.dirname(__FILE__))
 require "pp"
-#require "./config"
-#require "./wcbt"
 require "rubygems" unless RUBY_VERSION == "1.9.3"
 require "term/ansicolor"
 
@@ -100,7 +98,6 @@ class TaskSet
  
   # ProcessorManagerからプロセッサ情報を得てタスクを表示させる
   def show_taskset
-    p "EE"
     ProcessorManager.proc_list.each do |proc|
       puts "[プロセッサ#{proc.proc_id}]"
       proc.task_list.each do |t|
