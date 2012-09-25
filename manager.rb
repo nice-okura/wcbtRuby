@@ -140,7 +140,7 @@ class AllManager
     @pm.create_processor_list(info)
 
     # タスクの割り当て
-    @pm.assign_tasks(@tm.get_task_array, info) unless info[:mode] == SCHE_CHECK
+    @pm.assign_tasks(@tm.get_task_array, info) #unless info[:mode] == SCHE_CHECK
 
     # システムで使用するリソースグループ
     @using_group_array = get_using_group_array
@@ -150,6 +150,7 @@ class AllManager
     
     # A Flexible.. のスケジューラビリティ解析の場合
     if info[:mode] == SCHE_CHECK
+      @pm.init_all_proc # プロセッサ初期化
       assign_requires_for_sche_check(info)
     end
     
