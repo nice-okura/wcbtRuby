@@ -64,9 +64,26 @@ def lowest_util_proc_id
   return id 
 end
 
-#
+# スケジューラビリティチェック(FMLP-P)
+# @param[Fixnum, Fixnum] k : プロセッサID，i : 割当てるタスク数
+# @return [Fixnum]
+def p_schedulability(k, i)
+  tlist = ProcessorManager.get_proc(k).task_list
+  return 0.0 if tlist.size == 0
+  max = [i, tlist.size].min
+  c = 0
+
+  0.upto(max-1) do |j|
+    t = tlist[j]
+#    p t.b
+    c += (t.extime + t.sb)/t.period
+  end
+  tsk = tlist[-1] # 最後に追加されたタスク
+  
+  return ((tsk.b - tsk.sb)/tsk.period + c)
+end
+
 # 現在割り当てられているタスクリストを返す
-#
 def get_using_tasks
   tasks = []
   ProcessorManager.proc_list.each do |p|
@@ -149,12 +166,12 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("#{JSON_FOLDER}/sche_check_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_RCSL#{rcsl}_nonpreemptive_spin")
+  @manager.save_tasks("#{JSON_FOLDER}/sche_check_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_RCSL#{rcsl}_preemptive_spin")
   #puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
 end
-filename = "./120926/wcrt_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_nonpreemptive_spin.dat"
+filename = "./120926/wcrt_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_preemptive_spin.dat"
 File.open(filename, "w") do |fp|
   rcsl = 1.0
   output_str.each do |str|

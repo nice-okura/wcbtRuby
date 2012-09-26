@@ -552,8 +552,8 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
-      # time += tuples[num].req.time # spinをpreemptiveにした場合
-      time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
+      time += tuples[num].req.time # spinをpreemptiveにした場合
+      # time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
 
@@ -764,9 +764,7 @@ module WCBT
     return uabj
   end
 
-  #
   # 最悪応答時間
-  #
   private
   def wcrt(job)
     pre_wcrt = job.extime + job.b
@@ -778,22 +776,11 @@ module WCBT
       time = job.extime + job.b# - job.db
       job.proc.task_list.each do |t|
         if t.priority < job.priority && t.proc == job.proc
-          begin
-            count = ((pre_wcrt/t.period).ceil)
-          rescue
-            t.to_s
-            job.to_s
-            p job.b
-            p pre_wcrt
-            p count
-            p time
-            p n
-            raise FloatDomainError
-          end
-
+          count = ((pre_wcrt/t.period).ceil)
           time += count*(t.extime + t.sb)
         end
       end
+      
       if time.round(2) == pre_wcrt.round(2) || n > 10
         break
       else
