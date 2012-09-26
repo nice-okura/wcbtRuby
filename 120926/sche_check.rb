@@ -29,7 +29,7 @@ end
 # @param idx 
 def assign_task_worstfit(idx)
   tsk = @manager.tm.get_task_by_index(idx)
-#=begin
+=begin
   # longリソース要求をしているタスクかチェック
   unless tsk.long_require_array.size == 0
     # longリソースがある場合，
@@ -43,10 +43,10 @@ def assign_task_worstfit(idx)
       end
     end
   else 
-#=end
+=end
     proc_id = lowest_util_proc_id
     ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
-  end
+  #end
 end
 
 
@@ -80,15 +80,16 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 50 # 使用するタスクセット数
-task_count = 20     # タスクセット当たりのタスク数
+taskset_count = 500 # 使用するタスクセット数
+task_count = 100     # タスクセット当たりのタスク数
 umax = 0.3            # タスク使用率の最大値
+#cpu_util_max = 0.8  # タスクセット生成時の最大CPU使用率
 rcsl_max = 2.0      # nesting factor
 system_util_max = proc_num/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
 # プログレスバー
-pbar = ProgressBar.new("スケジューラビリティ解析", (taskset_count*((rcsl_max-1.0)/0.1).to_i+1))
+pbar = ProgressBar.new("スケジューラビリティ解析", (6*taskset_count*((rcsl_max-1.0)/0.1).to_i+1))
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
@@ -96,6 +97,7 @@ pbar.format = "%3d%% %s %s"
 
 ## スケジューラビリティ解析ループ
 # RCSLを変えて解析する
+0.5.step(1.0, 0.1) do |cpu_util_max|
 1.0.step(rcsl_max, 0.1) do |rcsl|
   tasksets = 0  # 割当てることのできたタスクセット数
   taskset_count_ave = 0.0  # 割り当てられたタスクセットの平均
@@ -110,6 +112,8 @@ pbar.format = "%3d%% %s %s"
     info[:rcsl] = rcsl
     info[:umax] = umax
     info[:proc_num] = proc_num
+    info[:cpu_util_max] = cpu_util_max
+
     @manager.create_tasks(task_count, 30, 10, info)
 
     # タスクリストを使用率の降順でソート
@@ -145,24 +149,26 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}_#{rcsl}_120926_preemptive_spin")
+  @manager.save_tasks("#{JSON_FOLDER}/sche_check_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_RCSL#{rcsl}_nonpreemptive_spin")
   #puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
-
 end
-#taskset = TaskSet.new
-#taskset.show_taskset
-
-filename = "./120926/wcrt_analysis_#{taskset_count}taskset_#{umax}_preemptive_spin.dat"
+filename = "./120926/wcrt_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_nonpreemptive_spin.dat"
 File.open(filename, "w") do |fp|
   rcsl = 1.0
   output_str.each do |str|
     fp.puts "#{rcsl.round(3)} #{str.to_f.round(3)}"
     rcsl += 0.1
   end
+  output_str = []
 end
 puts "#{filename}に保存．"
+end
+#taskset = TaskSet.new
+#taskset.show_taskset
+
+
 pbar.finish
 #show_proc_info
 #pp @proc_list

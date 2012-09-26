@@ -110,9 +110,10 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 50  # 使用するタスクセット数
+taskset_count = 500  # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
+cpu_util_max = 0.8  # タスクセット生成時の最大CPU使用率
 f_max = 0.1         # nesting factor
 system_util_max = proc_num/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
@@ -138,6 +139,7 @@ pbar.format = "%3d%% %s %s"
     info[:f] = f
     info[:umax] = umax
     info[:proc_num] = proc_num
+    info[:cpu_util_max] = cpu_util_max
     @manager.create_tasks(task_count, 30, 10, info)
 
     # タスクリストを使用率の降順でソート
@@ -177,7 +179,7 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("./120601_sche_ana/#{JSON_FOLDER}/sche_check_PFP#{umax}_#{f}")
+  @manager.save_tasks("./120601_sche_ana/#{JSON_FOLDER}/sche_check_PFP_CPU_UTIL#{cpu_util_max}_#{umax}_#{f}")
   puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
@@ -186,7 +188,7 @@ end
 taskset = TaskSet.new
 taskset.show_taskset
 
-filename = "./120601_sche_ana/#{taskset_count}taskset_umax#{umax}.dat"
+filename = "./120601_sche_ana/#{taskset_count}taskset_umax_CPU_UTIL#{cpu_util_max}_#{umax}.dat"
 File.open(filename, "w") do |fp|
   f = 0.0 
   output_str.each do |str|

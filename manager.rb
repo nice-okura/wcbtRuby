@@ -589,7 +589,9 @@ class TaskManager
       i.times do |num|
         t = create_task_sche_check(info[:umax])
         max_util += t.extime/t.period
-        break if max_util > info[:proc_num]*0.5
+        
+        u = info[:proc_num]*info[:cpu_util_max].to_f
+        break if max_util > u
         @@task_array << t
       end 
     when "120620"
