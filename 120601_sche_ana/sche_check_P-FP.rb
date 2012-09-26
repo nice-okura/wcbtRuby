@@ -177,7 +177,7 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}")
+  @manager.save_tasks("./120601_sche_ana/#{JSON_FOLDER}/sche_check_#{umax}")
   puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
@@ -186,7 +186,7 @@ end
 taskset = TaskSet.new
 taskset.show_taskset
 
-filename = "#{taskset_count}taskset_umax#{umax}.dat"
+filename = "./120601_sche_ana/#{taskset_count}taskset_umax#{umax}.dat"
 File.open(filename, "w") do |fp|
   f = 0.0 
   output_str.each do |str|
