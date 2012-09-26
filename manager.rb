@@ -158,8 +158,10 @@ class AllManager
     # プロセッサの作成
     @pm.create_processor_list(info)
 
-    # タスクの割り当て
-    @pm.assign_tasks(@tm.get_task_array, info) unless info[:mode] == SCHE_CHECK
+    unless info[:mode] == SCHE_CHECK || info[:mode] == MY_SCHE_CHECK
+      # タスクの割り当て
+      @pm.assign_tasks(@tm.get_task_array, info) 
+    end
 
     # システムで使用するリソースグループ
     @using_group_array = get_using_group_array
@@ -177,8 +179,11 @@ class AllManager
     $task_list.each do |t|
       t.resetting
     end
-    init_computing($task_list) unless info[:mode] == SCHE_CHECK
-    set_blocktime unless info[:mode] == SCHE_CHECK
+    
+    unless info[:mode] == SCHE_CHECK || info[:mode] == MY_SCHE_CHECK
+      init_computing($task_list)
+      set_blocktime
+    end
   end 
 
 

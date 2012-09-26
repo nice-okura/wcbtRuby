@@ -177,7 +177,7 @@ pbar.format = "%3d%% %s %s"
     end
     pbar.inc 
   end
-  @manager.save_tasks("./120601_sche_ana/#{JSON_FOLDER}/sche_check_#{umax}")
+  @manager.save_tasks("./120601_sche_ana/#{JSON_FOLDER}/sche_check_PFP#{umax}_#{f}")
   puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100

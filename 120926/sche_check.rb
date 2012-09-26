@@ -16,6 +16,7 @@ require 'progressbar'
 require './task-CUI'
 
 include WCBT
+JSON_FOLDER = "./120926/json"
 
 # タスクを使用率の降順に並び替え
 def sort_tasklist_by_utilization
@@ -79,7 +80,7 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 500 # 使用するタスクセット数
+taskset_count = 50 # 使用するタスクセット数
 task_count = 20     # タスクセット当たりのタスク数
 umax = 0.3            # タスク使用率の最大値
 rcsl_max = 2.0      # nesting factor
@@ -155,7 +156,7 @@ end
 
 filename = "./120926/wcrt_analysis_#{taskset_count}taskset_#{umax}_preemptive_spin.dat"
 File.open(filename, "w") do |fp|
-  rcsl = 1.0 
+  rcsl = 1.0
   output_str.each do |str|
     fp.puts "#{rcsl.round(3)} #{str.to_f.round(3)}"
     rcsl += 0.1
