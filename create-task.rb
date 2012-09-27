@@ -278,7 +278,6 @@ class TaskManager
     #util = d*i
     util = umax - (rand%umax) # タスクの使用率は(0, umax] 
     
-    
     @@task_id += 1
     proc = UNASSIGNED                 # 未割り当ては-1
     #p task_id_array

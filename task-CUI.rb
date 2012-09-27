@@ -142,6 +142,7 @@ class TaskSet
         else
           puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
         end
+        puts "\t\t e/p = #{(t.extime/t.period).round(5)} e+sb/p = #{((t.extime+t.sb)/t.period).round(5)}"
       end
     end
   end

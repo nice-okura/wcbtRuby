@@ -17,6 +17,10 @@ require './task-CUI'
 
 include WCBT
 
+JSON_FOLDER = "./120601_sche_ana/json"
+
+
+
 # タスクを使用率の降順に並び替え
 def sort_tasklist_by_utilization
   @manager.tm.get_task_array.sort do |a, b|
@@ -186,11 +190,11 @@ end
 #taskset = TaskSet.new
 #taskset.show_taskset
 
-filename = "#{taskset_count}taskset_umax#{umax}_edf.dat"
+filename = "./120601_sche_ana/#{taskset_count}taskset_umax#{umax}_edf.dat"
 File.open(filename, "w") do |fp|
   f = 0.0 
   output_str.each do |str|
-    fp.puts "#{f} #{str}"
+    fp.puts "#{f.round(2)} #{str}"
     f += 0.01
   end
 end

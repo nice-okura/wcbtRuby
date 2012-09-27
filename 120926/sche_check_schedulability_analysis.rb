@@ -29,7 +29,7 @@ end
 # @param idx 
 def assign_task_worstfit(idx)
   tsk = @manager.tm.get_task_by_index(idx)
-#=begin
+=begin
   # longリソース要求をしているタスクかチェック
   unless tsk.long_require_array.size == 0
     # longリソースがある場合，
@@ -43,10 +43,10 @@ def assign_task_worstfit(idx)
       end
     end
   else 
-#=end
+=end
     proc_id = lowest_util_proc_id
     ProcessorManager.proc_list[proc_id - 1].assign_task(tsk)
-  end
+  #end
 end
 
 
@@ -111,8 +111,8 @@ end
 # main
 #
 proc_num = 4
-taskset_count = 50  # 使用するタスクセット数
-task_count = 20     # タスクセット当たりのタスク数
+taskset_count = 500  # 使用するタスクセット数
+task_count = 100     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
 cpu_util_max = 0.8  # タスクセット生成時の最大CPU使用率
 f_max = 0.1         # nesting factor
@@ -138,10 +138,10 @@ pbar.format = "%3d%% %s %s"
       @manager.all_data_clear
       
       info =  { }
-      info[:mode] = SCHE_CHECK
+      info[:mode] = MY_SCHE_CHECK
       #info[:f] = f
       info[:f] = 0.05
-      info[:rcsl] = rcsl
+      info[:rcsl] = rcsl.round(2)
       info[:umax] = umax
       info[:proc_num] = proc_num
       info[:cpu_util_max] = cpu_util_max
@@ -149,7 +149,7 @@ pbar.format = "%3d%% %s %s"
 
       # タスクリストを使用率の降順でソート
       @manager.tm.sort_tasklist_by_util
-      #puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
+      puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
       #puts @manager.gm.get_group_array.size
       #puts @manager.rm.get_require_array.size
 
@@ -168,7 +168,7 @@ pbar.format = "%3d%% %s %s"
       1.upto(proc_num) do |p_id|
         #sche += p_schedulability(p_id, id+1)
         sche = p_schedulability(p_id, @manager.tm.get_task_array.size)
-        #puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
+        puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
         if sche < 1
           next
         else
@@ -184,14 +184,14 @@ pbar.format = "%3d%% %s %s"
       end
       pbar.inc 
     end
-    @manager.save_tasks("#{JSON_FOLDER}/schedulability_analysis_CPU_UTIL#{cpu_util_max}_#{umax}_#{rcsl}")
-    #puts "\t#{taskset_count_ave}"
+    @manager.save_tasks("#{JSON_FOLDER}/schedulability_analysis_CPU_UTIL#{cpu_util_max}_#{umax}_#{rcsl}_nonpreemptive")
+    puts "\t#{taskset_count_ave}"
     taskset_count_ave /= taskset_count  
     output_str << taskset_count_ave*100
   #taskset = TaskSet.new
   #taskset.show_taskset
   end
-  filename = "./120926/schedulability_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_preemptive_spin.dat"
+  filename = "./120926/schedulability_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_nonpreemptive_spin.dat"
   File.open(filename, "w") do |fp|
     rcsl = 1.0
     output_str.each do |str|
