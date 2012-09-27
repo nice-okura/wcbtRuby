@@ -7,7 +7,7 @@
 #  120628の実験から，Group1(CSが長いリソース)がlongリソースとなるとき，
 #  そのタスクはプロセッサの最高優先度であるきがするので確かめる．
 #
-$:.unshift(File.dirname(__FILE__))
+#$:.unshift(File.dirname(__FILE__))
 require "./task-CUI"
 require "./manager"
 require "./util"
@@ -22,11 +22,11 @@ $DEBUG = false
 #
 # main関数
 #
-tasks = [4]
+tasks = [8]
 groups = [4]
 rcsls = [0.9]
 extime = 80
-loop_count = 10
+loop_count = 100
 
 @manager = AllManager.new
 
@@ -36,8 +36,8 @@ pbar.format = "%3d%% %s %s"
 
 tasks.each do |tsk|
   rcsls.each do |rcsl|
-    info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => 0.01, :assign_mode => ID_ORDER, :proc_num => 4}
-    fp = File.open("./120803_log_#{tsk}tasks_#{rcsl}.txt", "w")
+    info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => 0.01, :assign_mode => ID_ORDER, :proc_num => 2}
+    fp = File.open("./120927/120927_log_#{tsk}tasks_#{rcsl}.txt", "w")
     
     requires = tsk
     groups.each do |grp|
