@@ -1,4 +1,4 @@
-﻿{
+{
   "grps": [
     {
       "group": 1,
@@ -6,7 +6,11 @@
     },
     {
       "group": 2,
+<<<<<<< HEAD
       "kind": "long"
+=======
+      "kind": "short"
+>>>>>>> 4ae91732c90a573e65d946f7e8f858a10a25ed5c
     },
     {
       "group": 3,
