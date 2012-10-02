@@ -9,8 +9,8 @@ TMP_FILE = "./121003/tmp"
 
 
 # Parameters
-taskset_count = 50
-task_count_array = [4]
+taskset_count = 100
+task_count_array = [4,8,12,16,20,24]
 proc_count = 4
 info = { }
 
@@ -29,7 +29,11 @@ info[:spin_preemptive] = false
 
 @manager = AllManager.new
 p info
+
+impr_rate = { }               # an improvement rate 
 task_count_array.each do |task_count|
+  impr_rate_ave = 0          # an improvement rate average per task_count
+  
   taskset_count.times do
     # Variables
     wcrt_nonpreemptive = {}  # WCRT under nonpreemptive spin
@@ -52,7 +56,10 @@ task_count_array.each do |task_count|
     end
     @manager.save_tasks(TMP_FILE)
     
+    
+    # change to preemptive spin
     info[:spin_preemptive] = true
+    
     @manager.all_data_clear
     @manager.load_tasks(TMP_FILE, info)
     
@@ -72,8 +79,17 @@ task_count_array.each do |task_count|
     wcrt_preemptive.each_value{|v| all_wcrt_preemptive += v }
     
     diff = all_wcrt_nonpreemptive - all_wcrt_preemptive
-    p (diff/all_wcrt_nonpreemptive) * 100
+    impr_rate_ave += (diff/all_wcrt_nonpreemptive) * 100
     
-    #pbar.inc
+    pbar.inc
+  end
+  impr_rate_ave /= taskset_count
+  impr_rate[task_count] = impr_rate_ave
+end
+
+# Output
+File.open("./121003/result.txt", "w") do |fp|
+  impr_rate.each do |data|
+    fp.puts "#{data[0]},#{data[1]}"
   end
 end
