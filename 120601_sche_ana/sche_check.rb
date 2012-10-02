@@ -146,7 +146,7 @@ pbar.format = "%3d%% %s %s"
 
     # タスクリストを使用率の降順でソート
     @manager.tm.sort_tasklist_by_util
-    puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
+    #puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
     #puts @manager.gm.get_group_array.size
     #puts @manager.rm.get_require_array.size
 
@@ -165,7 +165,7 @@ pbar.format = "%3d%% %s %s"
     1.upto(proc_num) do |p_id|
       #sche += p_schedulability(p_id, id+1)
       sche = p_schedulability(p_id, @manager.tm.get_task_array.size)
-      puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
+      #puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
       if sche < 1
         next
       else
@@ -182,7 +182,7 @@ pbar.format = "%3d%% %s %s"
     pbar.inc 
   end
   @manager.save_tasks("#{JSON_FOLDER}/sche_check_#{umax}_nest")
-  puts "\t#{taskset_count_ave}"
+  #puts "\t#{taskset_count_ave}"
   taskset_count_ave /= taskset_count  
   output_str << taskset_count_ave*100
 
@@ -190,7 +190,7 @@ end
 #taskset = TaskSet.new
 #taskset.show_taskset
 
-filename = "./120601_sche_ana/#{taskset_count}taskset_umax#{umax}_edf.dat"
+filename = "./120601_sche_ana/#{taskset_count}taskset_umax#{umax}_0.8_edf.dat"
 File.open(filename, "w") do |fp|
   f = 0.0 
   output_str.each do |str|

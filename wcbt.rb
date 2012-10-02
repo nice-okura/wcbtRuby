@@ -23,6 +23,13 @@ class String
   include Term::ANSIColor
 end
 
+class Range
+  # 範囲の中でランダムの数字を返す
+  def get_random
+    return (first + rand(last - first))
+  end
+end
+
 class Object
   def debug
     $DEBUGFlg = true
@@ -552,8 +559,8 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
-      # time += tuples[num].req.time # spinをpreemptiveにした場合
-      time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
+      time += tuples[num].req.time # spinをpreemptiveにした場合
+      #time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
 

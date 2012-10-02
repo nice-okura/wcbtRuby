@@ -107,6 +107,11 @@ class RequireManager
         info[:group] = new_group
         @@require_array << create_require_120613(info)
       }
+    when "120927"
+      get_use_group_array_order(i, group_array).each do |g|
+          info[:group] = g
+          @@require_array << create_require_120927(info)
+      end
     when CREATE_MANUALLY
       get_use_group_array_random(i, group_array).each{ |new_group|
         info[:group] = new_group
@@ -169,20 +174,35 @@ class RequireManager
     return Req.new(@@id, group, time, req)
   end
 
-  #
   # ランダムにリソース要求を作成
   # 120620ミーティング用
-  #
   def create_require_120620(info = { })
     @@id += 1
     group = info[:group]
     # Group1は長くする
-    time = group.group == 1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
+    #time = group.group == 1 ? info[:extime]*info[:rcsl_l] : info[:extime]*info[:rcsl_s]
+    longtime = info[:rcsl_l].get_random
+    shorttime = info[:rcsl_s].get_random
+    time = group.group == 1 ? info[:rcsl_l] : info[:rcsl_s]
     req = []
 
     return Req.new(@@id, group, time, req)
   end
+  
+  # ランダムにリソース要求を作成
+  # 120927ミーティング用
+  def create_require_120927(info = { })
+    @@id += 1
+    group = info[:group]
+    # Group1は長くする
+    longtime = info[:long_range].get_random
+    shorttime = info[:short_range].get_random
+    time = group.group == 1 ? longtime : shorttime
+    req = []
 
+    return Req.new(@@id, group, time, req)
+  end
+  
   #
   # ランダムにリソース要求を作成
   # 120613ミーティング用

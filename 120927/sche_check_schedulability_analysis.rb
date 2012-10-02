@@ -14,7 +14,7 @@ $:.unshift(File.dirname(__FILE__))
 require './manager'
 require 'progressbar'
 require './task-CUI'
-JSON_FOLDER = "./120926/json"
+JSON_FOLDER = "./120927/json"
 
 include WCBT
 
@@ -115,12 +115,13 @@ taskset_count = 500  # 使用するタスクセット数
 task_count = 100     # タスクセット当たりのタスク数
 umax = 0.3          # タスク使用率の最大値
 cpu_util_max = 0.8  # タスクセット生成時の最大CPU使用率
+cpu_util_max_min = 0.8  # タスクセット生成時の最大CPU使用率の最小
 f_max = 0.1         # nesting factor
 system_util_max = proc_num/2.0 # システム使用率の最大値
 output_str = []     # データ出力用
 
 # プログレスバー
-pbar = ProgressBar.new("スケジューラビリティ解析", (6*taskset_count*(f_max/0.01).to_i+1))
+pbar = ProgressBar.new("スケジューラビリティ解析", (((cpu_util_max-cpu_util_max_min)*10)+1*taskset_count*11.to_i+1))
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
@@ -128,7 +129,7 @@ pbar.format = "%3d%% %s %s"
 
 # スケジューラビリティ解析ループ
 # RCSLを変えて解析する
-0.5.step(1.0, 0.1) do |cpu_util_max|
+0.8.step(0.8, 0.1) do |cpu_util_max|
   1.0.step(2.0, 0.1) do |rcsl|
     tasksets = 0  # 割当てることのできたタスクセット数
     taskset_count_ave = 0.0  # 割り当てられたタスクセットの平均
@@ -136,12 +137,12 @@ pbar.format = "%3d%% %s %s"
     taskset_count.times do |i|
 
       @manager.all_data_clear
-      
+      rcsl = rcsl.round(2)
       info =  { }
       info[:mode] = MY_SCHE_CHECK
       #info[:f] = f
       info[:f] = 0.05
-      info[:rcsl] = rcsl.round(2)
+      info[:rcsl] = rcsl
       info[:umax] = umax
       info[:proc_num] = proc_num
       info[:cpu_util_max] = cpu_util_max
@@ -149,7 +150,7 @@ pbar.format = "%3d%% %s %s"
 
       # タスクリストを使用率の降順でソート
       @manager.tm.sort_tasklist_by_util
-      puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
+      #puts "#{@manager.tm.get_task_array.size}タスク:(#{@manager.tm.get_alltask_util.round(2)})"
       #puts @manager.gm.get_group_array.size
       #puts @manager.rm.get_require_array.size
 
@@ -168,7 +169,7 @@ pbar.format = "%3d%% %s %s"
       1.upto(proc_num) do |p_id|
         #sche += p_schedulability(p_id, id+1)
         sche = p_schedulability(p_id, @manager.tm.get_task_array.size)
-        puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
+        #puts "\tPROC#{p_id}:#{ProcessorManager.get_proc(p_id).task_list.size}タスク:#{sche.round(2)}"
         if sche < 1
           next
         else
@@ -184,14 +185,14 @@ pbar.format = "%3d%% %s %s"
       end
       pbar.inc 
     end
-    @manager.save_tasks("#{JSON_FOLDER}/schedulability_analysis_CPU_UTIL#{cpu_util_max}_#{umax}_#{rcsl}_nonpreemptive")
-    puts "\t#{taskset_count_ave}"
+    @manager.save_tasks("#{JSON_FOLDER}/schedulability_analysis_CPU_UTIL#{cpu_util_max}_#{umax}_#{rcsl}_preemptive")
+    #puts "\t#{taskset_count_ave}"
     taskset_count_ave /= taskset_count  
     output_str << taskset_count_ave*100
   #taskset = TaskSet.new
   #taskset.show_taskset
   end
-  filename = "./120926/schedulability_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_nonpreemptive_spin.dat"
+  filename = "./120927/schedulability_analysis_#{taskset_count}taskset_CPU_UTIL#{cpu_util_max}_UMAX#{umax}_preemptive_spin.dat"
   File.open(filename, "w") do |fp|
     rcsl = 1.0
     output_str.each do |str|

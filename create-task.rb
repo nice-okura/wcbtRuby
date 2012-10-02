@@ -77,9 +77,8 @@ class TaskManager
   #
   # 120620用
   #
-  def create_task_120620(task_count, a_extime=50)
+  def create_task_120620(task_count, info)
     @@task_id += 1  # ここではタスクのidとしては用いない．task_id_arrayからnew_task_idを用いる
-    
     task_id_array = Array.new(task_count){|index| "#{index+1}".to_i}
     @@task_array.each{|t|
       task_id_array.delete(t.task_id)
@@ -113,7 +112,11 @@ class TaskManager
     RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
     proc = UNASSIGNED
     priority = new_task_id
-    extime = a_extime
+    if info[:extime] != nil
+      extime = info[:extime]
+    elsif info[:extime_range] != nil
+      extime = info[:extime_range].get_random
+    end 
     period = (extime/(1.0/task_count))
     offset = 0 #rand(10)
     
@@ -124,6 +127,58 @@ class TaskManager
     return task
   end
 
+
+  # 120927用
+  def create_task_120927(task_count, info)
+     @@task_id += 1  # ここではタスクのidとしては用いない．task_id_arrayからnew_task_idを用いる
+    task_id_array = Array.new(task_count){|index| "#{index+1}".to_i}
+    @@task_array.each{|t|
+      task_id_array.delete(t.task_id)
+    }
+    # リソース要求
+    # 最大REQ_NUM回リソースを取得
+    req_list = []
+    
+    gcount = GroupManager.get_group_array.size
+    gnum = (@@task_id-1)%gcount + 1  # 使用するグループのID
+    new_garray = []
+    RequireManager.get_require_array.each{|r|
+      if r.res.group == gnum
+        new_garray << r
+      end
+    }
+    REQ_NUM.times{ 
+      loop do
+        RUBY_VERSION == "1.9.3" ? r = new_garray.sample : r = new_garray.choice
+        if r.res.group == gnum
+          req_list << r
+          break
+        end
+      end
+    }
+    
+    req_time = 0
+    req_list.each{|req|
+      req_time += req.time
+    }
+    RUBY_VERSION == "1.9.3" ? new_task_id = task_id_array.sample : new_task_id = task_id_array.choice 
+    proc = UNASSIGNED
+    priority = new_task_id
+    if info[:extime] != nil
+      extime = info[:extime]
+    elsif info[:extime_range] != nil
+      extime = info[:extime_range].get_random
+    end 
+    period = extime/[0.1..0.3].get_random
+    offset = 0 #rand(10)
+    
+    #################
+    
+    task = Task.new(new_task_id, proc, period, extime, priority, offset, req_list)
+    
+    return task
+  end
+  
   #
   # 120613用
   #

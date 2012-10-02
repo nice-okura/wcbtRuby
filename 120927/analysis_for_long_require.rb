@@ -1,11 +1,8 @@
 #! /usr/bin/ruby
 # -*- coding: utf-8 -*-
 #
-#= 120628ミーティング用
-#  120628と同様の動きをするけれど，
-#  longリソースを要求するタスクの優先度をみる
-#  120628の実験から，Group1(CSが長いリソース)がlongリソースとなるとき，
-#  そのタスクはプロセッサの最高優先度であるきがするので確かめる．
+#= 120926ミーティング用
+#  120628と同様の動き
 #
 #$:.unshift(File.dirname(__FILE__))
 require "./task-CUI"
@@ -14,21 +11,20 @@ require "./util"
 
 require "progressbar"
 include UTIL
-FILENAME = "120628"
+FILENAME = "120927"
 
 include WCBT
 $DEBUG = false
 
-#
 # main関数
-#
 tasks = [8]
 groups = [4]
-rcsls = [0.9]
-extime = 80
+rcsls = [20..30]
+rcsl_s = 1.3..6.5
+#extime = 80
+extime_range = 50..500
 loop_count = 100
 proc_num = 2
-rcsl_s = 0.01
 
 
 @manager = AllManager.new
@@ -39,7 +35,9 @@ pbar.format = "%3d%% %s %s"
 
 tasks.each do |tsk|
   rcsls.each do |rcsl|
-    info = {:mode => "120620", :extime => extime, :rcsl_l => rcsl, :rcsl_s => rcsl_s, :assign_mode => ID_ORDER, :proc_num => proc_num}
+    p rcsl
+    p rcsl_s
+    info = {:mode => "120927", :extime_range => extime_range, :long_range => rcsl, :short_range => rcsl_s, :assign_mode => ID_ORDER, :proc_num => proc_num}
     fp = File.open("./120927/120927_log_#{tsk}tasks_#{rcsl}.txt", "w")
     
     requires = tsk

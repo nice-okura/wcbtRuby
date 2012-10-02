@@ -17,10 +17,10 @@ require "rubygems"
 require "json"      # JSON
 
 # 独自ライブラリ
-require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
-#require "./wcbt"      # 最大ブロック時間計算モジュール
-require "./120601_sche_ana/task"      # タスク等のクラス
-#require "./task"      # タスク等のクラス
+#require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
+require "./wcbt"      # 最大ブロック時間計算モジュール
+#require "./120601_sche_ana/task"      # タスク等のクラス
+require "./task"      # タスク等のクラス
 require "singleton" # singletonモジュール
 require "./create-task"
 require "./create-require"
@@ -248,46 +248,32 @@ class AllManager
 
 
   
-  #
   # 最悪応答時間が最も良くなる時のグループの分類を求める
   # @return [Array<String>]
-  #
   def compute_wcrt(loops)
     #pp using_group_array
-    #
+    
     # グループ数
-    #
     group_count = using_group_array.size
     
-    #
     # グループのパターン数
-    #
     group_times = 2**group_count
     #p "#{group_times}times"
     
-    #
     # グループパターン数を２進数で記録
-    #
     group_binary = group_times.to_s(2)
     
-    #
     # リソースを全てshortにする
-    #
-    GroupManager.get_group_array.each{|g|
+    GroupManager.get_group_array.each do |g|
       g.kind = SHORT
-    }
+    end
     taskset = TaskSet.new
     
-    #
     # システム全体の最悪応答時間
-    #
     min_all_wcrt = 10000000 # 適当な最大値
     max_all_wcrt = -1       # 適当な最小値
     
-    #
     # システム全体の最悪応答時間が最も良くなる場合を探す
-    #
-    
     i = 0
     change_count = 0
     long_count = 0
@@ -324,8 +310,8 @@ class AllManager
           #show_groups
           ret_hash = get_groups
           gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s == SHORT then "S" end}.join 
-          filename = "../120803/json/same_cs_tasksets/T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
-          #save_tasks(filename)
+          filename = "./120927/json_analysis_for_long/T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
+          save_tasks(filename)
         end
         #$COLOR_CHAR = true
       end
@@ -341,6 +327,83 @@ class AllManager
     return ret_hash
   end
 
+  # スケジューラビリティが最も良くなる場合のグループの分類を求める
+  # @return [Array<String>]
+  def compute_wcrt(loops)
+    # グループ数
+    group_count = using_group_array.size
+    
+    # グループのパターン数
+    group_times = 2**group_count
+    #p "#{group_times}times"
+    
+    # グループパターン数を２進数で記録
+    group_binary = group_times.to_s(2)
+    
+    # リソースを全てshortにする
+    GroupManager.get_group_array.each do |g|
+      g.kind = SHORT
+    end
+    taskset = TaskSet.new
+    
+    # システム全体の最悪応答時間
+    min_all_wcrt = 10000000 # 適当な最大値
+    max_all_wcrt = -1       # 適当な最小値
+    
+    # システム全体の最悪応答時間が最も良くなる場合を探す
+    i = 0
+    change_count = 0
+    long_count = 0
+    
+    #$DEBUG = true
+    ret_hash = get_groups
+    group_times.times do
+      wcrt_max_system = -1 # 適当な最小値
+      
+      $task_list.each do |t|
+        t.resetting
+      end
+      init_computing($task_list)
+      set_blocktime
+      
+      $task_list.each do |t|
+        wcrt = t.wcrt
+        wcrt_max_system = wcrt if wcrt_max_system < wcrt
+        #pbar.inc
+      end      
+      
+      if wcrt_max_system < min_all_wcrt
+        min_all_wcrt = wcrt_max_system
+        long_count = get_long_groups
+        change_count += 1
+
+        #$COLOR_CHAR = false
+        if long_count > 0
+          #puts "long_count:#{long_count}"
+          #puts "最悪応答時間:#{min_all_wcrt}"
+          #taskset = TaskSet.new($task_list)
+          #taskset.show_taskset
+          #taskset.show_blocktime
+          #show_groups
+          ret_hash = get_groups
+          gsp = get_groups.values.collect{ |s| if s == LONG then "L" elsif s == SHORT then "S" end}.join 
+          filename = "./120927/json_analysis_for_long/T#{$task_list.size}G#{group_count}_#{gsp}_#{loops}"
+          save_tasks(filename)
+        end
+        #$COLOR_CHAR = true
+      end
+      #taskset = TaskSet.new
+      #taskset.show_taskset
+      #show_groups
+      #puts wcrt_max_system
+      i += 1
+      istr = ("%010b" % [i])[10-group_count, group_count]
+      #p "#{i}:#{istr}"
+      change_groups(istr)
+    end
+    return ret_hash
+  end
+  
   ###################################################
   #
   # private
@@ -578,7 +641,7 @@ class TaskManager
       i.times do |num|
         t = create_task_sche_check(info[:umax])
         max_util += t.extime/t.period
-        break if max_util > 2.0
+        break if max_util > 4*0.8
         @@task_array << t
       end
     when MY_SCHE_CHECK
@@ -596,7 +659,7 @@ class TaskManager
       end 
     when "120620"
       i.times{ 
-        @@task_array << create_task_120620(i, info[:extime])
+        @@task_array << create_task_120620(i, info)
       }
     when "120613"
       i.times{ 
@@ -606,7 +669,10 @@ class TaskManager
       i.times{ 
         @@task_array << create_task_120620_2(i, info[:extime])
       }
-
+    when "120927"
+      i.times do
+        @@task_array << create_task_120620(i, info)
+      end
     # リソースやタスクのの割り当てを手動で設定
     when CREATE_MANUALLY
       i.times{ 
