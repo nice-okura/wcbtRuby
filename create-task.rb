@@ -42,10 +42,8 @@ class TaskManager
       extime = req_time + rand(TASK_EXE_MAX - req_time)
     end
 
-
     # 周期
     period = (extime/(1.0/task_count))
-
 
     # 優先度
     priority = @@task_id

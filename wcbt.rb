@@ -80,6 +80,8 @@ module WCBT
     proc = [] # proc_list用プロセッサ配列
     
     $calc_task.each do |task|
+      task.clear_blockingtime
+      
       lreqs = []
       sreqs = []
 
@@ -559,6 +561,21 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
+      #time += tuples[num].req.time # spinをpreemptiveにした場合
+      time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
+    end
+    p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
+
+    return time
+  end
+  
+  def AB_preemptive(job)
+    return 0 if job == nil || job == []
+
+    time = 0
+    tuples = abr(job)
+    min = [tuples.size, narr(job)].min
+    0.upto(min-1) do |num|
       time += tuples[num].req.time # spinをpreemptiveにした場合
       #time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
@@ -689,6 +706,7 @@ module WCBT
         puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.3f", t.wcrt)}"
       end
     end
+    
   end
 
   # タスクのブロック時間を計算
@@ -708,6 +726,7 @@ module WCBT
     $calc_task.each do |t|
       t.set_wcrt(wcrt(t))
     end
+        
   end
   
   # 以下のフォーマットでブロック時間等表示
@@ -788,7 +807,7 @@ module WCBT
         end
       end
       
-      if time.round(2) == pre_wcrt.round(2) || n > 10
+      if time.round(2) == pre_wcrt.round(2)# || n > 10
         break
       else
         pre_wcrt = time

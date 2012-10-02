@@ -82,9 +82,9 @@ class Processor
   # JSON外部出力用
   def out_alldata
     tsk_list = []
-    @task_list.each{|t|
+    @task_list.each do |t|
       tsk_list << t.task_id
-    }
+    end
     return {
       PROC_ID_SYN => @proc_id, 
       TASK_LIST_SYN => tsk_list
@@ -110,6 +110,19 @@ class Processor
     return false
   end
   
+  # プロセッサ内の最高優先度のタスクを返す
+  def get_highest_priority_task
+    priority = 100
+    task = nil
+    @task_list.each do |t|
+      if priority > t.priority
+        priority = t.priority
+        task = t
+      end
+    end
+    
+    return task
+  end
   #def !=(proc)
   #  return false if self == proc
   #  return true
@@ -349,8 +362,18 @@ class Task
     #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
   
+  # ブロック時間のリセット
+  def clear_blockingtime
+    @bb = 0
+    @ab = 0
+    @sb = 0
+    @lb = 0
+    @db = 0
+    @b = 0
+  end
+  
   # デバッグ用
-  def to_s
+  def to_str
     puts "#{caller[0]}"
     puts "ID: #{task_id}"
     puts "extime: #{@extime}"
