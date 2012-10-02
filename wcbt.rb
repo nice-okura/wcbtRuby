@@ -79,23 +79,9 @@ module WCBT
     
     proc = [] # proc_list用プロセッサ配列
     
+    
+    
     $calc_task.each do |task|
-      task.clear_blockingtime
-      
-      lreqs = []
-      sreqs = []
-
-      # ネストしているリソース要求も含める
-      # task.req_list.each{|req|
-      task.all_require.each do |req|
-        if req.outermost == true && req.res.kind == LONG
-          lreqs << req            
-        elsif req.outermost == true && req.res.kind == SHORT
-          sreqs << req
-        end
-      end
-      $WCLR[task.task_id] = lreqs unless lreqs == []
-      $WCSR[task.task_id] = sreqs unless sreqs == []
       
       #
       # SR, LRの計算
@@ -111,6 +97,31 @@ module WCBT
       end
       $LR[task.task_id] = lr unless lr == []
       $SR[task.task_id] = sr unless sr == []
+    end
+    
+    # inflated_timeの計算
+    $calc_task.each do |task|
+      SB_not_tight(task)
+    end
+    
+    
+    $calc_task.each do |task|
+      lreqs = []
+      sreqs = []
+
+      # ネストしているリソース要求も含める
+      # task.req_list.each{|req|
+      task.all_require.each do |req|
+        if req.outermost == true && req.res.kind == LONG
+          lreqs << req            
+        elsif req.outermost == true && req.res.kind == SHORT
+          sreqs << req
+        end
+      end
+      $WCLR[task.task_id] = lreqs unless lreqs == []
+      $WCSR[task.task_id] = sreqs unless sreqs == []
+      
+      
       
       #
       # narrの計算
@@ -716,7 +727,7 @@ module WCBT
     # 各タスクのブロック時間を計算
     #puts "set_blocktime"
     $calc_task.each{ |t| t.sb = SB(t) }
-    $calc_task.each{ |t| SB_not_tight(t) }
+    #$calc_task.each{ |t| SB_not_tight(t) }
     $calc_task.each{ |t| t.ab = AB(t) }
     $calc_task.each{ |t| t.bb = BB(t) }
     $calc_task.each{ |t| t.lb = LB(t) }
@@ -735,7 +746,7 @@ module WCBT
     # 各タスクのブロック時間を計算
     #puts "set_blocktime"
     $calc_task.each{ |t| t.sb = SB(t) }
-    $calc_task.each{ |t| SB_not_tight(t) }
+    #$calc_task.each{ |t| SB_not_tight(t) }
     $calc_task.each{ |t| t.ab = AB_preemptive(t) }
     $calc_task.each{ |t| t.bb = BB(t) }
     $calc_task.each{ |t| t.lb = LB(t) }
