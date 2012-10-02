@@ -139,7 +139,7 @@ class Processor
   def calc_util
     util = 0.0
     @task_list.each do |t|
-      util += t.extime/t.period
+      util += t.get_extime/t.period
     end
 
     return util
@@ -155,7 +155,7 @@ class Processor
   # タスク使用率の降順で並べる
   def sort_by_task_util
     @task_list.sort! do |a, b|
-      a.extime/a.period <=> b.extime/b.period
+      a.get_extime/a.period <=> b.get_extime/b.period
     end
   end
 
@@ -173,7 +173,7 @@ end
 #
 class Task
   attr_accessor :req_list, :b, :bb, :ab, :sb, :lb, :db, :offset
-  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime, :extime, :wcrt, :proc, :priority
+  attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime, :wcrt, :proc, :priority
   
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
@@ -182,6 +182,7 @@ class Task
     else raise; end
     set_period(period)
     set_extime(extime) # CS時間も含めた時間
+    @inflated_time = 0.0  # shortのspinにより増加した時間
     @priority = priority.to_i
     @offset = format('%.2f', offset).to_f
     set_reqlist(reqarray)
@@ -253,6 +254,16 @@ class Task
   # 有効数字2桁で実行時間を代入
   def set_extime(extime)
     @extime = extime.round(2)
+  end
+  
+  # inflateした実行時間を返す
+  def get_extime
+    return @extime+@inflated_time
+  end
+  
+  # 有効数字2桁でinflated_timeを代入
+  def set_inflated_time(inflated_time)
+    @inflated_time = inflated_time.round(2)
   end
 
   # 有効数字2桁で実行時間を代入
@@ -625,7 +636,7 @@ class Req
         proc.task_list.each do |task|
           task.req_list.each do |req|
             if req.req_id == @req_id
-              task.extime += time
+              task.get_extime += time
               loop_break = true 
             
               puts ("T#{task.task_id}:R#{req.req_id}(G:#{req.res.group}) == R#{@req_id}")

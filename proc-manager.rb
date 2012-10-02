@@ -222,10 +222,10 @@ class ProcessorManager
   # タスクをタスクIDの順にプロセッサに割り当てる
   def assign_id_order(task_list)
     proc_id = 0
-    task_list.each{ |t|
+    task_list.each do |t|
       proc_id = ((t.task_id-1)%@@proc_list.size) + 1
       assign_task(proc_id, t)
-    }
+    end
   end
 
   # CPU使用率が一番低いプロセッサIDを返す

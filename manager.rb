@@ -85,7 +85,7 @@ class AllManager
   #
   # タスクセットデータの読み込み
   #
-  def load_tasks(name)
+  def load_tasks(name, info={})
     if name == "" || name == nil
       puts "ファイル名を指定して下さいよ" 
       return false
@@ -103,8 +103,11 @@ class AllManager
     end
     # $task_list = @tm.get_task_array
     init_computing($task_list)
-    set_blocktime
-
+    if info[:spin_preemptive]
+      set_blocktime_spin_preemptive
+    else
+      set_blocktime
+    end
     return true
   end
  
@@ -167,7 +170,12 @@ class AllManager
     @using_group_array = get_using_group_array
 
     # システムで使用するタスクセット
-    $task_list = @tm.get_task_array
+    $task_list = []
+    ProcessorManager.proc_list.each do |proc|
+      proc.task_list.each do |task|
+        $task_list << task
+      end
+    end
     
     # A Flexible.. のスケジューラビリティ解析の場合
     if info[:mode] == SCHE_CHECK
@@ -640,7 +648,7 @@ class TaskManager
       max_util = 0.0
       i.times do |num|
         t = create_task_sche_check(info[:umax])
-        max_util += t.extime/t.period
+        max_util += t.get_extime/t.period
         break if max_util > 4*0.8
         @@task_array << t
       end
@@ -651,7 +659,7 @@ class TaskManager
       max_util = 0.0
       i.times do |num|
         t = create_task_sche_check(info[:umax])
-        max_util += t.extime/t.period
+        max_util += t.get_extime/t.period
         
         u = info[:proc_num]*info[:cpu_util_max].to_f
         break if max_util > u
@@ -832,7 +840,7 @@ class TaskManager
   # タスク使用率の降順にソート
   def sort_tasklist_by_util
     @@task_array.sort do |a, b|
-      -1 * (a.extime/a.period <=> b.extime/b.period)
+      -1 * (a.get_extime/a.period <=> b.get_extime/b.period)
     end
   end
 
@@ -840,7 +848,7 @@ class TaskManager
   def get_alltask_util
     util = 0.0
     @@task_array.each do |t|
-      util += t.extime/t.period
+      util += t.get_extime/t.period
     end
     
     return util

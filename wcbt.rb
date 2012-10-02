@@ -630,7 +630,8 @@ module WCBT
       ## puts "リソース要求#{req.req_id}:inflate_time:#{inflate_time}"
       block_time += inflate_time
     end
-    job.set_extime(job.extime + block_time)
+    #job.set_extime(job.get_extime + block_time)
+    job.set_inflated_time(block_time)
     return block_time
   end
 
@@ -638,7 +639,7 @@ module WCBT
     time = 0
     task.proc.task_list.each do |tas|
       if tas.proc == task.proc && tas.priority < task.priority
-        time += [tas.extime+tas.get_inflated_time, lbt(tas)].min
+        time += [tas.get_extime+tas.get_inflated_time, lbt(tas)].min
       end
     end
     return time 
@@ -680,8 +681,8 @@ module WCBT
     task.proc.task_list.each do |t|
       sb = t.sb
       if t.proc == task.proc && t.priority < task.priority
-        time += (t.extime + sb) * ((task.period / t.period).ceil + 1)
-        #print "(#{t.extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
+        time += (t.get_extime + sb) * ((task.period / t.period).ceil + 1)
+        #print "(#{t.get_extime}+#{sb})*#{(t.period/task.period).ceil + 1}(#{t.period}, #{task.period}), " 
       end
     end
     #puts ""
@@ -726,7 +727,25 @@ module WCBT
     $calc_task.each do |t|
       t.set_wcrt(wcrt(t))
     end
-        
+  end
+  
+  # タスクのブロック時間を計算
+  public
+  def set_blocktime_spin_preemptive
+    # 各タスクのブロック時間を計算
+    #puts "set_blocktime"
+    $calc_task.each{ |t| t.sb = SB(t) }
+    $calc_task.each{ |t| SB_not_tight(t) }
+    $calc_task.each{ |t| t.ab = AB_preemptive(t) }
+    $calc_task.each{ |t| t.bb = BB(t) }
+    $calc_task.each{ |t| t.lb = LB(t) }
+    $calc_task.each{ |t| t.db = DB(t) }
+    $calc_task.each{ |t| t.b = t.bb + t.ab + t.sb + t.lb + t.db }
+
+    # 最悪応答時間の計算
+    $calc_task.each do |t|
+      t.set_wcrt(wcrt(t))
+    end
   end
   
   # 以下のフォーマットでブロック時間等表示
@@ -752,8 +771,8 @@ module WCBT
       u = 0
       #      puts "#{partition(p).size}"
       p.task_list.each do |t|
-        #puts "#{(t.extime+t.sb.to_f)/t.period}"
-        u += (t.extime + t.b - t.lb)/t.period
+        #puts "#{(t.get_extime+t.sb.to_f)/t.period}"
+        u += (t.get_extime + t.b - t.lb)/t.period
       end
       #puts "CPU#{p}使用率:#{u}"
       uabj -= u
@@ -780,8 +799,8 @@ module WCBT
       u = 0
       #      puts "#{partition(p).size}"
       p.task_list.each do |t|
-        #puts "#{(t.extime+t.sb.to_f)/t.period}"
-        u += (t.extime + t.b - t.lb)/t.period
+        #puts "#{(t.get_extime+t.sb.to_f)/t.period}"
+        u += (t.get_extime + t.b - t.lb)/t.period
       end
       #puts "CPU#{p}使用率:#{u}"
       uabj -= u
@@ -793,17 +812,17 @@ module WCBT
   # 最悪応答時間
   private
   def wcrt(job)
-    pre_wcrt = job.extime + job.b
+    pre_wcrt = job.get_extime + job.b
     n = 1
     #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     count = 0
     pre_array = [pre_wcrt]
     while(1)
-      time = job.extime + job.b# - job.db
+      time = job.get_extime + job.b# - job.db
       job.proc.task_list.each do |t|
         if t.priority < job.priority && t.proc == job.proc
           count = ((pre_wcrt/t.period).ceil)
-          time += count*(t.extime + t.sb)
+          time += count*(t.get_extime + t.sb)
         end
       end
       

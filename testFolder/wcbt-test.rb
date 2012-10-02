@@ -15,7 +15,7 @@ class Test_wcbt < Test::Unit::TestCase
   def set_taskset(filename)
     @manager.all_data_clear
     @manager.load_tasks(filename)
-    init_computing(@manager.tm.get_task_array)    
+    #init_computing(@manager.tm.get_task_array)    
   end
   
   def setup

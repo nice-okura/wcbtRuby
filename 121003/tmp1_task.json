@@ -1,107 +1,8 @@
 {
   "tasks": [
     {
-      "task_id": 3,
-      "proc": 1,
-      "period": 480.0,
-      "extime": 24.0,
-      "priority": 1,
-      "offset": 0.0,
-      "req_id_list": [
-        83
-      ]
-    },
-    {
-      "task_id": 7,
-      "proc": 1,
-      "period": 500.0,
-      "extime": 25.0,
-      "priority": 2,
-      "offset": 0.0,
-      "req_id_list": [
-
-      ]
-    },
-    {
-      "task_id": 11,
-      "proc": 1,
-      "period": 520.0,
-      "extime": 26.0,
-      "priority": 3,
-      "offset": 0.0,
-      "req_id_list": [
-        86
-      ]
-    },
-    {
-      "task_id": 9,
-      "proc": 2,
-      "period": 440.0,
-      "extime": 22.0,
-      "priority": 1,
-      "offset": 0.0,
-      "req_id_list": [
-
-      ]
-    },
-    {
-      "task_id": 8,
-      "proc": 2,
-      "period": 440.0,
-      "extime": 22.0,
-      "priority": 2,
-      "offset": 0.0,
-      "req_id_list": [
-
-      ]
-    },
-    {
-      "task_id": 2,
-      "proc": 2,
-      "period": 480.0,
-      "extime": 24.0,
-      "priority": 3,
-      "offset": 0.0,
-      "req_id_list": [
-        82
-      ]
-    },
-    {
-      "task_id": 19,
-      "proc": 2,
-      "period": 520.0,
-      "extime": 26.0,
-      "priority": 4,
-      "offset": 0.0,
-      "req_id_list": [
-
-      ]
-    },
-    {
-      "task_id": 16,
-      "proc": 2,
-      "period": 560.0,
-      "extime": 36.0,
-      "priority": 5,
-      "offset": 0.0,
-      "req_id_list": [
-        87
-      ]
-    },
-    {
-      "task_id": 17,
-      "proc": 2,
-      "period": 580.0,
-      "extime": 29.0,
-      "priority": 6,
-      "offset": 0.0,
-      "req_id_list": [
-
-      ]
-    },
-    {
       "task_id": 12,
-      "proc": 3,
+      "proc": 1,
       "period": 420.0,
       "extime": 21.0,
       "priority": 1,
@@ -111,19 +12,19 @@
       ]
     },
     {
-      "task_id": 6,
-      "proc": 3,
+      "task_id": 14,
+      "proc": 1,
       "period": 420.0,
-      "extime": 29.0,
+      "extime": 21.0,
       "priority": 2,
       "offset": 0.0,
       "req_id_list": [
-        85
+        90
       ]
     },
     {
       "task_id": 18,
-      "proc": 3,
+      "proc": 1,
       "period": 460.0,
       "extime": 23.0,
       "priority": 3,
@@ -133,32 +34,87 @@
       ]
     },
     {
-      "task_id": 5,
-      "proc": 3,
-      "period": 580.0,
-      "extime": 29.0,
+      "task_id": 15,
+      "proc": 1,
+      "period": 480.0,
+      "extime": 24.0,
       "priority": 4,
-      "offset": 0.0,
-      "req_id_list": [
-        84
-      ]
-    },
-    {
-      "task_id": 14,
-      "proc": 4,
-      "period": 420.0,
-      "extime": 21.0,
-      "priority": 1,
       "offset": 0.0,
       "req_id_list": [
 
       ]
     },
     {
-      "task_id": 13,
-      "proc": 4,
+      "task_id": 8,
+      "proc": 1,
       "period": 480.0,
       "extime": 24.0,
+      "priority": 5,
+      "offset": 0.0,
+      "req_id_list": [
+
+      ]
+    },
+    {
+      "task_id": 7,
+      "proc": 1,
+      "period": 540.0,
+      "extime": 27.0,
+      "priority": 6,
+      "offset": 0.0,
+      "req_id_list": [
+        85
+      ]
+    },
+    {
+      "task_id": 3,
+      "proc": 1,
+      "period": 540.0,
+      "extime": 29.0,
+      "priority": 7,
+      "offset": 0.0,
+      "req_id_list": [
+        83
+      ]
+    },
+    {
+      "task_id": 5,
+      "proc": 1,
+      "period": 560.0,
+      "extime": 28.0,
+      "priority": 8,
+      "offset": 0.0,
+      "req_id_list": [
+        84
+      ]
+    },
+    {
+      "task_id": 4,
+      "proc": 1,
+      "period": 580.0,
+      "extime": 29.0,
+      "priority": 9,
+      "offset": 0.0,
+      "req_id_list": [
+
+      ]
+    },
+    {
+      "task_id": 19,
+      "proc": 2,
+      "period": 420.0,
+      "extime": 21.0,
+      "priority": 1,
+      "offset": 0.0,
+      "req_id_list": [
+        92
+      ]
+    },
+    {
+      "task_id": 6,
+      "proc": 2,
+      "period": 560.0,
+      "extime": 28.0,
       "priority": 2,
       "offset": 0.0,
       "req_id_list": [
@@ -166,51 +122,95 @@
       ]
     },
     {
-      "task_id": 15,
-      "proc": 4,
+      "task_id": 9,
+      "proc": 3,
       "period": 480.0,
       "extime": 24.0,
-      "priority": 3,
+      "priority": 1,
       "offset": 0.0,
       "req_id_list": [
-
+        86
       ]
     },
     {
-      "task_id": 10,
-      "proc": 4,
-      "period": 480.0,
-      "extime": 24.0,
-      "priority": 4,
-      "offset": 0.0,
-      "req_id_list": [
-
-      ]
-    },
-    {
-      "task_id": 20,
-      "proc": 4,
-      "period": 500.0,
-      "extime": 25.0,
-      "priority": 5,
+      "task_id": 11,
+      "proc": 3,
+      "period": 520.0,
+      "extime": 26.0,
+      "priority": 2,
       "offset": 0.0,
       "req_id_list": [
         88
       ]
     },
     {
+      "task_id": 16,
+      "proc": 4,
+      "period": 400.0,
+      "extime": 20.0,
+      "priority": 1,
+      "offset": 0.0,
+      "req_id_list": [
+
+      ]
+    },
+    {
+      "task_id": 2,
+      "proc": 4,
+      "period": 420.0,
+      "extime": 21.0,
+      "priority": 2,
+      "offset": 0.0,
+      "req_id_list": [
+        82
+      ]
+    },
+    {
+      "task_id": 17,
+      "proc": 4,
+      "period": 440.0,
+      "extime": 22.0,
+      "priority": 3,
+      "offset": 0.0,
+      "req_id_list": [
+        91
+      ]
+    },
+    {
+      "task_id": 13,
+      "proc": 4,
+      "period": 480.0,
+      "extime": 24.0,
+      "priority": 4,
+      "offset": 0.0,
+      "req_id_list": [
+        89
+      ]
+    },
+    {
       "task_id": 1,
       "proc": 4,
-      "period": 540.0,
-      "extime": 27.0,
-      "priority": 6,
+      "period": 480.0,
+      "extime": 24.0,
+      "priority": 5,
       "offset": 0.0,
       "req_id_list": [
         81
       ]
     },
     {
-      "task_id": 4,
+      "task_id": 10,
+      "proc": 4,
+      "period": 500.0,
+      "extime": 27.0,
+      "priority": 6,
+      "offset": 0.0,
+      "req_id_list": [
+        87
+      ]
+    },
+    {
+      "task_id": 20,
       "proc": 4,
       "period": 580.0,
       "extime": 29.0,

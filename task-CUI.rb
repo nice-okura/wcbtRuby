@@ -133,7 +133,7 @@ class TaskSet
         print ["\tLB:", sprintf("%.1f", t.lb)].join
         print ["\tDB:", sprintf("%.1f", t.db)].join
         print ["\tB:", sprintf("%.1f", t.b)].join
-        print "(#{t.extime})"
+        print "(#{t.get_extime})"
         print "\n"
         #pri = get_extime_high_priority(t) 
         
@@ -142,7 +142,7 @@ class TaskSet
         else
           puts "\t\t周期#{t.period}>最悪応答時間#{sprintf("%.1f", t.wcrt)}"
         end
-        puts "\t\t e/p = #{(t.extime/t.period).round(5)} e+sb/p = #{((t.extime+t.sb)/t.period).round(5)}"
+        puts "\t\t e/p = #{(t.get_extime/t.period).round(5)} e+sb/p = #{((t.get_extime+t.sb)/t.period).round(5)}"
       end
     end
   end
@@ -158,7 +158,7 @@ class TaskSet
         print ["\tNPB:", sprintf("%.1f", t.npb)].join
         print ["\tDB:", sprintf("%.1f", t.db)].join
         print ["\tB:", sprintf("%.1f", t.b)].join
-        print "(#{t.extime})"
+        print "(#{t.get_extime})"
         print "\n"
 
         if t.period < t.wcrt
@@ -190,8 +190,8 @@ class TaskCUI
   # タスク名表示
   #
   def get_task_name
-    return "タスク#{@task.task_id}(#{"%1.3f"%(@task.extime.to_f/@task.period.to_f)}):"
-    #return "タスク" + @task.task_id.to_s + "(" + "%1.3f"%(@task.extime.to_f/@task.period.to_f) + ")" + ":"
+    return "タスク#{@task.task_id}(#{"%1.3f"%(@task.get_extime.to_f/@task.period.to_f)}):"
+    #return "タスク" + @task.task_id.to_s + "(" + "%1.3f"%(@task.get_extime.to_f/@task.period.to_f) + ")" + ":"
   end
   
   
@@ -226,7 +226,7 @@ class TaskCUI
     }
 
                                           # 最後に計算時間が余っていれば表示
-    (@task.extime + @task.offset - curTime).to_i.times{
+    (@task.get_extime + @task.offset - curTime).to_i.times{
       str += CALC_CHAR
     }
     str += "|"  # タスク終了
