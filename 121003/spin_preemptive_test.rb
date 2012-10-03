@@ -15,7 +15,7 @@ proc_count = 4
 info = { }
 
 # Progress bar Setting
-pbar = ProgressBar.new("WCRT Improvement Rate", task_count_array.size * taskset_count) 
+pbar = ProgressBar.new("WCRT Improvement Rate", task_count_array.size * taskset_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 
