@@ -414,6 +414,31 @@ class TaskManager
     
     return task
   end
+  private
+  def create_task_121003(task_count, info)
+    ####################
+    # タスクステータス #
+    ####################
+    #
+    # 121003用
+    #
+    @@task_id += 1
+    priority = @@task_id
+    extime = info[:extime]
+    period = (extime/(1.0/task_count))
+    offset = 0 #rand(10)
+    
+    req_list = []
+    info[:require_count].times do
+      r = RequireManager.get_random_req
+      req_list << r
+    end
+    #################
+    
+    task = Task.new(@@task_id, -1, period, extime, priority, offset, req_list)
+    
+    return task
+  end
   
   #
   # ランダムタスク生成

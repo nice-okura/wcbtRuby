@@ -573,6 +573,7 @@ class Req
 
     if @time < nesttime
       print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
+      pp self
       raise
       #exit
     end
@@ -651,7 +652,6 @@ class Req
 =end
   end
 
-  protected
   # リソース要求の時間を変更する
   def change_require_time(time)
     @time = time

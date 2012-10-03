@@ -681,6 +681,10 @@ class TaskManager
       i.times do
         @@task_array << create_task_120620(i, info)
       end
+    when "121003"
+      i.times do 
+        @@task_array << create_task_121003(i, info)
+      end
     # リソースやタスクのの割り当てを手動で設定
     when CREATE_MANUALLY
       i.times{ 

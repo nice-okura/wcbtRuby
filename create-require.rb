@@ -109,14 +109,19 @@ class RequireManager
       }
     when "120927"
       get_use_group_array_order(i, group_array).each do |g|
-          info[:group] = g
-          @@require_array << create_require_120927(info)
+        info[:group] = g
+        @@require_array << create_require_120927(info)
+      end
+    when "121003"
+      get_use_group_array_order(i, group_array).each do |g|
+        info[:group] = g
+        @@require_array << create_require_manually(info)
       end
     when CREATE_MANUALLY
-      get_use_group_array_random(i, group_array).each{ |new_group|
+      get_use_group_array_random(i, group_array).each do |new_group|
         info[:group] = new_group
         @@require_array << create_require_manually(info)
-      }
+      end
     else
       #
       #
@@ -168,8 +173,6 @@ class RequireManager
         req << r.clone
       end
     end
-
-
 
     return Req.new(@@id, group, time, req)
   end

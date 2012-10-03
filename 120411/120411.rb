@@ -6,8 +6,8 @@
 # 
 #
 #
-require "task-CUI"
-require "manager"
+require "./task-CUI"
+require "./manager"
 require "progressbar"
 
 
@@ -29,7 +29,7 @@ def get_wcrt(task, b=nil)
     block = b
   end
   
-  time = task.extime + block + get_extime_high_priority(task) 
+  time = task.get_extime + block + get_extime_high_priority(task) 
   return time 
 end
 
@@ -40,7 +40,7 @@ end
 def change_groups(str)
   i = 0
   str.each_byte{|c|
-    @manager.gm.get_group_array[i].kind = c.chr=="0" ? SHORT : LONG
+    GroupManager.get_group_array[i].kind = c.chr=="0" ? SHORT : LONG
     i += 1
   }
 end
@@ -49,7 +49,7 @@ end
 # 現在のリソースグループ表示
 #
 def show_groups
-  @manager.gm.get_group_array.each{|g|
+  GroupManager.get_group_array.each{|g|
     print "#{g.kind[0].chr} "
   }
 end
@@ -59,7 +59,7 @@ end
 #
 def get_long_groups
   c = 0
-  @manager.gm.get_group_array.each{|g|
+  GroupManager.get_group_array.each{|g|
     #c += 1 if g.kind == LONG
     if g.kind == LONG
       c += 1
@@ -81,7 +81,7 @@ def compute_wcrt
   #
   # グループ数
   #
-  group_count = @manager.gm.get_group_array.size
+  group_count = GroupManager.get_group_array.size
   
   #
   # グループのパターン数
@@ -97,11 +97,11 @@ def compute_wcrt
   #
   # リソースを全てshortにする
   #
-  @manager.gm.get_group_array.each{|g|
+  GroupManager.get_group_array.each{|g|
     g.kind = SHORT
   }
   #set_blocktime
-  taskset = TaskSet.new(@manager.tm.get_task_array)
+  taskset = TaskSet.new#(@manager.tm.get_task_array)
   #show_blocktime
   #taskset.show_taskset
   
@@ -163,46 +163,52 @@ rcsl = 0.1
 extime = 50
 resouce_count_max = 4
 start_task_num = 8
-end_task_num = 16
+end_task_num = 8
 task_step_num = 4
-loop_count = 10
-
+loop_count = 1
+info = {}
 
 @manager = AllManager.new
 
 
-pbar = ProgressBar.new("WCRTの計測", 10*((end_task_num - start_task_num)/task_step_num + 1)*resouce_count_max*loop_count)
+pbar = ProgressBar.new("WCRTの計測", loop_count*((end_task_num - start_task_num)/task_step_num + 1)*resouce_count_max*loop_count)
 pbar.format_arguments = [:percentage, :bar, :stat]
 pbar.format = "%3d%% %s %s"
 mes = ""
 
 
-8.step(16, 4){|t|
+start_task_num.step(end_task_num, task_step_num){|t|
   tasks = t
   for g in [4]
   #for g in [1, 2, 4, 8]
     groups = g
-    info = ["120411", extime, rcsl]
+    info[:mode] = "120411"
+    info[:extime] = extime
+    info[:rcsl] = rcsl
+    info[:proc_num] = 4
+    #info = ["120411", extime, rcsl]
     c = []
     c.fill(0,0..9)
 
     loop_count.times{
       i = 0
       rcsl = 0.1
+      @manager.all_data_clear
       @manager.create_tasks(tasks, requires, groups, info)
       while rcsl < 1.0
         #
         # クリティカルセクションの変更
         #
         $task_list.each{|t|
-          t.req_list[0].time = t.extime * rcsl
+          t.req_list[0].change_require_time(t.get_extime * rcsl)
         }
         c[i] += compute_wcrt
         pbar.inc
         rcsl += 0.1
+        rcsl.round(3)
         i += 1
       end
-      @manager.all_data_clear
+
     }
     j = 0.1
     c.each{|l|
