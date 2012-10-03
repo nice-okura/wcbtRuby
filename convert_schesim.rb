@@ -14,7 +14,7 @@ require "export_schesim"
 if ARGV.size != 2
   STDERR.puts "Usage: % ruby convert_schesim.rb [タスクファイル名] [出力ファイル名]"
   STDERR.puts "Ex."
-  STDERR.puts "% ruby ../random-task.rb 20tasks 20 2 10 "
+  STDERR.puts "% ruby ../make_taskset.rb 20tasks 20 2 10 "
   STDERR.puts "% ruby ../convert_schesim.rb 20tasks 20tasks_schesim"
   STDERR.puts "% cp -r 20tasks_schesim ../../schesim-0.7.2/"
   STDERR.puts "% cd ../../schesim-0.7.2/"
