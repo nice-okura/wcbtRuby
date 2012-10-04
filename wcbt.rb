@@ -508,7 +508,7 @@ module WCBT
     proc.task_list.each do |task|
       tuples += wcsxg(task, job, group)
     end
-    tuples.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+    tuples.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
     return tuples
   end
   
