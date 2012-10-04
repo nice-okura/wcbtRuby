@@ -28,7 +28,7 @@ then
 	
 else
     echo "正しい引数を入力して"
-    echo "% sh ./to_schesim [タスクファイル名] [出力ファイル名]"
+    echo "% sh ./to_schesim [タスクファイル名] [出力フォルダ名]"
     echo "Ex."
-    echo "% . to_schesim.sh 20task 20tasks_schesim"
+    echo "% . to_schesim.sh 20task ./20tasks_schesim"
 fi
