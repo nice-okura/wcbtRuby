@@ -2,6 +2,7 @@ task*.txt
 TLV*
 __MACOSX/*
 schesim*
+*schesim/*
 doc/*
 */doc/
 tags
@@ -9,11 +10,13 @@ tags
 *.bak
 *.png
 *.plt
-120628/json/*
-120620/json/*
+*.dat
 *.log
-json/*
-120601_sche_ana/json/*
-120926/json/*
-120927/json/*
+*task.json
+*proc.json
+*require.json
+*group.json
+json
+debug*
+!/testFolder/*.json
 120927/json_analysis_for_long/*
