@@ -24,7 +24,7 @@ then
     cp -r $2 ../schesim-0.7.2/
     cd ../schesim-0.7.2/
     . auto_schesim.sh $2/$2
-    wr
+    cd ~/Documents/lab/tkdos/wcbtRuby/
 	
 else
     echo "正しい引数を入力して"

@@ -74,7 +74,7 @@ opt.on('-e [VAL]', '--extime [VAL]') {|v|
   info[:extime] = v.to_i
 }
 
-opt.on('-e [VAL]', '--extime_range [VAL]') { |v|
+opt.on('-E [VAL]', '--extime_range [VAL]') { |v|
   first = v.split("..")[0].to_i
   last = v.split("..")[1].to_i
   info[:extime_range] = first..last
