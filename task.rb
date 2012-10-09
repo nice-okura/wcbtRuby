@@ -260,6 +260,11 @@ class Task
   def get_extime
     return @extime+@inflated_time
   end
+
+  # inflateしていない実行時間を返す
+  def get_noninflate_time
+    return @extime
+  end
   
   # 有効数字2桁でinflated_timeを代入
   def set_inflated_time(inflated_time)

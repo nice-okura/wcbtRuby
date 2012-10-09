@@ -128,7 +128,7 @@ class EXPORT_SCHESIM
     str = ""
 
     curTime = t.offset
-    t.req_list.each{ |req|
+    t.req_list.each do |req|
       calc_time = 0.0
       calc_time = req.begintime - curTime # 現在時刻から次のリソース要求の時間までが計算時間
       
@@ -139,10 +139,10 @@ class EXPORT_SCHESIM
       str += get_req_str(req)   # リソース要求の分だけLONG or SHORTCHAR を表示
 
       curTime += req.time
-    }
+    end
 
     # 最後に計算時間が余っていれば表示
-    time = t.get_extime + t.offset - curTime
+    time = t.get_noninflate_time + t.offset - curTime
     str += "\t\t exc(#{time} * @@share#{t.proc.proc_id})\n" if time > 0.0
   
 
