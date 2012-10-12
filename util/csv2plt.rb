@@ -10,17 +10,16 @@
 # 1,12,260,270,260,3130,260,270,260
 
 require "csv"
-
+require "pp"
 DIRNAME = ARGV[0] # 入力データのあるフォルダ 末尾の"/"あり
 OUTPUT_FILE = ARGV[1]
-TASK_COUNT = ARGV[2]
 
 $task_stats_data = { }
 
-def get_task_rt(id)
+def get_task_rt(tsk, id)
   rt_ave = 0.0
   rt_wc = 0.0
-  rts = $task_stats_data[id]
+  rts = $task_stats_data[tsk][id]
   task_count = rts.size
   rts.each do |rt|
     rt_ave += rt[0]
@@ -33,30 +32,41 @@ def get_task_rt(id)
   return [rt_ave, rt_wc]
 end
 
-Dir::glob(DIRNAME+"*.csv").each do |filename|
-  # 読み取り
-  CSV.open(filename, "r") do |f|
-    header = f.take(1)[0]
-    f.each do |row| 
-      id = row[0].to_i    # タスクID
-      $task_stats_data[id] = [] if $task_stats_data[id] == nil
-      rt_ave = row[2].to_i # 平均応答時間
-      rt_wc = row[3].to_i  # 最大実応答時間"
-      $task_stats_data[id] << [rt_ave, rt_wc]
+task_count = [4, 6, 8] # rtOutputRandomTaskset.sh と合わせる!
+task_count.each do |tsk|
+  puts "#{tsk}TASK"
+  $task_stats_data[tsk] = { }
+
+  Dir::glob(DIRNAME+"data_#{tsk}task/*.csv").each do |filename|
+    p filename 
+    # 読み取り
+    CSV.open(filename, "r") do |f|
+      header = f.take(1)[0]
+      f.each do |row| 
+        id = row[0].to_i    # タスクID
+        $task_stats_data[tsk][id] = [] if $task_stats_data[tsk][id] == nil
+        rt_ave = row[2].to_i # 平均応答時間
+        rt_wc = row[3].to_i  # 最大実応答時間"
+        $task_stats_data[tsk][id] << [rt_ave, rt_wc]
+      end
     end
+    pp $task_stats_data[tsk]
   end
-end
-  
-#p $task_stats_data
+end  
+
+pp $task_stats_data
 
 # TASKID:1 の平均応答時間と最大実応答時間
-
-
 
 # 出力
 File.open(OUTPUT_FILE, "w") do |fp|
   id = 1
-  break if $task_stats_data[id] == nil
+
   #STDERR.puts $task_stats_data[id]
-  fp.puts "#{TASK_COUNT} #{get_task_rt(id)[0]} #{get_task_rt(id)[1]}" 
+
+  task_count.each do |tsk|
+    break if $task_stats_data[tsk][id] == nil
+
+    fp.puts "#{tsk} #{get_task_rt(tsk, id)[0]} #{get_task_rt(tsk, id)[1]}" 
+  end
 end

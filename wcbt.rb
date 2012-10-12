@@ -837,7 +837,7 @@ module WCBT
         end
       end
       
-      if time.round(2) == pre_wcrt.round(2)# || n > 10
+      if time.round(2) == pre_wcrt.round(2) || n > 10
         break
       else
         pre_wcrt = time

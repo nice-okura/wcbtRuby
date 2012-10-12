@@ -3,8 +3,8 @@
 #
 # タスクをschesim用に変換するためのクラス
 #
-$:.unshift(File.dirname(__FILE__))
-require "manager"
+#$:.unshift(File.dirname(__FILE__))
+require "./manager"
 
 class EXPORT_SCHESIM
 

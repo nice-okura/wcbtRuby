@@ -17,8 +17,7 @@
 #% cd ../../schesim-0.7.2/
 #% . auto_schesim.sh 20tasks_schesim/20tasks_schesim
 #
-if [ $# -eq 2 ]
-then
+if [ $# -eq 2 ]; then
     #echo "正しい引数です"
     ruby convert_schesim.rb $1 $2
     cp -r $2 ../schesim-0.7.2/
