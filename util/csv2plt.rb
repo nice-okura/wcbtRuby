@@ -34,26 +34,47 @@ end
 
 task_count = [4, 6, 8] # rtOutputRandomTaskset.sh と合わせる!
 task_count.each do |tsk|
-  puts "#{tsk}TASK"
   $task_stats_data[tsk] = { }
 
+  rt_ave = Array.new(tsk, 0.0) # 平均応答時間
+  rt_wc = Array.new(tsk, 0.0)  # 最大実応答時間
+  sets = 0     # タスクセット数
   Dir::glob(DIRNAME+"data_#{tsk}task/*.csv").each do |filename|
-    p filename 
     # 読み取り
     CSV.open(filename, "r") do |f|
       header = f.take(1)[0]
       f.each do |row| 
+        sets += 1
         id = row[0].to_i    # タスクID
         $task_stats_data[tsk][id] = [] if $task_stats_data[tsk][id] == nil
-        rt_ave = row[2].to_i # 平均応答時間
-        rt_wc = row[3].to_i  # 最大実応答時間"
-        $task_stats_data[tsk][id] << [rt_ave, rt_wc]
+        rt_ave[id-1] += row[2].to_f # 平均応答時間
+        rt_wc[id-1] += row[3].to_f  # 最大実応答時間"
+      end
+      tsk.times do |id|
+        $task_stats_data[tsk][id+1] = [rt_ave[id]/sets, rt_wc[id]/sets]
       end
     end
-    pp $task_stats_data[tsk]
+  end
+
+  Dir::glob(DIRNAME+"data_#{tsk}task/task_wcrt_#{tsk}task.txt").each do |filename|
+    sets = 0  # タスクセット数
+    ret = Array.new(tsk, 0.0)
+
+    File.open(filename, "r") do |fp|
+      fp.gets # 初めの1行は捨てる
+
+      while l = fp.gets
+        sets += 1
+        l.split(",").each_with_index { |v, i| ret[i] += v.to_f }
+      end
+      p sets
+      pp ret
+      ret.each_with_index do |v, id|
+        $task_stats_data[tsk][id+1] << v/sets
+      end
+    end
   end
 end  
-
 pp $task_stats_data
 
 # TASKID:1 の平均応答時間と最大実応答時間
@@ -61,12 +82,12 @@ pp $task_stats_data
 # 出力
 File.open(OUTPUT_FILE, "w") do |fp|
   id = 1
-
+  
   #STDERR.puts $task_stats_data[id]
 
   task_count.each do |tsk|
     break if $task_stats_data[tsk][id] == nil
 
-    fp.puts "#{tsk} #{get_task_rt(tsk, id)[0]} #{get_task_rt(tsk, id)[1]}" 
+    fp.puts "#{tsk} #{$task_stats_data[tsk][id][0]} #{$task_stats_data[tsk][id][1]} #{$task_stats_data[tsk][id][2]}" 
   end
 end

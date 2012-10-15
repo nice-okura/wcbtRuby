@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-#
+# -*- coding: utf-8 -*-
 #
 #=Author: fujitani
 #=Date: 2012/10/09
@@ -27,24 +27,28 @@ def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
   info[:proc_num] = 2
   info[:mode] = CREATE_MANUALLY
   info[:extime_range] = range
-  info[:assign_mode] = 3  # ID順
+  info[:assign_mode] = ID_ORDER  # ID順
   info[:require_count] = req_count
   info[:require_range] = require_range # CS範囲
 
   @manager.create_tasks(t_count, r_count, g_count, info)
+  @manager.save_tasks("tmp")
 end
-
 
 taskset_count = 1   # タスクセット数
 t_count = ARGV[1].to_i   # タスク数
 r_count = t_count*2         # リソース要求数
 g_count = t_count/2         # グループ数
 req_count = 2       # タスク当たりのリソース要求数
-ex_range = 50..200  # タスク実行時間の範囲
-req_range = 5..10   # CS範囲
-
+ex_range = 50..100  # タスク実行時間の範囲
+req_range = 2..5   # CS範囲
 
 # main
+if ARGV.size != 2
+  puts "引数が不正"
+  exit
+end
+
 taskset_count.times do |i|
   # タスクセット生成
   make_taskset(t_count, r_count, g_count, req_count, ex_range, req_range)
@@ -56,4 +60,11 @@ taskset_count.times do |i|
 
   # schesimフォルダにコピー
   FileUtils.copy_entry(output_filename, "#{SCHESIM_FOLDER}#{output_filename}_schesim")
+
+  wcrt_array = []
+  1.upto(@manager.tm.get_task_array.size) do |id|
+    wcrt_array << TaskManager.get_task(id).wcrt*10
+  end
+
+  puts wcrt_array.to_s.gsub(/\[|\]|\"/, "").gsub(/, /, ",")
 end

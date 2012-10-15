@@ -11,37 +11,37 @@
               "share": 1.0,
               "scheduling": "fp",
               "pri": 1,
-              "period": 6272.0,
+              "period": 3136.0,
               "task": [
                 {
-                  "id": 5,
+                  "id": 7,
                   "priority": 1,
-                  "period": 688.0,
-                  "wcet": 310.0,
-                  "attr": "cyclic",
-                  "offset": 0.0
-                },
-                {
-                  "id": 3,
-                  "priority": 2,
-                  "period": 880.0,
-                  "wcet": 483.0,
+                  "period": 400.0,
+                  "wcet": 244.0,
                   "attr": "cyclic",
                   "offset": 0.0
                 },
                 {
                   "id": 1,
-                  "priority": 3,
-                  "period": 1160.0,
-                  "wcet": 805.0,
+                  "priority": 2,
+                  "period": 416.0,
+                  "wcet": 299.0,
                   "attr": "cyclic",
                   "offset": 0.0
                 },
                 {
-                  "id": 7,
+                  "id": 5,
+                  "priority": 3,
+                  "period": 688.0,
+                  "wcet": 517.0,
+                  "attr": "cyclic",
+                  "offset": 0.0
+                },
+                {
+                  "id": 3,
                   "priority": 4,
-                  "period": 1376.0,
-                  "wcet": 1069.0,
+                  "period": 736.0,
+                  "wcet": 955.0,
                   "attr": "cyclic",
                   "offset": 0.0
                 }
@@ -58,37 +58,37 @@
               "share": 1.0,
               "scheduling": "fp",
               "pri": 1,
-              "period": 6272.0,
+              "period": 3136.0,
               "task": [
                 {
-                  "id": 4,
-                  "priority": 1,
-                  "period": 648.0,
-                  "wcet": 281.0,
-                  "attr": "cyclic",
-                  "offset": 0.0
-                },
-                {
                   "id": 8,
-                  "priority": 2,
-                  "period": 720.0,
-                  "wcet": 486.0,
+                  "priority": 1,
+                  "period": 496.0,
+                  "wcet": 279.0,
                   "attr": "cyclic",
                   "offset": 0.0
                 },
                 {
                   "id": 6,
-                  "priority": 3,
-                  "period": 1520.0,
-                  "wcet": 884.0,
+                  "priority": 2,
+                  "period": 592.0,
+                  "wcet": 379.0,
                   "attr": "cyclic",
                   "offset": 0.0
                 },
                 {
                   "id": 2,
+                  "priority": 3,
+                  "period": 592.0,
+                  "wcet": 586.0,
+                  "attr": "cyclic",
+                  "offset": 0.0
+                },
+                {
+                  "id": 4,
                   "priority": 4,
-                  "period": 1568.0,
-                  "wcet": 1170.0,
+                  "period": 784.0,
+                  "wcet": 855.0,
                   "attr": "cyclic",
                   "offset": 0.0
                 }
