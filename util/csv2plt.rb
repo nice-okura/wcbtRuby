@@ -13,38 +13,26 @@ require "csv"
 require "pp"
 DIRNAME = ARGV[0] # 入力データのあるフォルダ 末尾の"/"あり
 OUTPUT_FILE = ARGV[1]
-
+MAX_TASK = ARGV[2].to_i
 $task_stats_data = { }
 
-def get_task_rt(tsk, id)
-  rt_ave = 0.0
-  rt_wc = 0.0
-  rts = $task_stats_data[tsk][id]
-  task_count = rts.size
-  rts.each do |rt|
-    rt_ave += rt[0]
-    rt_wc += rt[1]
-  end
 
-  rt_ave /= task_count
-  rt_wc /= task_count
+task_count = []
+4.step(MAX_TASK, 2){ |i| task_count << i }
 
-  return [rt_ave, rt_wc]
-end
-
-task_count = [4, 6, 8] # rtOutputRandomTaskset.sh と合わせる!
 task_count.each do |tsk|
   $task_stats_data[tsk] = { }
 
   rt_ave = Array.new(tsk, 0.0) # 平均応答時間
   rt_wc = Array.new(tsk, 0.0)  # 最大実応答時間
   sets = 0     # タスクセット数
+  
   Dir::glob(DIRNAME+"data_#{tsk}task/*.csv").each do |filename|
     # 読み取り
+    sets += 1
     CSV.open(filename, "r") do |f|
       header = f.take(1)[0]
       f.each do |row| 
-        sets += 1
         id = row[0].to_i    # タスクID
         $task_stats_data[tsk][id] = [] if $task_stats_data[tsk][id] == nil
         rt_ave[id-1] += row[2].to_f # 平均応答時間
@@ -67,8 +55,7 @@ task_count.each do |tsk|
         sets += 1
         l.split(",").each_with_index { |v, i| ret[i] += v.to_f }
       end
-      p sets
-      pp ret
+
       ret.each_with_index do |v, id|
         $task_stats_data[tsk][id+1] << v/sets
       end

@@ -18,12 +18,13 @@ readonly TMP_FILENAME="tmp"
 readonly TASKSET=$2
 readonly CPU=2
 readonly TASK=4
+readonly MAX_TASK=8
 readonly REQUIRE=8
 readonly RESOURCE=2
 readonly REQ_COUNT=2
 
 if [ $# -eq 2 ]; then
-    for tsk in 4 6 8; do
+    for tsk in `seq ${TASK} 2 ${MAX_TASK}`; do
 	# 最大応答時間を格納する配列
 	WCRT=()
 
@@ -35,6 +36,7 @@ if [ $# -eq 2 ]; then
 	echo > ${filename}
 	
 	for i in `seq 1 ${TASKSET}`; do
+	    echo ${i}
 	    cd ${WCBT_FOLDER}
 	    #ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}
 	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}`)
@@ -51,7 +53,7 @@ if [ $# -eq 2 ]; then
 	done
     done
     cd ${WCBT_FOLDER}
-    ruby ${WCBT_FOLDER}util/csv2plt.rb ${SCHESIM_FOLDER}${TMP_FILENAME}_schesim/ ${WCBT_FOLDER}test.txt
+    ruby ${WCBT_FOLDER}util/csv2plt.rb ${SCHESIM_FOLDER}${TMP_FILENAME}_schesim/ ${WCBT_FOLDER}test.txt ${MAX_TASK}
 else
     echo "Usage: \n% ./rtOutputRandomTaskset.sh [結果出力ファイル名] [タスクセット数]"
 fi

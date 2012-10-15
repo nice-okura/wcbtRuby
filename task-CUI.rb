@@ -190,7 +190,7 @@ class TaskCUI
   # タスク名表示
   #
   def get_task_name
-    return "タスク#{@task.task_id}(#{"%1.3f"%(@task.get_extime.to_f/@task.period.to_f)}):"
+    return "タスク#{@task.task_id}(#{"%1.3f"%(@task.util)}):"
     #return "タスク" + @task.task_id.to_s + "(" + "%1.3f"%(@task.get_extime.to_f/@task.period.to_f) + ")" + ":"
   end
   

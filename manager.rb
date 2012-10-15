@@ -693,11 +693,18 @@ class TaskManager
       
       if info[:priority_mode] == PRIORITY_BY_UTIL      
         # タスク使用率順に優先度とID付け直す
-        @@task_array.each{ |t| p t.util}
         @@task_array.sort! do |a, b|
           a.util <=> b.util
         end
-        @@task_array.each{ |t| p t.util}
+        @@task_array.each_with_index do |t, i|
+          t.set_taskid(i+1)
+          t.set_priority(i+1)
+        end
+      elsif info[:priority_mode] == PRIORITY_BY_PERIOD
+        # タスク使用率順に優先度とID付け直す
+        @@task_array.sort! do |a, b|
+          a.period <=> b.period
+        end
         @@task_array.each_with_index do |t, i|
           t.set_taskid(i+1)
           t.set_priority(i+1)
@@ -710,7 +717,7 @@ class TaskManager
     end
 
     # 周期の短い順に優先度を割り当てる
-    assign_priority_by_period(@@task_array)
+    #assign_priority_by_period(@@task_array)
     
     #@@task_array = tarray
     return @@task_array.size
