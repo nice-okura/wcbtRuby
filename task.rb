@@ -251,6 +251,11 @@ class Task
     @req_list.size
   end
 
+  # タスクIDを設定する
+  def set_taskid(id)
+    @task_id = id
+  end
+
   # 有効数字2桁で実行時間を代入
   def set_extime(extime)
     @extime = extime.round(2)
@@ -303,6 +308,10 @@ class Task
     @req_list = reqarray
   end
   
+  # タスク使用率を返す
+  def util
+    return @extime/@period
+  end
   #
   # outermostでない要求を探索して設定
   #

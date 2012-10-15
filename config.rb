@@ -41,3 +41,6 @@ SORT_UTIL = 3
 PROC_ID_SYN = "proc_id"
 TASK_LIST_SYN = "task_list"
 UNASSIGNED = -1
+
+# 優先度割付け
+PRIORITY_BY_UTIL = 1

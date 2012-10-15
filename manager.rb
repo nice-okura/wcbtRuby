@@ -690,6 +690,19 @@ class TaskManager
       i.times{ 
         @@task_array << create_task_manually(i, info)
       }
+      
+      if info[:priority_mode] == PRIORITY_BY_UTIL      
+        # タスク使用率順に優先度とID付け直す
+        @@task_array.each{ |t| p t.util}
+        @@task_array.sort! do |a, b|
+          a.util <=> b.util
+        end
+        @@task_array.each{ |t| p t.util}
+        @@task_array.each_with_index do |t, i|
+          t.set_taskid(i+1)
+          t.set_priority(i+1)
+        end
+      end
     else
       $stderr.puts "create_task_array:infoエラー"
       raise

@@ -30,8 +30,11 @@ def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
   info[:assign_mode] = ID_ORDER  # ID順
   info[:require_count] = req_count
   info[:require_range] = require_range # CS範囲
+  info[:priority_mode] = PRIORITY_BY_UTIL # タスク使用率順にタスクIDと優先度をつける
+  info[:period_range] = range.first*5..range.last*10
 
   @manager.create_tasks(t_count, r_count, g_count, info)
+
   @manager.save_tasks("tmp")
 end
 

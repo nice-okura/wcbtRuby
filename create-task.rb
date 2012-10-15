@@ -35,7 +35,8 @@ class TaskManager
 
     # タスク実行時間
     if info[:extime_range] != nil
-      extime = info[:extime_range].first + rand(info[:extime_range].last - info[:extime_range].first)
+      extime = info[:extime_range].get_random
+      #extime = info[:extime_range].first + rand(info[:extime_range].last - info[:extime_range].first)
     elsif info[:extime] != nil
       extime = info[:extime]
     else
@@ -43,15 +44,21 @@ class TaskManager
     end
 
     # 周期
-    period = (extime/(1.0/task_count))
+    if info[:period_range] != nil
+      period = info[:period_range].get_random
+    else
+      period = (extime/(1.0/task_count))
+    end
 
     # 優先度
     priority = @@task_id
 
-
     # offset
-    offset = 0
-    
+    if info[:offset_range] != nil
+      offset = info[:offset_range].get_random
+    else
+      offset = 0
+    end
 
     return Task.new(@@task_id, proc, period, extime, priority, offset, req_list)
   end
