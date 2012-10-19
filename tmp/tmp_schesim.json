@@ -1,4 +1,4 @@
-{
+﻿{
   "cpu": [
     {
       "id": 1,
@@ -11,37 +11,37 @@
               "share": 1.0,
               "scheduling": "fp",
               "pri": 1,
-              "period": 31836.0,
+              "period": 1948.0,
               "task": [
                 {
                   "id": 1,
                   "priority": 1,
-                  "period": 4555.0,
-                  "wcet": 180.0,
+                  "period": 461.0,
+                  "wcet": 88.0,
                   "attr": "cyclic",
                   "offset": 48.0
                 },
                 {
                   "id": 3,
                   "priority": 2,
-                  "period": 5114.0,
-                  "wcet": 308.0,
+                  "period": 466.0,
+                  "wcet": 147.0,
                   "attr": "cyclic",
                   "offset": 17.0
                 },
                 {
                   "id": 5,
                   "priority": 3,
-                  "period": 5637.0,
-                  "wcet": 475.0,
+                  "period": 270.0,
+                  "wcet": 225.0,
                   "attr": "cyclic",
                   "offset": 5.0
                 },
                 {
                   "id": 7,
                   "priority": 4,
-                  "period": 6108.0,
-                  "wcet": 541.0,
+                  "period": 283.0,
+                  "wcet": 396.0,
                   "attr": "cyclic",
                   "offset": 27.0
                 },
@@ -90,37 +90,37 @@
               "share": 1.0,
               "scheduling": "fp",
               "pri": 1,
-              "period": 31836.0,
+              "period": 1948.0,
               "task": [
                 {
                   "id": 2,
                   "priority": 1,
-                  "period": 4796.0,
-                  "wcet": 167.0,
+                  "period": 487.0,
+                  "wcet": 85.0,
                   "attr": "cyclic",
                   "offset": 34.0
                 },
                 {
                   "id": 4,
                   "priority": 2,
-                  "period": 5480.0,
-                  "wcet": 245.0,
+                  "period": 479.0,
+                  "wcet": 193.0,
                   "attr": "cyclic",
                   "offset": 43.0
                 },
                 {
                   "id": 6,
                   "priority": 3,
-                  "period": 5961.0,
-                  "wcet": 327.0,
+                  "period": 325.0,
+                  "wcet": 302.0,
                   "attr": "cyclic",
                   "offset": 24.0
                 },
                 {
                   "id": 8,
                   "priority": 4,
-                  "period": 6177.0,
-                  "wcet": 495.0,
+                  "period": 252.0,
+                  "wcet": 789.0,
                   "attr": "cyclic",
                   "offset": 42.0
                 },

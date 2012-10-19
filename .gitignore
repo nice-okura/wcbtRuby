@@ -20,3 +20,4 @@ json
 debug*
 !/testFolder/*.json
 120927/json_analysis_for_long/*
+*.orig
