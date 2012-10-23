@@ -258,7 +258,7 @@ class Task
 
   # 有効数字2桁で実行時間を代入
   def set_extime(extime)
-    @extime = extime.round(2)
+    @extime = extime.to_f.round(2)
   end
   
   # inflateした実行時間を返す
@@ -273,12 +273,17 @@ class Task
   
   # 有効数字2桁でinflated_timeを代入
   def set_inflated_time(inflated_time)
-    @inflated_time = inflated_time.round(2)
+    @inflated_time = inflated_time.to_f.round(2)
   end
 
   # 有効数字2桁で実行時間を代入
   def set_period(period)
-    @period = period.round(2)
+    begin
+      @period = period.to_f.round(2)
+    rescue
+      STDERR.puts period
+      STDERR.puts period.class
+    end
   end
 
   # 有効数字2桁で実行時間を代入
