@@ -13,6 +13,7 @@
 readonly SCHESIM_FOLDER="/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/"
 readonly WCBT_FOLDER="/Users/fujitani/Documents/lab/tkdos/wcbtRuby/"
 readonly TMP_FILENAME="tmp"
+readonly TASKSET_FILES="taskset_files/"
 
 # タスクパラメータ
 readonly TASKSET=$2
@@ -43,9 +44,9 @@ if [ $# -eq 2 ]; then
 	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}`)
             
 	    cd ${SCHESIM_FOLDER}
-	    ./auto_schesim.sh ./tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
+	    ./auto_schesim.sh ./${TASKSET_FILES}tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
 	    
-	    ruby utils/stats.rb -c -i ${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.log -o /dev/null > ${TMP_FILENAME}_schesim/data_${tsk}task/${TMP_FILENAME}_schesim_${i}.csv
+	    ruby utils/stats.rb -c -i ${TASKSET_FILES}${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.log -o /dev/null > ${TASKSET_FILES}${TMP_FILENAME}_schesim/data_${tsk}task/${TMP_FILENAME}_schesim_${i}.csv
 	done
 	cd ${SCHESIM_FOLDER}
 	#echo ${filename}
@@ -54,7 +55,7 @@ if [ $# -eq 2 ]; then
 	done
     done
     cd ${WCBT_FOLDER}
-    ruby ${WCBT_FOLDER}util/csv2plt.rb ${SCHESIM_FOLDER}${TMP_FILENAME}_schesim/ ${WCBT_FOLDER}test.txt ${MAX_TASK}
+    #ruby ${WCBT_FOLDER}util/csv2plt.rb ${SCHESIM_FOLDER}${TASKSET_FILES}${TMP_FILENAME}_schesim/ ${WCBT_FOLDER}test.txt ${MAX_TASK}
 else
     echo "Usage: \n% ./rtOutputRandomTaskset.sh [結果出力ファイル名] [タスクセット数]"
 fi
