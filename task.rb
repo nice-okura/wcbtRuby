@@ -278,17 +278,12 @@ class Task
 
   # 有効数字2桁で実行時間を代入
   def set_period(period)
-    begin
-      @period = period.to_f.round(2)
-    rescue
-      STDERR.puts period
-      STDERR.puts period.class
-    end
+    @period = period.to_f.round(2)
   end
 
   # 有効数字2桁で実行時間を代入
   def set_wcrt(wcrt)
-    @wcrt = wcrt.round(2)
+    @wcrt = wcrt.to_f.round(2)
   end
 
   # プロセッサを設定

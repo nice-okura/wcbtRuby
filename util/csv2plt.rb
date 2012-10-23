@@ -9,11 +9,19 @@
 # タスクID,起動回数,平均応答時間,最大応答時間,最小応答時間,総実行時間,平均実行時間,最大実行時間,最小実行時間
 # 1,12,260,270,260,3130,260,270,260
 
-require "csv"
+require "rubygems"
+require "fastercsv"
 require "pp"
 DIRNAME = ARGV[0] # 入力データのあるフォルダ 末尾の"/"あり
 OUTPUT_FILE = ARGV[1]
 MAX_TASK = ARGV[2].to_i
+
+# CSVヘッダ情報
+TASK_ID = 'タスクID'
+ACT = "起動回数"
+AVE_RT = "平均応答時間"
+MAX_RT = "最大応答時間"
+
 
 $task_stats_data = { }
 # task_stats_data[tsk][id][0]: 平均応答時間の平均
@@ -35,17 +43,17 @@ task_count.each do |tsk|
   Dir::glob(DIRNAME+"data_#{tsk}task/*.csv").each do |filename|
     # 読み取り
     sets += 1
-    CSV.open(filename, "r") do |f|
-      header = f.take(1)[0]
-      f.each do |row| 
-        id = row[0].to_i    # タスクID
+    FasterCSV.open(filename, "r", :headers=>true) do |f|
+      f.each do |row|
+        id = row[TASK_ID].to_i    # タスクID
+        
         $task_stats_data[tsk][id] = [] if $task_stats_data[tsk][id] == nil
-        rt_ave[id-1] += row[2].to_f # 平均応答時間
-        rt_wc[id-1] += row[3].to_f  # 最大実応答時間"
+        rt_ave[id-1] += row[AVE_RT].to_f # 平均応答時間
+        rt_wc[id-1] += row[MAX_RT].to_f  # 最大実応答時間"
         # Ex. rt_diff[Taskid] = [タスクセット1の最大実応答時間, ...]
         # rt_diff[1] = [100.0, 200.0, 341.0, 134.0]
         # rt_diff[2] = [134.0, 462.0, 456.0, 235.0]...
-        rt_diff[id] << row[3].to_f # タスクセット毎に最大実応答時間を格納
+        rt_diff[id] << row[MAX_RT].to_f # タスクセット毎に最大実応答時間を格納
       end
     end
   end
