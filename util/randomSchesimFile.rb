@@ -9,7 +9,7 @@
 # ランダムなタスクセットを生成し，schesimフォルダにタスクセットファイル(.rb, .json)を生成する
 #
 # Usage: 
-# % ruby randomSchesimFile.rb [結果出力ファイル名] [タスク数] 
+# % ruby randomSchesimFile.rb [結果出力ファイル名] [タスク数] [タスクセット出力先] [タスクセット数]
 require "./manager"
 require "./export_schesim"
 require "fileutils"
@@ -23,6 +23,7 @@ output_filename = ARGV[0]
 $tasksets = 0
 
 def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
+  @manager.all_data_clear
   # タスクセット生成
   info = { }
   info[:proc_num] = 2
@@ -36,32 +37,45 @@ def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
 
   @manager.create_tasks(t_count, r_count, g_count, info)
 
-  filename = ""
-  while(1)
-    filename = "./tmp/tmp_#{t_count}_#{$tasksets}"
-    
-    #STDERR.puts "#{filename+"_task.json"}:#{File.exists?(filename+"_task.json")}"
-    if File.exists?(filename+"_task.json")
-      $tasksets += 1
-    else
-      break
+  # タスクセットファイル保存
+  filedir = ARGV[2]
+  unless filedir == nil
+    filename = ""
+
+    # ディレクトリ作成
+    Dir::mkdir(filedir) unless File::exists?(filedir)
+
+    while(1)
+      filename = "./#{filedir}/tmp_#{t_count}_#{$tasksets}"
+      #STDERR.puts "#{filename+"_task.json"}:#{File.exists?(filename+"_task.json")}"
+      if File.exists?(filename+"_task.json")
+        $tasksets += 1
+      else
+        break
+      end
     end
+    
+    #STDERR.puts filename
+    @manager.save_tasks(filename)
   end
-  
-  #STDERR.puts filename
-  @manager.save_tasks(filename)
 end
 
-taskset_count = 1   # タスクセット数
-t_count = ARGV[1].to_i   # タスク数
+# 作成するタスクセット数
+if ARGV[3] == nil
+  taskset_count = 1
+else 
+  taskset_count = ARGV[3].to_i
+end
+
+t_count = ARGV[1].to_i      # タスク数
 r_count = t_count*2         # リソース要求数
 g_count = t_count/2         # グループ数
-req_count = 2       # タスク当たりのリソース要求数
-ex_range = 50..100  # タスク実行時間の範囲
-req_range = 2..5   # CS範囲
+req_count = 2               # タスク当たりのリソース要求数
+ex_range = 50..100          # タスク実行時間の範囲
+req_range = 2..5            # CS範囲
 
 # main
-if ARGV.size != 2
+if ARGV.size < 2
   puts "引数が不正"
   exit
 end
