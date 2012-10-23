@@ -10,10 +10,10 @@
 # Usage: 
 # % sh ./rtOutputRandomTaskset.sh [結果出力ファイル名] [タスクセット数]
 
-readonly SCHESIM_FOLDER="/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/"
-readonly WCBT_FOLDER="/Users/fujitani/Documents/lab/tkdos/wcbtRuby/"
-readonly TMP_FILENAME="tmp"
-readonly TASKSET_FILES="taskset_files/"
+readonly SCHE_DIR="/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/"
+readonly WCBT_DIR="/Users/fujitani/Documents/lab/tkdos/wcbtRuby/"
+readonly TMP="tmp"
+readonly TS_DIR="taskset_files/"
 
 # タスクパラメータ
 readonly TASKSET=$2
@@ -31,31 +31,32 @@ if [ $# -eq 2 ]; then
 	WCRT=()
 
 	# ファイル新規作成
-	cd ${SCHESIM_FOLDER}
-	mkdir ${TMP_FILENAME}_schesim/data_${tsk}task/ >& /dev/null
-	filename="${TMP_FILENAME}_schesim/data_${tsk}task/task_wcrt_${tsk}task.txt"
+	cd ${SCHE_DIR}
+	rm -rf ${TS_DIR}${TMP}_schesim/data_${tsk}task/ # 既存フォルダ削除
+	mkdir ${TS_DIR}${TMP}_schesim/data_${tsk}task/ >& /dev/null
+	filename="${TS_DIR}${TMP}_schesim/data_${tsk}task/task_wcrt_${tsk}task.txt"
 	touch ${filename}  # ファイル生成
 	echo > ${filename} # ファイル初期化
 	
 	for i in `seq 1 ${TASKSET}`; do
 	    echo ${tsk}:${i}
-	    cd ${WCBT_FOLDER}
-	    #ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}
-	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}`)
+	    cd ${WCBT_DIR}
+	    #ruby ./util/randomSchesimFile.rb ${TMP} ${tsk}
+	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile.rb ${TMP} ${tsk}`)
             
-	    cd ${SCHESIM_FOLDER}
-	    ./auto_schesim.sh ./${TASKSET_FILES}tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
+	    cd ${SCHE_DIR}
+	    ./auto_schesim.sh ./${TS_DIR}tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
 	    
-	    ruby utils/stats.rb -c -i ${TASKSET_FILES}${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.log -o /dev/null > ${TASKSET_FILES}${TMP_FILENAME}_schesim/data_${tsk}task/${TMP_FILENAME}_schesim_${i}.csv
+	    ruby utils/stats.rb -c -i ${TS_DIR}${TMP}_schesim/${TMP}_schesim.log -o /dev/null > ${TS_DIR}${TMP}_schesim/data_${tsk}task/${TMP}_schesim_${i}.csv
 	done
-	cd ${SCHESIM_FOLDER}
+	cd ${SCHE_DIR}
 	#echo ${filename}
 	for i in `seq 1 ${TASKSET}`; do
 	    echo ${WCRT[i-1]} >> ${filename}
 	done
     done
-    cd ${WCBT_FOLDER}
-    #ruby ${WCBT_FOLDER}util/csv2plt.rb ${SCHESIM_FOLDER}${TASKSET_FILES}${TMP_FILENAME}_schesim/ ${WCBT_FOLDER}test.txt ${MAX_TASK}
+    cd ${WCBT_DIR}
+    #ruby ${WCBT_DIR}util/csv2plt.rb ${SCHE_DIR}${TS_DIR}${TMP}_schesim/ ${WCBT_DIR}test.txt ${MAX_TASK}
 else
     echo "Usage: \n% ./rtOutputRandomTaskset.sh [結果出力ファイル名] [タスクセット数]"
 fi
