@@ -10,9 +10,11 @@
 # Usage: 
 # % sh ./rtOutputRandomTaskset_forCygwin.sh [結果出力ファイル名] [タスクセット数]
 
-readonly SCHESIM_FOLDER="/cygdrive/c/Users/fujitani/Documents/schesim-0.7.2/"
-readonly WCBT_FOLDER="/cygdrive/c/Users/fujitani/Documents/wcbtRuby/"
-readonly TMP_FILENAME="tmp"
+readonly SCHE_DIR="/cygdrive/c/Users/fujitani/Documents/schesim-0.7.2/"
+readonly WCBT_DIR="/cygdrive/c/Users/fujitani/Documents/wcbtRuby/"
+readonly TMP="tmp"
+readonly TS_DIR="taskset_files/"
+readonly LOG_FILE="/Users/fujitani/Documents/lab/tkdos/wcbtRuby/util/rt_log.log"
 
 # タスクパラメータ
 readonly TASKSET=$2
@@ -24,38 +26,48 @@ readonly RESOURCE=2
 readonly REQ_COUNT=2
 readonly SIM_TIME=1000
 
+cd ${WCBT_DIR}
+rm -rf tmp
+mkdir tmp
+
+cd ${SCHE_DIR}
+rm -rf ${TS_DIR}${TMP}_schesim # 既存フォルダ削除
+mkdir ${TS_DIR}${TMP}_schesim  # フォルダ作成
+
+
 if [ $# -eq 2 ]; then
     for tsk in `seq ${TASK} 2 ${MAX_TASK}`; do
 	# 最大応答時間を格納する配列
 	WCRT=()
 
 	# ファイル新規作成
-	cd ${SCHESIM_FOLDER}
-	rm -rf ${TMP_FILENAME}_schesim/data_${tsk}task/ # 既存フォルダ削除
-	mkdir ${TMP_FILENAME}_schesim/data_${tsk}task/ >& /dev/null
-	filename="${TMP_FILENAME}_schesim/data_${tsk}task/task_wcrt_${tsk}task.txt"
+	cd ${SCHE_DIR}
+	mkdir ${TS_DIR}${TMP}_schesim/data_${tsk}task/ >& /dev/null
+	filename="${TS_DIR}${TMP}_schesim/data_${tsk}task/task_wcrt_${tsk}task.txt"
 	touch ${filename}  # ファイル生成
 	echo > ${filename} # ファイル初期化
 	
 	for i in `seq 1 ${TASKSET}`; do
 	    echo ${tsk}:${i}
-	    cd ${WCBT_FOLDER}
-	    #ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}
-	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile_forCygwin.rb ${TMP_FILENAME} ${tsk}`)
+	    cd ${WCBT_DIR}
+	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile_forCygwin.rb ${TMP} ${tsk}`)
             
-	    cd ${SCHESIM_FOLDER}
-	    ./auto_schesim_forCygwin.sh ./tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
+	    cd ${SCHE_DIR}
+	    ./auto_schesim_forCygwin.sh ./${TS_DIR}tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
 	    
-	    ruby utils/stats.rb -c -i ${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.log -o ${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.out > ${TMP_FILENAME}_schesim/data_${tsk}task/${TMP_FILENAME}_schesim_${i}.csv
+	    ruby utils/stats.rb -c -i ${TS_DIR}${TMP}_schesim/${TMP}_schesim.log -o /dev/null > ${TS_DIR}${TMP}_schesim/data_${tsk}task/${TMP}_schesim_${i}.csv
+	    echo "${TS_DIR}${TMP}_schesim/data_${tsk}task/${TMP}_schesim_${i}.csv生成" > ${LOG_FILE}
 	done
-	cd ${SCHESIM_FOLDER}
+	cd ${SCHE_DIR}
 	#echo ${filename}
 	for i in `seq 1 ${TASKSET}`; do
 	    echo ${WCRT[i-1]} >> ${filename}
 	done
     done
-    cd ${WCBT_FOLDER}
-    ruby ${WCBT_FOLDER}util/csv2plt.rb ${SCHESIM_FOLDER}${TMP_FILENAME}_schesim/ ${WCBT_FOLDER}test.txt ${MAX_TASK}
+
+    # グラフ用プロットデータ出力
+    cd ${WCBT_DIR}
+    ruby ${WCBT_DIR}util/csv2plt.rb ${SCHE_DIR}${TS_DIR}${TMP}_schesim/ ${WCBT_DIR}test.txt ${MAX_TASK}
 else
     echo "Usage: \n% ./rtOutputRandomTaskset.sh [結果出力ファイル名] [タスクセット数]"
 fi
