@@ -18,10 +18,11 @@ readonly TMP_FILENAME="tmp"
 readonly TASKSET=$2
 readonly CPU=2
 readonly TASK=4
-readonly MAX_TASK=16
+readonly MAX_TASK=6
 readonly REQUIRE=8
 readonly RESOURCE=2
 readonly REQ_COUNT=2
+readonly SIM_TIME=1000
 
 if [ $# -eq 2 ]; then
     for tsk in `seq ${TASK} 2 ${MAX_TASK}`; do
@@ -30,21 +31,22 @@ if [ $# -eq 2 ]; then
 
 	# ファイル新規作成
 	cd ${SCHESIM_FOLDER}
+	rm -rf ${TMP_FILENAME}_schesim/data_${tsk}task/ # 既存フォルダ削除
 	mkdir ${TMP_FILENAME}_schesim/data_${tsk}task/ >& /dev/null
 	filename="${TMP_FILENAME}_schesim/data_${tsk}task/task_wcrt_${tsk}task.txt"
-	touch ${filename}
-	echo > ${filename}
+	touch ${filename}  # ファイル生成
+	echo > ${filename} # ファイル初期化
 	
 	for i in `seq 1 ${TASKSET}`; do
-	    echo ${i}
+	    echo ${tsk}:${i}
 	    cd ${WCBT_FOLDER}
 	    #ruby ./util/randomSchesimFile.rb ${TMP_FILENAME} ${tsk}
 	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile_forCygwin.rb ${TMP_FILENAME} ${tsk}`)
             
 	    cd ${SCHESIM_FOLDER}
-	    ./auto_schesim_forCygwin.sh ./tmp_schesim/tmp_schesim >& /dev/null
+	    ./auto_schesim_forCygwin.sh ./tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
 	    
-	    ruby utils/stats.rb -c -i ${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.log -o /dev/null > ${TMP_FILENAME}_schesim/data_${tsk}task/${TMP_FILENAME}_schesim_${i}.csv
+	    ruby utils/stats.rb -c -i ${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.log -o ${TMP_FILENAME}_schesim/${TMP_FILENAME}_schesim.out > ${TMP_FILENAME}_schesim/data_${tsk}task/${TMP_FILENAME}_schesim_${i}.csv
 	done
 	cd ${SCHESIM_FOLDER}
 	#echo ${filename}

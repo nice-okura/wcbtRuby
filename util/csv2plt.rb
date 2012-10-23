@@ -22,13 +22,15 @@ $task_stats_data = { }
 # task_stats_data[tsk][id][3]: 最大実応答時間と最大応答時間の差
 
 task_count = []
+rt_diff = Hash.new{ |hash, id| hash[id] = Hash.new { |hash, id| hash[id] = [] }} # 最大実応答時間と最大応答時間の差
+
 4.step(MAX_TASK, 2){ |i| task_count << i }
+
 
 task_count.each do |tsk|
   $task_stats_data[tsk] = { }
   rt_ave = Array.new(tsk, 0.0) # 平均応答時間
   rt_wc = Array.new(tsk, 0.0)  # 最大実応答時間
-  rt_diff = Hash.new{ |hash, id| hash[id] = []} # 最大実応答時間と最大応答時間の差
   
   sets = 0     # タスクセット数
   
@@ -36,6 +38,7 @@ task_count.each do |tsk|
     # 読み取り
     sets += 1
     CSV.open(filename, "r") do |f|
+      p filename
       header = f.take(1)[0]
       f.each do |row| 
         id = row[0].to_i    # タスクID
@@ -45,10 +48,12 @@ task_count.each do |tsk|
         # Ex. rt_diff[Taskid] = [タスクセット1の最大実応答時間, ...]
         # rt_diff[1] = [100.0, 200.0, 341.0, 134.0]
         # rt_diff[2] = [134.0, 462.0, 456.0, 235.0]...
-        rt_diff[id] << row[3].to_f # タスクセット毎に最大実応答時間を格納
+        rt_diff[tsk][id] << row[3].to_f # タスクセット毎に最大実応答時間を格納
+        pp rt_diff[tsk]
       end
     end
   end
+  
   # 全ファイル走査した後，$task_stats_dataに平均を代入
   tsk.times do |id|
     $task_stats_data[tsk][id+1] = [rt_ave[id]/sets, rt_wc[id]/sets]
@@ -61,14 +66,13 @@ task_count.each do |tsk|
 
     File.open(filename, "r") do |fp|
       fp.gets # 初めの1行は捨てる
-
       while l = fp.gets
         sets += 1
         wcrt = l.split(',')
         wcrt.each_with_index do |v, idx|
           ret[idx] += v.to_f 
-          #puts "#{v.to_f} - #{rt_diff[idx+1][sets-1]}"
-          rt_diff[idx+1][sets-1] = v.to_f - rt_diff[idx+1][sets-1]
+          puts "#{v.to_f} - #{rt_diff[tsk][idx+1][sets-1]}"
+          rt_diff[tsk][idx+1][sets-1] = v.to_f - rt_diff[tsk][idx+1][sets-1]
         end
       end
 
@@ -77,10 +81,10 @@ task_count.each do |tsk|
       end
     end
   end
-  pp rt_diff
+  #
 end  
-pp $task_stats_data
-
+#pp $task_stats_data
+pp rt_diff
 
 # TASKID:1 の平均応答時間と最大実応答時間
 
@@ -95,4 +99,9 @@ File.open(OUTPUT_FILE, "w") do |fp|
 
     fp.puts "#{tsk} #{$task_stats_data[tsk][id][0]} #{$task_stats_data[tsk][id][1]} #{$task_stats_data[tsk][id][2]}" 
   end
+end
+
+# 最大時間差 出力
+File.open("diff_rt.txt", "w") do |fp|
+  #fp.puts rt_diff[1]
 end
