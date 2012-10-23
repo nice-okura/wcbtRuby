@@ -20,6 +20,7 @@ SCHESIM_FOLDER = "/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/taskset_file
 @manager = AllManager.new
 output_filename = ARGV[0]
 
+$tasksets = 0
 
 def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
   # タスクセット生成
@@ -35,7 +36,20 @@ def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
 
   @manager.create_tasks(t_count, r_count, g_count, info)
 
-  @manager.save_tasks("tmp_#{t_count}")
+  filename = ""
+  while(1)
+    filename = "./tmp/tmp_#{t_count}_#{$tasksets}"
+    
+    #STDERR.puts "#{filename+"_task.json"}:#{File.exists?(filename+"_task.json")}"
+    if File.exists?(filename+"_task.json")
+      $tasksets += 1
+    else
+      break
+    end
+  end
+  
+  #STDERR.puts filename
+  @manager.save_tasks(filename)
 end
 
 taskset_count = 1   # タスクセット数
@@ -69,5 +83,10 @@ taskset_count.times do |i|
     wcrt_array << TaskManager.get_task(id).wcrt*10
   end
 
-  puts wcrt_array.to_s.gsub(/\[|\]|\"/, "").gsub(/, /, ",")
+  case RUBY_VERSION 
+  when "1.8.7"
+    puts wcrt_array.inject(""){|str, x| str += "#{x},"}.gsub(/,$/, "")
+  when "1.9.3"
+    puts wcrt_array.to_s.gsub(/\[|\]|\"/, "").gsub(/, /, ",")
+  end
 end

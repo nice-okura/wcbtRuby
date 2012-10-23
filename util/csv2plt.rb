@@ -38,13 +38,15 @@ task_count.each do |tsk|
   rt_wc = Array.new(tsk, 0.0)  # 最大実応答時間
   rt_diff = Hash.new{ |hash, id| hash[id] = []} # 最大実応答時間と最大応答時間の差
   
-  sets = 0     # タスクセット数
+  tasksets = 0     # タスクセット数
   
   Dir::glob(DIRNAME+"data_#{tsk}task/*.csv").each do |filename|
     # 読み取り
-    sets += 1
+    tasksets += 1
     FasterCSV.open(filename, "r", :headers=>true) do |f|
+      i = 0
       f.each do |row|
+        i += 1
         id = row[TASK_ID].to_i    # タスクID
         
         $task_stats_data[tsk][id] = [] if $task_stats_data[tsk][id] == nil
@@ -55,11 +57,17 @@ task_count.each do |tsk|
         # rt_diff[2] = [134.0, 462.0, 456.0, 235.0]...
         rt_diff[id] << row[MAX_RT].to_f # タスクセット毎に最大実応答時間を格納
       end
+
+      # 何かが原因でstats.rbで正しい統計情報が出力されず，
+      # #{tsk}個のタスクの統計情報が得られなかった場合
+      # 正しいタスクセットではないと判断して，カウントしない
+      tasksets -= 1 unless i == tsk
     end
   end
+
   # 全ファイル走査した後，$task_stats_dataに平均を代入
   tsk.times do |id|
-    $task_stats_data[tsk][id+1] = [rt_ave[id]/sets, rt_wc[id]/sets]
+    $task_stats_data[tsk][id+1] = [rt_ave[id]/tasksets, rt_wc[id]/tasksets]
   end
 
   # 計算によって求まった最大応答時間の平均
@@ -69,15 +77,16 @@ task_count.each do |tsk|
 
     File.open(filename, "r") do |fp|
       fp.gets # 初めの1行は捨てる
-
+      puts filename
       while l = fp.gets
         sets += 1
         wcrt = l.split(',')
         wcrt.each_with_index do |v, idx|
           ret[idx] += v.to_f 
-          #puts "#{v.to_f} - #{rt_diff[idx+1][sets-1]}"
+          puts "#{v.to_f} - #{rt_diff[idx+1][sets-1]}"
           rt_diff[idx+1][sets-1] = v.to_f - rt_diff[idx+1][sets-1]
         end
+        #break if sets == tasksets
       end
 
       ret.each_with_index do |v, id|

@@ -20,15 +20,20 @@ readonly LOG_FILE="/Users/fujitani/Documents/lab/tkdos/wcbtRuby/util/rt_log.log"
 readonly TASKSET=$2
 readonly CPU=2
 readonly TASK=4
-readonly MAX_TASK=8
+readonly MAX_TASK=4
 readonly REQUIRE=8
 readonly RESOURCE=2
 readonly REQ_COUNT=2
-readonly SIM_TIME=10000
+readonly SIM_TIME=1000
+
+cd ${WCBT_DIR}
+rm -rf tmp
+mkdir tmp
 
 cd ${SCHE_DIR}
 rm -rf ${TS_DIR}${TMP}_schesim # 既存フォルダ削除
 mkdir ${TS_DIR}${TMP}_schesim  # フォルダ作成
+
 
 if [ $# -eq 2 ]; then
     for tsk in `seq ${TASK} 2 ${MAX_TASK}`; do
