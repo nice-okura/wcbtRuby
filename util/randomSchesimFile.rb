@@ -16,19 +16,19 @@ require "fileutils"
 
 #cd ../schesim-0.7.2; ruby schesim.rb -t tmp/tmp.json -d tmp/tmp.rb -r tmp/tmp.res -e 10 ; cd ../wcbtRuby/
 # マクロ
-SCHESIM_FOLDER = "/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/taskset_files/"
+SCHESIM_FOLDER = "/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/taskset_files/121025_tmp_schesim/"
 @manager = AllManager.new
-output_filename = ARGV[0]
+output_dir = ARGV[0]
 
 $tasksets = 0
 def show_usage
   puts "## Usage:"
-  puts "% ruby #{__FILE__} output_filename task_count [output_taskset_filename] [taskset_count]"
+  puts "% ruby #{__FILE__} output_dir task_count [output_taskset_filename] [taskset_count]"
   puts "## Example:"
   puts "% ruby util/randomSchesimFile.rb tmp 4 ./121025/taskset_files/tmp 100"
 end
 
-def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
+def make_taskset(t_count, r_count, g_count, req_count, range, require_range, filename="")
   @manager.all_data_clear
   # タスクセット生成
   info = { }
@@ -42,28 +42,9 @@ def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
   info[:period_range] = range.first*5..range.last*5
 
   @manager.create_tasks(t_count, r_count, g_count, info)
+  
+  @manager.save_tasks(filename) unless filename == ""
 
-  # タスクセットファイル保存
-  filedir = ARGV[2]
-  unless filedir == nil
-    filename = ""
-
-    # ディレクトリ作成
-    Dir::mkdir(filedir) unless File::exists?(filedir)
-
-    while(1)
-      filename = "./#{filedir}/tmp_#{t_count}_#{$tasksets}"
-      #STDERR.puts "#{filename+"_task.json"}:#{File.exists?(filename+"_task.json")}"
-      if File.exists?(filename+"_task.json")
-        $tasksets += 1
-      else
-        break
-      end
-    end
-    
-    #STDERR.puts filename
-    @manager.save_tasks(filename)
-  end
 end
 
 # 作成するタスクセット数
@@ -88,16 +69,31 @@ if ARGV.size < 2
 end
 
 taskset_count.times do |i|
-  # タスクセット生成
-  make_taskset(t_count, r_count, g_count, req_count, ex_range, req_range)
+  # タスクセットファイル保存
+  filedir = ARGV[2]
+  filename = ""
 
-  # json出力
-  Dir::mkdir(output_filename) unless File::exist?(output_filename)
-  exp = EXPORT_SCHESIM.new("#{output_filename}/#{output_filename}_schesim")
+  unless filedir == nil || filedir == ""
+    # ディレクトリ作成
+    Dir::mkdir(filedir) unless File::exists?(filedir)
+    subdir = "#{File::basename(filedir)}_#{i}"
+    Dir::mkdir("#{filedir}/#{subdir}") unless File::exists?("#{filedir}/#{subdir}")
+    filename = "#{filedir}/#{subdir}/#{subdir}"
+  end
+  
+  # タスクセット生成
+  make_taskset(t_count, r_count, g_count, req_count, ex_range, req_range, filename)
+
+  # *.rb, *.json出力
+  Dir::mkdir(output_dir) unless File::exist?(output_dir)
+  subdir = "#{File::basename(output_dir)}_#{i}_schesim"
+
+  Dir::mkdir("#{output_dir}#{subdir}") unless File::exist?("#{output_dir}#{subdir}")
+  exp = EXPORT_SCHESIM.new("#{output_dir}#{subdir}/#{subdir}")
   exp.output(@manager)
 
   # schesimフォルダにコピー
-  FileUtils.copy_entry(output_filename, "#{SCHESIM_FOLDER}#{output_filename}_schesim")
+  # FileUtils.copy_entry(output_dir, "#{SCHESIM_FOLDER}#{output_dir}_#{i}_schesim")
 
   wcrt_array = []
   1.upto(@manager.tm.get_task_array.size) do |id|
