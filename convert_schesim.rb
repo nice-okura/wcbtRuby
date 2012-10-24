@@ -25,8 +25,8 @@ input_filename = ARGV[0]
 output_filename = ARGV[1]
 
 manager = AllManager.new
-puts "ロード失敗" if manager.load_tasks(input_filename) == false
+STDERR.puts "ロード失敗" if manager.load_tasks(input_filename) == false
 
-Dir::mkdir(output_filename) unless File::exist?(output_filename)
-exp = EXPORT_SCHESIM.new("#{output_filename}/#{output_filename}")
+Dir::mkdir(output_filename) unless File::exist?(File::dirname(output_filename))
+exp = EXPORT_SCHESIM.new("#{output_filename}")
 exp.output(manager)

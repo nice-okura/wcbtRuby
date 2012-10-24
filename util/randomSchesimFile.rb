@@ -21,6 +21,12 @@ SCHESIM_FOLDER = "/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/taskset_file
 output_filename = ARGV[0]
 
 $tasksets = 0
+def show_usage
+  puts "## Usage:"
+  puts "% ruby #{__FILE__} output_filename task_count [output_taskset_filename] [taskset_count]"
+  puts "## Example:"
+  puts "% ruby util/randomSchesimFile.rb tmp 4 ./121025/taskset_files/tmp 100"
+end
 
 def make_taskset(t_count, r_count, g_count, req_count, range, require_range)
   @manager.all_data_clear
@@ -77,6 +83,7 @@ req_range = 2..5            # CS範囲
 # main
 if ARGV.size < 2
   puts "引数が不正"
+  show_usage
   exit
 end
 
