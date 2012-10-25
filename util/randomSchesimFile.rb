@@ -28,18 +28,19 @@ def show_usage
   puts "% ruby util/randomSchesimFile.rb tmp 4 ./121025/taskset_files/tmp 100"
 end
 
-def make_taskset(t_count, r_count, g_count, req_count, range, require_range, filename="")
+def make_taskset(t_count, r_count, g_count, req_count, extime, require_time, filename="")
   @manager.all_data_clear
   # タスクセット生成
   info = { }
   info[:proc_num] = 2
   info[:mode] = CREATE_MANUALLY
-  info[:extime_range] = range
+  info[:extime] = extime
   info[:assign_mode] = ID_ORDER  # ID順
   info[:require_count] = req_count
-  info[:require_range] = require_range # CS範囲
+  #  info[:require_range] = require_range # CS範囲
+  info[:require_time] = require_time # CS
   info[:priority_mode] = PRIORITY_BY_UTIL # タスク使用率順にタスクIDと優先度をつける
-  info[:period_range] = range.first*5..range.last*5
+  info[:period_range] = extime*3..extime*5
 
   @manager.create_tasks(t_count, r_count, g_count, info)
   
@@ -58,8 +59,8 @@ t_count = ARGV[1].to_i      # タスク数
 r_count = t_count*2         # リソース要求数
 g_count = t_count/2         # グループ数
 req_count = 2               # タスク当たりのリソース要求数
-ex_range = 50..100          # タスク実行時間の範囲
-req_range = 2..5            # CS範囲
+extime = (50..70).get_random           # タスク実行時間の範囲
+req_range = extime*0.3          # CS範囲
 
 # main
 if ARGV.size < 2
@@ -82,7 +83,7 @@ taskset_count.times do |i|
   end
   
   # タスクセット生成
-  make_taskset(t_count, r_count, g_count, req_count, ex_range, req_range, filename)
+  make_taskset(t_count, r_count, g_count, req_count, extime, req_range, filename)
 
   # *.rb, *.json出力
   Dir::mkdir(output_dir) unless File::exist?(output_dir)
