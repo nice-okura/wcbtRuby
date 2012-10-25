@@ -49,7 +49,7 @@ class EXPORT_SCHESIM
       "share" => 1.0,
       "scheduling" => "fp",
       "pri" => 1,
-      "period" => period*PROC_NUM,
+      "period" => 50000,
       "task" => []
     }
 
