@@ -1,5 +1,3 @@
-﻿#!/usr/bin/ruby
-#
 #author: fujitani
 #date: 2012/10/09
 #
@@ -12,6 +10,7 @@
 require "rubygems"
 require "fastercsv"
 require "pp"
+
 DIRNAME = ARGV[0] # 入力データのあるフォルダ 末尾の"/"あり
 OUTPUT_FILE = ARGV[1]
 MAX_TASK = ARGV[2].to_i
