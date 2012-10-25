@@ -27,3 +27,4 @@ tmp*
 test*
 *.orig
 *.txt
+.rvmrc
