@@ -4,9 +4,9 @@
 #=Author: fujitani
 #=Date: 2012/10/09
 #
-# rtOutput.rb
+# 121031.rb
 #
-# ランダムなタスクセットを生成し，schesimフォルダにタスクセットファイル(.rb, .json)を生成する
+# ベースとタスクセットを生成し，そのoffsetをずらしたタスクセットで評価をする
 #
 # Usage: 
 # % ruby randomSchesimFile.rb [結果出力ファイル名] [タスク数] [タスクセット出力先] [タスクセット数]
@@ -21,6 +21,33 @@ SCHESIM_FOLDER = "/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/taskset_file
 output_dir = ARGV[0]
 
 $tasksets = 0
+
+def set_offset(task_count, count, max)
+  offset_hash = { }
+
+  for i in 1..task_count
+    offset_hash[i] = 0.0 
+  end
+
+  tasknum = 1
+  while(1)
+    p offset_hash
+    p count
+    offset = count > 50 ? 50 : count
+    offset_hash[tasknum] = offset
+    count -= offset
+    if count == 0
+      break
+    else
+      tasknum += 1
+      break if tasknum > task_count
+    end
+  end
+
+  return offset_hash
+end
+
+
 def show_usage
   puts "## Usage:"
   puts "% ruby #{__FILE__} output_dir task_count [output_taskset_filename] [taskset_count]"
@@ -50,16 +77,14 @@ t_count = ARGV[1].to_i      # タスク数
 r_count = t_count*2         # リソース要求数
 g_count = t_count/2         # グループ数
 info = { }
-info[]
 info[:proc_num] = 2
-info[:mode] = CREATE_MANUALLY
+info[:mode] = "121031"
 info[:extime] = (50..70).get_random
 info[:assign_mode] = ID_ORDER  # ID順
 info[:require_count] = 2
 info[:require_time] =  info[:extime]*0.1
 info[:priority_mode] = PRIORITY_BY_UTIL # タスク使用率順にタスクIDと優先度をつける
 info[:period_range] = info[:extime]*3..info[:extime]*5
-info[:offset] = 0.0
 
 # main
 if ARGV.size < 2
@@ -68,6 +93,9 @@ if ARGV.size < 2
   exit
 end
 
+p set_offset(4, 330, 50)
+
+=begin
 taskset_count.times do |i|
   # タスクセットファイル保存
   filedir = ARGV[2]
@@ -107,3 +135,4 @@ taskset_count.times do |i|
     puts wcrt_array.to_s.gsub(/\[|\]|\"/, "").gsub(/, /, ",")
   end
 end
+=end
