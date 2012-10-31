@@ -22,7 +22,7 @@ if [ $# -eq 3 ]; then
     ruby convert_schesim.rb $1 $2
     cp -r $2 ../schesim-0.7.2/taskset_files/
     cd ../schesim-0.7.2/
-    . auto_schesim.sh $2/$2 $3
+    ./utils/auto_schesim.sh $2/$2 $3
     cd ~/Documents/lab/tkdos/wcbtRuby/
     
 else

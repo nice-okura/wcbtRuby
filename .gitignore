@@ -25,3 +25,6 @@ AB_schesim*
 2CPU2TASK*
 tmp*
 test*
+s*.orig
+*.txt
+.rvmrc

@@ -51,7 +51,7 @@ if [ $# -eq 2 ]; then
 	    echo ${tsk}:${i}
 	    cd ${WCBT_DIR}
 	    WCRT=("${WCRT[@]}" `ruby ./util/randomSchesimFile.rb ${TMP} ${tsk}`)
-            
+
 	    cd ${SCHE_DIR}
 	    ./auto_schesim.sh ./${TS_DIR}tmp_schesim/tmp_schesim ${SIM_TIME} >& /dev/null
 	    

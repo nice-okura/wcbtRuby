@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift(File.dirname(__FILE__))
 require "./manager"
-require "./task-CUI"
+require "./utils/task-CUI"
 require "json"
 #require "./120601_sche_ana/wcbt-edf"
 
