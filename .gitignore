@@ -26,5 +26,7 @@ AB_schesim*
 tmp*
 test*
 s*.orig
+*.orig
 *.txt
 .rvmrc
+121031/taskset_files/
