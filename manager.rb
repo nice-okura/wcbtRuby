@@ -1110,11 +1110,15 @@ class GroupManager
   # グループを生成する
   #
   private
-  def create_group
+  def create_group(info)
     @@group_id += 1
+
+    if info[:short_only]
+      @@kind = SHORT
+    else
+      @@kind = @@kind == LONG ? SHORT : LONG
+    end
     group = Group.new(@@group_id, @@kind)
-    #@@kind = SHORT
-    @@kind = @@kind == LONG ? SHORT : LONG
     
     return group
   end
@@ -1165,7 +1169,7 @@ class GroupManager
       }
     else
       i.times{
-        garray << create_group
+        garray << create_group(info)
       }
       @@group_array = garray
     end

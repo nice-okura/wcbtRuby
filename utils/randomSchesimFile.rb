@@ -60,6 +60,7 @@ info[:require_time] =  info[:extime]*0.1
 info[:priority_mode] = PRIORITY_BY_UTIL # タスク使用率順にタスクIDと優先度をつける
 info[:period_range] = info[:extime]*3..info[:extime]*5
 info[:offset] = 0.0
+info[:short_only] = true
 
 # main
 if ARGV.size < 2
