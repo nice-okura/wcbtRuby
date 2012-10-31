@@ -154,7 +154,7 @@ class AllManager
     
     # リソース要求の作成
     @rm.create_require_array(rcount, info)
-    
+
     # タスクの作成
     @tm.create_task_array(tcount, info)
     
@@ -599,8 +599,6 @@ class TaskManager
   # 生成したタスクの数を返す
   public
   def create_task_array(i, info={ })
-    #tarray = []
-    #p info
     case info[:mode]
     when "0"
       #
@@ -608,7 +606,6 @@ class TaskManager
       # そうでなければそのまま
       #
       i.times{
-        #tarray << create_task
         @@task_array << create_task
       }
       #
