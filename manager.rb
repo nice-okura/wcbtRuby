@@ -688,11 +688,12 @@ class TaskManager
         @@task_array << create_task_manually(i, info)
       }
       
+      # 優先度割当て
       case info[:priority_mode]
       when PRIORITY_BY_UTIL      
         # タスク使用率順に優先度とID付け直す
         @@task_array.sort! do |a, b|
-          a.util <=> b.util
+          -1 * (a.util <=> b.util)
         end
         @@task_array.each_with_index do |t, i|
           t.set_taskid(i+1)
