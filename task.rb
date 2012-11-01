@@ -73,6 +73,8 @@ class Processor
       sort_by_task_id
     when SORT_UTIL
       sort_by_task_util
+    when SORT_PERIOD
+      sort_by_task_period
     else 
       # ソートしない
     end
@@ -165,7 +167,13 @@ class Processor
       a.priority <=> b.priority
     end
   end
-  
+
+  # タスク周期の降順で並べる
+  def sort_by_task_period
+    @task_list.sort! do |a, b|
+      a.period <=> b.period
+    end
+  end
 end
 
 #

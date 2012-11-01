@@ -33,15 +33,18 @@ ID_ORDER = 3
 RANDOM_ORDER = 4
 
 # プロセッサ内タスクソート
+# Processor.sort_tasks で使用
 SORT_PRIORITY = 1
 SORT_ID = 2
 SORT_UTIL = 3
-
+SORT_PERIOD = 4
 
 PROC_ID_SYN = "proc_id"
 TASK_LIST_SYN = "task_list"
 UNASSIGNED = -1
 
 # 優先度割付け
+# TaskManager.create_task_array の CREATE_MANUALY で使う
+PRIORITY_BY_ID = 0  # 標準
 PRIORITY_BY_UTIL = 1
 PRIORITY_BY_PERIOD = 2

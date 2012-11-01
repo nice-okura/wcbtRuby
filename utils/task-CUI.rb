@@ -29,48 +29,20 @@ class TaskSet
   def initialize()
     
   end
-=begin
-  # 旧仕様のコンストラクタ
-  def initialize(task_list)
-    puts "旧仕様TaskSetのinitializeを呼び出しました."
-    @task_list = task_list
-    @taskset_proc = []
-    
-    #
-    # プロセッサ順にソート
-    #
-    @task_list.sort!{|a, b|
-      a.proc <=> b.proc
-    }
-    
-    #
-    # タスクを分類
-    #
-    distribute_task_proc
-    
-    #
-    # 優先度順にソート
-    #
-    @taskset_proc.each{|tasks|
-      tasks.sort!{|a, b|
-        a.priority <=> b.priority
-      }
-    }
-  end
-=end
+
   #
   # システム全体のプロセッサのリスト
   #
   def proc_list
     proc = []
-    @task_list.each{|task|
+    @task_list.each do |task|
       # タスクが未割り当ての場合
       if task.proc == UNASSIGNED
         puts "タスク#{task.task_id}が未割り当てです"
         exit
       end
       proc << task.proc
-    }
+    end
     proc.uniq!
     return proc.sort!
   end
@@ -82,21 +54,26 @@ class TaskSet
     proc_num = 1
     task_array = []
     #pp @taskset_proc
-    @task_list.each{|task|
-      if task.proc != proc_num then
+    @task_list.each do |task|
+      if task.proc != proc_num
         proc_num = task.proc
         @taskset_proc.push(task_array)
         task_array = []
       end
       task_array << task
-    }
+    end
     @taskset_proc.push(task_array)
     #p @task_list.size
   end
  
   # ProcessorManagerからプロセッサ情報を得てタスクを表示させる
-  def show_taskset
+  # opt[:sortmode]
+  #   SORT_PRIORITY: 優先度順に表示
+  #   SORT_ID: ID順に表示
+  #   SORT_UTIL: CPU使用率順に表示
+  def show_taskset(opt={ })
     ProcessorManager.proc_list.each do |proc|
+      proc.sort_tasks(opt[:sort_mode])
       puts "[プロセッサ#{proc.proc_id}]"
       proc.task_list.each do |t|
         tc = TaskCUI.new(t)

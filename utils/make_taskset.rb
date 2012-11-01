@@ -52,8 +52,16 @@ def show_help_message
   puts "     タスク当たりのリソース要求数"
   puts "     未指定(nil)の場合はconfig.rbのREQ_NUM以下のランダム数"
   puts ""
+  puts " -p <mode>"
+  puts "     優先度割付の基準"
+  puts "         id    : IDの順"
+  puts "         util  : 使用率の順"
+  puts "         period: 周期の順"
+  puts ""
   puts " --nest"
   puts "     ネストさせたい場合に指定する"
+  puts " --short_only"
+  puts "     shortリソースのみ使用する"
 
 end
 
@@ -112,6 +120,22 @@ opt.on('-R [VAL]', '--require_range [VAL]') { |v|
   last = v.split("..")[1].to_i
   info[:require_range] = first..last
 }
+
+opt.on('--short_only') { |v|
+  info[:short_only] = true
+}
+
+opt.on('-p [VAL]') do |v|
+  case v
+  when "id"
+    info[:priority_mode] = PRIORITY_BY_ID
+  when "util"
+    info[:priority_mode] = PRIOROITY_BY_UTIL
+  when "period"
+    info[:priority_mode] = PRIORITY_BY_PERIOD
+  end
+end
+
 
 opt.parse!(ARGV)
 

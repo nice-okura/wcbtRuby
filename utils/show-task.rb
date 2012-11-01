@@ -4,18 +4,37 @@ $:.unshift(File.dirname(__FILE__))
 require "./manager"
 require "./utils/task-CUI"
 require "json"
+require "optparse"
+
 #require "./120601_sche_ana/wcbt-edf"
 
 include WCBT
 
+optparser = OptionParser.new
+
+opt = { }
+optparser.on('-d') { $DEBUGFlg = true }
+optparser.on('-m [VAL]') do |v|
+  case v
+  when "priority"
+    opt[:sort_mode] = SORT_PRIORITY
+  when "id"
+    opt[:sort_mode] = SORT_ID
+  when "util"
+    opt[:sort_mode] = SORT_UTIL
+  when "period"
+    opt[:sort_mode] = SORT_PERIOD
+  end
+end
+
+optparser.parse!(ARGV)
+
 FILENAME = ARGV[0]
-opt = ARGV[1]
-$DEBUGFlg = true if opt == "-d"
 @manager = AllManager.new
-@manager.load_tasks("#{FILENAME}")
+@manager.load_tasks(FILENAME)
 
 taskset = TaskSet.new#(@manager.tm.get_task_array)
-taskset.show_taskset
+taskset.show_taskset(opt)
 #init_computing(@manager.tm.get_task_array)
 #set_blocktime
 #taskset.show_blocktime_edf

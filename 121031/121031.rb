@@ -69,6 +69,7 @@ info[:require_count] = 2
 info[:require_time] =  info[:extime]*0.1
 info[:priority_mode] = PRIORITY_BY_UTIL # タスク使用率順にタスクIDと優先度をつける
 info[:period_range] = info[:extime]*3..info[:extime]*5
+info[:short_only] = true
 
 max_count = ARGV[4].to_i    # offsetのずれたタスクセットをいくつ作るか
 max_offset = 50             # タスク当たりの最大offset
@@ -97,7 +98,7 @@ taskset_count.times do |i|
   @manager.all_data_clear
   @manager.create_tasks(t_count, r_count, g_count, info)  
   @manager.save_tasks(filename) unless filename == ""  
-
+  wcrt_array = []
   max_count.times do |offset|
 
     offhash = set_offset(t_count, offset, max_offset)
@@ -123,13 +124,12 @@ taskset_count.times do |i|
     1.upto(@manager.tm.get_task_array.size) do |id|
       wcrt_array << TaskManager.get_task(id).wcrt*10
     end
-
-    case RUBY_VERSION 
-    when "1.8.7"
-      puts wcrt_array.inject(""){|str, x| str += "#{x},"}.gsub(/,$/, "")
-    when "1.9.3"
-      puts wcrt_array.to_s.gsub(/\[|\]|\"/, "").gsub(/, /, ",")
-    end
   end
-
+  
+  case RUBY_VERSION 
+  when "1.8.7"
+    puts wcrt_array.inject(""){|str, x| str += "#{x},"}.gsub(/,$/, "")
+  when "1.9.3"
+    puts wcrt_array.to_s.gsub(/\[|\]|\"/, "").gsub(/, /, ",")
+  end
 end
