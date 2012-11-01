@@ -53,7 +53,7 @@ class TaskSet
   def distribute_task_proc
     proc_num = 1
     task_array = []
-    #pp @taskset_proc
+
     @task_list.each do |task|
       if task.proc != proc_num
         proc_num = task.proc
@@ -85,14 +85,14 @@ class TaskSet
   # 旧仕様のshow_taskset
   def show_taskset_old
     proc_num = 1
-    @taskset_proc.each{|tasks|
+    @taskset_proc.each do |tasks|
       puts "[プロセッサ#{proc_num}]"
-      tasks.each{|task|
+      tasks.each do |task|
         tc = TaskCUI.new(task)
         tc.show_task_char
-      }
+      end
       proc_num += 1
-    }
+    end
   end
   
   #

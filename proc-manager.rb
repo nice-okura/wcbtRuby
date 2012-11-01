@@ -1,4 +1,5 @@
 require "pp"
+require "./processor"
 
 PROCS = "procs"
 # プロセッサマネージャーの定義

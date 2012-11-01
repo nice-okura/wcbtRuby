@@ -36,6 +36,10 @@ def show_help_message
   puts "     リソース要求時間の範囲を指定"
   puts "     Ex. --require_range 2..8"
   puts ""
+  puts " -P, --period_range <range>"
+  puts "     周期の範囲を指定"
+  puts "     Ex. --period_range 100..500"
+  puts ""
   puts " --rcsl <ratio>" 
   puts "     RCSL指定"
   puts "     未指定(nil)の場合はランダム"
@@ -88,6 +92,12 @@ opt.on('-E [VAL]', '--extime_range [VAL]') { |v|
   info[:extime_range] = first..last
 }
 
+opt.on('-P [VAL]', '--period_range [VAL]') { |v|
+  first = v.split("..")[0].to_i
+  last = v.split("..")[1].to_i
+  info[:period_range] = first..last
+}
+
 opt.on('--rcsl [VAL]') {|v|
   info[:rcsl] = v.to_f
 }
@@ -130,7 +140,7 @@ opt.on('-p [VAL]') do |v|
   when "id"
     info[:priority_mode] = PRIORITY_BY_ID
   when "util"
-    info[:priority_mode] = PRIOROITY_BY_UTIL
+    info[:priority_mode] = PRIORITY_BY_UTIL
   when "period"
     info[:priority_mode] = PRIORITY_BY_PERIOD
   end
@@ -160,6 +170,6 @@ end
 p info
 @manager = AllManager.new
 @manager.create_tasks(ARGV[2].to_i, ARGV[3].to_i, ARGV[4].to_i, info)
-@manager.save_tasks("#{FILENAME}")
+@manager.save_tasks(FILENAME)
 taskset = TaskSet.new
-taskset.show_taskset
+taskset.show_taskset(:sort_mode=>SORT_PRIORITY)
