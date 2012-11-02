@@ -454,7 +454,6 @@ module WCBT
     if $PREEMPTIVE_FLG
       # preemptive spin の場合
       min = [b+preempt(job), tuples.size].min
-      p "job#{job.task_id} min:#{min}"
     else
       min = [b, tuples.size].min
     end
@@ -462,7 +461,6 @@ module WCBT
       time += tuples[num].req.time
     end
     p_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
-    p time
     return time
   end
   

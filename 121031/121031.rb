@@ -13,10 +13,18 @@
 require "./manager"
 require "./utils/export_schesim"
 require "fileutils"
+require "optparse"
 
 #cd ../schesim-0.7.2; ruby schesim.rb -t tmp/tmp.json -d tmp/tmp.rb -r tmp/tmp.res -e 10 ; cd ../wcbtRuby/
 # マクロ
 SCHESIM_FOLDER = "/Users/fujitani/Documents/lab/tkdos/schesim-0.7.2/taskset_files/121025_tmp_schesim/"
+
+opt = OptionParser.new
+opt.on('-p'){ $PREEMPTIVE_FLG = true }
+
+opt.parse!(ARGV)
+
+
 @manager = AllManager.new
 output_dir = ARGV[0]
 
