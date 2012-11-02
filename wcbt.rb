@@ -71,29 +71,19 @@ module WCBT
     $NARR.clear
     $wclx.clear
     $wcsx.clear
-    #$bbt.clear
-    #$abr.clear
-    #$proc_list.clear
-    #$proc_task_list.clear 
 
-    #puts "INIT_COMPUTING"
-    
-    proc = [] # proc_list用プロセッサ配列
-    
-    
-    
     $calc_task.each do |task|
-      
-      #
       # SR, LRの計算
-      #
       lr = []
       sr = []
       task.all_require.each do |req|
-        if req.res.kind == LONG && req.outermost == true
-          lr << req
-        elsif req.res.kind == SHORT && req.outermost == true
-          sr << req
+        if req.outermost == true
+          case req.res.kind
+          when LONG
+            lr << req
+          when SHORT
+            sr << req
+          end
         end
       end
       $LR[task.task_id] = lr unless lr == []
@@ -101,43 +91,30 @@ module WCBT
     end
     
     # inflated_timeの計算
-    $calc_task.each do |task|
-      SB_not_tight(task)
-    end
-    
-    
+    $calc_task.each{ |task| SB_not_tight(task) }
+
     $calc_task.each do |task|
       lreqs = []
       sreqs = []
 
       # ネストしているリソース要求も含める
-      # task.req_list.each{|req|
       task.all_require.each do |req|
-        if req.outermost == true && req.res.kind == LONG
-          lreqs << req            
-        elsif req.outermost == true && req.res.kind == SHORT
-          sreqs << req
+        if req.outermost == true
+          case req.res.kind
+          when LONG
+            lreqs << req
+          when SHORT
+            sreqs << req
+          end
         end
       end
       $WCLR[task.task_id] = lreqs unless lreqs == []
       $WCSR[task.task_id] = sreqs unless sreqs == []
-      
-      
-      
-      #
+
       # narrの計算
-      #
       $NARR[task.task_id] = task.long_require_array.size + 1
 
-
-      #
-      # proc_listの計算
-      #      
-      #proc << task.proc
-
-      #
       # wclx, wcsxの計算
-      #
       $calc_task.each do |job|
         tuplesl = []
         tupless = []
@@ -145,7 +122,7 @@ module WCBT
         return [] if task == nil || job == nil
 
         begin
-          k = (job.period.to_f/task.period.to_f).ceil.to_i + 1
+          k = (job.period/task.period).ceil.to_i + 1
         rescue => e
           p e
           puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
@@ -153,87 +130,20 @@ module WCBT
         end
 
         1.upto(k) do |n|
-          WCLR(task).each do |req|
-            if req.res.kind == LONG
-              tuplesl << ReqTuple.new(req, n)
-            end
-          end
-          WCSR(task).each do |req|
-            if req.res.kind == SHORT && req.nested == false
-              tupless << ReqTuple.new(req, n)
-            end
-          end
+          WCLR(task).each{ |req| tuplesl << ReqTuple.new(req, n) if req.res.kind == LONG }
+          WCSR(task).each{ |req| tupless << ReqTuple.new(req, n) if req.res.kind == SHORT && req.nested == false }
         end
-
+        
+        # リソース要求時間順にソート
         tuplesl.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
         tupless.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+        
         $wclx[[task.task_id, job.task_id]] = tuplesl
         $wcsx[[task.task_id, job.task_id]] = tupless
       end
     end
-    
-    #
-    # proc_list設定
-    #
-    #proc.uniq!
-    #proc.sort!    
-    #$proc_list = proc
-
-    #
-    # 上記の計算をした後でしか計算できないもの
-    #
-=begin
-    $calc_task.each do |job|
-      tuple_abr = []
-      tuples_abr = []
-      $calc_task.each do |task|
-        #
-        # abrの計算
-        #
-        if task.proc == job.proc && task.priority > job.priority
-          tuple_abr = wcsx(task, job)
-          if tuple_abr != []
-            tuples_abr += tuple_abr
-          end
-        end
-
-        
-        #
-        # bbtの計算
-        #
-        len = 0
-        tuples = wclx(task, job)
-        str = ""
-        #tuples.each{|t|
-        #  str += t.to_str
-        #}
-        min = [tuples.size, narr(job)].min
-        0.upto(min-1) do |num|
-          #p tuples[num].req.inflated_spintime
-          len += tuples[num].req.get_time_inflated
-          #len += tuples[num].req.time
-        end
-        $bbt[[task.task_id, job.task_id]] = len
-
-      end
-      $abr[job.task_id] = tuples_abr
-    end
-=end
-    
-    #
-    # partitionの計算
-    #
-=begin
-    $proc_list.each{ |proc|
-      proc_task_list = []
-      $calc_task.each{|task|
-        proc_task_list << task if task.proc == proc
-      }
-      $proc_task_list[proc] = proc_task_list
-    }
-=end
-
   end
+
   ###########################################
   #
   #   以下 private 
@@ -308,12 +218,11 @@ module WCBT
     tuples = []
     
     job.proc.task_list.each do |task|
-    #$calc_task.each do |task|
-       next if task == nil || task == []
-       if task.proc == job.proc && task.priority > job.priority
-         tuple = wcsx(task, job)
-         tuples += tuple unless tuple == []
-       end
+      next if task == nil || task == []
+      if task.proc == job.proc && task.priority > job.priority
+        tuple = wcsx(task, job)
+        tuples += tuple unless tuple == []
+      end
     end
     tuples.sort!{ |a, b| -1 * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
@@ -327,7 +236,7 @@ module WCBT
     block_time = 0
     
     # 各プロセッサからreqと競合する可能性のあるリソース要求のCS時間を足しあわせ
-    ProcessorManager.proc_list.each do |proc|
+    proc_list.each do |proc|
       next if processor == proc
       reqs_time_array = competing(req, proc).collect{ |r| r.time }
       #puts "\t#{reqs_time_array}"
@@ -728,7 +637,6 @@ module WCBT
     # 各タスクのブロック時間を計算
     #puts "set_blocktime"
     $calc_task.each{ |t| t.sb = SB(t) }
-    #$calc_task.each{ |t| SB_not_tight(t) }
     $calc_task.each{ |t| t.ab = AB(t) }
     $calc_task.each{ |t| t.bb = BB(t) }
     $calc_task.each{ |t| t.lb = LB(t) }
@@ -747,7 +655,6 @@ module WCBT
     # 各タスクのブロック時間を計算
     #puts "set_blocktime"
     $calc_task.each{ |t| t.sb = SB(t) }
-    #$calc_task.each{ |t| SB_not_tight(t) }
     $calc_task.each{ |t| t.ab = AB_preemptive(t) }
     $calc_task.each{ |t| t.bb = BB(t) }
     $calc_task.each{ |t| t.lb = LB(t) }
@@ -826,7 +733,6 @@ module WCBT
   def wcrt(job)
     pre_wcrt = job.get_extime + job.b
     n = 1
-    #    puts "job:#{job.task_id}:#{job.proc.proc_id}"
     count = 0
     pre_array = [pre_wcrt]
     while(1)

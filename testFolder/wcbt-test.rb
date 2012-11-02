@@ -1,11 +1,10 @@
 #! /usr/bin/ruby
 # -*- coding: utf-8 -*-
-
 #$:.unshift(File.dirname(__FILE__))
 require "./task"
 require "test/unit"
 require "pp"
-require "./task-CUI"
+require "./utils/task-CUI"
 require "./manager"
 
 TEST_FOLDER = "./testFolder/"
@@ -24,24 +23,6 @@ class Test_wcbt < Test::Unit::TestCase
     @manager = AllManager.new
     @manager.all_data_clear
   end 
-
-=begin
-  def test_init_computing
-    task1 = Task.new(1, 1, 60, 10, 1, 0, [@req6_LongLong4])
-    = Task.new(2, 1, 60, 10, 2, 0, [@req6_LongLong4, @req1_Long1])
-    TaskManager.get_task(3) = Task.new(3, 2, 60, 10, 3, 0, [@req12_LongLong2])
-
-    $task_list = [task1, TaskManager.get_task(2), TaskManager.get_task(3)]
-    init_computing($task_list)
-
-    assert_equal(3, $WCLR.size) # タスク数
-    assert_equal(1, WCLR(task1).size)
-    assert_equal(2, WCLR(TaskManager.get_task(2)).size)
-    assert_equal(1, WCLR(TaskManager.get_task(3)).size)
-    
-    assert_equal(0, $WCSR.size)
-  end
-=end
 
   def test_WCLRWCSR
     set_taskset("#{TEST_FOLDER}for_many_test")
