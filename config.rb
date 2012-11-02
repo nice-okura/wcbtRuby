@@ -21,6 +21,9 @@ GRP_COUNT = 10
 $COLOR_CHAR = true
 $DEBUGFlg = false
 
+# preemptive spinにする場合
+$PREEMPTIVE_FLG = true
+
 # タスク生成ルールを細かく設定する場合．create_task_arrayで使われる
 CREATE_MANUALLY  = "create_manually"
 SCHE_CHECK = "sche_check"

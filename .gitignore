@@ -30,3 +30,4 @@ s*.orig
 *.txt
 .rvmrc
 121031/taskset_files/
+.yardoc
