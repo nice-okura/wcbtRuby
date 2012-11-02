@@ -1198,5 +1198,17 @@ class Test_wcbt < Test::Unit::TestCase
 
     assert_equal(TaskManager.get_task(4).req_list[1].inflated_spintime, TaskManager.get_task(4).req_list[1].reqs[0].inflated_spintime)
   end
+
+  def test_preempt
+    set_taskset("#{TEST_FOLDER}test_preempt")
+    assert_equal(0, preempt(TaskManager.get_task(1)))
+    assert_equal(0, preempt(TaskManager.get_task(2)))
+    assert_equal(3, preempt(TaskManager.get_task(3)))
+    assert_equal(1, preempt(TaskManager.get_task(4)))
+    assert_equal(3, preempt(TaskManager.get_task(5)))
+    assert_equal(2, preempt(TaskManager.get_task(6)))
+    assert_equal(3, preempt(TaskManager.get_task(7)))
+    assert_equal(1, preempt(TaskManager.get_task(8)))
+  end
 end
- 
+

@@ -186,7 +186,17 @@ module WCBT
   def narr(job)
     return $NARR[job.task_id]
   end
-  
+
+  # ジョブjobが高優先度なジョブにプリエンプトされる回数
+  def preempt(job)
+    preempt_list = [0]
+    job.proc.task_list.each do |tsk|
+      preempt_list << (job.period/tsk.period).ceil.to_i if tsk.priority < job.priority
+    end
+    
+    return preempt_list.max
+  end
+
   # procはProcessor
   def partition(proc)
     raise unless proc.class == Processor
@@ -199,9 +209,6 @@ module WCBT
     return ProcessorManager.proc_list
   end
 
-  
-  ##############################
-  
   def bbt(task, job)
     len = 0
     tuples = wclx(task, job)

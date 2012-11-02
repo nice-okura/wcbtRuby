@@ -64,6 +64,7 @@ def show_help_message
   puts ""
   puts " --nest"
   puts "     ネストさせたい場合に指定する"
+  puts ""
   puts " --short_only"
   puts "     shortリソースのみ使用する"
 
