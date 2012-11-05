@@ -67,7 +67,7 @@ def show_help_message
   puts ""
   puts " --short_only"
   puts "     shortリソースのみ使用する"
-
+  
 end
 
 
@@ -159,14 +159,6 @@ end
 FILENAME = ARGV[0]
 info[:proc_num] = ARGV[1].to_i
 info[:mode] = "0" if info[:mode] == nil
-
-=begin
-unless ARGV[5] == nil
-  info = { :mode => ARGV[5].split(',')[0], :extime => ARGV[5].split(',')[1], :rcsl => ARGV[5].split(',')[2] }
-else
-  info = { :mode => "0" }
-end
-=end
 
 p info
 @manager = AllManager.new

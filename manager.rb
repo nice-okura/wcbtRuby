@@ -103,11 +103,8 @@ class AllManager
     end
     # $task_list = @tm.get_task_array
     init_computing($task_list)
-    if info[:spin_preemptive]
-      set_blocktime_spin_preemptive
-    else
-      set_blocktime
-    end
+    set_blocktime
+
     return true
   end
  

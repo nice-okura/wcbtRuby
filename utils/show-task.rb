@@ -26,12 +26,13 @@ optparser.on('-m [VAL]') do |v|
     opt[:sort_mode] = SORT_PERIOD
   end
 end
+optparser.on('-p'){ $PREEMPTIVE_FLG = true }
 
 optparser.parse!(ARGV)
 
 FILENAME = ARGV[0]
 @manager = AllManager.new
-@manager.load_tasks(FILENAME)
+@manager.load_tasks(FILENAME, opt)
 
 taskset = TaskSet.new#(@manager.tm.get_task_array)
 taskset.show_taskset(opt)

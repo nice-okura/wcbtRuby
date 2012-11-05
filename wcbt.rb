@@ -493,8 +493,11 @@ module WCBT
     tuples = abr(job)
     min = [tuples.size, narr(job)].min
     0.upto(min-1) do |num|
-      #time += tuples[num].req.time # spinをpreemptiveにした場合
-      time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
+      if $PREEMPTIVE_FLG
+        time += tuples[num].req.time # spinをpreemptiveにした場合
+      else
+        time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
+      end
     end
     p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
 
@@ -655,9 +658,7 @@ module WCBT
     $calc_task.each{ |t| t.b = t.bb + t.ab + t.sb + t.lb + t.db }
 
     # 最悪応答時間の計算
-    $calc_task.each do |t|
-      t.set_wcrt(wcrt(t))
-    end
+    $calc_task.each{ |t| t.set_wcrt(wcrt(t)) }
   end
   
   # タスクのブロック時間を計算
