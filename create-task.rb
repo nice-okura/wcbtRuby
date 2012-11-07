@@ -10,6 +10,16 @@ class TaskManager
     # プロセッサ未割り当て
     proc = UNASSIGNED
 
+    # タスク実行時間
+    if info[:extime_range] != nil
+      extime = info[:extime_range].get_random
+      #extime = info[:extime_range].first + rand(info[:extime_range].last - info[:extime_range].first)
+    elsif info[:extime] != nil
+      extime = info[:extime]
+    else
+      extime = req_time + rand(TASK_EXE_MAX - req_time)
+    end
+
     # リソース要求
     req_list = []
     req_time = 0
@@ -18,6 +28,9 @@ class TaskManager
         if rand(2) == 1
           r = RequireManager.get_random_req
           unless r == nil
+            # RCSLが指定されていた場合はタスク実行時間からCS長を求める
+            r.set_time(extime*info[:rcsl]) if r.time == -1 # RCSLが指定されている時，time == -1 となる(create_require.rb)
+            
             req_list << r 
             req_time += r.time
           end
@@ -27,20 +40,13 @@ class TaskManager
       info[:require_count].times do
         r = RequireManager.get_random_req
         unless r == nil
+          # RCSLが指定されていた場合はタスク実行時間からCS長を求める
+          r.set_time(extime*info[:rcsl]) if r.time == -1 # RCSLが指定されている時，time == -1 となる(create_require.rb)
+          
           req_list << r 
           req_time += r.time
         end
       end
-    end
-
-    # タスク実行時間
-    if info[:extime_range] != nil
-      extime = info[:extime_range].get_random
-      #extime = info[:extime_range].first + rand(info[:extime_range].last - info[:extime_range].first)
-    elsif info[:extime] != nil
-      extime = info[:extime]
-    else
-      extime = req_time + rand(TASK_EXE_MAX - req_time)
     end
 
     # 周期

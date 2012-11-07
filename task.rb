@@ -190,9 +190,7 @@ class Task
   # リソース要求時間が
   # タスクの実行時間を超えていないかチェック
   def check_over_extime
-    time = @reqtime
-    
-    if @extime < time
+    if @extime < @reqtime
       puts "タスク" + @task_id.to_s + "のリソース要求時間が実行時間を超えています．"
       raise
     end
@@ -410,7 +408,7 @@ class Req
   def initialize(id, res, time, reqs, begintime=0, outermost=true)
     @req_id = id
     set_resource(res)
-    @time = time
+    @time = set_time(time)
     @begintime = begintime
     @reqs = reqs
     @outermost = outermost
@@ -429,7 +427,7 @@ class Req
       req.instance_variable_set(:@outer_req, self)
     end
 
-    if @time < nesttime
+    if @time < nesttime && @time != -1
       print "リソースネストエラー\n:ネストしているリソースアクセス時間がoutermost リソースのアクセスを超えています．\n"
       pp self
       raise
@@ -446,6 +444,13 @@ class Req
   def set_resource(res)
     raise IllegalClass unless res.class == Group
     @res = res
+  end
+
+  # リソース要求時間setter
+  # 有効数字2桁で実行時間を代入
+  # @param: [Numeric] time リソース要求時間
+  def set_time(time)
+    @time = time.to_f.round(2)
   end
   
   #
