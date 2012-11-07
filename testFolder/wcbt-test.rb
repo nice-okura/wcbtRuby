@@ -1213,9 +1213,13 @@ class Test_wcbt < Test::Unit::TestCase
 
   def test_get_remote_groups
     set_taskset("#{TEST_FOLDER}test_get_remote_groups1")
-    assert_equal([2,6], get_remote_groups(TaskManager.get_task(1).proc))
-    assert_equal([4,6], get_remote_groups(TaskManager.get_task(2).proc))
-    
+    assert_equal([4,6], get_remote_groups(TaskManager.get_task(1).proc))
+    assert_equal([2,6], get_remote_groups(TaskManager.get_task(2).proc))
+
+    set_taskset("#{TEST_FOLDER}test_get_remote_groups3")
+    assert_equal([4,6], get_remote_groups(TaskManager.get_task(1).proc))
+    assert_equal([2,4,6], get_remote_groups(TaskManager.get_task(2).proc))
+
   end
 end
 

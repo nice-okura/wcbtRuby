@@ -116,8 +116,7 @@ module WCBT
         $NARR[task.task_id] = 0
 
         # リモートタスクの要求するリソースのグループのリスト
-        remote_group_list = []
-        
+        remote_group_list = get_remote_groups(task.proc)
         # longリソース要求により，suspendする回数
         suspend_cnt = 0
         
@@ -126,6 +125,7 @@ module WCBT
         end
 
         $NARR[task.task_id] = suspend_cnt + 1
+        
       else
         $NARR[task.task_id] = task.long_require_array.size + 1
       end
@@ -222,7 +222,7 @@ module WCBT
     remote_group_list = []
     ProcessorManager.proc_list.each do |p|
       next if proc == p
-      proc.task_list.each do |tsk|
+      p.task_list.each do |tsk|
         tsk.long_require_array.each do |res2|
           remote_group_list << res2.res.group
         end
