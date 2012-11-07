@@ -253,8 +253,8 @@ class ProcessorManager
   end
   
   # 指定したIDのプロセッサにタスクを割当てる
-  # @param proc_id [Fixnum] プロセッサID
-  # @param task [Task] タスク
+  # @param proc_id [Fixnum] proc_id プロセッサID
+  # @param task [Task] task タスク
   # @return assign_taskがtrueならtrue
   def assign_task(proc_id, task)
     return true if get_proc(proc_id).assign_task(task)
@@ -262,7 +262,8 @@ class ProcessorManager
 
   # 指定したプロセッサIDのプロセッサを得る
   # @param proc_id [Fixnum] プロセッサID
-  # @return [Processor] プロセッサ．エラー時はnilを返す
+  # @return [Processor] プロセッサ．
+  #  エラー時はnilを返す
   def get_proc(proc_id)
     @@proc_list.each{ |p|
       return p if p.proc_id == proc_id

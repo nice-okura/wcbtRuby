@@ -69,6 +69,9 @@ module WCBT
     $wclx.clear
     $wcsx.clear
 
+    # ブロック時間のリセット
+    $calc_task.each { |tsk| tsk.reset_task }
+    
     $calc_task.each do |task|
       # SR, LRの計算
       lr = []
@@ -693,6 +696,7 @@ module WCBT
   end
   
   # タスクのブロック時間を計算
+  # @deprecated set_blocktimeと統合
   public
   def set_blocktime_spin_preemptive
     # 各タスクのブロック時間を計算

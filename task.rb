@@ -227,14 +227,18 @@ class Task
     #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
   
-  # ブロック時間のリセット
-  def clear_blockingtime
-    @bb = 0
-    @ab = 0
-    @sb = 0
-    @lb = 0
-    @db = 0
-    @b = 0
+  # ブロック時間等リセット
+  def reset_task
+    @inflated_time = 0.0
+    @reqtime = get_require_time
+    @wcrt = 0.0
+    @bb = 0.0
+    @ab = 0.0
+    @sb = 0.0
+    @lb = 0.0
+    @db = 0.0
+    @b = 0.0
+    @all_require.each{ |req| req.reset_require }
   end
   
   # デバッグ用
@@ -410,7 +414,7 @@ class Req
     @begintime = begintime
     @reqs = reqs
     @outermost = outermost
-    @inflated_spintime = 0     # sbr で計算されるSBによるspin時間．ABを計算する際に必要となる.
+    @inflated_spintime = 0.0     # sbr で計算されるSBによるspin時間．ABを計算する際に必要となる.
     @nested = false # ネスト"されている"場合 true
     
     # outermost のアクセス時間timeが最大でないといけない
@@ -510,7 +514,11 @@ class Req
   def change_require_time(time)
     @time = time
   end
-  
+
+  # inflated_spintimeなどのリセット
+  def reset_require
+    @inflated_spintime = 0.0
+  end
 end
 
 #

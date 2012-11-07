@@ -884,9 +884,9 @@ class TaskManager
   # 指定したタスクIDのタスクを返す
   def self.get_task(id)
     id = id.to_i
-    @@task_array.each{ |t|
+    @@task_array.each do |t|
       return t if t.task_id == id
-    }
+    end
     return nil
   end
   
@@ -898,12 +898,12 @@ class TaskManager
   
   # 指定したタスクIDリストのタスクのリストを返す
   # @param task_id_list [Array<Fixnum>] タスクIDリスト
-  # @return task_list [Array<Task>] タスクリスト
+  # @return task_list タスクリスト
   def self.get_tasks(task_id_list)
     task_list = []
-    task_id_list.each{ |id|
+    task_id_list.each do |id|
       task_list << get_task(id)
-    }
+    end
     return task_list
   end
 
@@ -911,9 +911,9 @@ class TaskManager
   # task_listの中から，最大周期を取得
   def get_max_period
     period = -1
-    @@task_array.each{ |t|
+    @@task_array.each do |t|
       period = t.period if period < t.period
-    }
+    end
 
     return period
   end
