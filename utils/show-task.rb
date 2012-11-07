@@ -26,7 +26,11 @@ optparser.on('-m [VAL]') do |v|
     opt[:sort_mode] = SORT_PERIOD
   end
 end
-optparser.on('-p'){ $PREEMPTIVE_FLG = true }
+optparser.on('-p'){ $PREEMPTIVE_FLG = true; puts "PREEMPTIVE SPIN" }
+
+# リモートリソースの存在を考慮して，
+# longリソース要求時のsuspend回数を計算する
+optparser.on('-r'){ $REMOTE_RESOURCE_FLG = true }
 
 optparser.parse!(ARGV)
 

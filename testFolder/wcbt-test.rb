@@ -1210,5 +1210,12 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(3, preempt(TaskManager.get_task(7)))
     assert_equal(1, preempt(TaskManager.get_task(8)))
   end
+
+  def test_get_remote_groups
+    set_taskset("#{TEST_FOLDER}test_get_remote_groups1")
+    assert_equal([2,6], get_remote_groups(TaskManager.get_task(1).proc))
+    assert_equal([4,6], get_remote_groups(TaskManager.get_task(2).proc))
+    
+  end
 end
 

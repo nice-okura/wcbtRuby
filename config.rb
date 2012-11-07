@@ -22,7 +22,10 @@ $COLOR_CHAR = true
 $DEBUGFlg = false
 
 # preemptive spinにする場合
-$PREEMPTIVE_FLG = true
+$PREEMPTIVE_FLG = false
+
+# local resource 考慮
+$REMOTE_RESOURCE_FLG = false
 
 # タスク生成ルールを細かく設定する場合．create_task_arrayで使われる
 CREATE_MANUALLY  = "create_manually"

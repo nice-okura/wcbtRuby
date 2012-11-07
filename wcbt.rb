@@ -15,9 +15,6 @@ require "./config"
 require "rubygems"
 require "term/ansicolor"
 
-
-#require "ruby-prof"
-
 $calc_task = [] # WCBTモジュールで使用するタスク
 
 class String
@@ -112,8 +109,24 @@ module WCBT
       $WCSR[task.task_id] = sreqs unless sreqs == []
 
       # narrの計算
-      $NARR[task.task_id] = task.long_require_array.size + 1
+      if $REMOTE_RESOURCE_FLG
+        $NARR[task.task_id] = 0
 
+        # リモートタスクの要求するリソースのグループのリスト
+        remote_group_list = []
+        
+        # longリソース要求により，suspendする回数
+        suspend_cnt = 0
+        
+        task.long_require_array.each do |res|
+          suspend_cnt += 1 if remote_group_list.include?(res.res.group)
+        end
+
+        $NARR[task.task_id] = suspend_cnt + 1
+      else
+        $NARR[task.task_id] = task.long_require_array.size + 1
+      end
+      
       # wclx, wcsxの計算
       $calc_task.each do |job|
         tuplesl = []
@@ -188,6 +201,8 @@ module WCBT
   end
 
   # ジョブjobが高優先度なジョブにプリエンプトされる回数
+  # @param: [Task] job プリエンプトされるジョブ
+  # @return: [Fixnum] プリエンプトされる回数
   def preempt(job)
     preempt_list = [0]
     job.proc.task_list.each do |tsk|
@@ -196,8 +211,24 @@ module WCBT
     
     return preempt_list.max
   end
-  
-  # procはProcessor
+
+  # リモートタスクが要求するリソースグループの配列を返す
+  # @param: [Processor] proc 自プロセッサ
+  # @return: [Array<Group>] リモートタスクが要求しているリソースグループの配列
+  def get_remote_groups(proc)
+    remote_group_list = []
+    ProcessorManager.proc_list.each do |p|
+      next if proc == p
+      proc.task_list.each do |tsk|
+        tsk.long_require_array.each do |res2|
+          remote_group_list << res2.res.group
+        end
+      end
+    end
+
+    return remote_group_list.uniq.sort!
+  end
+
   def partition(proc)
     raise unless proc.class == Processor
     return proc.task_list
