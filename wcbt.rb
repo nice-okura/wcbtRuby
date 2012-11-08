@@ -477,14 +477,11 @@ module WCBT
   def wcspx(job, proc)
     tuples = []
     using_grp = []
-    SR(job).each do |req|
-      using_grp << req.res.group
-    end
+
+    SR(job).each{ |req| using_grp << req.res.group }
     using_grp.uniq!
     
-    using_grp.each do |grp|
-      tuples += wcspg(job, proc, grp)
-    end
+    using_grp.each { |grp| tuples += wcspg(job, proc, grp) }
 
     return tuples
   end
@@ -500,6 +497,28 @@ module WCBT
     p_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
     return time
   end 
+  
+  # プロセッサpのタスクによるブロック時間
+  # @param: [Task] job 自タスク
+  # @param: [Processor] proc リモートプロセッサ
+  # @return: [Numeric] ブロック時間
+  def sbp(job, proc)
+    raise unless proc.class == Processor
+    time = 0
+    
+    # タスクjobがshortリソース要求する回数
+    b = SR(job).size
+
+    tuples = wcspx(job, proc)
+
+    # ブロックされる回数
+    min = [b+preempt(job), tuples.size].min
+
+    0.upto(min-1) { |num| time += tuples[num].req.time }
+
+    p_debug("sbp(#{job.task_id}, #{proc}) = #{time}")
+    return time
+  end
   
   def sbgp(job, group, proc)
     raise unless proc.class == Processor
@@ -535,8 +554,11 @@ module WCBT
   #
   ###########################################
   public
+  # ローカルタスクがlongリソースを要求する際に発生する最大ブロック時間
+  # @param: [Task] job 自タスク
+  # @return: [Numeric] LB最大ブロック時間
   def BB(job)
-    return 0 if job == nil
+    return 0 if job == nil || job == []
     time = 0
     job.proc.task_list.each do |tsk|
       if tsk.proc == job.proc && tsk.priority > job.priority
@@ -545,7 +567,10 @@ module WCBT
     end
     return time
   end
-  
+
+  # ローカルタスクがshortリソースを要求する際に発生する最大ブロック時間
+  # @param: [Task] job 自タスク
+  # @return: [Numeric] AB最大ブロック時間
   def AB(job)
     return 0 if job == nil || job == []
 
@@ -578,7 +603,10 @@ module WCBT
 
     return time
   end
-  
+
+  # グローバルなlongリソースを要求する時の最大ブロック時間
+  # @param: [Task] job 自タスク
+  # @return: [Numeric] LB最大ブロック時間
   def LB(job)
     p_debug("LB(#{job.task_id})")
     #RubyProf.start
@@ -595,6 +623,9 @@ module WCBT
     #printer.print(STDOUT)
   end
   
+  # グローバルなshortリソースを要求する時の最大ブロック時間
+  # @param [Task] job 自タスク
+  # @return [Numeric] SB最大ブロック時間
   def SB(job)
     if job == nil
       return 0
@@ -606,7 +637,8 @@ module WCBT
     SR(job).each { |req| g << req.res.group }
     g.uniq!
     g.each { |group|  time += sbg(job, group) }
-    time
+    
+    return time
   end
 
   #

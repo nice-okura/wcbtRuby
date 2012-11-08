@@ -1250,5 +1250,22 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(2, wcspx(task(1), processor(3)).size)
     assert_equal(4, wcspx(task(1), processor(4)).size)
   end
+
+  def test_sbp
+    set_taskset("#{TEST_FOLDER}test_wcspx1")
+    assert_equal(6, sbp(task(1), processor(2)))
+    assert_equal(9, sbp(task(3), processor(2)))
+
+    set_taskset("#{TEST_FOLDER}test_sbp")
+    assert_equal(8, sbp(task(6), processor(2)))
+    assert_equal(8, sbp(task(6), processor(3)))
+    assert_equal(6, sbp(task(6), processor(4)))
+    assert_equal(0, sbp(task(12), processor(2)))
+    assert_equal(6, sbp(task(12), processor(3)))
+    assert_equal(15, sbp(task(12), processor(4)))
+    assert_equal(8, sbp(task(8), processor(1)))
+    assert_equal(12, sbp(task(8), processor(3)))
+    assert_equal(9, sbp(task(8), processor(4)))
+  end
 end
 
