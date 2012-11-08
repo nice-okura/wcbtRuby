@@ -117,6 +117,7 @@ module WCBT
 
         # リモートタスクの要求するリソースのグループのリスト
         remote_group_list = get_remote_groups(task.proc)
+
         # longリソース要求により，suspendする回数
         suspend_cnt = 0
         
@@ -453,6 +454,10 @@ module WCBT
     return tuples
   end
   
+  # プロセッサpのタスクでグループgのリソースを要求するリソース要求の集合
+  # @param: [Task] job 自タスク
+  # @param: [Processor] proc リモートプロセッサ
+  # @param: [Group] group リソースグループ
   def wcspg(job, proc, group)
     raise unless proc.class == Processor
     tuples = []
@@ -460,6 +465,27 @@ module WCBT
       tuples += wcsxg(task, job, group)
     end
     tuples.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
+
+    return tuples
+  end
+
+  # プロセッサpのタスクの中でタスクjobが要求するリソースを要求するリソース要求の集合
+  # @param: [Task] job 自タスク
+  # @param: [Processor] proc リモートプロセッサ
+  # @return: [Array<ReqTaple>] プロセッサpのタスクの中でタスクjobが
+  #  要求するリソースを要求するリソース要求の集合
+  def wcspx(job, proc)
+    tuples = []
+    using_grp = []
+    SR(job).each do |req|
+      using_grp << req.res.group
+    end
+    using_grp.uniq!
+    
+    using_grp.each do |grp|
+      tuples += wcspg(job, proc, grp)
+    end
+
     return tuples
   end
   

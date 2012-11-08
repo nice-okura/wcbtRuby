@@ -10,7 +10,16 @@ require "./manager"
 TEST_FOLDER = "./testFolder/"
 class Test_wcbt < Test::Unit::TestCase
   include WCBT
+
+  def task(id)
+    return TaskManager.get_task(id)
+  end
   
+  def processor(id)
+    return ProcessorManager.get_proc(id)
+  end
+
+
   def set_taskset(filename)
     @manager.all_data_clear
     @manager.load_tasks(filename)
@@ -747,6 +756,12 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(0, wcspg(TaskManager.get_task(2), ProcessorManager.get_proc(4), 6).size)
     assert_equal(0, wcspg(TaskManager.get_task(2), ProcessorManager.get_proc(4), 7).size)
     assert_equal(8, wcspg(TaskManager.get_task(2), ProcessorManager.get_proc(4), 8).size)
+    
+    set_taskset("#{TEST_FOLDER}test_wcspx1")
+    assert_equal(3, wcspg(task(1), processor(2), 1).size)
+    assert_equal(9, wcspg(task(1), processor(2), 2).size)
+    assert_equal(2, wcspg(task(3), processor(2), 1).size)
+    assert_equal(6, wcspg(task(3), processor(2), 2).size)
   end
   
   def test_sbgp
@@ -1219,7 +1234,21 @@ class Test_wcbt < Test::Unit::TestCase
     set_taskset("#{TEST_FOLDER}test_get_remote_groups3")
     assert_equal([4,6], get_remote_groups(TaskManager.get_task(1).proc))
     assert_equal([2,4,6], get_remote_groups(TaskManager.get_task(2).proc))
+  end
 
+  # preemptive spin の最大ブロック時間を求める際の式の1つwcspxのテスト
+  def test_wcspx
+    set_taskset("#{TEST_FOLDER}test_wcspx1")
+    assert_equal(6+6, wcspx(task(1), processor(2)).size)
+    assert_equal(4+2, wcspx(task(3), processor(2)).size)
+
+    set_taskset("#{TEST_FOLDER}test_wcspx2")
+    assert_equal(9, wcspx(task(11), processor(2)).size)
+    assert_equal(3, wcspx(task(11), processor(3)).size)
+    assert_equal(10, wcspx(task(11), processor(4)).size)
+    assert_equal(2, wcspx(task(1), processor(1)).size)
+    assert_equal(2, wcspx(task(1), processor(3)).size)
+    assert_equal(4, wcspx(task(1), processor(4)).size)
   end
 end
 
