@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TaskManager
 
   private
@@ -17,7 +18,8 @@ class TaskManager
     elsif info[:extime] != nil
       extime = info[:extime]
     else
-      extime = req_time + rand(TASK_EXE_MAX - req_time)
+      STDERR.puts "実行時間を指定してー"
+      raise
     end
 
     # リソース要求

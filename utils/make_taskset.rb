@@ -10,6 +10,12 @@ require "optparse"
 ## オプション一覧
 # show_help_message 参照
 #
+def check_info(info)
+  if info[:extime] == nil && info[:extime_range] == nil
+    STDERR.puts "実行時間を指定してー"
+    exit
+  end  
+end
 
 def show_help_message
   puts "引数が足りません．"
@@ -150,6 +156,7 @@ end
 
 opt.parse!(ARGV)
 
+check_info(info)
 
 if(ARGV.size < 5 && info[:mode]!=SCHE_CHECK)
   show_help_message
