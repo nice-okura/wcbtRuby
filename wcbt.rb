@@ -313,7 +313,7 @@ module WCBT
     proc.task_list.each do |task|
       count += ndbt(task, job)
     end
-    p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
+    #p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -327,7 +327,7 @@ module WCBT
     g.each do |group|
       count += ndbtg(task, job, group)
     end
-    p_debug("\tndbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{count}")
+    #p_debug("\tndbt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{count}")
     return count
   end
   
@@ -341,7 +341,7 @@ module WCBT
       b += 1 if req.res.group == group
     end
     b *= ((job.period.to_f/task.period.to_f).ceil.to_i + 1)
-    p_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
+    #p_debug("\t\tndbtg(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}, #{group.to_s.magenta}) = #{[a, b].min}")
     return [a, b].min
   end
   
@@ -350,7 +350,7 @@ module WCBT
     proc_list.each do |proc|
        time += rblp(job, proc) if job.proc != proc
     end
-    p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
+    #p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
     return time 
   end
   
@@ -360,7 +360,7 @@ module WCBT
     proc.task_list.each do |task|
       count += rblt(task, job)
     end
-    p_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
+    #p_debug("  rblp(#{job.task_id.to_s.red}, #{proc.to_s.yellow}) = #{count}")
     return count
   end
   
@@ -385,12 +385,12 @@ module WCBT
     
     min = [ndbp(job, task.proc), tuples.size].min
     0.upto(min-1) do |num|
-      p_debug("#{tuples[num].to_str}: #{tuples[num].req.get_time_inflated}")
+      #p_debug("#{tuples[num].to_str}: #{tuples[num].req.get_time_inflated}")
       time +=  tuples[num].req.get_time_inflated
     end
-    p_debug("      tuples = #{str}")
-    p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
-    p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
+    #p_debug("      tuples = #{str}")
+    #p_debug("    rblt_min = min(#{ndbp(job, task.proc)}, #{tuples.size})")
+    #p_debug("    rblt(#{task.task_id.to_s.blue}, #{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -410,7 +410,7 @@ module WCBT
     proc_list.each do |proc|
       time += rbsp(job, proc) if job.proc != proc
     end
-    p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
+    #p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
     return time
   end
   
@@ -422,12 +422,12 @@ module WCBT
     min = [ndbp(job, proc), wcsp(job, proc).size].min
     
     return 0 if min == 0
-    tuples.each{ |t| p_debug(t.to_str); }
+#    tuples.each{ |t| #p_debug(t.to_str); }
     0.upto(min-1) do |num|
-      p_debug(tuples[num].to_str)
+      #p_debug(tuples[num].to_str)
       time += tuples[num].req.get_time_inflated
     end
-    p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
+    #p_debug("rbsp(#{job.task_id.to_s.blue}, #{proc.to_s.yellow}) = #{time}")
     return time
   end
   
@@ -494,7 +494,7 @@ module WCBT
         time += sbgp(job, group, proc)
       end
     end
-    p_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
+    #p_debug("rblp(#{job.task_id.to_s.blue}, #{group.to_s.magenta}) = #{time}")
     return time
   end 
   
@@ -517,7 +517,7 @@ module WCBT
 
     0.upto(min-1) { |num| time += tuples[num].req.time }
 
-    p_debug("sbp(#{job.task_id}, #{proc}) = #{time}")
+    #p_debug("sbp(#{job.task_id}, #{proc}) = #{time}")
     return time
   end
   
@@ -540,7 +540,7 @@ module WCBT
     0.upto(min-1) do |num|
       time += tuples[num].req.time
     end
-    p_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
+    #p_debug("sbgp(#{job.task_id}, #{group}, #{proc}) = #{time}")
     return time
   end
   
@@ -585,7 +585,7 @@ module WCBT
         time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
       end
     end
-    p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
+    #p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
 
     return time
   end
@@ -600,7 +600,7 @@ module WCBT
       time += tuples[num].req.time # spinをpreemptiveにした場合
       #time += tuples[num].req.get_time_inflated # SBによるspintimeも考慮したAB時間
     end
-    p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
+    #p_debug("ABmin = min(#{tuples.size}, #{narr(job)})")
 
     return time
   end
@@ -609,12 +609,12 @@ module WCBT
   # @param: [Task] job 自タスク
   # @return: [Numeric] LB最大ブロック時間
   def LB(job)
-    p_debug("LB(#{job.task_id})")
+    #p_debug("LB(#{job.task_id})")
     #RubyProf.start
     if job == nil
       return 0
     elsif job.long_require_array.size == 0
-      p_debug("\tlong_require_array.size == 0")
+      #p_debug("\tlong_require_array.size == 0")
       return 0
     end
     return rbl(job) + rbs(job)
