@@ -1257,15 +1257,35 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(9, sbp(task(3), processor(2)))
 
     set_taskset("#{TEST_FOLDER}test_sbp")
-    assert_equal(8, sbp(task(6), processor(2)))
-    assert_equal(8, sbp(task(6), processor(3)))
-    assert_equal(6, sbp(task(6), processor(4)))
-    assert_equal(0, sbp(task(12), processor(2)))
-    assert_equal(6, sbp(task(12), processor(3)))
-    assert_equal(15, sbp(task(12), processor(4)))
-    assert_equal(8, sbp(task(8), processor(1)))
-    assert_equal(12, sbp(task(8), processor(3)))
-    assert_equal(9, sbp(task(8), processor(4)))
+    assert_equal(0, sbp(task(6), processor(2)))
+    assert_equal(16, sbp(task(6), processor(3)))
+    assert_equal(0, sbp(task(6), processor(4)))
+    assert_equal(12, sbp(task(12), processor(1)))
+    assert_equal(9, sbp(task(12), processor(2)))
+    assert_equal(4, sbp(task(12), processor(3)))
+    assert_equal(0, sbp(task(12), processor(4)))
+    assert_equal(0, sbp(task(8), processor(1)))
+    assert_equal(16, sbp(task(8), processor(3)))
+    assert_equal(0, sbp(task(8), processor(4)))
+    assert_equal(0, sbp(task(11), processor(1)))
+    assert_equal(12, sbp(task(11), processor(2)))
+    assert_equal(14, sbp(task(11), processor(3)))
+    assert_equal(16, sbp(task(11), processor(4)))
+    
+  end
+
+  def test_SB_preemptive_spin
+    $PREEMPTIVE_FLG = true
+    set_taskset("#{TEST_FOLDER}test_wcspx1")
+    assert_equal(6, SB(task(1)))
+    assert_equal(9, SB(task(3)))
+
+    set_taskset("#{TEST_FOLDER}test_sbp")
+    assert_equal(16, SB(task(6)))
+    assert_equal(25, SB(task(12)))
+    assert_equal(16, SB(task(8)))
+    assert_equal(42, SB(task(11)))
+    $PREEMPTIVE_FLG = false
   end
 end
 

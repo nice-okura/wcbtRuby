@@ -482,7 +482,7 @@ module WCBT
     using_grp.uniq!
     
     using_grp.each { |grp| tuples += wcspg(job, proc, grp) }
-
+    tuples.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
     return tuples
   end
   
@@ -504,6 +504,7 @@ module WCBT
   # @return: [Numeric] ブロック時間
   def sbp(job, proc)
     raise unless proc.class == Processor
+    return 0 if job.proc == proc
     time = 0
     
     # タスクjobがshortリソース要求する回数
@@ -634,9 +635,16 @@ module WCBT
     end
     g = []
     time = 0
-    SR(job).each { |req| g << req.res.group }
-    g.uniq!
-    g.each { |group|  time += sbg(job, group) }
+    if $PREEMPTIVE_FLG
+      proc_list.each do |proc|
+        next if proc == job.proc
+        time += sbp(job, proc)
+      end
+    else
+      SR(job).each { |req| g << req.res.group }
+      g.uniq!
+      g.each { |group|  time += sbg(job, group) }
+    end
     
     return time
   end
