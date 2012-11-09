@@ -47,8 +47,15 @@ $SR = Hash.new
 $NARR = Hash.new
 $wclx = Hash.new
 $wcsx = Hash.new
-#$bbt = Hash.new
-#$abr = Hash.new
+$ndbp = Hash.new
+$wcsp = Hash.new
+$rbs = Hash.new
+$rbl = Hash.new
+$bbt = Hash.new
+$abr = Hash.new
+$wcspg = Hash.new
+$sbp = Hash.new
+
 #$proc_list = Hash.new
 #$proc_task_list = Hash.new
 
@@ -60,7 +67,7 @@ module WCBT
   # 予め計算しておく
   def init_computing(tasks)
     $calc_task = tasks
-
+    
     $WCLR.clear
     $WCSR.clear
     $LR.clear
@@ -68,7 +75,15 @@ module WCBT
     $NARR.clear
     $wclx.clear
     $wcsx.clear
-
+    $ndbp.clear
+    $wcsp.clear
+    $rbs.clear
+    $rbl.clear
+    $bbt.clear
+    $abr.clear
+    $wcspg.clear
+    $sbp.clear
+    
     # ブロック時間のリセット
     $calc_task.each { |tsk| tsk.reset_task }
     
@@ -246,10 +261,15 @@ module WCBT
 
   def bbt(task, job)
     len = 0
-    tuples = wclx(task, job)
-    min = [tuples.size, narr(job)].min
-    0.upto(min-1) do |num|
-      len += tuples[num].req.get_time_inflated
+    if $bbt[[task.task_id, job.task_id]] == nil
+      tuples = wclx(task, job)
+      min = [tuples.size, narr(job)].min
+      0.upto(min-1) do |num|
+        len += tuples[num].req.get_time_inflated
+      end
+      $bbt[[task.task_id, job.task_id]] = len
+    else
+      len = $bbt[[task.task_id, job.task_id]]
     end
     return len
     #return $bbt[[task.task_id, job.task_id]]
@@ -258,15 +278,20 @@ module WCBT
   def abr(job)
     return [] if job == nil
     tuples = []
-    
-    job.proc.task_list.each do |task|
-      next if task == nil || task == []
-      if task.proc == job.proc && task.priority > job.priority
-        tuple = wcsx(task, job)
-        tuples += tuple unless tuple == []
+
+    if $abr[job.task_id] == nil
+      job.proc.task_list.each do |task|
+        next if task == nil || task == []
+        if task.proc == job.proc && task.priority > job.priority
+          tuple = wcsx(task, job)
+          tuples += tuple unless tuple == []
+        end
       end
+      tuples.sort!{ |a, b| -1 * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+      $abr[job.task_id] = tuples
+    else
+      tuples =  $abr[job.task_id]
     end
-    tuples.sort!{ |a, b| -1 * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
     #return $abr[job.task_id]
   end
@@ -309,11 +334,18 @@ module WCBT
     raise unless proc.class == Processor
     return 0 if job.proc == proc
 
-    count = 0
-    proc.task_list.each do |task|
-      count += ndbt(task, job)
+    if $ndbp[[job.task_id, proc.proc_id]] == nil
+      count = 0
+      proc.task_list.each do |task|
+        count += ndbt(task, job)
+      end
+      $ndbp[[job.task_id, proc.proc_id]] = count
+      
+      #p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
+    else
+      count = $ndbp[[job.task_id, proc.proc_id]]
     end
-    #p_debug("ndbp(#{job.task_id}, #{proc.to_s.yellow}) = #{count}")
+
     return count
   end
   
@@ -347,8 +379,13 @@ module WCBT
   
   def rbl(job)
     time = 0
-    proc_list.each do |proc|
-       time += rblp(job, proc) if job.proc != proc
+    if $rbl[job.task_id] == nil
+      proc_list.each do |proc|
+        time += rblp(job, proc) if job.proc != proc
+      end
+      $rbl[job.task_id] = time
+    else
+      time = $rbl[job.task_id]
     end
     #p_debug("rbl(#{job.task_id.to_s.red}) = #{time}")
     return time 
@@ -398,18 +435,29 @@ module WCBT
   def wcsp(job, proc)
     tuples = []
     raise unless proc.class == Processor
-    proc.task_list.each do |task|
-      tuples += wcsx(task, job)
+    if $wcsp[[job.task_id, proc.proc_id]] == nil
+      proc.task_list.each do |task|
+        tuples += wcsx(task, job)
+      end
+      tuples.sort!{|a, b| -1*(a.req.get_time_inflated <=> b.req.get_time_inflated) }
+      $wcsp[[job.task_id, proc.proc_id]] = tuples
+    else
+      tuples = $wcsp[[job.task_id, proc.proc_id]] 
     end
-    tuples.sort!{|a, b| -1*(a.req.get_time_inflated <=> b.req.get_time_inflated) }
     return tuples
   end
   
   def rbs(job)
     time = 0
-    proc_list.each do |proc|
-      time += rbsp(job, proc) if job.proc != proc
+    if $rbs[job.task_id] == nil
+      proc_list.each do |proc|
+        time += rbsp(job, proc) if job.proc != proc
+      end
+      $rbs[job.task_id] = time
+    else
+      time = $rbs[job.task_id]
     end
+    
     #p_debug("rbs(#{job.task_id.to_s.red}) = #{time}")
     return time
   end
@@ -461,11 +509,16 @@ module WCBT
   def wcspg(job, proc, group)
     raise unless proc.class == Processor
     tuples = []
-    proc.task_list.each do |task|
-      tuples += wcsxg(task, job, group)
+    
+    if $wcspg[[job.task_id, proc.proc_id, group]] == nil
+      proc.task_list.each do |task|
+        tuples += wcsxg(task, job, group)
+      end
+      tuples.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
+      $wcspg[[job.task_id, proc.proc_id, group]] = tuples
+    else
+      tuples = $wcspg[[job.task_id, proc.proc_id, group]]
     end
-    tuples.sort!{|a, b| (-1) * (a.req.time <=> b.req.time) }
-
     return tuples
   end
 
@@ -505,19 +558,24 @@ module WCBT
   def sbp(job, proc)
     raise unless proc.class == Processor
     return 0 if job.proc == proc
-    time = 0
-    
-    # タスクjobがshortリソース要求する回数
-    b = SR(job).size
-
-    tuples = wcspx(job, proc)
-
-    # ブロックされる回数
-    min = [b+preempt(job), tuples.size].min
-
-    0.upto(min-1) { |num| time += tuples[num].req.time }
-
+    if $sbp[[job.task_id, proc.proc_id]] == nil
+      time = 0
+      
+      # タスクjobがshortリソース要求する回数
+      b = SR(job).size
+      
+      tuples = wcspx(job, proc)
+      
+      # ブロックされる回数
+      min = [b+preempt(job), tuples.size].min
+      
+      0.upto(min-1) { |num| time += tuples[num].req.time }
+      $sbp[[job.task_id, proc.proc_id]] = time
+    else
+      time = $sbp[[job.task_id, proc.proc_id]]
+    end
     #p_debug("sbp(#{job.task_id}, #{proc}) = #{time}")
+      
     return time
   end
   

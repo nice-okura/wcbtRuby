@@ -489,7 +489,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(4, ndbp(TaskManager.get_task(4), ProcessorManager.get_proc(1)))
     assert_equal(2, ndbp(TaskManager.get_task(4), ProcessorManager.get_proc(2)))
     assert_equal(4, ndbp(TaskManager.get_task(4), ProcessorManager.get_proc(3)))
-    
+
     assert_equal(2, ndbp(TaskManager.get_task(5), ProcessorManager.get_proc(2)))
     assert_equal(3, ndbp(TaskManager.get_task(5), ProcessorManager.get_proc(3)))
     assert_equal(3, ndbp(TaskManager.get_task(5), ProcessorManager.get_proc(4)))
@@ -529,7 +529,7 @@ class Test_wcbt < Test::Unit::TestCase
     assert_equal(2, ndbp(TaskManager.get_task(16), ProcessorManager.get_proc(1)))
     assert_equal(5, ndbp(TaskManager.get_task(16), ProcessorManager.get_proc(2)))
     assert_equal(6, ndbp(TaskManager.get_task(16), ProcessorManager.get_proc(3)))
-    
+
   end
   
   def test_rblt
