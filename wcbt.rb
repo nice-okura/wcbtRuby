@@ -87,93 +87,8 @@ module WCBT
     # ブロック時間のリセット
     $calc_task.each { |tsk| tsk.reset_task }
     
-    $calc_task.each do |task|
-      # SR, LRの計算
-      lr = []
-      sr = []
-      task.all_require.each do |req|
-        if req.outermost == true
-          case req.res.kind
-          when LONG
-            lr << req
-          when SHORT
-            sr << req
-          end
-        end
-      end
-      $LR[task.task_id] = lr unless lr == []
-      $SR[task.task_id] = sr unless sr == []
-    end
-    
     # inflated_timeの計算
     $calc_task.each{ |task| SB_not_tight(task) }
-
-    $calc_task.each do |task|
-      lreqs = []
-      sreqs = []
-
-      # ネストしているリソース要求も含める
-      task.all_require.each do |req|
-        if req.outermost == true
-          case req.res.kind
-          when LONG
-            lreqs << req
-          when SHORT
-            sreqs << req
-          end
-        end
-      end
-      $WCLR[task.task_id] = lreqs unless lreqs == []
-      $WCSR[task.task_id] = sreqs unless sreqs == []
-
-      # narrの計算
-      if $REMOTE_RESOURCE_FLG
-        $NARR[task.task_id] = 0
-
-        # リモートタスクの要求するリソースのグループのリスト
-        remote_group_list = get_remote_groups(task.proc)
-
-        # longリソース要求により，suspendする回数
-        suspend_cnt = 0
-        
-        task.long_require_array.each do |res|
-          suspend_cnt += 1 if remote_group_list.include?(res.res.group)
-        end
-
-        $NARR[task.task_id] = suspend_cnt + 1
-        
-      else
-        $NARR[task.task_id] = task.long_require_array.size + 1
-      end
-      
-      # wclx, wcsxの計算
-      $calc_task.each do |job|
-        tuplesl = []
-        tupless = []
-        
-        return [] if task == nil || job == nil
-
-        begin
-          k = (job.period/task.period).ceil.to_i + 1
-        rescue => e
-          p e
-          puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
-          exit
-        end
-
-        1.upto(k) do |n|
-          WCLR(task).each{ |req| tuplesl << ReqTuple.new(req, n) if req.res.kind == LONG }
-          WCSR(task).each{ |req| tupless << ReqTuple.new(req, n) if req.res.kind == SHORT && req.nested == false }
-        end
-        
-        # リソース要求時間順にソート
-        tuplesl.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
-        tupless.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
-        
-        $wclx[[task.task_id, job.task_id]] = tuplesl
-        $wcsx[[task.task_id, job.task_id]] = tupless
-      end
-    end
   end
 
   ###########################################
@@ -184,38 +99,141 @@ module WCBT
   private
 
   def WCLR(task)
-    ret = $WCLR[task.task_id]
-    ret = [] if ret == nil
-    return ret
+    lreqs = []
+    if $WCLR[task.task_id] == nil
+
+      # ネストしているリソース要求も含める
+      task.all_require.each do |req|
+        lreqs << req if req.outermost && req.res.kind == LONG
+      end
+      $WCLR[task.task_id] = lreqs
+    else
+      lreqs = $WCLR[task.task_id]
+    end
+    return lreqs
   end
   
   def WCSR(task)
-    ret = $WCSR[task.task_id]
-    ret = [] if ret == nil
-    return ret
+    sreqs = []
+    if $WCSR[task.task_id] == nil
+
+      # ネストしているリソース要求も含める
+      task.all_require.each do |req|
+        sreqs << req if req.outermost && req.res.kind == SHORT
+      end
+      $WCSR[task.task_id] = sreqs
+    else
+      sreqs = $WCSR[task.task_id]
+    end
+    return sreqs
   end
   
   def LR(job)
-    ret = $LR[job.task_id]
-    ret = [] if ret == nil
-    return ret
+    lr = []
+    if $LR[job.task_id] == nil
+      job.all_require.each do |req|
+        lr << req if req.outermost && req.res.kind == LONG
+      end
+      $LR[job.task_id] = lr
+    else
+      lr = $LR[job.task_id]
+    end
+    return lr
   end
   
   def SR(job)
-    ret = $SR[job.task_id]
-    ret = [] if ret == nil
-    return ret
+    sr = []
+    if $SR[job.task_id] == nil
+      job.all_require.each do |req|
+        sr << req if req.outermost && req.res.kind == SHORT
+      end
+      $SR[job.task_id] = sr
+    else
+      sr = $SR[job.task_id]
+    end
+    return sr
   end
   
   def wclx(task, job)
-    return $wclx[[task.task_id, job.task_id]]
+    tuples = []
+    return [] if task == nil || job == nil
+    
+    if $wclx[[task.task_id, job.task_id]] == nil
+      begin
+        k = (job.period/task.period).ceil.to_i + 1
+      rescue => e
+        p e
+        puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
+        exit
+      end
+
+      1.upto(k) do |n|
+        WCLR(task).each{ |req| tuples << ReqTuple.new(req, n) if req.res.kind == LONG }
+      end
+      
+      # リソース要求時間順にソート
+      tuples.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+      
+      $wclx[[task.task_id, job.task_id]] = tuples
+    else
+      tuples = $wclx[[task.task_id, job.task_id]]
+    end
+    return tuples 
   end
   
   def wcsx(task, job)
+    tuples = []
+    return [] if task == nil || job == nil
+    
+    if $wcsx[[task.task_id, job.task_id]] == nil
+      begin
+        k = (job.period/task.period).ceil.to_i + 1
+      rescue => e
+        p e
+        puts "タスク" + task.task_id.to_s + "の周期:" + task.period.to_f.to_s
+        exit
+      end
+
+      1.upto(k) do |n|
+        WCSR(task).each{ |req| tuples << ReqTuple.new(req, n) if req.res.kind == SHORT && req.nested == false }
+      end
+      
+      # リソース要求時間順にソート
+      tuples.sort!{|a, b| (-1) * (a.req.get_time_inflated <=> b.req.get_time_inflated) }
+      
+      $wcsx[[task.task_id, job.task_id]] = tuples
+    else
+      tuples = $wcsx[[task.task_id, job.task_id]]
+    end
+    return tuples 
     return $wcsx[[task.task_id, job.task_id]]
   end
   
   def narr(job)
+    narr = 0
+    # narrの計算
+    if $REMOTE_RESOURCE_FLG
+      if $NARR[job.task_id] == nil
+        $NARR[job.task_id] = 0
+        
+        # リモートタスクの要求するリソースのグループのリスト
+        remote_group_list = get_remote_groups(job.proc)
+        
+        # longリソース要求により，suspendする回数
+        suspend_cnt = 0
+        
+        job.long_require_array.each do |res|
+          suspend_cnt += 1 if remote_group_list.include?(res.res.group)
+        end
+        
+        $NARR[job.task_id] = suspend_cnt + 1
+      end
+    else
+      if $NARR[job.task_id] == nil
+        $NARR[job.task_id] = job.long_require_array.size + 1
+      end
+    end
+    
     return $NARR[job.task_id]
   end
 
