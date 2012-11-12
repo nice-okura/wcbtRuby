@@ -78,8 +78,6 @@ class TaskManager
       end
     end
 
-  
-
     # 優先度
     priority = @@task_id
 

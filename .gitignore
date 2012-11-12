@@ -33,3 +33,4 @@ s*.orig
 .yardoc
 experments/
 experiments/
+measure_methods.rb

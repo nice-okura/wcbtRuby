@@ -14,7 +14,15 @@
 class Task
   attr_accessor :req_list, :b, :bb, :ab, :sb, :lb, :db, :offset
   attr_reader :task_id, :all_require, :short_require_array, :long_require_array, :period, :reqtime, :wcrt, :proc, :priority
-  
+
+  # コンストラクタ
+  # @param [Fixnum] id タスクID
+  # @param [Processor] proc プロセッサ
+  # @param [Numeric] period 周期
+  # @param [Numeric] extime 実行時間
+  # @param [Numeric] priority 優先度
+  # @param [Numeric] offset オフセット
+  # @param [Array<Req>] reqarray リソース要求配列
   def initialize(id, proc, period, extime, priority, offset, reqarray)
     @task_id = id.to_i
     if proc.class == Fixnum
@@ -40,6 +48,7 @@ class Task
     resetting
   end
   
+  # タスクリセット
   def resetting
     # all_requireを事前に求めておく
     @all_require = []
@@ -87,46 +96,56 @@ class Task
     end
   end
   
+  # リソース要求回数を返す
+  # @return [Fixnum] リソース要求回数
   def get_resource_count
     @req_list.size
   end
 
   # タスクIDを設定する
+  # @param [Fixnum] id タスクID
   def set_taskid(id)
     @task_id = id
   end
 
   # 有効数字2桁で実行時間を代入
+  # @param [Numeric] extime タスク実行時間
   def set_extime(extime)
     @extime = extime.to_f.round(2)
   end
   
   # inflateした実行時間を返す
+  # @return [Numeric] inflateしたタスク実行時間
   def get_extime
     return @extime+@inflated_time
   end
 
   # inflateしていない実行時間を返す
+  # @return [Numeric] inflateしていないタスク実行時間
   def get_noninflate_time
     return @extime
   end
   
   # 有効数字2桁でinflated_timeを代入
+  # @param [Numeric] inflated_time inflateする時間を設定
   def set_inflated_time(inflated_time)
     @inflated_time = inflated_time.to_f.round(2)
   end
 
-  # 有効数字2桁で実行時間を代入
+  # 有効数字2桁で周期を代入
+  # @param [Numeric] period 周期を設定
   def set_period(period)
     @period = period.to_f.round(2)
   end
 
-  # 有効数字2桁で実行時間を代入
+  # 有効数字2桁で応答時間を設定
+  # @param [Numeric] wcrt 応答時間
   def set_wcrt(wcrt)
     @wcrt = wcrt.to_f.round(2)
   end
 
   # プロセッサを設定
+  # @param [Processor] proc プロセッサ
   def set_proc(proc)
     begin 
       raise unless proc.class == Processor
@@ -138,23 +157,25 @@ class Task
   end
 
   # 優先度設定
+  # @param [Numeric] priority 優先度
   def set_priority(priority)
     @priority = priority
   end
 
   # リソース要求設定
+  # @param [Numeric] reqarray リソース要求配列
   def set_reqlist(reqarray)
     raise unless reqarray.class == Array
     @req_list = reqarray
   end
   
   # タスク使用率を返す
+  # @return [Numeric] タスク使用率
   def util
     return @extime/@period
   end
-  #
+  
   # outermostでない要求を探索して設定
-  #
   def check_outermost
     req_list.each do |req|
       req.reqs.each do |req2|
@@ -165,9 +186,9 @@ class Task
     end
   end
   
-  #
+
   # 総リソース要求時間を計算
-  #
+  # @return [Numeric] 総リソース要求時間
   def get_require_time
     time = 0
     req_list.each{ |req| time += req.time }
@@ -175,7 +196,8 @@ class Task
   end
 
   # inflateした総spin時間を求める
-  # DBで使用する
+  #  DBで使用する
+  # @return [Numeric] shortリソース要求によるinflate spin 時間の総和
   def get_inflated_time
     time = 0
     @req_list.each do |req|
@@ -197,6 +219,7 @@ class Task
   end
   
   # 最大応答時間がデッドラインを満たすかチェック
+  # @return [TrueClass || FalseClass]
   # true: 満たす
   # false: 満たさない
   def check_schedulable
@@ -204,10 +227,10 @@ class Task
     return false
   end
   
-  #
+
   # タスクのデータを返す
   # JSON外部出力用
-  # 
+  # @return [Hash] タスク保存用ハッシュ
   def out_alldata
     req_list = []
     @req_list.each do |req| 
@@ -222,7 +245,6 @@ class Task
       "offset"=>@offset,
       "req_id_list"=>req_list
     }
-    #return [@task_id, @proc, @period, @extime, @priority, @offset, req_list]
   end
   
   # ブロック時間等リセット
@@ -282,11 +304,11 @@ class Task
   #  return @long_require_array
   #end
   
-  #
+
   # shortリソース要求の配列を返す
   # outermost なもののみ
   # ネストされているものもふくむ
-  #
+  # @return [Array<Req>] shortリソース要求配列
   def get_short_require_array_nest
     rlist = []
     @all_require.each do |req|
@@ -304,9 +326,8 @@ class Task
   #  return @short_require_array
   #end
 
-  #
+
   # リソース要求のbegintimeを設定
-  #
   private
   def set_begin_time
     
@@ -362,10 +383,9 @@ class Task
   end
 end
 
-#
+
 # リソース
 # Resource(group)
-#
 class Resource
   attr_reader :res_id, :group
   def initialize(res_id, group)
@@ -374,9 +394,8 @@ class Resource
   end
 end
 
-#
+
 # リソースグループのクラス
-#
 class Group
   attr_accessor :group, :kind
   def initialize(group, kind)
@@ -384,10 +403,9 @@ class Group
     @kind = kind
   end
   
-  #
+
   # グループのデータを返す
   # JSON外部出力用
-  # 
   public
   def out_alldata
     return {
@@ -398,9 +416,8 @@ class Group
   
 end
 
-#
+
 # リソース要求クラス
-#
 class Req
   attr_reader :outermost, :inflated_spintime, :res, :time
   attr_accessor :req_id, :nested, :reqs, :begintime
@@ -436,11 +453,13 @@ class Req
   end
 
   # spintimeを付加したリソース要求時間
+  # @return [Numeric] spintimeを付加したリソース要求時間
   def get_time_inflated
     return @time + @inflated_spintime
   end
 
   # リソースsetter
+  # @param [Group] res リソースグループ
   def set_resource(res)
     raise IllegalClass unless res.class == Group
     @res = res
@@ -448,25 +467,23 @@ class Req
 
   # リソース要求時間setter
   # 有効数字2桁で実行時間を代入
-  # @param: [Numeric] time リソース要求時間
+  # @param [Numeric] time リソース要求時間
   def set_time(time)
     @time = time.to_f.round(2)
   end
   
-  #
   # Object.clone オーバーライド
   # ネストしているリソース要求の参照もcloneする
-  #
+  # @return [Req] リソース要求
   def clone
     newreqs = []
     @reqs.each { |r| newreqs << r.clone }
-    Req.new(@req_id, @res, @time, newreqs)
+    return Req.new(@req_id, @res, @time, newreqs)
   end
   
-  #
   # リソース要求のデータを返す
   # JSON外部出力用
-  # 
+  # @return [Hash] json
   def out_alldata
     reqss = []
     @reqs.each { |r| reqss << r.req_id }
@@ -484,6 +501,7 @@ class Req
 
   
   # sbrで計算したspin_block時間を加える
+  # @param: [Numeric] time 加えるspin時間
   def add_inflated_spintime(time)
     @inflated_spintime += time
     
@@ -516,6 +534,7 @@ class Req
   end
 
   # リソース要求の時間を変更する
+  # @param [Numeric] time リソース要求時間
   def change_require_time(time)
     @time = time
   end
