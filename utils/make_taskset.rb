@@ -73,8 +73,12 @@ def show_help_message
   puts ""
   puts " --short_only"
   puts "     shortリソースのみ使用する"
+  puts ""
   puts " -u <ratio>"
   puts "     タスク使用率"
+  puts ""
+  puts " -b <time>"
+  puts "     longリソースの基準(CS長)"
 end
 
 
@@ -156,6 +160,10 @@ end
 
 opt.on('-u [VAL]') do |v|
   info[:util] = v.to_f
+end
+
+opt.on('-b [VAL]') do |v|
+  info[:long_border] = v.to_f
 end
 
 opt.parse!(ARGV)

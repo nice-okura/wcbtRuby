@@ -143,9 +143,10 @@ class RequireManager
   #
   ################################################
 
-  #
-  # 手動
-  #
+  
+  # マニュアルでリソース要求作成
+  # @param [Hash] info リソース要求条件
+  # @return [Req] リソース要求
   def create_require_manually(info)
     @@id += 1
     
@@ -161,7 +162,16 @@ class RequireManager
     end
 
     # グループ
-    group = info[:group]
+    if info[:long_border] != nil
+      # CSの長いものをlongリソースにする場合
+      if time > info[:long_border]
+        group = GroupManager.get_random_long_group
+      else
+        group = GroupManager.get_random_short_group
+      end
+    else
+      group = info[:group]
+    end
     group = GroupManager.get_random_group if group == nil
 
     # ネスト

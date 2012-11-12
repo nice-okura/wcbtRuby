@@ -1103,6 +1103,8 @@ end
 #
 # グループマネージャークラスの定義
 #
+
+# GroupManager
 class GroupManager
   include Singleton
   
@@ -1112,9 +1114,8 @@ class GroupManager
     @@group_array = []
   end
   
-  #
   # グループを生成する
-  #
+  # @param [Hash] info グループ作成条件
   private
   def create_group(info)
     @@group_id += 1
@@ -1139,11 +1140,13 @@ class GroupManager
   end
 
   
-  #
-  # i個のグループを生成し，group_arrayとする
-  #
+
+  # count個のグループを生成し，group_arrayとする
+  # @param [Fixnum] count グループ生成個数
+  # @param [Hash] info グループ生成条件
+  # @return [Fixnum] 作成したグループの個数
   public
-  def create_group_array(i, info={ })
+  def create_group_array(count, info={ })
     data_clear
     garray = []
 
@@ -1152,10 +1155,10 @@ class GroupManager
       #
       # スケジューラビリティ解析用
       #
-      i = SHORT_GRP_COUNT
+      count = SHORT_GRP_COUNT
       @@kind = SHORT
       # Shortリソースを6*TASK_NUM/PROC_NUM個作る
-      i.times{ 
+      count.times{ 
         @@group_id += 1
         garray << Group.new(@@group_id, @@kind)
       }
@@ -1170,11 +1173,11 @@ class GroupManager
       @@group_array = garray
       #pp @@group_array
     when "120620_2"
-      i.times{ 
+      count.times{ 
         @@group_array << create_group_120620_2
       }
     else
-      i.times{
+      count.times{
         garray << create_group(info)
       }
       @@group_array = garray
@@ -1211,8 +1214,10 @@ class GroupManager
     return true
   end
   
-  #
+
   # グループの読み込み(JSON)
+  # @param [String] filename ファイル名
+  # @return [Fixnum] 読み込んだグループ数
   # 読み込んだグループ数を返す．失敗したらfalse
   public
   def load_group_data(filename=GRP_FILE_NAME)
@@ -1222,11 +1227,11 @@ class GroupManager
     case file_type
     when ".json"
       begin
-        File.open(File.expand_path(filename), "r") { |file|
+        File.open(File.expand_path(filename), "r") do |file|
           while line = file.gets
             json += line
           end
-        }
+        end
       rescue
         puts "application file read error: #{filename} is not exist.\n"
         return false
@@ -1239,7 +1244,7 @@ class GroupManager
       # グループ毎の処理
       # @@grpArrayに読み込んだタスクを追加
       #
-      grps["grps"].each{|grp|
+      grps["grps"].each do |grp|
         if grp["group"] > 0 && (grp["kind"]==LONG||grp["kind"]==SHORT)
           g = Group.new(
                         grp["group"], 
@@ -1247,7 +1252,7 @@ class GroupManager
                         )
           @@group_array << g
         end
-      }
+      end
     else
       # 
       # JSONファイルでない場合
@@ -1274,12 +1279,45 @@ class GroupManager
   end
   
   # グループをランダムに返す
+  # @return [Group] ランダムなリソースグループ
   def self.get_random_group
     if @@group_array.size == 0
       puts "グループが生成されていません．"
       return nil
     end
     return RUBY_VERSION == "1.9.3" ? @@group_array.sample : @@group_array.choice
+  end
+
+  # shortリソースグループをランダムに返す
+  # @return [Group] ランダムなshortリソースグループ
+  def self.get_random_short_group
+    short_array = []
+    @@group_array.each do |grp|
+      short_array << grp if grp.kind == SHORT
+    end
+    
+    if short_array.size == 0
+      puts "shortグループが生成されていません．"
+      return nil
+    end
+        
+    return RUBY_VERSION == "1.9.3" ? short_array.sample : short_array.choice
+  end
+
+  # longリソースグループをランダムに返す
+  # @return [Group] ランダムなlongリソースグループ
+  def self.get_random_long_group
+    long_array = []
+    @@group_array.each do |grp|
+      long_array << grp if grp.kind == LONG
+    end
+    
+    if long_array.size == 0
+      puts "longグループが生成されていません．"
+      return nil
+    end
+        
+    return RUBY_VERSION == "1.9.3" ? long_array.sample : long_array.choice
   end
   
   # 内部データのクリア
