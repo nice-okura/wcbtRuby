@@ -69,31 +69,49 @@ class AllManager
   #
   ###################################################
 
-  #
+
   # 初期化
-  #
-  def initialize(filename="")
+  # @param [String] taskset_name 読み込みたいタスクセット名
+  def initialize(taskset_name="")
     #puts "AllManager_initialize"
     @tm = TaskManager.instance
     @rm = RequireManager.instance
     @gm = GroupManager.instance
     @pm = ProcessorManager.instance
-    load_tasks(filename) unless filename == ""
- 
+    load_tasks(taskset_name) unless taskset_name == ""
   end
 
-  #
+
   # タスクセットデータの読み込み
-  #
+  # @param [String] name タスクセット名(ディレクトリ名)
+  # @param [Hash] info タスクセット条件
   def load_tasks(name, info={})
     if name == "" || name == nil
-      puts "ファイル名を指定して下さいよ" 
+      puts "ディレクトリ名を指定して下さいよ" 
       return false
     end
-    return false if @gm.load_group_data("#{name}_group.json") == false
-    return false if @rm.load_require_data("#{name}_require.json") == false
-    return false if @tm.load_task_data("#{name}_task.json") == false
-    return false if @pm.load_processor_data("#{name}_proc.json") == false
+    
+    # hoge/piyo/以下に
+    #   piyo_task.json
+    #   ...
+    #を作成する場合
+    # name = hoge/piyo/
+    # dir_name = hoge/piyo
+    # taskset_name = piyo とする
+
+    # name はfrozenなのでdir_nameとして複製
+    dir_name = name.dup
+
+    # 末尾が"/"なら"/"を取る
+    dir_name.sub!(/\/$/, "")
+    
+    # タスクセット名
+    taskset_name = File::basename(dir_name)
+
+    return false if @gm.load_group_data("#{dir_name}/#{taskset_name}_group.json") == false
+    return false if @rm.load_require_data("#{dir_name}/#{taskset_name}_require.json") == false
+    return false if @tm.load_task_data("#{dir_name}/#{taskset_name}_task.json") == false
+    return false if @pm.load_processor_data("#{dir_name}/#{taskset_name}_proc.json") == false
     @using_group_array = get_using_group_array
     $task_list = []
     ProcessorManager.proc_list.each do |proc|
@@ -108,18 +126,39 @@ class AllManager
     return true
   end
  
-  #
+
   # タスクセットデータの書き込み
-  #
+  # @param [String] name タスクセット名(ディレクトリ名)
   def save_tasks(name)
     if name == "" || name == nil
-      puts "ファイル名を指定して下さいよ" 
+      puts "ディレクトリを指定して下さいよ" 
       return false
     end
-    return false unless @gm.save_group_data("#{name}_group.json")
-    return false unless @rm.save_require_data("#{name}_require.json")
-    return false unless @tm.save_task_data("#{name}_task.json")
-    return false unless @pm.save_processor_data("#{name}_proc.json") == 0
+        # hoge/piyo/以下に
+    #   piyo_task.json
+    #   ...
+    #を作成する場合
+    # name = hoge/piyo/
+    # dir_name = hoge/piyo
+    # taskset_name = piyo とする
+
+    # name はfrozenなのでdir_nameとして複製
+    dir_name = name.dup
+
+    # 末尾が"/"なら"/"を取る
+    dir_name.sub!(/\/$/, "")
+    
+    # タスクセット名
+    taskset_name = File::basename(dir_name)
+
+    # ディレクトリ作成
+    Dir::mkdir(dir_name) unless File::exists?(dir_name)
+
+    # 各ファイルの保存
+    return false unless @gm.save_group_data("#{dir_name}/#{taskset_name}_group.json")
+    return false unless @rm.save_require_data("#{dir_name}/#{taskset_name}_require.json")
+    return false unless @tm.save_task_data("#{dir_name}/#{taskset_name}_task.json")
+    return false unless @pm.save_processor_data("#{dir_name}/#{taskset_name}_proc.json") == 0
     return true
   end
   
@@ -1103,17 +1142,18 @@ class RequireManager
     @@require_array = reqs
   end
 
-  #
+
   # reuqireIDからリソース要求を得る
-  #
+  # @param [Fixnum] id リソース要求ID
+  # @return [Req] リソース要求
   def self.get_require_from_id(id)
     req = @@require_array.select{ |r| r.req_id == id}
     return req[0] unless req == []
     return nil
   end
-  #
+  
+
   # 内部データのクリア
-  #
   public
   def data_clear
     @@id = 0
@@ -1213,25 +1253,21 @@ class GroupManager
     return @@group_id
   end
     
-  #
+
   # グループの保存(JSON)
-  #
+  # @param [String] filename グループファイル名
   public
   def save_group_data(filename)
     print_debug("save_group:#{filename}")
     grps_json = {
       "grps" => []
     }
-    @@group_array.each{|grp|
-      grps_json["grps"] << grp.out_alldata
-    }
+    @@group_array.each { |grp| grps_json["grps"] << grp.out_alldata }
     begin
-      File.open(filename, "w"){|fp|
-        fp.write JSON.pretty_generate(grps_json)
-      }
-      rescue => e
+      File.open(filename, "w") { |fp| fp.write JSON.pretty_generate(grps_json) }
+    rescue => e
       puts e.backtrace
-      puts("resource file output error: #{filename} could not be created.\n")
+      STDERR.puts "group file output error: #{filename} could not be created.\n"
       return false
     end
     return true
@@ -1243,7 +1279,7 @@ class GroupManager
   # @return [Fixnum] 読み込んだグループ数
   # 読み込んだグループ数を返す．失敗したらfalse
   public
-  def load_group_data(filename=GRP_FILE_NAME)
+  def load_group_data(filename)
     print_debug("load_group:#{filename}")
     json = ""
     file_type = File::extname(filename)
@@ -1256,17 +1292,16 @@ class GroupManager
           end
         end
       rescue
-        puts "application file read error: #{filename} is not exist.\n"
+        STDERR.puts "group file read error: #{filename} is not exist.\n"
         return false
       end
       
       data_clear  # 元のデータを削除し，新しいデータを格納
       grps = (JSON.parser.new(json)).parse()
       
-      #
+
       # グループ毎の処理
       # @@grpArrayに読み込んだタスクを追加
-      #
       grps["grps"].each do |grp|
         if grp["group"] > 0 && (grp["kind"]==LONG||grp["kind"]==SHORT)
           g = Group.new(
@@ -1277,9 +1312,7 @@ class GroupManager
         end
       end
     else
-      # 
       # JSONファイルでない場合
-      #
       puts "application file read error: #{filename} is not JSON file.\n"
       return false
     end
@@ -1288,6 +1321,7 @@ class GroupManager
   end
   
   # group_idからグループのオブジェクトの参照を返す
+  # @param [Fixnum] group_id グループID
   public
   def self.get_group_from_group_id(group_id)
     @@group_array.each do |g|
@@ -1296,6 +1330,7 @@ class GroupManager
   end
   
   # group_arrayを返す
+  # @return [Array<Group>] グループの配列(group_array)
   public
   def self.get_group_array
     return @@group_array
