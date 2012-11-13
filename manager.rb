@@ -917,6 +917,29 @@ class TaskManager
 
     return period
   end
+
+  # デッドラインミスaしているかチェックする
+  # @return [bool] true:デッドラインミスしている false:デッドラインミスしていない
+  def deadline_miss?
+    @@task_array.each do |tsk|
+      return true if tsk.wcrt > tsk.period
+    end
+
+    return false
+  end
+
+  # デッドラインミスしているタスクの配列を返す
+  # @return [Array<Task>] デッドラインミスしているタスクの配列
+  def get_deadline_miss_tasks
+    tasks = []
+    @@task_array.each do |tsk|
+      tasks << tsk if tsk.wcrt > tsk.period
+    end
+
+    return tasks
+  end
+
+
 end
 
 #########################################################################
