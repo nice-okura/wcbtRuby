@@ -11,16 +11,43 @@ class TaskManager
     # プロセッサ未割り当て
     proc = UNASSIGNED
 
-    # タスク実行時間
-    if info[:extime_range] != nil
-      extime = info[:extime_range].get_random
-      #extime = info[:extime_range].first + rand(info[:extime_range].last - info[:extime_range].first)
-    elsif info[:extime] != nil
-      extime = info[:extime]
+    # タスク使用率
+    if info[:util] == nil
+      # 周期
+      if info[:period_range] != nil
+        period = info[:period_range].get_random
+      else
+        period = (extime/(1.0/task_count))
+      end
+      
+      # タスク実行時間
+      if info[:extime_range] != nil
+        extime = info[:extime_range].get_random
+      elsif info[:extime] != nil
+        extime = info[:extime]
+      else
+        STDERR.puts "実行時間を指定してー"
+        raise
+      end
     else
-      STDERR.puts "実行時間を指定してー"
-      raise
+      # タスク使用率が指定されている場合
+      util = info[:util]
+
+      # 周期を元にタスク実行時間を決める
+      if info[:period_range] != nil
+        period = info[:period_range].get_random
+        extime = period * util
+      elsif info[:extime_range] != nil
+        extime = info[:extime_range].get_random
+        period = extime / util
+      elsif info[:extime] != nil
+        extime = info[:extime]
+        period = extime / util
+      else
+        puts "タスク使用率を用いてタスクを生成する場合は，タスク周期かタスク実行時間を指定して．"
+      end
     end
+    
 
     # リソース要求
     req_list = []
@@ -49,13 +76,6 @@ class TaskManager
           req_time += r.time
         end
       end
-    end
-
-    # 周期
-    if info[:period_range] != nil
-      period = info[:period_range].get_random
-    else
-      period = (extime/(1.0/task_count))
     end
 
     # 優先度

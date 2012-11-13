@@ -67,7 +67,7 @@ class ProcessorManager
   
   # プロセッサ情報の保存(JSON)
   # @param filename [String] ファイル名
-  # @reutrn [Fixnum] 書き込んだプロセッサ数を返す．失敗したら0
+  # @return [Fixnum] 書き込んだプロセッサ数を返す．失敗したら0
   def save_processor_data(filename)
     proc_json = {
       PROCS => []
@@ -97,7 +97,7 @@ class ProcessorManager
   end
   
   # プロセッサの読み込み(JSON)
-  # @param filename [String] ファイル名
+  # @param [String] filename ファイル名
   # @return [Fixnum] 読み込んだプロセッサ数を返す．失敗したらfalse
   def load_processor_data(filename)
     json = ""
@@ -135,8 +135,7 @@ class ProcessorManager
   end
   
   # プロセッサの作成
-  # @param info [Hash] オプション
-  # 個数はPROC_NUM
+  # @param [Hash] info オプション
   def create_processor_list(info={ })
     1.upto(info[:proc_num]) do |id|
       @@proc_list << Processor.new({ PROC_ID_SYN => id })
@@ -157,7 +156,7 @@ class ProcessorManager
   end
 
   # ProcessorManagerにTaskManagerをもたせる
-  # @param tm [TaskManager] タスクマネージャー
+  # @param[TaskManager] tm タスクマネージャー
   def set_task_managet(tm)
     @@tm = tm
   end
@@ -202,7 +201,7 @@ class ProcessorManager
   ###############################################################
   private
   # タスクをランダムにプロセッサに割当てる
-  # @param task_list [Array<Task>] 割当てるタスクのリスト
+  # @param [Array<Task>] task_list 割当てるタスクのリスト
   def assign_random(task_list)
     task_list.each do |t|
       proc_id = rand(@@proc_list.size)+1
@@ -230,7 +229,7 @@ class ProcessorManager
   end
 
   # CPU使用率が一番低いプロセッサIDを返す
-  # @return id [Fixnum] プロセッサID
+  # @return [Fixnum] プロセッサID
   def lowest_util_proc_id
     u = 10.0
     id = 0
@@ -244,7 +243,7 @@ class ProcessorManager
   end
   
   # 使用率が一番低いプロセッサにタスクを割当てる
-  # @param tasklist [Array<Task>]
+  # @param [Array<Task>] task_list
   def assign_worstfit_cpu_util(task_list)
     task_list.each do |t|
       proc_id = lowest_util_proc_id
@@ -253,15 +252,15 @@ class ProcessorManager
   end
   
   # 指定したIDのプロセッサにタスクを割当てる
-  # @param proc_id [Fixnum] proc_id プロセッサID
-  # @param task [Task] task タスク
-  # @return assign_taskがtrueならtrue
+  # @param [Fixnum] proc_id プロセッサID
+  # @param [Task] task タスク
+  # @return [Bool] 0:割当失敗 1: 割当
   def assign_task(proc_id, task)
     return true if get_proc(proc_id).assign_task(task)
   end
 
   # 指定したプロセッサIDのプロセッサを得る
-  # @param proc_id [Fixnum] プロセッサID
+  # @param [Fixnum] proc_id プロセッサID
   # @return [Processor] プロセッサ．
   #  エラー時はnilを返す
   def get_proc(proc_id)
@@ -273,7 +272,7 @@ class ProcessorManager
   
  
   # プロセッサに割り当てられているタスクを取り除く
-  # @param [Fixnum] プロセッサID
+  # @param proc_id [Fixnum] プロセッサID
   def init_proc(proc_id)
     @@proc_list.select{ |p| p.proc_id == proc_id }[0].remove_task
   end

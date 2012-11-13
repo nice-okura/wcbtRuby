@@ -16,38 +16,24 @@ require "pp"
 require "rubygems"  
 
 # 独自ライブラリ
-require "../manager"
+require "./manager"
 require "test/unit" # テスト
 
-#==ランダム生成方針
-# Task(task_id, proc, period, extime, priority, offset, reqList)
-#  task_id:     タスク生成順にインクリメント
-#  proc:        完全ランダム
-#  period:      extime以下でランダム
-#  extime:      reqListの総時間以上で乱数
-#  priority:    完全ランダム
-#  offset:      period以下でランダム
-#  reqList:     createReqListで生成
-#
-# Group(group, kind)
-#  group:       生成順にインクリメント
-#  kind:        交互
-#
-# Require(req_id, group, time, reqs)
-#  req_id:      生成順にインクリメント
-#  group:       ランダムに選択
-#  time:        (ある限度までで)ランダムに選択->20~50
-#  reqs:        groupとは異なるグループのリソースを選択
-# $external_input
-
-
+TASKSET_FOLDER = "./testFolder/test_tasksets/"
 class Test_groupMaker < Test::Unit::TestCase
   def setup
+    @manager = AllManager.new
     @@gm = GroupManager.instance
+    @manager.all_data_clear
+  end
+
+  def set_taskset(filename)
+    @manager.all_data_clear
+    @manager.load_tasks(filename)
   end
 
   def test_initialize
-    assert_equal([], @@gm.get_group_array)
+    assert_equal([], GroupManager.get_group_array)
   end
   
   def test_create_group
@@ -57,19 +43,28 @@ class Test_groupMaker < Test::Unit::TestCase
     
   def test_data_clear
     assert(@@gm.data_clear)
-    assert_equal([], @@gm.get_group_array)
+    assert_equal([], GroupManager.get_group_array)
   end
   
   def test_load
-    assert_equal(10, @@gm.load_group_data("sample_group.json"))
-    assert_equal(10, @@gm.get_group_array.size)
+    assert_equal(8, @@gm.load_group_data("#{TASKSET_FOLDER}for_test_LB_nest_group.json"))
+    assert_equal(8, GroupManager.get_group_array.size)
     
     @@gm.data_clear
     # JSONじゃないファイルを入力
-    assert(@@gm.load_group_data("sample_group.jso")==false)
-    assert_equal(0, @@gm.get_group_array.size)
+    assert_equal(false, @@gm.load_group_data("sample_group.jso"))
+    assert_equal(0, GroupManager.get_group_array.size)
   end
   
-  def test_save 
+  def test_get_ramdom_short_group
+    set_taskset("#{TASKSET_FOLDER}for_test_LB_nest")
+    assert_equal(8, GroupManager.get_group_array.size)
+    100.times { assert_equal(SHORT, GroupManager.get_random_short_group.kind)}
+  end
+
+  def test_get_ramdom_long_group
+    set_taskset("#{TASKSET_FOLDER}for_test_LB_nest")
+    assert_equal(8, GroupManager.get_group_array.size)
+    100.times { assert_equal(LONG, GroupManager.get_random_long_group.kind)}
   end
 end

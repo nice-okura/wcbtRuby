@@ -3,9 +3,9 @@
 #
 #= 最大ブロック時間計算用モジュール
 #
-#Author:: Takahiro FUJITANI (ERTL, Nagoya Univ.)
-#Version:: 0.5.0
-#License:: 
+# @author Takahiro FUJITANI (ERTL, Nagoya Univ.)
+# @version 0.5.0
+# @license
 #
 #
 # 最大ブロック時間計算用モジュール
@@ -238,8 +238,8 @@ module WCBT
   end
 
   # ジョブjobが高優先度なジョブにプリエンプトされる回数
-  # @param: [Task] job プリエンプトされるジョブ
-  # @return: [Fixnum] プリエンプトされる回数
+  # @param [Task] job プリエンプトされるジョブ
+  # @return [Fixnum] プリエンプトされる回数
   def preempt(job)
     preempt_list = [0]
     job.proc.task_list.each do |tsk|
@@ -250,8 +250,8 @@ module WCBT
   end
 
   # リモートタスクが要求するリソースグループの配列を返す
-  # @param: [Processor] proc 自プロセッサ
-  # @return: [Array<Group>] リモートタスクが要求しているリソースグループの配列
+  # @param [Processor] proc 自プロセッサ
+  # @return [Array<Group>] リモートタスクが要求しているリソースグループの配列
   def get_remote_groups(proc)
     remote_group_list = []
     ProcessorManager.proc_list.each do |p|
@@ -521,9 +521,9 @@ module WCBT
   end
   
   # プロセッサpのタスクでグループgのリソースを要求するリソース要求の集合
-  # @param: [Task] job 自タスク
-  # @param: [Processor] proc リモートプロセッサ
-  # @param: [Group] group リソースグループ
+  # @param [Task] job 自タスク
+  # @param [Processor] proc リモートプロセッサ
+  # @param [Group] group リソースグループ
   def wcspg(job, proc, group)
     raise unless proc.class == Processor
     tuples = []
@@ -541,9 +541,9 @@ module WCBT
   end
 
   # プロセッサpのタスクの中でタスクjobが要求するリソースを要求するリソース要求の集合
-  # @param: [Task] job 自タスク
-  # @param: [Processor] proc リモートプロセッサ
-  # @return: [Array<ReqTaple>] プロセッサpのタスクの中でタスクjobが
+  # @param [Task] job 自タスク
+  # @param [Processor] proc リモートプロセッサ
+  # @return [Array<ReqTaple>] プロセッサpのタスクの中でタスクjobが
   #  要求するリソースを要求するリソース要求の集合
   def wcspx(job, proc)
     tuples = []
@@ -570,9 +570,9 @@ module WCBT
   end 
   
   # プロセッサpのタスクによるブロック時間
-  # @param: [Task] job 自タスク
-  # @param: [Processor] proc リモートプロセッサ
-  # @return: [Numeric] ブロック時間
+  # @param [Task] job 自タスク
+  # @param [Processor] proc リモートプロセッサ
+  # @return [Numeric] ブロック時間
   def sbp(job, proc)
     raise unless proc.class == Processor
     return 0 if job.proc == proc
@@ -632,8 +632,8 @@ module WCBT
   ###########################################
   public
   # ローカルタスクがlongリソースを要求する際に発生する最大ブロック時間
-  # @param: [Task] job 自タスク
-  # @return: [Numeric] LB最大ブロック時間
+  # @param [Task] job 自タスク
+  # @return [Numeric] LB最大ブロック時間
   def BB(job)
     return 0 if job == nil || job == []
     time = 0
@@ -646,8 +646,8 @@ module WCBT
   end
 
   # ローカルタスクがshortリソースを要求する際に発生する最大ブロック時間
-  # @param: [Task] job 自タスク
-  # @return: [Numeric] AB最大ブロック時間
+  # @param [Task] job 自タスク
+  # @return [Numeric] AB最大ブロック時間
   def AB(job)
     return 0 if job == nil || job == []
 
@@ -682,8 +682,8 @@ module WCBT
   end
 
   # グローバルなlongリソースを要求する時の最大ブロック時間
-  # @param: [Task] job 自タスク
-  # @return: [Numeric] LB最大ブロック時間
+  # @param [Task] job 自タスク
+  # @return [Numeric] LB最大ブロック時間
   def LB(job)
     #p_debug("LB(#{job.task_id})")
     #RubyProf.start
@@ -872,8 +872,7 @@ module WCBT
 
     #
     # CPU使用率を表示
-    #
-    
+    #    
     uabj = PROC_NUM # utilization_available_to_background_jobs
     proc_list.each do |p|
       u = 0
@@ -918,7 +917,7 @@ module WCBT
   end
 
   # 最悪応答時間
-  private
+  # @param [Task] job タスク
   def wcrt(job)
     pre_wcrt = job.get_extime + job.b
     n = 1

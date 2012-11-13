@@ -7,7 +7,7 @@ require "pp"
 require "./utils/task-CUI"
 require "./manager"
 
-TEST_FOLDER = "./testFolder/"
+TEST_FOLDER = "./testFolder/test_tastsets/"
 class Test_wcbt < Test::Unit::TestCase
   include WCBT
 
@@ -23,7 +23,6 @@ class Test_wcbt < Test::Unit::TestCase
   def set_taskset(filename)
     @manager.all_data_clear
     @manager.load_tasks(filename)
-    #init_computing(@manager.tm.get_task_array)    
   end
   
   def setup

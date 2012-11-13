@@ -34,7 +34,7 @@ class Processor
   ###############################################################
   public 
   # プロセッサにタスク割り当て
-  # @param [Task] 割当てるタスク
+  # @param [Task] task 割当てるタスク
   # @return 成功したらtrue
   def assign_task(task)
     if @proc_id == nil || @proc_id == 0
