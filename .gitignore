@@ -31,5 +31,6 @@ s*.orig
 .rvmrc
 121031/taskset_files/
 .yardoc
-experments/
-experiments/
+experiment/
+.gitignore
+
