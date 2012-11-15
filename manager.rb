@@ -112,7 +112,7 @@ class AllManager
     return false if @rm.load_require_data("#{dir_name}/#{taskset_name}_require.json") == false
     return false if @tm.load_task_data("#{dir_name}/#{taskset_name}_task.json") == false
     return false if @pm.load_processor_data("#{dir_name}/#{taskset_name}_proc.json") == false
-    @using_group_array = get_using_group_array
+    @using_group_array = get_using_groups
     $task_list = []
     ProcessorManager.proc_list.each do |proc|
       proc.task_list.each do |task|
@@ -203,7 +203,7 @@ class AllManager
     end
 
     # システムで使用するリソースグループ
-    @using_group_array = get_using_group_array
+    @using_group_array = get_using_groups
 
     # システムで使用するタスクセット
     $task_list = []
@@ -272,25 +272,42 @@ class AllManager
     @pm.data_clear
   end
   
-  #
+
   # システムで使用中のリソースグループの配列を取得
-  # rarrayはシステムで使用するリソース要求の配列
-  # new_garrayは新しいグループ配列
-  #
-  def get_using_group_array
+  # @return [Array<Group>] システムで使用中のリソースグループの配列
+  def get_using_groups(kind=nil)
     new_garray = []
     
-    @tm.get_task_array.each{|t|
-      t.all_require.each{|r|
-        new_garray << r.res unless new_garray.include?(r.res) 
-      }
-    }
+    case kind
+    when nil
+      # 使用中の全リソースを返す
+      @tm.get_task_array.each do |t|
+        t.all_require.each do |r|
+          new_garray << r.res unless new_garray.include?(r.res) 
+        end
+      end
+    when LONG
+      # 使用中のlongリソースを返す
+      @tm.get_task_array.each do |t|
+        t.all_require.each do |r|
+          if r.res.kind == LONG
+            new_garray << r.res unless new_garray.include?(r.res)
+          end
+        end
+      end
+    when SHORT
+      @tm.get_task_array.each do |t|
+        t.all_require.each do |r|
+          if r.res.kind == SHORT
+            new_garray << r.res unless new_garray.include?(r.res)
+          end
+        end
+      end
+      # 使用中のshortリソースを返す
+    end
     
     return new_garray
   end
-
-
-
   
   # 最悪応答時間が最も良くなる時のグループの分類を求める
   # @return [Array<String>]
