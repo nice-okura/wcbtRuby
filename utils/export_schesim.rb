@@ -77,13 +77,13 @@ class EXPORT_SCHESIM
   # AllManagerクラスからschesim用のjsonファイルを出力する
   def output_schesim_json(manager)
     proc_list = ProcessorManager.proc_list
-    proc_list.each{ |proc|
+    proc_list.each do |proc|
       @info["cpu"][0]["core"] << get_core_info(manager, proc)
-    }
+    end
   
-    File.open("#{@filename}.json", "w"){ |fp|
+    File.open("#{@filename}.json", "w") do |fp|
       fp.write JSON.pretty_generate(@info)
-    }
+    end
   end
 
   #
@@ -112,13 +112,13 @@ class EXPORT_SCHESIM
   
   def get_groups_str(g_array)
     str = ""
-    g_array.each{ |g|
+    g_array.each do |g|
       if g.kind == LONG
-        str += "\t @@res#{g.group} = LONG_RESOURCE.new\n"
+        str << "\t @@res#{g.group} = LONG_RESOURCE.new\n"
       else
-        str += "\t @@res#{g.group} = SHORT_RESOURCE.new\n"
+        str << "\t @@res#{g.group} = SHORT_RESOURCE.new\n"
       end
-    }
+    end
     
     return str
   end
@@ -127,23 +127,24 @@ class EXPORT_SCHESIM
   def get_task_str(t)
     str = ""
 
+    proc_s = t.proc.proc_id.to_s
     curTime = t.offset
     t.req_list.each do |req|
       calc_time = 0.0
       calc_time = req.begintime - curTime # 現在時刻から次のリソース要求の時間までが計算時間
       
-      str += "\t\t exc(#{calc_time} * @@share#{t.proc.proc_id})\n" if calc_time > 0.0
+      str << "\t\t exc(" << calc_time.to_s << " * @@share" << proc_s << ")\n" if calc_time > 0.0
 
       curTime += calc_time                # 現在時刻を進める
 
-      str += get_req_str(req)   # リソース要求の分だけLONG or SHORTCHAR を表示
+      str << get_req_str(req)   # リソース要求の分だけLONG or SHORTCHAR を表示
 
       curTime += req.time
     end
 
     # 最後に計算時間が余っていれば表示
     time = t.get_noninflate_time + t.offset - curTime
-    str += "\t\t exc(#{time} * @@share#{t.proc.proc_id})\n" if time > 0.0
+    str << "\t\t exc(" << time.to_s << " * @@share" << proc_s << ")\n" if time > 0.0
   
 
     return str
@@ -151,15 +152,16 @@ class EXPORT_SCHESIM
   
   def get_req_str(req)
     str = ""
-    
+    grp = req.res.group.to_s
+    time = req.time.to_s
     if req.res.kind == LONG
-      str += "\t\t GetLongResource(@@res#{req.res.group})\n"
-      str += "\t\t exc(#{req.time})\n"
-      str += "\t\t ReleaseLongResource(@@res#{req.res.group})\n"
+      str << "\t\t GetLongResource(@@res" << grp << ")\n"
+      str << "\t\t exc(" << time << ")\n"
+      str << "\t\t ReleaseLongResource(@@res"<< grp << ")\n"
     else
-      str += "\t\t GetShortResource(@@res#{req.res.group})\n"
-      str += "\t\t exc(#{req.time})\n"
-      str += "\t\t ReleaseShortResource(@@res#{req.res.group})\n"
+      str << "\t\t GetShortResource(@@res" << grp << ")\n"
+      str << "\t\t exc(" << time << ")\n"
+      str << "\t\t ReleaseShortResource(@@res" << grp << ")\n"
     end
 
     return str

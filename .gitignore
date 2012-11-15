@@ -31,6 +31,7 @@ s*.orig
 .rvmrc
 121031/taskset_files/
 .yardoc
-experiment/
+experiments/
 .gitignore
 
+measure_methods.rb
