@@ -14,7 +14,6 @@
 # 標準ライブラリ
 require "pp"
 require "rubygems"  
-require "json"      # JSON
 
 # 独自ライブラリ
 #require "./120601_sche_ana/wcbt-edf"      # 最大ブロック時間計算モジュール
@@ -178,9 +177,7 @@ class AllManager
     # プロセッサの作成
     @pm.create_processor_list(info)
   end
-  
 
-  
   #
   # タスクセット生成
   #

@@ -3,7 +3,6 @@
 $:.unshift(File.dirname(__FILE__))
 require "./manager"
 require "./utils/task-CUI"
-require "json"
 require "optparse"
 
 #require "./120601_sche_ana/wcbt-edf"

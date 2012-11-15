@@ -4,7 +4,6 @@
 #$:.unshift(File.dirname(__FILE__))
 require "./manager"
 require "./utils/task-CUI"
-require "json"
 require "optparse"
 
 ## オプション一覧
