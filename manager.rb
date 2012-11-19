@@ -118,9 +118,12 @@ class AllManager
         $task_list << task
       end
     end
-    # $task_list = @tm.get_task_array
-    init_computing($task_list)
-    set_blocktime
+
+    # 最大ブロック時間を計算させない
+    unless info[:not_compute] == true
+      init_computing($task_list)
+      set_blocktime
+    end
 
     return true
   end
@@ -133,7 +136,8 @@ class AllManager
       puts "ディレクトリを指定して下さいよ" 
       return false
     end
-        # hoge/piyo/以下に
+
+    # hoge/piyo/以下に
     #   piyo_task.json
     #   ...
     #を作成する場合
@@ -221,7 +225,8 @@ class AllManager
       t.resetting
     end
     
-    unless info[:mode] == SCHE_CHECK || info[:mode] == MY_SCHE_CHECK
+    # 最大ブロック時間を計算させない
+    unless info[:mode] == SCHE_CHECK || info[:mode] == MY_SCHE_CHECK || info[:not_compute] == true
       init_computing($task_list)
       set_blocktime
     end

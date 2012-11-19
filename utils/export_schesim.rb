@@ -4,15 +4,38 @@
 # タスクをschesim用に変換するためのクラス
 #
 #$:.unshift(File.dirname(__FILE__))
-require "./manager"
 
 class EXPORT_SCHESIM
 
-  def initialize(filename)
-    @filename = filename
+  def initialize(name)
+    # hoge/piyo/以下に
+    #   piyo_task.json
+    #   ...
+    #を作成する場合
+    # name = hoge/piyo/
+    # dir_name = hoge/piyo
+    # file_prefix = piyo とする
+
+    # name はfrozenなのでdir_nameとして複製
+    dir_name = name.dup
+
+    # 末尾が"/"なら"/"を取る
+    dir_name.sub!(/\/$/, "")
+    
+    # ファイル名のプレフィックス
+    file_prefix = File::basename(dir_name)
+
+    # ディレクトリ作成
+    Dir::mkdir(dir_name) unless File::exists?(dir_name)
+    @filename = file_prefix
     @info = { }
     @info["cpu"] = []
     set_cpu_info(1)
+  end
+
+  def clear
+    @filename = nil
+    @info = { }
   end
 
   ######################################################
