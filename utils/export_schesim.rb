@@ -13,21 +13,20 @@ class EXPORT_SCHESIM
     #   ...
     #を作成する場合
     # name = hoge/piyo/
-    # dir_name = hoge/piyo
-    # file_prefix = piyo とする
+    # dirname = hoge/piyo
+    # filename = piyo とする
 
     # name はfrozenなのでdir_nameとして複製
-    dir_name = name.dup
+    @dirname = name.dup
 
     # 末尾が"/"なら"/"を取る
-    dir_name.sub!(/\/$/, "")
+    @dirname.sub!(/\/$/, "")
     
     # ファイル名のプレフィックス
-    file_prefix = File::basename(dir_name)
+    @filename = File::basename(@dirname)
 
     # ディレクトリ作成
-    Dir::mkdir(dir_name) unless File::exists?(dir_name)
-    @filename = file_prefix
+    Dir::mkdir(@dirname) unless File::exists?(@dirname)
     @info = { }
     @info["cpu"] = []
     set_cpu_info(1)
@@ -35,6 +34,7 @@ class EXPORT_SCHESIM
 
   def clear
     @filename = nil
+    @dirname = nil
     @info = { }
   end
 
@@ -104,7 +104,7 @@ class EXPORT_SCHESIM
       @info["cpu"][0]["core"] << get_core_info(manager, proc)
     end
   
-    File.open("#{@filename}.json", "w") do |fp|
+    File.open("#{@dirname}/#{@filename}.json", "w") do |fp|
       fp.write JSON.pretty_generate(@info)
     end
   end
@@ -113,7 +113,7 @@ class EXPORT_SCHESIM
   #  タスク処理記述ファイルの出力
   #
   def output_app_desc_file(manager)
-    File.open("#{@filename}.rb", 'w') { |f|
+    File.open("#{@dirname}/#{@filename}.rb", 'w') { |f|
       f.print "class TASK\n"
       f.print get_groups_str(GroupManager.get_group_array)
       @info["cpu"].each do |cpu|

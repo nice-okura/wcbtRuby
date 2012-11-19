@@ -7,7 +7,7 @@ require "pp"
 require "./utils/task-CUI"
 require "./manager"
 
-TEST_FOLDER = "./testFolder/test_tastsets/"
+TEST_FOLDER = "./testFolder/test_tasksets/"
 class Test_wcbt < Test::Unit::TestCase
   include WCBT
 
