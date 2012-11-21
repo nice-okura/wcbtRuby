@@ -117,6 +117,11 @@ class RequireManager
         info[:group] = g
         @@require_array << create_require_manually(info)
       end
+    when "121121"
+      get_use_group_array_order(i, group_array).each do |g|
+        info[:group] = g
+        @@require_array << create_require_manually(info)
+      end
     when CREATE_MANUALLY
       get_use_group_array_random(i, group_array).each do |new_group|
         info[:group] = new_group
@@ -296,12 +301,13 @@ class RequireManager
     count = 0
     using_group_array = []
     
+    raise if g_array.size == 0
     while(1)
-      g_array.each{ |g|
+      g_array.each do |g|
         using_group_array << g
         count += 1
         return using_group_array if count == group_count
-      }
+      end
     end
   end
 end

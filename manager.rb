@@ -649,140 +649,6 @@ class TaskManager
     task.req_list = RequireManager.get_reqlist_from_req_id([req_id])
   end
   
-
-  # タスクの配列生成
-  # 生成したタスクの数を返す
-  public
-  def create_task_array(i, info={ })
-    case info[:mode]
-    when "0"
-      #
-      # 外部ファイルからタスクが読み込まれていなかったらタスクランダム生成
-      # そうでなければそのまま
-      #
-      i.times{
-        @@task_array << create_task
-      }
-      #
-      # rcslを考慮したタスク実行時間を作成．
-      # 各CPUに均等にタスクは割り当てられる
-      #
-    when "120405" 
-      # info[1] はrcls
-      #puts "120405 MODE"
-      if info[:rcsl] == nil
-        $stderr.puts "create_task_array:[#{__LINE__}行目]rcslが設定されていません"
-      else
-        i.times{
-          @@task_array << create_task_120405(i, info[:rcsl])
-        }
-      end
-      
-      #
-      # rcslは不要
-      # 指定した実行時間info[1](初期値50)のタスクを生成．
-      # 各CPUに均等にタスクは割り当てられる．
-      #
-    when "120405_3", "120411"
-      if info[:extime].to_i == 0
-        i.times{
-          @@task_array << create_task_120405_3(i)
-        }
-      else
-        i.times{
-          @@task_array << create_task_120405_3(i, info[:extime])
-        }
-      end
-    when SCHE_CHECK
-      #
-      # スケジューラビリティ解析用
-      #
-      max_util = 0.0
-      i.times do |num|
-        t = create_task_sche_check(info[:umax])
-        max_util += t.get_extime/t.period
-        break if max_util > 4*0.8
-        @@task_array << t
-      end
-    when MY_SCHE_CHECK
-      # 自分で考えたP-SP FMLPスケジューラビリティ解析
-      # Real-time synchronization on multiprocessors: To block or not to block, to suspend or spin?
-      # を参考にした．
-      max_util = 0.0
-      i.times do |num|
-        t = create_task_sche_check(info[:umax])
-        max_util += t.get_extime/t.period
-        
-        u = info[:proc_num]*info[:cpu_util_max].to_f
-        break if max_util > u
-        @@task_array << t
-      end 
-    when "120620"
-      i.times{ 
-        @@task_array << create_task_120620(i, info)
-      }
-    when "120613"
-      i.times{ 
-        @@task_array << create_task_120613(i, info[:extime])
-      }
-    when "120620_2"
-      i.times{ 
-        @@task_array << create_task_120620_2(i, info[:extime])
-      }
-    when "120927"
-      i.times do
-        @@task_array << create_task_120620(i, info)
-      end
-    when "121003"
-      i.times do 
-        @@task_array << create_task_121003(i, info)
-      end
-    # リソースやタスクのの割り当てを手動で設定
-    when CREATE_MANUALLY
-      i.times{ 
-        @@task_array << create_task_manually(i, info)
-      }
-      
-      # 優先度割当て
-      case info[:priority_mode]
-      when PRIORITY_BY_UTIL      
-        # タスク使用率順に優先度とID付け直す
-        @@task_array.sort! do |a, b|
-          -1 * (a.util <=> b.util)
-        end
-        @@task_array.each_with_index do |t, i|
-          t.set_taskid(i+1)
-          t.set_priority(i+1)
-        end
-      when PRIORITY_BY_PERIOD
-        # タスク周期順に優先度とID付け直す
-        @@task_array.sort! do |a, b|
-          a.period <=> b.period
-        end
-        @@task_array.each_with_index do |t, i|
-          t.set_taskid(i+1)
-          t.set_priority(i+1)
-        end
-      when PRIORITY_BY_ID
-        # タスクID順に優先度とID付け直す
-        # 既にID順になっているので何もしない
-      else
-        # 標準
-        # タスクID順に優先度とID付け直す
-        # 既にID順になっているので何もしない
-      end
-    else
-      $stderr.puts "create_task_array:infoエラー"
-      raise
-      exit
-    end
-
-    # 周期の短い順に優先度を割り当てる
-    #assign_priority_by_period(@@task_array)
-    
-    #@@task_array = tarray
-    return @@task_array.size
-  end
   
   # 周期の短い順に優先度を割り当てる
   # @param: <Array> タスクセット
@@ -1033,19 +899,38 @@ class RequireManager
     return ra
   end
   
-  #
+
   # リソース要求IDからリソースのオブジェクト参照の配列を返す
-  #
+  # @param [Array<Fixnum>] req_list リソースIDの配列
+  # @return [Array<Req>] リソース要求の配列
   def self.get_reqlist_from_req_id(req_list)
     reqs = []
-    req_list.each{|req_id|
-      @@require_array.each{|r|
+    req_list.each do |req_id|
+      @@require_array.each do |r|
         if r.req_id == req_id
           reqs << r
           break
         end
-      }
-    }
+      end
+    end
+    
+    return reqs
+  end
+
+    # グループIDからリソース要求の配列を返す
+  # @param [Array<Fixnum>] group_ids グループIDの配列
+  # @return [Array<Req>] リソース要求の配列
+  def self.get_reqs_from_group_id(group_ids)
+    reqs = []
+    group_ids.each do |g_id|
+      @@require_array.each do |r|
+        if r.res.group == g_id
+          reqs << r
+          break
+        end
+      end
+    end
+    
     return reqs
   end
 
