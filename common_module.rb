@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require "rubygems"
 require "json"
 
 class IllegalClass < StandardError; end
@@ -11,6 +12,12 @@ class Float
   end
 end
 
+class Array
+  # 配列からランダムに要素を抜き取り，返す
+  def rand_shift
+    return delete_at(rand(size))
+  end
+end
 
 class Hash
   # ハッシュの保存
@@ -38,7 +45,14 @@ class Hash
   def to_sym
     new_hash = { }
     self.each do |k, v|
-      new_hash[k.to_sym] = v if k.class = String
+      k = k.to_sym if k.class == String
+      if v.class == String && v.index("..")
+        new_hash[k] = v.to_rng
+      elsif v.class == Hash
+        new_hash[k] = v.to_sym
+      else
+        new_hash[k] = v
+      end
     end
 
     return new_hash
@@ -47,25 +61,19 @@ class Hash
   # ハッシュのkeyがstringの場合，symbolに変換する(破壊的メソッド)
   # @return [Hash] symbolに変換したハッシュ
   def to_sym!
-    new_hash = { }
-    self.each do |k, v|
-      new_hash[k.to_sym] = v if k.class == String
-    end
+    return self.replace(to_sym)
+  end
+end
 
-    return self.replace(new_hash)
+class String 
+  # StringをRangeに変換する
+  # @return [Range] 変換したRangeオブジェクト 
+  def to_rng
+    return self.split('..').inject { |s,e| s.to_i..e.to_i }
   end
 
-
-  class String 
-    # StringをRangeに変換する
-    # @return [Range] 変換したRangeオブジェクト 
-    def to_rng
-      return self.split('..').inject { |s,e| s.to_i..e.to_i }
-    end
-
-    # StringをRangeに変換する(破壊的メソッド)
-    def to_rng!
-      return self.replace(self.split('..').inject { |s,e| s.to_i..e.to_i })
-    end
+  # StringをRangeに変換する(破壊的メソッド)
+  def to_rng!
+    return self.replace(self.split('..').inject { |s,e| s.to_i..e.to_i })
   end
 end
