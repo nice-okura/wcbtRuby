@@ -1397,6 +1397,13 @@ class GroupManager
     return RUBY_VERSION == "1.9.3" ? long_array.sample : long_array.choice
   end
   
+  # 作成したグループのIDの配列を返す
+  # 使用しているグループIDの配列とは限らない
+  # @return [Array<Fixnum>] グループのIDの配列
+  def self.get_group_id_list
+    return @@group_array.inject([]){ |groups, g| groups << g.group }
+  end
+  
   # 内部データのクリア
   public
   def data_clear

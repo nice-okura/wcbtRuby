@@ -162,6 +162,7 @@ class RequireManager
     end
 
     # グループ
+    group = nil
     if info[:long_border] != nil
       # CSの長いものをlongリソースにする場合
       if time > info[:long_border]

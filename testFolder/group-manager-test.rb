@@ -47,7 +47,7 @@ class Test_groupMaker < Test::Unit::TestCase
   end
   
   def test_load
-    assert_equal(8, @@gm.load_group_data("#{TASKSET_FOLDER}for_test_LB_nest_group.json"))
+    assert_equal(8, @@gm.load_group_data("#{TASKSET_FOLDER}for_test_LB_nest/for_test_LB_nest_group.json"))
     assert_equal(8, GroupManager.get_group_array.size)
     
     @@gm.data_clear
@@ -66,5 +66,28 @@ class Test_groupMaker < Test::Unit::TestCase
     set_taskset("#{TASKSET_FOLDER}for_test_LB_nest")
     assert_equal(8, GroupManager.get_group_array.size)
     100.times { assert_equal(LONG, GroupManager.get_random_long_group.kind)}
+  end
+
+  def test_get_group_id_list
+    set_taskset("#{TASKSET_FOLDER}for_test_LB_nest")
+    assert_equal([1,2,3,4,5,6,7,8], GroupManager.get_group_id_list)
+
+    i = rand(10)
+    10.times{ 
+      @manager.all_data_clear
+      info={ 
+        :mode => CREATE_MANUALLY,
+        :extime_range => 10..50,
+        :util => 0.01,
+        :require_range => 1..5,
+        :assign_mode => 1,
+        :require_count => 1,
+        :proc_num => 2
+      }
+      @manager.create_tasks(12, 24, i, info)
+      assert_equal(i, GroupManager.get_group_id_list.size)
+    }
+
+    
   end
 end
